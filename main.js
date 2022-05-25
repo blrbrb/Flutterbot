@@ -12,7 +12,7 @@ var debug = false;
 
 const client = new Discord.Client();
 
-
+require('dotenv').config();
 
 //client.player = player;
 
@@ -46,7 +46,7 @@ var b = 0;
 var c = 0;
 //main events 
 client.on('ready', () => {
-console.log('Fard Bot is Ready To Shid');
+console.log('Fluttershy is Awake Yay! :3');
 
 });  
 
@@ -72,11 +72,7 @@ client.on('message',message => {
 
 
 
- if(message.content.includes('liberal') && !message.author.bot) {
-	
-	a++; 
- client.commands.get('liberal').execute(message, args, a); 
-	 } 
+ 
 	 
 	 
  if(message.content.includes('sus') && !message.author.bot) 
@@ -220,8 +216,7 @@ if (command == 'fluttershy')
     
 if(command == 'ifunny') 
 {
-    ifunny(message, args);
-
+    client.commands.get('ifunny').execute(message, args); 
 }
 
 if(command == 'reaction') 
@@ -417,7 +412,7 @@ message.channel.send('https://e621.net/posts/random');
 
 });   
 
-client.login('ODE3MTYxNTczMjAxNjA4NzE1.YEFfBQ.xdvrpfF3cxW-z7Ft99bF7xQQlAs');
+client.login(process.env.DISCORD_TOKEN);
      
 
 

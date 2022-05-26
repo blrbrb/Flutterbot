@@ -68,7 +68,9 @@ module.exports = {
             else {
                 message.channel.send("p-please don't make me look through ifunny");
                 urls.shift();
-                message.channel.send(urls[1]);
+                message.channel.send(urls[Math.floor(Math.random() * urls.length)]);
+                
+
                 return;
             }
 

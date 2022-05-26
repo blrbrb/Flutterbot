@@ -47,10 +47,10 @@ console.log('Fluttershy is Awake Yay! :3');
 
 });  
 
-client.on('guildMemberAdd', guildMember => {let welcomeRole = guildMember.guild.roles.cache.find(role => role.name ==='Fellow Comrade')
+client.on('guildMemberAdd', guildMember => {let welcomeRole = guildMember.guild.roles.cache.find(role => role.name ==='Broner')
 
 guildMember.roles.add(welcomeRole); 
-guildMember.guild.channels.cache.get('819080587310006283').send(`Welcome <@${guildMember.user.id}> to off-brand Antifa!, Please read through our breif rules channel :)`); 
+guildMember.guild.channels.cache.get('960713019753644035').send(` <@${guildMember.user.id}> 'HI NEW FRIEND'`); 
 
 });
 

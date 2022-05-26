@@ -1,9 +1,6 @@
 
 const Discord = require('discord.js')
 //const Discord = require('Discord.js');
-
-const ai = require("fifteenai");
-
 const ytdl = require("ytdl-core");
 
 
@@ -166,10 +163,7 @@ if (command == 'angel')
 }
     
     
-if(command == 'meme')
-{
-        client.commands.get('meme').run(client, message, args);
-}
+
 	
     if (command == 'tweet')
     {
@@ -177,11 +171,6 @@ if(command == 'meme')
         
         
     }
-if(command == 'hitler')
-{
-        client.commands.get('hitler').run(client, message, args);
-        
-}
 
 if(command == 'play' || command == 'skip')
 {
@@ -219,59 +208,34 @@ if(command == 'ifunny')
     client.commands.get('ifunny').execute(message, args); 
 }
 
-if(command == 'reaction') 
-{ 
-reaction(message, args); 
-}
+
+
+  if (command == 'randompony')
+ {
+      client.commands.get('randompony').execute(message, args); 
+
+ }
     
     
-if(command == 'poopyimage')
-{
-    NeuralMeme(message, args);
-}
-    
+
 if(command == 'quote')
 {
         
     quote(message, args);
+
+   
         
 }
-    
-if(command == 'rules')
+
+if (command == 'rules' && (message.member.hasPermission("ADMINISTRATOR") == true)) 
 {
-  client.commands.get('rules').execute(message, args, Discord);
-}
-    
-    
-if( command == 'booru')
-{
-    client.commands.get('booru').run(client,message,command,args, prefix1, 1);
-        
+
+    client.commands.get('rules').execute(message, args, Discord);
 }
     
 
-if (command == 'twi')
-{
-    client.commands.get('twi').execute(message,args, command, Discord)
+
     
-}
-		 
-if (command == 'tourettes')
-{
-        
-     tourettes(message, args);
-        
-}
-  
-    
-if (command == 'ai')
-{
-    
-    
-    //message.channel.send(ai(args));
-    voice(message, args)
-}
- 
 
 
 if(command === 'ping') {
@@ -279,65 +243,8 @@ if(command === 'ping') {
 	client.commands.get('ping').execute(message,args);
  }
  
-if(command == 'fart')
- {
-   client.commands.get('fart').execute(message,args);	
-
- }   
-
-if(command == 'conservative')
-{
-        client.commands.get('conservative').execute(message,args);
-        
-}
-    
-
- if(command == 'reddit')
-{ 
-  let args = message.content.substring(prefix1.length).split(' ');
-   //client.commands.get('reddit').execute(message,args);    
    
-   reddit(message, args);
-} 
-
-  if (command == 'darren')
-{  
-
-message.channel.send('based e-thot, join');
-var pings = 5; 
-
- 	for (i = 0; i < pings; i++) { 
- 	 message.channel.send('@Kortalion'); 
- 	
- 	}
- 	
- 	 
-}
-    
-    if (command == 'derrek')
-  {
-
- // var pings = 10000;
-//for (i = 0; i < pings; i++) {
-
-  //      message.channel.send('@nickromney');
-       
-    }
  
-       
- if (command == 'reverb')
-{ 
-client.commands.get('reverb').execute(message,args,Discord);	
-
-
-} 
-
- if (command == 'ross')
-{
-	client.commands.get('ross').execute(message, args); 
-
-}  
-
 
  if (command == 'rate')
 {
@@ -350,11 +257,6 @@ client.commands.get('reverb').execute(message,args,Discord);
 
 } 
 
-if (command == 'hello')
-{
- message.channel.send('I am friend. I am programmed to protect humanity'); 
-
-}  
 
 if (command == 'library')
 {
@@ -362,28 +264,7 @@ client.commands.get('library').execute(message,args, Discord);
 
 }
 
-if (command == 'clop')
-{
-  
-//client.commands.get('clop').run(client, message, command, args, prefix1, 1);
-        
-}
 
- if (command == 'bomba')
-{
-message.channel.send('!play Diarrhea sounds 10 hours'); 
-							
-}
-
-
-if (command == 'rythm')
-{
-let args = message.content.substring(prefix1.length).split(' ');
-
-message.channel.send('Now asking Comrade Rythm to play:' + ' ' + args[1]+ ' ' + args[2] +'...');
-
-rythm(args);
-} 
 
 
 if (command == 'boop') 
@@ -400,17 +281,40 @@ if(command == 'avatar')
 
 }
 
- if (command == 'e621')
-{
 
-message.channel.send('https://e621.net/posts/random'); 
+    //help command section 
+   if (command == 'help')
+    {
+        switch (args) {
+            case 'commands':
+                message.channel.send(commandfiles.toString());
+                break; 
 
-}
+            case 'about':
+                message.channel.send('documentation for me can be found here,' + process.env.VERSION);
+                break; 
 
- 
+            case 'info':
+                message.channel.send(process.env.VERSION);
+
+            default: message.channel.send("Enter 'help' followed by either commands, about, or info");
+                break; 
+
+            //TD 
+            //insert webhook/ handling stuff here. 
+            //add patreon in future deployments? 
+            //Make fluttershy do something easter-eggy and releated to the show idk, discord joke? 
+
+            
+
+        }
+
+      }
 
 
-});   
+
+    
+ });   
 
 client.login(process.env.DISCORD_TOKEN);
      
@@ -418,70 +322,7 @@ client.login(process.env.DISCORD_TOKEN);
 
 
 
-function NeuralMeme(message, args)
-{
-    var options = {
-            url: "https://imgflip.com/ai-meme",
-            method: "GET",
-            headers: { "Accept" : "text/html",
-                   "User-Agent": "Chrome" }
-    };
-    
-  
-   
-    
-    
-    request(options, function(error,response,responseBody) {
 
-            if(error) { console.log('Im yellow shy, and Eli is a useless, incapable human being'); return;}
-
-            $ = cheerio.load(responseBody);
-    
-        //var el = $().click();
-        //document.getElementById("").click();
-       
-           // el.click();
-        
-        //".done-img-wrap-wrap done-img-wrap"
-     
-
-            var url = $(".mm-canv").toDataUrl();
-          // var url2 = url.querySelector('#done-img');
-           // var urls = url.attr("src");
-       // var urls = new Array(url.length).fill(0).map((v,i) => url.eq(i).attr("src"));
-        //var urls = url.attr('src');
-
-        //message.channel.send(links[1]);
-        
-        
-        
-    console.log(url);
-    //console.log(urls);
-    //if (!urls) {
-     //   message.channel.send('invalid array allocation: urls.length < 0');
-        //message.channel.send(urls);
-        
-           
-
-        
-      
-        
-    //return;
-   // }
-
-        
-    //filter through array, send resulting random image
-   // else {
-        //message.channel.send("");
-        //urls.shift();
-        //message.channel.send(url);
-       // return;
-   // }
-
-
-    });
-
-}
 
 
 function quote(message, args)
@@ -552,145 +393,12 @@ function quote(message, args)
 
 
 
-//generate and send a random gif based on args supplied to the bot 
- function ifunny(message, args1) {
-
-	// console.log('working');
-var options = { 
-		url: "https://ifunny.co/other",
-		method: "GET",
-		headers: { "Accept" : "text/html", 
-			   "User-Agent": "Chrome" }    
-}; 
-
-
-request(options, function(error,response,responseBody) {
-
-		if(error) { console.log('Im yellow shy, and Eli is a useless, incapable human being'); return;}
-
-		$ = cheerio.load(responseBody); 
-//_26gD._3_Go._3brC.
-		var links = $(".l5Cl img");
-    
-      
-   // document.querySelector("#App > div._2Uj_ > div._2kNu > div > div._26gD._3_Go > div:nth-child(1) > div > div.l5Cl > img")
-
-		var urls = new Array(links.length).fill(0).map((v,i) => links.eq(i).attr("data-src"));
-
-    //message.channel.send(links[1]);
-    
-    
-    
-console.log(urls);
-if (!urls.length) {
-	message.channel.send('invalid array allocation: urls.length < 0');
-    //message.channel.send(urls[1]);
-    
-       
-
-    
-	console.log('you fucked it up, objectvie B kill all humans');
-    
-return;
-}  
-
-    
-//filter through array, send resulting random image
-else {
-    message.channel.send("p-please don't make me look through ifunny");
-    urls.shift();
-    message.channel.send(urls[1]);
-    return;
-}
-
-
-});
-
-}
-
-
- function reaction(message, args1) {
-
-	// console.log('working');
-var options = { 
-		url: "http://reactionimage.org/random.html",
-		method: "GET",
-		headers: { "Accept" : "text/html", 
-			   "User-Agent": "Chrome" }    
-}; 
-
-
-request(options, function(error,response,responseBody) {
-
-		if(error) { console.log('Im yellow shy, and Eli is a useless, incapable human being'); return;}
-
-		$ = cheerio.load(responseBody); 
-//_26gD._3_Go._3brC.
-		var links = $(".single-image img"); 
-		//links.unshift("http://reactionimage.org");
-    
-                 var prestring = "http://reactionimage.org";
- 
-
-		var urls = new Array(links.length).fill(0).map((v,i) => prestring + links.eq(i).attr("src")); 
-
-    
-    //message.channel.send(flinks[1]);
-    
-    
-    
-//console.log(links); 
-console.log(urls);
-if (!urls.length) {  
 
 
 
 
 
 
-urls.trim();
-	message.channel.send('invalid array allocation: urls.length < 0');
-    //message.channel.send(file: urls[1]);
-    
-       
-
-    
-	console.log('you fucked it up, objectvie B kill all humans');
-    
-return;
-}  
-
-    
-//filter through array, send resulting random image
-else { 
-
-var sstring = urls.toString();   
-
-ssstring = sstring.substr(0, 53);
-
-console.log(ssstring);
-const embed = new Discord.MessageEmbed().setURL(ssstring).setDescription('Generating reaction..')
-  .setImage(ssstring) 
-
-
-    message.channel.send(ssstring);
-    return;
-}
-
-
-});
-
-}
-
-
-
-
-function rythm(args) {
-
-   message.channel.cache.get('695774282508271616').send('!play' + searchterm);
-
-
-}
 
 
 

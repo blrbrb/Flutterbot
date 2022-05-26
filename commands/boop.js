@@ -14,14 +14,14 @@ module.exports = {
     var onSelf = false;
     var onChrysalis = false;
 
-    if (message.mentions?.members.first()) {
+    if (message.mentions.members.first()) {
       if (message.mentions.members.first().user.id == message.author.id) onSelf = true;
       if (message.mentions.members.first().user.id == client.user.id) onChrysalis = true;
       if (message.mentions.members.first().nickname)
       targetUser = message.mentions.members.first().nickname
       else targetUser = message.mentions.members.first().user.username
     }
-    else if (message.mentions?.users.first()) targetUser = message.mentions.users.first().username;
+    else if (message.mentions.users.first()) targetUser = message.mentions.users.first().username;
     else if (args[0].startsWith("<@!")) {
       try {
         targetUser = await client.users.fetch(args[0].substring(3,args[0].length-1));

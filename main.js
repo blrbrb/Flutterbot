@@ -47,7 +47,7 @@ console.log('Fluttershy is Awake Yay! :3');
 
 });  
 
-client.on('guildMemberAdd', guildMember => {let welcomeRole = guildMember.guild.roles.cache.find(role => role.name ==='Broner')
+client.on('guildMemberAdd', guildMember => {let welcomeRole = guildMember.guild.roles.cache.find(role => role.name ==='new role')
 
 guildMember.roles.add(welcomeRole); 
 guildMember.guild.channels.cache.get('960713019753644035').send(` <@${guildMember.user.id}> 'HI NEW FRIEND'`); 
@@ -56,8 +56,8 @@ guildMember.guild.channels.cache.get('960713019753644035').send(` <@${guildMembe
 
 client.on('message',message => {
 
-    let args = message.content.substring(prefix1.length).split(" ");
-   
+    //let args = message.content.substring(prefix1.length).split(" ");
+      let args = message.content.slice(prefix1.length).trim().split(/ +/g); 
     
     
     //var command = message.content.contents
@@ -285,20 +285,30 @@ if(command == 'avatar')
     //help command section 
    if (command == 'help')
     {
-        switch (args) {
+    	let args = message.content.slice('help').trim().split(/ +/g);
+        switch (args[1])
+         {
             case 'commands':
-                message.channel.send(commandfiles.toString());
+               	const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js')); 
+               	
+               	commandFiles.slice(0, -4);
+	
+	             message.channel.send(commandFiles); 
+
                 break; 
+                
 
             case 'about':
                 message.channel.send('documentation for me can be found here,' + process.env.VERSION);
                 break; 
+                
 
             case 'info':
                 message.channel.send(process.env.VERSION);
+                break;
 
             default: message.channel.send("Enter 'help' followed by either commands, about, or info");
-                break; 
+                
 
             //TD 
             //insert webhook/ handling stuff here. 
@@ -395,6 +405,20 @@ function quote(message, args)
 
 
 
+function printcommands() 
+{
+	
+	
+ //for(const file of commandFiles) 
+	//const command = require(`./commands/${file}`); 
+	
+// var cnames = commandFiles.slice('.js); 
+
+	//client.commands.set(command.name, command); 
+}
+
+	
+	
 
 
 

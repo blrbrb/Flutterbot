@@ -7,10 +7,50 @@ module.exports = {
     execute(message, args) {
 
         // console.log('working');
-        var def = 'https://ifunny.co/tags/';
-
-        if (args <= 0) {
-            var options = {
+        
+        var options = {};  
+        
+        if(message.content.includes('help'))
+        {
+        	message.channel.send('try entering a one word tag, and or a one word filter. Like "-ifunny "funny" "weird"');  
+        	return; 
+        }
+        
+        
+        switch(args.length) 
+        {
+        	case 1:
+        	//console.log('args are one'); 
+        //	console.log(args[0]); 
+       
+        	 var options = {
+                url: "https://ifunny.co/tags/" + args,
+                method: "GET",
+                headers: {
+                    "Accept": "text/html",
+                    "User-Agent": "Chrome" 
+                    
+                }
+        	 };
+                break; 
+        	              
+             case 2:  
+           //  console.log('args are 2'); 
+           //  console.log(args[1]); 
+             
+            
+             var options = {
+                url: "https://ifunny.co/tags/" + args[0] + "?filter=" + args[1],
+                method: "GET",
+                headers: {
+                    "Accept": "text/html",
+                    "User-Agent": "Chrome"
+                }
+             }; 
+             break;
+                
+                
+             default: var options = {
                 url: "https://ifunny.co/other",
                 method: "GET",
                 headers: {
@@ -18,19 +58,15 @@ module.exports = {
                     "User-Agent": "Chrome"
                 }
             };
-
-        }
-        else
-
-            var options = {
-                url: "https://ifunny.co/tags/" + args,
-                method: "GET",
-                headers: {
-                    "Accept": "text/html",
-                    "User-Agent": "Chrome"
-                }
-            };
-
+             
+             
+            }
+        	
+        	
+        	
+        
+        
+        
 
         request(options, function (error, response, responseBody) {
 
@@ -39,7 +75,7 @@ module.exports = {
             $ = cheerio.load(responseBody);
             //_26gD._3_Go._3brC.
             //This line will change often as Ifunny updates it's dumb API 
-            var links = $("._0ZvA img");
+            var links = $("._3ZEF img");
 
 
             // document.querySelector("#App > div._2Uj_ > div._2kNu > div > div._26gD._3_Go > div:nth-child(1) > div > div.l5Cl > img")

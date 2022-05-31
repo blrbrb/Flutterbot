@@ -248,7 +248,7 @@ if(command === 'ping') {
 
  if (command == 'rate')
 {
-  client.commands.get('rate').execute(message, args); 
+  client.commands.get('rate').execute(message, args, client); 
 } 
 
  if (command == 'paintingnamer')
@@ -280,6 +280,15 @@ if(command == 'avatar')
 
 
 }
+
+if(command == 'emoji') 
+{
+	
+	client.commands.get('emoji').run(client, message, command, args, prefix1, lang); 
+	
+}
+
+
 
 
     //help command section 

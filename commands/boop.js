@@ -12,7 +12,7 @@ module.exports = {
    // author = message.member.nickname || message.member.user.username;
 
     var onSelf = false;
-    var onChrysalis = false;
+    var onFluttershy = false;
 
     if (message.mentions.members.first()) {
       if (message.mentions.members.first().user.id == message.author.id) onSelf = true;
@@ -69,19 +69,19 @@ module.exports = {
           
       }
     
-      else if (onChrysalis)
+      else if (onFluttershy)
       { embed.setTitle('boop!')
-          .setImage("https://cdn.discordapp.com/attachments/862296245922037800/874339788264734720/-_chrysalis.gif");
+          .setImage("https://media.discordapp.net/attachments/862296245922037800/862297091980001301/boop.gif.065a0274d6c444d7496d388adbe7e58a.gif");
           
       }
       
     else embed.setTitle('boop!')
     .setImage(gifs[Math.floor(Math.random() * gifs.length)]);
-        console.log({embeds:[embed]});
+        message.channel.send(embed);
 
       if (message.author == null)
-      {  message.editReply({embeds:[embed]});
-         message.channel.send({embeds:[embed]});
+      {  message.editReply({embed});
+         message.channel.send(embed);
       }
 
   }

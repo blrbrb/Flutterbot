@@ -88,7 +88,7 @@ module.exports = {
 
             console.log(urls);
             if (!urls.length) {
-                message.channel.send('invalid array allocation: urls.length < 0');
+                message.channel.send('I just dont know what went wrong');
                 //message.channel.send(urls[1]);
 
 

@@ -68,8 +68,8 @@ module.exports = {
                     video_player(message.guild, queue_constructor.songs[0]);
                 } catch (err) {
                     queue.delete(message.guild.id);
-                    message.channel.send('uhh. i. Im having trouble connecting...');
-                    throw err;
+                    message.channel.send('uhhm. Excuse me. i. Im having trouble connecting...');
+                    throw err; 
                 }
             } else{
                 server_queue.songs.push(song);
@@ -102,7 +102,7 @@ const video_player = async (guild, song) => {
 }
 
 const skip_song = (message, server_queue) => {
-    if (!message.member.voice.channel) return message.channel.send('uhh. I think you may need to be in a voice channel for me to be able to do this... Im so sorry');
+    if (!message.member.voice.channel) return message.channel.send('uhhm. Excuse me. I think you may need to be in a voice channel for me to be able to do this... Im so sorry');
     if(!server_queue){
         return message.channel.send(` uhhh... uhm..There are no songs in queue 😔`);
     }
@@ -110,7 +110,7 @@ const skip_song = (message, server_queue) => {
 }
 
 const stop_song = (message, server_queue) => {
-    if (!message.member.voice.channel) return message.channel.send('uhh. I think you may need to be in a voice channel for me to be able to do this... Im so sorry');
+    if (!message.member.voice.channel) return message.channel.send('uhhm. Excuse me. I think you may need to be in a voice channel for me to be able to do this... Im so sorry');
     server_queue.songs = [];
     server_queue.connection.dispatcher.end();
 }

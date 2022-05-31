@@ -1,9 +1,0 @@
-module.exports = {
-name: 'applejack',
-description: 'applejack', 
-execute(message, args, discord, prefix) {} 
-
-
-
-
-} 

@@ -5,7 +5,7 @@ const ytdl = require("ytdl-core");
 
 
 var servers = {};
-var debug = false;
+//var debug = false;
 
 const client = new Discord.Client();
 
@@ -175,7 +175,7 @@ if (command == 'angel')
 if(command == 'play' || command == 'skip')
 {
         
-client.commands.get('play').execute(message,args,command,client,Discord, debug);
+client.commands.get('play').execute(message,args,command,client,Discord, false);
     
 }
     
@@ -187,15 +187,7 @@ if(command == 'image')
     message.channel.send('I need a better filter...sorry');
 }
     
-if(command == 'debug_mode_(on)')
-{
-        
-    debug = true;
-    message.channel.send('debug Toggeled');
-    message.channel.send('ON using API validation Key:695774282508271616 ');
-  
-}
-    
+
 if (command == 'fluttershy')
 {
      client.commands.get('fluttershy').execute(message, args, command, Discord);
@@ -260,7 +252,7 @@ if(command === 'ping') {
 
 if (command == 'library')
 {
-client.commands.get('library').execute(message,args, Discord);
+//client.commands.get('library').execute(message,args, Discord);
 
 }
 
@@ -277,7 +269,7 @@ if (command == 'boop')
 if(command == 'avatar') 
 {
  //client.commands.get('avatar').run(client, message, command, args,lang); 
-
+  
 
 }
 
@@ -308,7 +300,7 @@ if(command == 'emoji')
                 
 
             case 'about':
-                message.channel.send('documentation for me can be found here,' + process.env.VERSION);
+                message.channel.send('Hello! :3 I am a free open source discordbot made with love by <@252235505318625281> documentation for me can be found here,' + ' ' + process.env.GIT);
                 break; 
                 
 

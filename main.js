@@ -236,7 +236,13 @@ if(command === 'ping') {
  }
  
    
- 
+ if (command == 'love')
+ {
+
+     client.commands.get('love').run(Discord, message, command, args, lang); 
+
+
+ }
 
  if (command == 'rate')
 {

@@ -3,9 +3,9 @@
 module.exports = {
     name: 'love',
     alias: ['amor', 'lovemeter', 'ship'],
-    run: async (client, message, command, args, lang,) => {
+    run: (client, message, command, args, lang,) => {
 
-        let lovers = message.mentions ? Array.from(message.mentions.users.values()) : [await client.users.fetch(args[0]), await client.users.fetch(args[1])];
+        let lovers = message.mentions ? Array.from(message.mentions.users.values()) : [client.users.fetch(args[0]), client.users.fetch(args[1])];
         if (!lovers.length) return message.reply(lang.type_one_or_two_users);
 
         if (!lovers[1]) {
@@ -20,18 +20,13 @@ module.exports = {
         let percentBar = `${'🟥'.repeat(lovePerTen)}${'⬜'.repeat(10 - lovePerTen)}`
         let percentMessage = lang.lovemeter_messages[lovePerTen];
 
-        if (lovers[0].id == client.user.id || lovers[1].id == client.user.id || lovers[1] == lovers[0]) {
-            lovePercent = 0;
-            percentBar = '⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜';
-            percentMessage = '...';
-        }
 
         let embed = new MessageEmbed()
             .setTitle(`${lovers[0].username} x ${lovers[1].username}`)
             .setDescription(`${lovePercent}%   ${percentBar}\n${percentMessage}`);
 
-        if (message.author) message.channel.send({ embeds: [embed] });
-        else message.editReply({ embeds: [embed] });
+        if (message.author) message.channel.send(embed);
+        else message.editReply(embed);
 
     }
 }

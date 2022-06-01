@@ -1,4 +1,4 @@
-﻿const { MessageEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'love',
@@ -30,8 +30,8 @@ module.exports = {
             .setTitle(`${lovers[0].username} x ${lovers[1].username}`)
             .setDescription(`${lovePercent}%   ${percentBar}\n${percentMessage}`);
 
-        if (message.author) message.channel.send({ embeds: [embed] });
-        else message.editReply({ embeds: [embed] });
+        if (message.author) message.channel.send(embed);
+        else message.editReply(embed);
 
     }
 }

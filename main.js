@@ -51,7 +51,7 @@ console.log('Fluttershy is Awake Yay! :3');
 client.on('guildMemberAdd', guildMember => {let welcomeRole = guildMember.guild.roles.cache.find(role => role.name ==='new role')
 
 guildMember.roles.add(welcomeRole); 
-guildMember.guild.channels.cache.get('960713019753644035').send(` <@${guildMember.user.id}> 'HI NEW FRIEND'`); 
+guildMember.guild.channels.cache.get('960713019753644035').send(` <@${guildMember.user.id}> HI NEW FRIEND!!`); 
 
 }); 
 
@@ -63,59 +63,14 @@ client.on('guildCreate', (guild) => {
 
 client.on('message',message => {
 
-    //let args = message.content.substring(prefix1.length).split(" ");
+   
       let args = message.content.slice(prefix1.length).trim().split(/ +/g); 
     
-    
-    //var command = message.content.contents
-    const command = args.shift().toLowerCase();
-    
-    
-    
-
-
-
-
- 
-	 
-	 
- if(message.content.includes('sus') && !message.author.bot) 
- { 
-    b++;
-     var readout = ' ';
-	//message.channel.send('sus amogus counter:' + b );
-     
-     fs.readFile("\SUS_COUNTER.json","utf8", function(err, data) {
-     if(err)
-     {
-        console.log(err);
-     }
-         readout = data;
-         console.log(readout);
-    if(readout < 1)
-    {
-        fs.writeFile("\SUS_COUNTER.json", b.toString(), (err) =>
-        {
-         if (err)
-             console.log(err);
-         else {
-             
-              console.log("File Written Saving Counter...");
-         }
-            
-        });
-    }
-         
-     })
-        
-     
-
-	 }
-	 
-
+      const command = args.shift().toLowerCase();
     
   
-
+  
+  
 if(!message.content.startsWith(prefix1) || message.author.bot) return; 
 
     
@@ -220,16 +175,17 @@ if(command == 'ifunny')
 if(command == 'quote')
 {
         
-    quote(message, args);
+   /// quote(message, args);
 
-   
+   client.commands.get('quote').execute(client,message,args); 
         
 }
 
 if (command == 'rules' && (message.member.hasPermission("ADMINISTRATOR") == true)) 
 {
 
-    client.commands.get('rules').execute(message, args, Discord);
+    //client.commands.get('rules').execute(message, args, Discord);
+    //TD figure out how to do this 
 }
     
 
@@ -283,14 +239,12 @@ if(command == 'avatar')
 if(command == 'emoji') 
 {
 	
-	client.commands.get('emoji').run(client, message, command, args, prefix1, lang); 
+	//client.commands.get('emoji').run(client, message, command, args, prefix1, lang); 
 	
 }
 
 
 
-
-    //help command section 
 if (command == 'help') 
 {
   let args = message.content.slice('help').trim().split(/ +/g);
@@ -304,104 +258,6 @@ if (command == 'help')
 
 client.login(process.env.DISCORD_TOKEN);
      
-
-
-
-
-
-
-
-function quote(message, args)
-{
-    var options = {
-            url: "https://inspirobot.me/api?generate=true",
-            method: "GET",
-            headers: { "Accept" : "text/html",
-                   "User-Agent": "Chrome" }
-    };
-    
-  
-   
-    
-    request(options, function(error,response,responseBody) {
-
-            if(error) { console.log('Im yellow shy, and Eli is a useless, incapable human being'); return;}
-
-            $ = cheerio.load(responseBody);
-    
-        //var el = $().click();
-        //document.getElementById("").click();
-       
-           // el.click();
-        
-        //".done-img-wrap-wrap done-img-wrap"
-     
-
-            var url = $('body').text();
-          // var url2 = url.querySelector('#done-img');
-           // var urls = url.attr("src");
-       // var urls = new Array(url.length).fill(0).map((v,i) => url.eq(i).attr("src"));
-        //var urls = url.attr('src');
-
-        //message.channel.send(links[1]);
-        
-        
-        
-    console.log(url);
-    //console.log(urls);
-    //if (!urls) {
-     //   message.channel.send('invalid array allocation: urls.length < 0');
-        //message.channel.send(urls);
-        
-           
-
-        
-      
-        
-    //return;
-   // }
-
-        
-    //filter through array, send resulting random image
-   // else {
-        //message.channel.send("");
-        //urls.shift();
-        message.channel.send(url);
-       // return;
-   // }
-
-
-    });
-
-}
-
-
-
-
-
-
-
-function printcommands() 
-{
-	
-	
- //for(const file of commandFiles) 
-	//const command = require(`./commands/${file}`); 
-	
-// var cnames = commandFiles.slice('.js); 
-
-	//client.commands.set(command.name, command); 
-}
-
-	
-	
-
-
-
-
-
-
-
 
 
 

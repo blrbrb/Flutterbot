@@ -1,5 +1,6 @@
 
 const Discord = require('discord.js')
+const MessageEmbed  = require('discord.js');
 //const Discord = require('Discord.js');
 const ytdl = require("ytdl-core");
 
@@ -52,6 +53,12 @@ client.on('guildMemberAdd', guildMember => {let welcomeRole = guildMember.guild.
 guildMember.roles.add(welcomeRole); 
 guildMember.guild.channels.cache.get('960713019753644035').send(` <@${guildMember.user.id}> 'HI NEW FRIEND'`); 
 
+}); 
+
+
+client.on('guildCreate', (guild) => {
+	console.log(`Client joined guild ${guild.name} with ID ${guild.id}`);
+	createGuild(guild, true);
 });
 
 client.on('message',message => {
@@ -236,13 +243,7 @@ if(command === 'ping') {
  }
  
    
- if (command == 'love')
- {
-
-     client.commands.get('love').run(Discord, message, command, args, lang); 
-
-
- }
+ 
 
  if (command == 'rate')
 {
@@ -290,43 +291,11 @@ if(command == 'emoji')
 
 
     //help command section 
-   if (command == 'help')
-    {
-    	let args = message.content.slice('help').trim().split(/ +/g);
-        switch (args[1])
-         {
-            case 'commands':
-               	const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js')); 
-               	
-               	commandFiles.slice(0, -4);
-	
-	             message.channel.send(commandFiles); 
-
-                break; 
-                
-
-            case 'about':
-                message.channel.send('Hello! :3 I am a free open source discordbot made with love by <@252235505318625281> documentation for me can be found here,' + ' ' + process.env.GIT);
-                break; 
-                
-
-            case 'info':
-                message.channel.send(process.env.VERSION);
-                break;
-
-            default: message.channel.send("Enter 'help' followed by either commands, about, or info");
-                
-
-            //TD 
-            //insert webhook/ handling stuff here. 
-            //add patreon in future deployments? 
-            //Make fluttershy do something easter-eggy and releated to the show idk, discord joke? 
-
-            
-
-        }
-
-      }
+if (command == 'help') 
+{
+  let args = message.content.slice('help').trim().split(/ +/g);
+   client.commands.get('help').execute(client, message, command, args, prefix1, lang, commandFiles); 
+}
 
 
 

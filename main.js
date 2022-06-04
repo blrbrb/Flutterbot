@@ -141,12 +141,11 @@ client.commands.get('play').execute(message,args,command,client,Discord, false);
     
 }
     
-if(command == 'image')
+if(command == 'img')
 {
 
-     //client.commands.get('image').execute(client, message, args, debug);
+     //client.commands.get('img').execute(client, message, args);
 
-    message.channel.send('I need a better filter...sorry');
 }
     
 
@@ -184,7 +183,7 @@ if(command == 'quote')
 if (command == 'rules' && (message.member.hasPermission("ADMINISTRATOR") == true)) 
 {
 
-    //client.commands.get('rules').execute(message, args, Discord);
+    client.commands.get('rules').execute(message, args, Discord);
     //TD figure out how to do this 
 }
     

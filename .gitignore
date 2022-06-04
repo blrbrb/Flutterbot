@@ -1,2 +1,4 @@
 node_modules/
-**/.env
+**/.env 
+**/error_log.txt 
+**/CLEARSIZE

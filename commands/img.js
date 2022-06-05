@@ -16,7 +16,7 @@ description: 'sends a random image corresponding to a google image search',
   let googKey = process.env.GOOGLEAPI; 
   let cxKey = "46019e35da5554f43";
   
-  for (var i = 1; i < splitWord.length; i++) {https://cse.google.com/cse?cx=46019e35da5554f43#gsc.tab=1&gsc.q=
+  for (var i = 1; i < splitWord.length; i++) {
     if (i > 1) {
       searchWrd = searchWrd + " ";
     }
@@ -31,9 +31,10 @@ description: 'sends a random image corresponding to a google image search',
       googKey +
       "&cx=" +
       cxKey +
+      "&safe=1" +
       "&q=" +
       searchWrd +
-      "&amp;searchType=image&amp&amp;alt=json",
+      "&searchType=image&fileType=png,jpg&alt=json",
 
     function(err, res, body) {
       let data;
@@ -69,7 +70,7 @@ description: 'sends a random image corresponding to a google image search',
       collector.on("collect", message => {
         if (message.content == "next") {
           let ranNum = Math.floor(Math.random() * data.items.length);
-          let randResult = data.items[ranNum];
+          let randResult = data.items[ranNum];												//this must be set to cse_image to properly fetch the image results
             const embed = new MessageEmbed().setTitle(randResult.title).setImage(randResult.link).setColor(0xfbfb2b)
           message.channel.send({ embed });
         } else if (message.content == "quit") {
@@ -81,7 +82,11 @@ description: 'sends a random image corresponding to a google image search',
   );
   
   
-  
+  //when setting embed elements, use 
+  //link.cse_image for the source image result 
+  //link.snippet for a short description of the image result 
+  //link.title for the image result title 
+  //link.og:image for the original resoultion image 
   
 
   

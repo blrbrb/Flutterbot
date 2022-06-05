@@ -1,12 +1,13 @@
 
 const request = require('request'); 
-
+const Discord = require("discord.js");
+const { MessageEmbed } = require('discord.js');
 require('dotenv').config();  
 
 module.exports = {
 name: 'img',
 description: 'sends a random image corresponding to a google image search',
-    async execute(client, message, args)
+    execute(client, message, args)
     {
       console.log('correct module'); 
     	
@@ -15,7 +16,7 @@ description: 'sends a random image corresponding to a google image search',
   let googKey = process.env.GOOGLEAPI; 
   let cxKey = "46019e35da5554f43";
   
-  for (var i = 1; i < splitWord.length; i++) {
+  for (var i = 1; i < splitWord.length; i++) {https://cse.google.com/cse?cx=46019e35da5554f43#gsc.tab=1&gsc.q=
     if (i > 1) {
       searchWrd = searchWrd + " ";
     }
@@ -23,19 +24,28 @@ description: 'sends a random image corresponding to a google image search',
     searchWrd = searchWrd + splitWord[i];
   }
 
-  
+
+        let page = 1; 
   request(
-    "https://cse.google.com/cse?cx=46019e35da5554f43#gsc.tab=1&gsc.q=" + "searchWrd",
+      "https://www.googleapis.com/customsearch/v1?key=" +
+      googKey +
+      "&cx=" +
+      cxKey +
+      "&q=" +
+      searchWrd +
+      "&amp;searchType=image&amp&amp;alt=json",
+
     function(err, res, body) {
       let data;
-	console.log(request);
+	
       try {
         data = JSON.parse(body);
       } catch (error) {
-        console.log(error);
+          console.log(error);
+          console.log('you are doing it wrong dum dum'); 
         return;
       }
-
+       // console.log(request); 
       if (!data) {
         console.log(data);
         message.channel.send("Error:\n" + JSON.stringify(data));
@@ -48,25 +58,8 @@ description: 'sends a random image corresponding to a google image search',
       // Get random number
       let ranNum = Math.floor(Math.random() * data.items.length);
       let randResult = data.items[ranNum];
-      const embed = {
-        title: "You searched for: " + searchWrd,
-        description: randResult.title,
-        color: 10680479,
-        image: {
-          url: randResult.link
-        },
-        author: {
-          name: message.author.tag,
-          icon_url: message.author.displayAvatarURL
-        },
-        footer: {
-          icon_url: message.author.displayAvatarURL,
-          text:
-            "type next to get another image or quit to stop the image research"
-        },
-        fields: []
-      };
-      message.channel.send({ embed });
+        const embed = new MessageEmbed().setTitle(randResult.title).setImage(randResult.link).setColor(0xfbfb2b) 
+      message.channel.send(embed);
       const collector = new Discord.MessageCollector(
         message.channel,
         m => m.author.id === message.author.id,
@@ -77,24 +70,7 @@ description: 'sends a random image corresponding to a google image search',
         if (message.content == "next") {
           let ranNum = Math.floor(Math.random() * data.items.length);
           let randResult = data.items[ranNum];
-          const embed = {
-            title: "You searched for: " + searchWrd,
-            description: randResult.title,
-            color: 10680479,
-            image: {
-              url: randResult.link
-            },
-            author: {
-              name: message.author.tag,
-              icon_url: message.author.displayAvatarURL
-            },
-            footer: {
-              icon_url: message.author.displayAvatarURL,
-              text:
-                "here you go! :3"
-            },
-            fields: []
-          };
+            const embed = new MessageEmbed().setTitle(randResult.title).setImage(randResult.link).setColor(0xfbfb2b)
           message.channel.send({ embed });
         } else if (message.content == "quit") {
           collector.stop();

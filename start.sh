@@ -25,9 +25,9 @@ do
 
 echo Starting Fluttershy 
 if [ -f "$FILE" ]; then 
+
      node . 2> error_log.txt 
      
-
 else 
     node . 
 fi  

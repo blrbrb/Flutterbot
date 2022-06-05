@@ -144,7 +144,7 @@ client.commands.get('play').execute(message,args,command,client,Discord, false);
 if(command == 'img')
 {
 
-     //client.commands.get('img').execute(client, message, args);
+     client.commands.get('img').execute(client, message, args);
 
 }
     

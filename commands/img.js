@@ -42,11 +42,23 @@ description: 'sends a random image corresponding to a google image search',
       try {
         data = JSON.parse(body);
       } catch (error) {
-          console.log(error);
+         // console.log(error);
           console.log('you are doing it wrong dum dum'); 
         return;
       }
        // console.log(request); 
+       
+       if(data.error) 
+       {
+       	console.log(data.error.status); 
+       	
+       	if(data.error.status = 'RESOURCE_EXHAUSTED') {
+       	message.channel.send('Advertisement-Free Search capacity has been reached. PAYMENT::nan for user-project process.env. Please destroy this application, or pay'); 
+       	message.channel.send(data.error.status);  
+       	return; 
+       	}
+       	
+       	}
       if (!data) {
         console.log(data);
         message.channel.send("Error:\n" + JSON.stringify(data));

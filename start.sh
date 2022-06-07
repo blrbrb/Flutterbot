@@ -7,13 +7,7 @@ CLEARSIZE=500000;
 if [ -f "$FILE" ]; then
     echo "$FILE exists."
 
-    FILESIZE=$(stat -c%s "$FILE") 
-
-        if ((FILESIZE > CLEARSIZE )); then 
-            echo "error_log file has reached maximum size, clearing memory.." 
-            > error_log.txt 
-        fi
-else 
+   else 
     echo "$FILE does not exist. Initalizing javascript error log..." 
     touch error_log.txt 
 fi

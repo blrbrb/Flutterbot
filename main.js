@@ -61,7 +61,7 @@ client.on('guildCreate', (guild) => {
 	createGuild(guild, true);
 });
 
-client.on('message',message => {
+client.on('message', async message => {
 
    
       let args = message.content.slice(prefix1.length).trim().split(/ +/g); 
@@ -187,11 +187,7 @@ if (command == 'rules' && (message.member.hasPermission("ADMINISTRATOR") == true
     //TD figure out how to do this 
 }
     
-
-
     
-
-
 if(command === 'ping') {
 
 	client.commands.get('ping').execute(message,args);
@@ -230,7 +226,7 @@ if (command == 'boop')
 
 if(command == 'avatar') 
 {
- //client.commands.get('avatar').run(client, message, command, args,lang); 
+ client.commands.get('avatar').run(client, message, command, args,lang); 
   
 
 }

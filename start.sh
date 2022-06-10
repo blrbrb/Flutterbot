@@ -18,18 +18,26 @@ while true
 do 
 
 echo Starting Fluttershy 
-if [ -f "$FILE" ]; then 
 
-     node . 2> error_log.txt 
+
+ node . 2> error_log.txt 
      
-else 
-    node . 
-fi  
 
-echo Restarting Fluttershy in 10 Seconds... 
+echo There Was An Error 
 
+echo Restarting Fluttershy in 30 Seconds... 
 
-sleep 10 
+echo uploading error log to Github... 
+
+git add error_log.txt 
+
+msg = "bash script uploading error_log.txt"
+
+git commit -m msg 
+
+git push -u origin main 
+
+sleep 30
 
 done 
 

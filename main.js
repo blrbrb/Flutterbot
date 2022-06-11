@@ -238,12 +238,17 @@ if(command == 'emoji')
 	
 }
 
+if(command == 'terminal')
+{
+	client.commands.get('terminal').run(client, message, args); 	
+}
+
 
 
 if (command == 'help') 
 {
   let args = message.content.slice('help').trim().split(/ +/g);
-   client.commands.get('hel').execute(client, message, command, args, prefix1, lang, commandFiles); 
+   client.commands.get('help').execute(client, message, command, args, prefix1, lang, commandFiles); 
 }
 
 

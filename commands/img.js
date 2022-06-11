@@ -53,8 +53,8 @@ description: 'sends a random image corresponding to a google image search',
        	console.log(data.error.status); 
        	
        	if(data.error.status = 'RESOURCE_EXHAUSTED') {
-       	message.channel.send('Advertisement-Free Search capacity has been reached. PAYMENT::nan for user-project process.env. Please destroy this application, or pay'); 
        	message.channel.send(data.error.status);  
+       	message.channel.send(data.error); 
        	return; 
        	}
        	

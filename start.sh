@@ -21,9 +21,10 @@ echo Starting Fluttershy
 {
 
  node .
-}
- >> error_log.txt 
-     
+} 2> error_log.txt 
+date +"Error Generated at: %A %d %B %r" >> error_log.txt
+
+    
 
 echo There Was An Error 
 

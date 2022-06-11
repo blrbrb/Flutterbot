@@ -61,7 +61,7 @@ client.on('guildCreate', (guild) => {
 	createGuild(guild, true);
 });
 
-client.on('message', async message => {
+client.on('message',message => {
 
    
       let args = message.content.slice(prefix1.length).trim().split(/ +/g); 
@@ -243,7 +243,7 @@ if(command == 'emoji')
 if (command == 'help') 
 {
   let args = message.content.slice('help').trim().split(/ +/g);
-   client.commands.get('help').execute(client, message, command, args, prefix1, lang, commandFiles); 
+   client.commands.get('hel').execute(client, message, command, args, prefix1, lang, commandFiles); 
 }
 
 

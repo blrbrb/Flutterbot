@@ -2,4 +2,7 @@ node_modules/
 **/.env  
 **/CLEARSIZE
 **/.DS_Store
-**/error_log.txt
+error_log.txt
+**/date 
+**/error_log.txt 
+

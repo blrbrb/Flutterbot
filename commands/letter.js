@@ -68,8 +68,7 @@ module.exports = {
 
 function matchimage(name) 
 {
-	.
-		
+			
 }
 
 function removeDuplicates(arr) {

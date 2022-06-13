@@ -8,6 +8,7 @@ module.exports = {
     name: 'letter',
     description: 'get',
     execute(client, message, args) {
+     //TO DO: Find a way to fetch corresponding images for each pony speaking. 
 
        let rawdata = fs.readFileSync('assets/season1.json');
         var episode_data = JSON.parse(rawdata);
@@ -18,9 +19,10 @@ module.exports = {
         let index2 = Math.floor(Math.random() * episode_data[index1].length);
         
     
-        let randResult = episode_data[index1][index2];
-      
-        message.channel.send(randResult2.text);
+        let randResult = episode_data[index1][index2]; 
+      //configure the embed with the details parsed from the data  
+        const embed = new MessageEmbed().setTitle(randResult.speaker).setDescription(randResult.text).setColor(0xfbfb2b)
+        message.channel.send(embed);
 
 
     }

@@ -36,6 +36,9 @@ module.exports = {
       
       let randResult = episode_data.mlp[seasonrand][episoderand][numrand]; 
       //configure the embed with the details parsed from the data  
+      		if(randResult.song == true) 
+      			const embed = new MessageEmbed().setTitle(randResult.speaker).setDescription('*'+ randResult.text +'*').setColor(0xfbfb2b); 
+      	else 
        const embed = new MessageEmbed().setTitle(randResult.speaker).setDescription(randResult.text).setColor(0xfbfb2b);
        message.channel.send(embed);    
     

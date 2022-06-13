@@ -123,8 +123,13 @@ if (command == 'angel')
     message.channel.send('angel bunny');
     message.channel.send
 }
-    
-    
+
+
+ if (command == 'letter')
+ {
+     client.commands.get('letter').execute(client, message, args); 
+
+ }
 
 	
     if (command == 'tweet')

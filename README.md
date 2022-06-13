@@ -6,3 +6,7 @@ inital committ
 Flutterbot is a new work in progress open source javascript discord bot for fun, games & general purpose. 
 
 This is currently just a fun project for a smaller server. In the future, this project might expand if I can gather the resources needed to create a remote host and maintain upkeep.
+
+
+
+Data for mlp episodes and character quotes is sourced from  ZhangYiJiang: mlp-visualization  at https://github.com/ZhangYiJiang/mlp-visualization

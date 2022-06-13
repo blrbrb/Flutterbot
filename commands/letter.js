@@ -24,61 +24,28 @@ module.exports = {
        
         var episode_data = JSON.parse(rawdata); 
         
- 	
-      console.log(episode_data.mlp);
+ var seasons = ["season1", "season2", "season3", "season4", "season5", "season6"]; 
+ 
+     // console.log(episode_data.mlp[12]);
         //Parse Multi-Dimensional JSON episode data 
-     let seasonrand = Math.floor(Math.random() * episode_data.mlp.length);
-     let episoderand = Math.floor(Math.random() * episode_data.mlp[seasonrand].length);
+    let seasonrand = seasons[Math.floor(Math.random() * seasons.length)];  
+    let episoderand = Math.floor(Math.random() * episode_data.mlp[seasonrand].length); 
+    let numrand =  Math.floor(Math.random() * episode_data.mlp[seasonrand][episoderand].length); 
 
+     console.log(episode_data.mlp[seasonrand][episoderand][numrand]); 
+ 
       
-    
-       // let index2 = Math.floor(Math.random() * episode_data.mlp[index1].length);
-        // console.log(episode_data[index1]); 
-        // console.log(episode_data[index1][index2]);  
-        
-        
-          
-        //for(var i = 0; i < episode_data[index1].length; i++) 
-       {
-       	
-        	//console.log(episode_data[index1][i].speaker); 
-        //	for(var j = 0; j < episode_data[index1][index2].length; j++) 
-        	{ 
-        		//console.log(episode_data[index1][index2].speaker); 
-        		
-        	}
-        	
-        	//speaker_images.set(episode_data[index1][i].speaker, episode_data[index1][i].speaker);  
-        	//speakers.push(episode_data[index1][i].speaker); 
-        	
-        	//console.log(speaker_images); 
-        	//console.log(removeDuplicates(speakers).flat());  
-        	
-       }
-        
-
-
-      let randResult = episode_data.mlp[seasonrand][episoderand];
+      let randResult = episode_data.mlp[seasonrand][episoderand][numrand]; 
       //configure the embed with the details parsed from the data  
-        const embed = new MessageEmbed().setTitle(randResult.speaker).setDescription(randResult.text).setColor(0xfbfb2b);
-        message.channel.send(embed);    
+       const embed = new MessageEmbed().setTitle(randResult.speaker).setDescription(randResult.text).setColor(0xfbfb2b);
+       message.channel.send(embed);    
     
 
 
     }
 }
 
-function matchimage(name) 
-{
-			
-}
 
-function removeDuplicates(arr) {
-        arr = arr.map(JSON.stringify).reverse() // convert to JSON string the array content, then reverse it (to check from end to begining)
-  .filter(function(item, index, arr){ return arr.indexOf(item, index + 1) === -1; }) // check if there is any occurence of the item in whole array
-  .reverse().map(JSON.parse) // revert it to original state        
-  
-  return arr; } 
-       
+
 
 

@@ -25,29 +25,31 @@ module.exports = {
         var episode_data = JSON.parse(rawdata); 
         
  	
-	
+      console.log(episode_data.mlp);
         //Parse Multi-Dimensional JSON episode data 
-        let index1 = Math.floor(Math.random() * episode_data.length);
-        
-              
-        let index2 = Math.floor(Math.random() * episode_data[index1].length);
+     let seasonrand = Math.floor(Math.random() * episode_data.mlp.length);
+     let episoderand = Math.floor(Math.random() * episode_data.mlp[seasonrand].length);
+
+      
+    
+       // let index2 = Math.floor(Math.random() * episode_data.mlp[index1].length);
         // console.log(episode_data[index1]); 
         // console.log(episode_data[index1][index2]);  
         
         
           
-        for(var i = 0; i < episode_data[index1].length; i++) 
+        //for(var i = 0; i < episode_data[index1].length; i++) 
        {
        	
         	//console.log(episode_data[index1][i].speaker); 
-        	for(var j = 0; j < episode_data[index1][index2].length; j++) 
+        //	for(var j = 0; j < episode_data[index1][index2].length; j++) 
         	{ 
         		//console.log(episode_data[index1][index2].speaker); 
         		
         	}
         	
-        	speaker_images.set(episode_data[index1][i].speaker, episode_data[index1][i].speaker);  
-        	speakers.push(episode_data[index1][i].speaker); 
+        	//speaker_images.set(episode_data[index1][i].speaker, episode_data[index1][i].speaker);  
+        	//speakers.push(episode_data[index1][i].speaker); 
         	
         	//console.log(speaker_images); 
         	//console.log(removeDuplicates(speakers).flat());  
@@ -55,8 +57,8 @@ module.exports = {
        }
         
 
-    
-        let randResult = episode_data[index1][index2]; 
+
+      let randResult = episode_data.mlp[seasonrand][episoderand];
       //configure the embed with the details parsed from the data  
         const embed = new MessageEmbed().setTitle(randResult.speaker).setDescription(randResult.text).setColor(0xfbfb2b);
         message.channel.send(embed);    

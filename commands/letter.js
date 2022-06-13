@@ -32,7 +32,6 @@ module.exports = {
     let episoderand = Math.floor(Math.random() * episode_data.mlp[seasonrand].length); 
     let numrand =  Math.floor(Math.random() * episode_data.mlp[seasonrand][episoderand].length); 
 
-     console.log(episode_data.mlp[seasonrand][episoderand][numrand]); 
  
       
       let randResult = episode_data.mlp[seasonrand][episoderand][numrand]; 

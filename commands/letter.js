@@ -39,7 +39,7 @@ module.exports = {
         for(var i = 0; i < episode_data[index1].length; i++) 
        {
        	
-        	console.log(episode_data[index1][i].speaker); 
+        	//console.log(episode_data[index1][i].speaker); 
         	for(var j = 0; j < episode_data[index1][index2].length; j++) 
         	{ 
         		//console.log(episode_data[index1][index2].speaker); 
@@ -68,7 +68,7 @@ module.exports = {
 
 function matchimage(name) 
 {
-	
+	.
 		
 }
 

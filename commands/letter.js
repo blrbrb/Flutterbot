@@ -51,7 +51,7 @@ function initimages(map1)
     map1.set("AppleJack", "http://fc01.deviantart.net/fs70/i/2011/260/d/9/applejack_vector_by_hombre0-d4a3lwt.png");
     map1.set("Twilight Sparkle", "https://i.pinimg.com/originals/9d/b7/9d/9db79d51e38bb3ab3b3ae1f2c7e463fe.png");
     map1.set("Starlight Glimmer", "https://derpicdn.net/img/2018/2/17/1657915/small.png" );
-    map1.set("Coco Pommel", "https://derpicdn.net/img/2017/5/20/1441055/full.png" );v
+    map1.set("Coco Pommel", "https://derpicdn.net/img/2017/5/20/1441055/full.png" );
     map1.set("Princess Cadence", "https://derpicdn.net/img/2014/11/28/773283/large.png");
     map1.set("Spike", "https://derpicdn.net/img/2022/6/13/2886255/large.png");
     map1.set("Apple Bloom", "https://derpicdn.net/img/2017/1/1/1329946/large.png");

@@ -2,7 +2,9 @@
 const Discord = require('discord.js')
 const MessageEmbed  = require('discord.js');
 //const Discord = require('Discord.js');
-const ytdl = require("ytdl-core");
+const ytdl = require("ytdl-core"); 
+
+
 
 
 var servers = {};
@@ -19,6 +21,7 @@ const prefix1 = "-";
 const fs = require('fs');
 
 client.commands = new Discord.Collection(); 
+client.aliases = new Discord.Collection()
  
 const cheerio = require('cheerio');  
 const request = require('request');  
@@ -26,13 +29,24 @@ const request = require('request');
 //init command source (stored in seperate js modules)
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
  for(const file of commandFiles) {
-	const command = require(`./commands/${file}`); 
+	const command = require(`./commands/${file}`);  
+	client.commands.set(command.name, command);    
+	
+	if (command.aliases) {
+    command.aliases.forEach(alias => {
+        client.aliases.set(alias, command) 
+        
+    });
 
-	client.commands.set(command.name, command); 
+
+	
+	
+	}
+	//console.log(client.aliases); 
 }
 
 //init music player queue
-//const serverQueue = queue.get(message.guild.id);
+
 //const queue = new Map();
  
 
@@ -61,13 +75,14 @@ client.on('guildCreate', (guild) => {
 	createGuild(guild, true);
 });
 
-client.on('message',message => {
+client.on('message',async message => {
 
    
-      let args = message.content.slice(prefix1.length).trim().split(/ +/g); 
+      let args = message.content.slice(prefix1.length).trim().split(/ +/g);    
     
-      const command = args.shift().toLowerCase();
-    
+     // const command = args.shift().toLowerCase();
+
+const command = args.shift();
   
   
   
@@ -139,11 +154,11 @@ if (command == 'angel')
         
     }
 
-if(command == 'play' || command == 'skip')
+if(command == 'play' || command == 'skip' || command == 'queue')
 {
-        
-client.commands.get('play').execute(message,args,command,client,Discord, false);
-    
+         
+ client.commands.get('play').execute(message,args,command,client,Discord, false);
+
 }
     
 if(command == 'img')

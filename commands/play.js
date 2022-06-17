@@ -84,7 +84,7 @@ const serverQueue = queue.get(message.guild.id);
             }
         }
         else if(cmd === 'queue') getqueue(message.guild, message,server_queue); 
-               else if(cmd === "skip") skip_song(message, server_queue);
+               else if(cmd === "skip") skip_song(message, server_queue, message.guild);
           else if(cmd === "stop") stop_song(message, server_queue); 
   	
     
@@ -110,13 +110,17 @@ const video_player = async (guild, song) => {
     await song_queue.text_channel.send(`🎶 I'm putting **${song.title}** on now, okay? `)
 }
 
-const skip_song = (message, server_queue) => {
+const skip_song = (message, server_queue, guild) => {
+   
+    //const song_queue = queue.get(guild.id); 
+    
     if (!message.member.voice.channel) return message.channel.send('uhhm. Excuse me. I think you may need to be in a voice channel for me to be able to do this... Im so sorry');
     if(!server_queue){
         return message.channel.send(` uhhh... uhm..There are no songs in queue 😔`);
     }
-    //server_queue.connection.dispatcher.end();
-     song_queue.songs.shift();
+    
+    server_queue.connection.dispatcher.end();
+    // song_queue.songs.shift();
 }
 
 const stop_song = (message, server_queue) => {

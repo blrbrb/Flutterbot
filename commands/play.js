@@ -101,7 +101,7 @@ const video_player = async (guild, song) => {
     }
     const stream = ytdl(song.url, { bitrate: 'auto' }, { filter: 'audioonly' });
     song_queue.connection.play(stream, { seek: 0, volume: 0.5 })
-    .on('speaking', () => {
+    .on('finished', () => {
         song_queue.songs.shift();
         video_player(guild, song_queue.songs[0]);
     }) .on("error", console.error);
@@ -115,7 +115,8 @@ const skip_song = (message, server_queue) => {
     if(!server_queue){
         return message.channel.send(` uhhh... uhm..There are no songs in queue 😔`);
     }
-    server_queue.connection.dispatcher.end();
+    //server_queue.connection.dispatcher.end();
+     song_queue.songs.shift();
 }
 
 const stop_song = (message, server_queue) => {

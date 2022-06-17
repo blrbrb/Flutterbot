@@ -184,6 +184,9 @@ if(command == 'img')
 			
 			}
 			
+		else {
+		client.commands.get('img').execute(client, message, args); }
+			
        
 
        

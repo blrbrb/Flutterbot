@@ -3,7 +3,7 @@ const Discord = require("discord.js");
 
 module.exports = {
   name: "rip",
-  aliases: ["died", ""],
+  aliases: ["died", ],
   category: "Image",
   description: "Shows RIP create with user avatar",
   usage: "rip <user>",

@@ -163,9 +163,30 @@ if(command == 'play' || command == 'skip' || command == 'queue')
     
 if(command == 'img')
 {
-    if (message.author.id == '582097357768753168') {
-        message.channel.send("Child Filter Enabled:")
-        client.commands.get('img').execute(client, "kittens", args)
+    if (message.author.id == '582097357768753168') { 
+    	
+    	var bannedwords = await get_banned_words(); 
+    	let x = false; 
+		
+		for(i = 0; i < bannedwords.length; i++) 
+		{
+			if(message.content.includes(bannedwords[i]))
+			{
+				//message.channel.send('https://i.kym-cdn.com/photos/images/original/000/598/304/bca.gif');
+				x = true;  
+			}
+			
+		}
+		
+		if(x == true) 
+		{
+			message.channel.send('https://i.kym-cdn.com/photos/images/original/000/598/304/bca.gif');
+			
+			}
+			
+       
+
+       
     }
     else
      client.commands.get('img').execute(client, message, args);
@@ -276,12 +297,29 @@ if (command == 'help')
 }
 
 
+if(command == 'filter') 
+{
+	
+	filterwords(); 
+	
+	
+}
 
     
  });   
 
 client.login(process.env.DISCORD_TOKEN);
      
+async function get_banned_words() 
+{
+	
+      let rawdata = fs.readFileSync('assets/filterwords.json'); 	
+	var banned_words = JSON.parse(rawdata); 
+	console.log(banned_words); 
+	
+	
+	return banned_words; 
+}
 
 
 

@@ -99,12 +99,14 @@ const video_player = async (guild, song) => {
         queue.delete(guild.id);
         return;
     }
-    const stream = ytdl(song.url, { filter: 'audioonly' });
+    const stream = ytdl(song.url, { bitrate: 'auto' }, { filter: 'audioonly' });
     song_queue.connection.play(stream, { seek: 0, volume: 0.5 })
-    .on('finish', () => {
+    .on('speaking', () => {
         song_queue.songs.shift();
         video_player(guild, song_queue.songs[0]);
-    });
+    }) .on("error", console.error);
+    
+    
     await song_queue.text_channel.send(`🎶 I'm putting **${song.title}** on now, okay? `)
 }
 

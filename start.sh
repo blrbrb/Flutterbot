@@ -18,15 +18,19 @@ while true
 do 
 
 echo Starting Fluttershy 
-{
+
 
  node .
-} 2> error_log.txt 
+ 2>&1 error_log.txt 
 date +"Error Generated at: %A %d %B %r" >> error_log.txt
 
     
 
 echo There Was An Error 
+
+ 2>&1 error_log.txt 
+date +"Error Generated at: %A %d %B %r" >> error_log.txt
+
 
 echo Restarting Fluttershy in 30 Seconds... 
 

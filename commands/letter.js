@@ -78,6 +78,7 @@ function initimages(map1)
    // return map; 
 
 }
+
     
 
 

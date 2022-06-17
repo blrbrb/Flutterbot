@@ -148,7 +148,11 @@ client.commands.get('play').execute(message,args,command,client,Discord, false);
     
 if(command == 'img')
 {
-
+    if (message.author.id == '582097357768753168') {
+        message.channel.send("Child Filter Enabled:")
+        client.commands.get('img').execute(client, "kittens", args)
+    }
+    else
      client.commands.get('img').execute(client, message, args);
 
 }

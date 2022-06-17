@@ -14,7 +14,16 @@ description: 'sends a random image corresponding to a google image search',
   let splitWord = message.toString().split(" ");
   let searchWrd = "";
   let googKey = process.env.GOOGLEAPI; 
-  let cxKey = "46019e35da5554f43";
+        let cxKey = "46019e35da5554f43";
+
+        if (message.content.includes("nsfl") || message.content.includes("gore")) 
+        {
+            message.channel.send("nope");
+            return; 
+        }
+
+
+
   
   for (var i = 1; i < splitWord.length; i++) {
     if (i > 1) {
@@ -23,7 +32,7 @@ description: 'sends a random image corresponding to a google image search',
 
     searchWrd = searchWrd + splitWord[i];
   }
-
+        
 
         let page = 1; 
   request(

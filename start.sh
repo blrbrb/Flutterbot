@@ -3,9 +3,31 @@
 
 
 FILE=error_log.txt
-CLEARSIZE=500000;
+
+function logmanager() 
+{
+		
+minimumsize=90000
+actualsize=$(wc -c <$1)
+if [ $actualsize -ge $minimumsize ]; then
+    echo log file size is over $minimumsize bytes 
+    echo Clearing Log File… 
+    
+    > error_log.txt
+   
+else
+    echo log file size is under $minimumsize bytes
+fi
+	
+	
+	
+}
+
+
+#check to see if the error log file exists, and wether or not it has passed the size limit to be cleared and reset 
 if [ -f "$FILE" ]; then
     echo "$FILE exists."
+    logmanager "$FILE"
 
    else 
     echo "$FILE does not exist. Initalizing javascript error log..." 
@@ -35,7 +57,11 @@ date +"Error Generated at: %A %d %B %r" >> error_log.txt
 
 
 
-echo There Was An Error 
+echo There Was An Error… 
+
+echo details written to "$FILE" 
+
+
 
  
 

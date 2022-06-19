@@ -74,10 +74,11 @@ if(message.content.includes('chances that'))
 else  
  switch (args)
 {
-	//Lol 
+	case args.length >= 2: 
+		 message.channel.send(args.join(' ')  + ' ' + 'well...' + args.join(' ') + ' ' + 'is a' + ' ' + rating[Math.floor(Math.random() * rating.length)] + '/' + 10);
 			
 	default: 
-			message.channel.send(nopro  + ' ' + 'well...' + nopro + ' ' + 'is a' + ' ' + rating[Math.floor(Math.random() * rating.length)] + '/' + 10);
+			message.channel.send(args.join(' ') + ' ' + 'well...' + args.join(' ') + ' ' + 'is a' + ' ' + rating[Math.floor(Math.random() * rating.length)] + '/' + 10);
 }
 
 

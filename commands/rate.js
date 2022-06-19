@@ -75,17 +75,6 @@ else
  switch (args)
 {
 	//Lol 
-	case 'Germany': 
-	case 'germany': 
-		 message.channel.send(args + ' ' + 'well...' + args + ' ' + 'is a' + ' ' + '1/10'); 
-		 console.print(args);
-		 break;
-		 
-
-
-	case 'Detroit':                              
-		 message.channel.send(args + ' ' + 'well...' + args + ' ' + 'is a' + ' ' + '1/10'); 
-		 break;
 			
 	default: 
 			message.channel.send(nopro  + ' ' + 'well...' + nopro + ' ' + 'is a' + ' ' + rating[Math.floor(Math.random() * rating.length)] + '/' + 10);

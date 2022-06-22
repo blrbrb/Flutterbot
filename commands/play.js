@@ -1,6 +1,7 @@
 const ytdl = require('ytdl-core');
 const ytSearch = require('yt-search');
-const discord = require('discord.js'); 
+const discord = require('discord.js');
+const { MessageEmbed } = require('discord.js'); 
 //Global queue for your bot. Every server will have a key and value pair in this map. { guild.id, queue_constructor{} }
 const queue = new Map();
 
@@ -143,35 +144,49 @@ const queue1 = (message, server_queue) =>
 
 
 
-const getqueue = (guild, message, server_queue) => { 
-	  
-   var poo = queue.get(guild.id);   
-    var song_queue = poo.songs;  	
-     var messages = " "; 
-    
-     console.log(song_queue[0].title); 
-      
-       for (let i = 0; i < song_queue.length; i++) 
-       {
-       		console.log(song_queue[i].title); 
-       		messages = song_queue[i].title + "\n";  
-       	
-       	
-       	  } 
-       	  //messages.trim(); 
-              console.log(messages);
-        
-         message.channel.send(messages);
+const getqueue = async (guild, message, server_queue) => { 
+	
+    var a = server_queue.songs; 
+     //console.log(server_queue[0].title); 
+    let vidInfo = await ytdl.getInfo(server_queue.songs[0].url); 
+  
+         	
+    if(server_queue.songs.length <= 1) 
+    {
+    	
+    	    const embed = new MessageEmbed().setTitle(`**I'm Currently Playing:** \n[${server_queue.songs[0].title}](${server_queue.songs[0].url})`).setImage(getvideoimage(vidInfo)); 
 
-        // embeds1.push(embed); 
-          
-         
+    	 server_queue.text_channel.send(`🎶 Now playing **${server_queue.songs[0].title}**`); 
+    	 
+    	 console.log(getvideoimage(vidInfo));     	
+    	 message.channel.send(embed); 
+    } 	
+    
+    if(server_queue.songs.length >= 2 ) {
+    	
+    //let size = server_queue.songs.length; 
+
+     	
+     let vidInfo1 = await ytdl.getInfo(server_queue.songs[1].url); 
+     const embed = new MessageEmbed().setTitle(`**I'm Currently Playing:** \n[${server_queue.songs[0].title}](${server_queue.songs[0].url})').addField(\n\n**Up Next:** \n `).setThumbnail(getvideoimage(vidInfo1)).addField("Songs: \n", `\`${server_queue.songs.length}\``, true) 
+     
+     
+     server_queue.songs.forEach(element => {
+     	embed.addField(`${element.title}`)
+     	}); 
+     
+     message.channel.send(embed); 
+     
+    
+    }
        }
-       //console.log(song_queue[0].title); 
-      //console.log(embed); 
-       //message.channel.send(embed); 
+  
 
         	
-
-  
+function getvideoimage(vidinfo) 
+ {
+ 	
+    return vidinfo.player_response.videoDetails.thumbnail.thumbnails[0].url;
+ 
+ }
 

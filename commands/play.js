@@ -89,7 +89,7 @@ const serverQueue = queue.get(message.guild.id);
         
         
         
-               else if(cmd === "skip") skip_song(message, server_queue, message.guild);
+               else if(cmd === "skip") skip_song(message, server_queue);
           else if(cmd === "stop") stop_song(message, server_queue); 
   	
     
@@ -101,17 +101,24 @@ const video_player = async (guild, song) => {
     //If no song is left in the server queue. Leave the voice channel and delete the key and value pair from the global queue.
     if (!song) {
         song_queue.voice_channel.leave();
-        queue.delete(guild.id);
+        //queue.delete(guild.id);
         return;
     }
-    const stream = ytdl(song.url, { filter: 'audioonly' });
-    song_queue.connection.play(stream, { seek: 0, volume: 0.5 })
-    .on('finish', () => {
-        song_queue.songs.shift();
-        video_player(guild, song_queue.songs[0]);
-    });
-    await song_queue.text_channel.send(`🎶 Now playing **${song.title}**`)
+ 
+    song_queue.voice_channel.join().then(connection => {
+          
+            const stream = ytdl(song.url, { filter : 'audioonly' });
+            const dispatcher = connection.play(stream, {seek: 0, volume: 1});
+            dispatcher.on('finish', () => {
+               
+                song_queue.songs.shift();
+                                 video_player(guild, song_queue.songs[0]);
+            });
+        }).catch(err => console.log(err));
+        
+        await song_queue.text_channel.send(`🎶 Now playing **${song.title}**`)
 }
+
 
 
 const skip_song = (message, server_queue) => {
@@ -138,8 +145,8 @@ const queue1 = (message, server_queue) =>
 
 const getqueue = (guild, message, server_queue) => { 
 	  
-    const poo = queue.get(guild.id);   
-    const song_queue = poo.songs;  	
+   var poo = queue.get(guild.id);   
+    var song_queue = poo.songs;  	
      var messages = " "; 
     
      console.log(song_queue[0].title); 

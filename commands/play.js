@@ -1,7 +1,11 @@
 const ytdl = require('ytdl-core');
 const ytSearch = require('yt-search');
 const discord = require('discord.js');
-const { MessageEmbed } = require('discord.js'); 
+const { MessageEmbed } = require('discord.js');
+const fs = require('fs');
+const path = require('path');
+
+
 //Global queue for your bot. Every server will have a key and value pair in this map. { guild.id, queue_constructor{} }
 const queue = new Map();
 
@@ -15,7 +19,11 @@ module.exports = {
 
 const serverQueue = queue.get(message.guild.id); 
 
+        if (cmd == 'save')
+        {
+            preserve_queue(queue); 
 
+        }
 
         //Checking for the voicechannel and permissions (you can add more permissions if you like).
         const voice_channel = message.member.voice.channel;
@@ -103,6 +111,9 @@ const video_player = async (guild, song, server_queue) => {
     if (!song) {
         song_queue.voice_channel.leave();
         queue.delete(guild.id);
+
+
+
         return;
     }
  
@@ -197,3 +208,17 @@ function getvideoimage(vidinfo)
  
  }
 
+
+
+function preserve_queue(queue_map) 
+{
+
+    const json = JSON.stringify(Object.fromEntries(queue_map));
+
+    let oneStepBack = path.join(__dirname, '../');
+
+    fs.writeFile(oneStepBack + "assets/music_queue.json", dictstring, function (err, result) {
+        if (err) console.log('error', err);
+    });
+
+}

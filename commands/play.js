@@ -73,7 +73,7 @@ const serverQueue = queue.get(message.guild.id);
                 try {
                     const connection = await voice_channel.join();
                     queue_constructor.connection = connection;
-                    video_player(message.guild, queue_constructor.songs[0]);
+                    video_player(message.guild, queue_constructor.songs[0], server_queue);
                 } catch (err) {
                     queue.delete(message.guild.id);
                     message.channel.send('uhhm. Excuse me. i. Im having trouble connecting...');
@@ -96,13 +96,13 @@ const serverQueue = queue.get(message.guild.id);
     
 }}
 
-const video_player = async (guild, song) => {
+const video_player = async (guild, song, server_queue) => {
     const song_queue = queue.get(guild.id);
 
     //If no song is left in the server queue. Leave the voice channel and delete the key and value pair from the global queue.
     if (!song) {
         song_queue.voice_channel.leave();
-        //queue.delete(guild.id);
+        queue.delete(guild.id);
         return;
     }
  

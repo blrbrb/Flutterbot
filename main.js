@@ -154,7 +154,7 @@ if (command == 'angel')
         
     }
 
-if(command == 'play' || command == 'skip' || command == 'queue')
+if(command == 'play' || command == 'skip' || command == 'queue' || command == 'save')
 {
          
  client.commands.get('play').execute(message,args,command,client,Discord, false);

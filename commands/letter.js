@@ -7,8 +7,8 @@ require('dotenv').config();
 
 
 module.exports = {
-    name: 'letter',
-    description: 'get',
+    name: 'lesson',
+    description: 'get a random friendship lesson from the My Little Pony Friendship is Magic TV Series',
   async execute(client, message, args) {
      //TO DO: Find a way to fetch corresponding images for each pony speaking. 
     
@@ -34,7 +34,7 @@ module.exports = {
       
       let randResult = episode_data.mlp[seasonrand][episoderand][numrand]; 
       //configure the embed with the details parsed from the data  
-      		if(randResult.song == true) {
+      		if(randResult.song === 'true') {
       					const embed = new MessageEmbed().setTitle(randResult.speaker).setDescription('*'+ randResult.text +'*').setColor(0xfbfb2b).setThumbnail(speaker_images.get(randResult.speaker.toString())); } 
       					
       				console.log(randResult.speaker); 
@@ -82,6 +82,16 @@ function initimages(map1)
 
 }
 
-    
+
+function conversation(dialouge, characters)
+{
 
 
+
+
+
+
+
+
+
+}

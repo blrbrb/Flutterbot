@@ -19,12 +19,7 @@ module.exports = {
 
 const serverQueue = queue.get(message.guild.id); 
 
-        if (cmd == 'save')
-        {
-            preserve_queue(queue); 
-
-        }
-
+       
         //Checking for the voicechannel and permissions (you can add more permissions if you like).
         const voice_channel = message.member.voice.channel;
         if (!voice_channel) return message.channel.send('Pardon me uhm... you need to be in a voice channel for me to play music...');
@@ -88,7 +83,8 @@ const serverQueue = queue.get(message.guild.id);
                     throw err; 
                 }
             } else{
-                server_queue.songs.push(song);
+                server_queue.songs.push(song);   
+                       
                 return message.channel.send(`Okay! **${song.title}** added to queue!`);
             }
         }
@@ -128,6 +124,8 @@ const video_player = async (guild, song, server_queue) => {
             });
         }).catch(err => console.log(err));
         
+        preserve_queue(song_queue.songs);  
+         
         await song_queue.text_channel.send(`🎶 Now playing **${song.title}**`)
 }
 
@@ -210,14 +208,15 @@ function getvideoimage(vidinfo)
 
 
 
-function preserve_queue(queue_map) 
+function preserve_queue(queue) 
 {
+	console.log("function is working"); 
 
-    const json = JSON.stringify(Object.fromEntries(queue_map));
+    const json = JSON.stringify(queue);
 
     let oneStepBack = path.join(__dirname, '../');
 
-    fs.writeFile(oneStepBack + "assets/music_queue.json", dictstring, function (err, result) {
+    fs.writeFile(oneStepBack + "assets/music_queue.json", json, function (err, result) {
         if (err) console.log('error', err);
     });
 

@@ -4,7 +4,7 @@ const discord = require('discord.js');
 const { MessageEmbed } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
-
+let oneStepBack = path.join(__dirname, '../');
 
 //Global queue for your bot. Every server will have a key and value pair in this map. { guild.id, queue_constructor{} }
 const queue = new Map();
@@ -82,13 +82,15 @@ const serverQueue = queue.get(message.guild.id);
                     message.channel.send('uhhm. Excuse me. i. Im having trouble connecting...');
                     throw err; 
                 }
-            } else{
+            } else{ 
+            	
+            	//load_savedqueue(oneStepBack + "assets/music_queue.json"); 
                 server_queue.songs.push(song);   
                        
                 return message.channel.send(`Okay! **${song.title}** added to queue!`);
             }
         }
-        else if(cmd === 'queue') getqueue(message.guild, message, server_queue); 	
+        else if(cmd === 'queue') getqueue(message.guild, message, server_queue, args); 	
         	
       
         
@@ -124,7 +126,7 @@ const video_player = async (guild, song, server_queue) => {
             });
         }).catch(err => console.log(err));
         
-        preserve_queue(song_queue.songs);  
+       
          
         await song_queue.text_channel.send(`🎶 Now playing **${song.title}**`)
 }
@@ -152,21 +154,33 @@ const stop_song = (message, server_queue, guild) => {
     server_queue.connection.dispatcher.end();
 } 
 
-const queue1 = (message, server_queue) => 
-{
-   return message.channel.send('it works.'); 
+
+const getqueue = async (guild, message, server_queue, args) => { 
 	
-}
-
-
-
-const getqueue = async (guild, message, server_queue) => { 
-	
-    //var a = server_queue.songs; 
+    //var a = server_queue.songs;  
      //console.log(server_queue[0].title); 
-    let vidInfo = await ytdl.getInfo(server_queue.songs[0].url); 
-  
-         	
+     //console.log(args); 
+     //var cmd2 = args[0];
+     var farts = args[0]; 
+     switch (args[0])
+     {
+     	
+     	case 'save':
+     		  preserve_queue(server_queue.songs);   
+     		   message.channel.send("music player queue saved to log file"); 
+     		   break; 
+     	
+     	
+     	case 'restore':
+     		
+     		 message.channel.send("loading previous queue from save file...");
+     		 load_savedqueue(oneStepBack + "assets/music_queue.json"); 
+     		 message.channel.send("this function is still a WIP");  
+     		 break;
+    
+         
+     	default:
+     	        	
     if(server_queue.songs.length <= 1) 
     {
     	
@@ -195,7 +209,15 @@ const getqueue = async (guild, message, server_queue) => {
      
     
     }
-       }
+
+     	
+     	
+     	
+     	
+     }
+     
+      
+     }
   
 
         	
@@ -208,16 +230,44 @@ function getvideoimage(vidinfo)
 
 
 
-function preserve_queue(queue) 
+async function preserve_queue(queue) 
 {
 	console.log("function is working"); 
+	
+	
+	
+		
+		
 
-    const json = JSON.stringify(queue);
+	
+	//console.log(info); 
+	//console.log(queue); 
+	const queue_toObject = {...queue};
+	console.log(queue_toObject); 
 
-    let oneStepBack = path.join(__dirname, '../');
+    const json = JSON.stringify(queue_toObject);
 
     fs.writeFile(oneStepBack + "assets/music_queue.json", json, function (err, result) {
         if (err) console.log('error', err);
     });
 
+} 
+
+
+function load_savedqueue(queue_file) 
+{
+	
+	console.log("reading saved queue"); 
+	
+	const saved_songs = JSON.parse(queue_file); 
+	
+	
+	console.log(saved_songs); 
+	
+	
+	
+	
+	
 }
+
+

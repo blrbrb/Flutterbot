@@ -90,7 +90,7 @@ const serverQueue = queue.get(message.guild.id);
         
         
         
-               else if(cmd === "skip") skip_song(message, server_queue);
+               else if(cmd === "skip") skip_song(message, server_queue, message.guild);
           else if(cmd === "stop") stop_song(message, server_queue); 
   	
     
@@ -122,15 +122,22 @@ const video_player = async (guild, song, server_queue) => {
 
 
 
-const skip_song = (message, server_queue) => {
+const skip_song = (message, server_queue, guild) => {
+	const song_queue = queue.get(guild.id);
     if (!message.member.voice.channel) return message.channel.send('You need to be in a channel to execute this command!');
     if(!server_queue){
         return message.channel.send(`There are no songs in queue 😔`);
     }
-    server_queue.connection.dispatcher.end();
+   
+   // song_queue.voice_channel.leave();
+   
+     song_queue.songs.shift();
+     video_player(guild, song_queue.songs[0]);
+	
 }
 
-const stop_song = (message, server_queue) => {
+const stop_song = (message, server_queue, guild) => {
+	
     if (!message.member.voice.channel) return message.channel.send('uhhm. Excuse me. I think you may need to be in a voice channel for me to be able to do this... Im so sorry');
     server_queue.songs = [];
     server_queue.connection.dispatcher.end();
@@ -146,7 +153,7 @@ const queue1 = (message, server_queue) =>
 
 const getqueue = async (guild, message, server_queue) => { 
 	
-    var a = server_queue.songs; 
+    //var a = server_queue.songs; 
      //console.log(server_queue[0].title); 
     let vidInfo = await ytdl.getInfo(server_queue.songs[0].url); 
   

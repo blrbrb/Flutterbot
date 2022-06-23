@@ -140,9 +140,9 @@ if (command == 'angel')
 }
 
 
- if (command == 'letter')
+ if (command == 'lesson')
  {
-     client.commands.get('letter').execute(client, message, args); 
+     client.commands.get('lesson').execute(client, message, args); 
 
  }
 

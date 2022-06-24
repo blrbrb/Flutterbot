@@ -27,9 +27,9 @@ module.exports = {
 
         try {
             let res = await fetch(encodeURI(`https://nekobot.xyz/api/imagegen?type=tweet&username=${user}&text=${text}`));
-            let json = await res.json();
+            let json = await res.json();  
             let attachment = new Discord.MessageAttachment(json.message, "tweet.png");
-            await message.channel.send(`**Oh dear, there's a new tweet from ${user}**`, attachment);
+            await message.channel.send(`**Oh dear, there's a new tweet from ${user}**`, attachment);       
             m.delete({ timeout: 5000});
         } catch(e){
             m.edit("Oh-no!, Try Again to Mention Someone");

@@ -77,7 +77,8 @@ const serverQueue = queue.get(message.guild.id);
                     try {
                         const connection = await voice_channel.join();
                         queue_constructor.connection = connection;
-                        video_player(message.guild, queue_constructor.songs[0], server_queue);
+                        video_player(message.guild, queue_constructor.songs[0], server_queue); 
+                        break; 
                     } catch (err) {
                         queue.delete(message.guild.id);
                         message.channel.send('uhhm. Excuse me. i. Im having trouble connecting...');
@@ -93,11 +94,15 @@ const serverQueue = queue.get(message.guild.id);
                 }         
 
             case "queue": getqueue(message.guild, message, server_queue, args);
+            		break; 
 
 
             case "skip": skip_song(message, server_queue, message.guild);
+            			break;
+            	
 
             case "stop": stop_song(message, server_queue);
+            break;
 
 
             default:

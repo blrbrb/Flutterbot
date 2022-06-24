@@ -176,6 +176,7 @@ const getqueue = async (guild, message, server_queue, args) => {
      		 message.channel.send("loading previous queue from save file...");
      		 load_savedqueue(oneStepBack + "assets/music_queue.json"); 
      		 message.channel.send("this function is still a WIP");  
+     		 message.channel.send(load_savedqueue, {code: "json"});
      		 break;
     
          
@@ -183,12 +184,13 @@ const getqueue = async (guild, message, server_queue, args) => {
      	        	
     if(server_queue.songs.length <= 1) 
     {
-    	
+    	 let vidInfo = await ytdl.getInfo(server_queue.songs[0].url); 
+
     	    const embed = new MessageEmbed().setTitle(`**I'm Currently Playing:** \n[${server_queue.songs[0].title}](${server_queue.songs[0].url})`).setImage(getvideoimage(vidInfo)); 
 
-    	 server_queue.text_channel.send(`🎶 Now playing **${server_queue.songs[0].title}**`); 
     	 
-    	 console.log(getvideoimage(vidInfo));     	
+    	 
+    	   	
     	 message.channel.send(embed); 
     } 	
     
@@ -242,10 +244,11 @@ async function preserve_queue(queue)
 	
 	//console.log(info); 
 	//console.log(queue); 
-	const queue_toObject = {...queue};
+	const queue_toObject = {"Songs": "  "}; 
+	queue_toObject.push(queue); 
 	console.log(queue_toObject); 
 
-    const json = JSON.stringify(queue_toObject);
+    const json = JSON.stringify(queue_toObject).replace(/[+|]+/g, '').replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t"); 
 
     fs.writeFile(oneStepBack + "assets/music_queue.json", json, function (err, result) {
         if (err) console.log('error', err);
@@ -259,11 +262,11 @@ function load_savedqueue(queue_file)
 	
 	console.log("reading saved queue"); 
 	
-	const saved_songs = JSON.parse(queue_file); 
+	const saved_songs = JSON.parse(oneStepBack + queue_file); 
 	
 	
-	console.log(saved_songs); 
-	
+	//console.log(saved_songs); 
+	return saved_songs; 
 	
 	
 	

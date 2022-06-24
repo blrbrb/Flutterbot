@@ -135,7 +135,7 @@ const video_player = async (guild, song, server_queue) => {
                 song_queue.songs.shift();
                                  video_player(guild, song_queue.songs[0]);
             });
-        }).catch(err => console.log(err));
+        }).catch(err => console.log("A music player error was caught" + err));                
         
        
          
@@ -262,7 +262,8 @@ async function preserve_queue(queue)
     const json = JSON.stringify(queue_toObject).replace(/[+|]+/g, '').replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t"); 
 
     fs.writeFile(oneStepBack + "assets/music_queue.json", json, function (err, result) {
-        if (err) console.log('error', err);
+        
+        if (err) console.log('JSON file writing error in play.js caught', err);
     });
 
 } 

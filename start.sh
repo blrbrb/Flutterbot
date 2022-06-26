@@ -1,15 +1,17 @@
-# /bin/sh
+#! /bin/sh
 
 
 
-FILE=error_log.txt
+FILE=error_log.txt 
 
-function check_os() 
+
+
+ check_os() 
 {
   os_type='' 
 
 
-if [ "$(uname)" == "Darwin" ]; then
+if [ "$(uname)" = "Darwin" ]; then
 	# Do something under Mac OS X platform    
 	local os_typeMac="Mac"  
 	 os_type=$os_type$os_typeMac
@@ -44,7 +46,7 @@ if [ $actualsize -ge $minimumsize ]; then
 else
 	echo log file size is under $minimumsize bytes
 fi
-	
+
 	
 	
 }
@@ -71,44 +73,25 @@ do
 
 echo Starting Fluttershy 
 {
-echo 
-
- $(node .)   
-	   echo "Launched: $? - Successfully"
 
 
-   
- echo 
- 
+ node .
 
-read -t -N 1 input 
- 
-  
 }  2>> error_log.txt 
 
 echo ----------------------------------------------------------------------------------------------------- >> error_log.txt
 date +"Error Generated at: %A %d %B %r" >> error_log.txt 
 
-
-
 echo There Was An Error… 
- echo "${?}\n". 1>&2 
+
+ echo "${?}\n" 1>&2 
 
 echo details written to "$FILE" 
-
-
 
  
 
 echo Restarting Fluttershy in 30 Seconds... 
-echo Enter 'q' to abort the process 
 
-read -N 1 input 
-
-if[input='q'] then; 
-
-echo exiting process...    
-break; 
 
 sleep 30
 

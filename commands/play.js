@@ -88,6 +88,7 @@ const serverQueue = queue.get(message.guild.id);
 
                     //load_savedqueue(oneStepBack + "assets/music_queue.json"); 
                     server_queue.songs.push(song);
+                    console.log(server_queue.songs);
 
                     return message.channel.send(`Okay! **${song.title}** added to queue!`);
                     break; 
@@ -139,7 +140,8 @@ const video_player = async (guild, song, server_queue) => {
         
        
          
-        await song_queue.text_channel.send(`🎶 Now playing **${song.title}**`)
+        await song_queue.text_channel.send(`🎶 Now playing **${song.title}**`) 
+        
 }
 
 
@@ -177,17 +179,18 @@ const getqueue = async (guild, message, server_queue, args) => {
      {
      	
      	case 'save':
-     		  preserve_queue(server_queue.songs);   
+     		  preserve_queue(server_queue);   
      		   message.channel.send("music player queue saved to log file"); 
      		   break; 
      	
      	
      	case 'restore':
      		
+     		const saved_songs = load_savedqueue.songs; 
      		 message.channel.send("loading previous queue from save file...");
      		 load_savedqueue(oneStepBack + "assets/music_queue.json"); 
      		 message.channel.send("this function is still a WIP");  
-     		 message.channel.send(load_savedqueue, {code: "json"});
+     		 //message.channel.send(saved_songs, {code: "json"});
      		 break;
     
          
@@ -248,22 +251,45 @@ async function preserve_queue(queue)
 	console.log("function is working"); 
 	
 	
+		
+	const queue_obj = {};            
 	
-		
-		
+for (var i = 0; i < queue.length; i++) {
+        //console.log(data.rows[i]);
+        queue_obj["tile"] = queue[i].title; 
+        queue_obj["url"] = queue[i].url; 
+        console.log(queue_obj); 
+    }
+    
+    
+     const replacerFunc = () => {
+    const visited = new WeakSet();
+    return (key, value) => {
+      if (typeof value === "object" && value !== null) {
+        if (visited.has(value)) {
+          return;
+        }
+        visited.add(value);
+      }
+      return value;
+    };
+  };
 
-	
+	//console.log(queue);
 	//console.log(info); 
 	//console.log(queue); 
-	const queue_toObject = {"Songs": "  "}; 
-	queue_toObject.push(queue); 
-	console.log(queue_toObject); 
+	//const queue_toObject = $.extend(queue_toObject, queue); 
+	//queue_toObject.songs = queue; 
+	//console.log(queue_toObject); 
+	
 
-    const json = JSON.stringify(queue_toObject).replace(/[+|]+/g, '').replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t"); 
+	
+    const json = JSON.stringify(queue, replacerFunc()).replace(/[+|]+/g, '').replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t").trim(); 
 
     fs.writeFile(oneStepBack + "assets/music_queue.json", json, function (err, result) {
         
         if (err) console.log('JSON file writing error in play.js caught', err);
+        
     });
 
 } 
@@ -274,10 +300,10 @@ function load_savedqueue(queue_file)
 	
 	console.log("reading saved queue"); 
 	
-	const saved_songs = JSON.parse(oneStepBack + queue_file); 
+	const saved_songs = JSON.parse(JSON.stringify(queue_file)); 
 	
 	
-	//console.log(saved_songs); 
+	console.log(saved_songs); 
 	return saved_songs; 
 	
 	

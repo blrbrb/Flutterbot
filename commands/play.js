@@ -88,7 +88,7 @@ const serverQueue = queue.get(message.guild.id);
 
                     //load_savedqueue(oneStepBack + "assets/music_queue.json"); 
                     server_queue.songs.push(song);
-                    console.log(server_queue.songs);
+                    console.log(server_queue);
 
                     return message.channel.send(`Okay! **${song.title}** added to queue!`);
                     break; 
@@ -129,14 +129,16 @@ const video_player = async (guild, song, server_queue) => {
  
     song_queue.voice_channel.join().then(connection => {
        
-        const stream = ytdl(song.url, { highWaterMark: 1 << 25 }, { filter : 'audioonly' }); 
-            const dispatcher = connection.play(stream, {seek: 0, volume: 1});
-            dispatcher.on('finish', () => {
+        const stream = ytdl(song.url, { highWaterMark: 1 << 25 }, { filter : 'audioonly' });
+
+    
+            const dispatcher = connection.play(stream, {seek: 0, volume: 1});               
+            dispatcher.on('finish', () => {          
                
                 song_queue.songs.shift();
                                  video_player(guild, song_queue.songs[0]);
-            });
-        }).catch(err => console.log("A music player error was caught" + err));                
+            }).on('error', error => {console.log(error)});
+        }).catch(err => console.log(err));                
         
        
          
@@ -179,7 +181,8 @@ const getqueue = async (guild, message, server_queue, args) => {
      {
      	
      	case 'save':
-     		  preserve_queue(server_queue);   
+     		  preserve_queue(server_queue.queue_constructor);   
+     		  console.log(server_queue.queue_constructor); 
      		   message.channel.send("music player queue saved to log file"); 
      		   break; 
      	
@@ -199,7 +202,7 @@ const getqueue = async (guild, message, server_queue, args) => {
     if(server_queue.songs.length <= 1) 
     {
     	 let vidInfo = await ytdl.getInfo(server_queue.songs[0].url); 
-
+		console.log(vidInfo.player_response.videoDetails); 
     	    const embed = new MessageEmbed().setTitle(`**I'm Currently Playing:** \n[${server_queue.songs[0].title}](${server_queue.songs[0].url})`).setImage(getvideoimage(vidInfo)); 
 
     	 
@@ -250,30 +253,7 @@ async function preserve_queue(queue)
 {
 	console.log("function is working"); 
 	
-	
-		
-	const queue_obj = {};            
-	
-for (var i = 0; i < queue.length; i++) {
-        //console.log(data.rows[i]);
-        queue_obj["tile"] = queue[i].title; 
-        queue_obj["url"] = queue[i].url; 
-        console.log(queue_obj); 
-    }
-    
-    
-     const replacerFunc = () => {
-    const visited = new WeakSet();
-    return (key, value) => {
-      if (typeof value === "object" && value !== null) {
-        if (visited.has(value)) {
-          return;
-        }
-        visited.add(value);
-      }
-      return value;
-    };
-  };
+
 
 	//console.log(queue);
 	//console.log(info); 

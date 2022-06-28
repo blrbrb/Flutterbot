@@ -75,15 +75,43 @@ client.on('guildCreate', (guild) => {
 	createGuild(guild, true);
 });
 
-client.on('message',async message => {
+client.on('message', async message => {
+
+    let word_said = false;
+    let words = await get_nonowords("assets/nono.json");
+    for (i in words) {
+       console.log(words[i]);
+
+        if (message.content.toLowerCase().includes(words[i].toLowerCase())) {
+
+            console.log("word said");
+            word_said = true; 
+         
+
+        }
+
+      
+
+
+    }
+
+    if (word_said) {
+        message.channel.send("YOU SAID THE WORD!!!");
+        //message.channel.
+    }
+
+
+
+    let args = message.content.slice(prefix1.length).trim().split(/ +/g);
+
+
+    
+
+    const command = args.shift();
+  
 
    
-      let args = message.content.slice(prefix1.length).trim().split(/ +/g);    
-    
-     // const command = args.shift().toLowerCase();
 
-const command = args.shift();
-  
   
   
 if(!message.content.startsWith(prefix1) || message.author.bot) return; 
@@ -318,12 +346,28 @@ async function get_banned_words()
 	
       let rawdata = fs.readFileSync('assets/filterwords.json'); 	
 	var banned_words = JSON.parse(rawdata); 
-	console.log(banned_words); 
+	//console.log(banned_words); 
 	
 	
 	return banned_words; 
 }
 
+
+
+async function get_nonowords(nonofile)
+{
+
+    let rawdata = fs.readFileSync(nonofile);
+
+    var nonowords = JSON.parse(rawdata);
+
+   // console.log(nonowords);
+
+
+    return nonowords; 
+
+
+}
 
 
 

@@ -3,8 +3,7 @@ const Discord = require('discord.js')
 const MessageEmbed  = require('discord.js');
 //const Discord = require('Discord.js');
 const ytdl = require("ytdl-core"); 
-
-
+const imageType= require("image-type");
 
 
 var servers = {};
@@ -77,42 +76,17 @@ client.on('guildCreate', (guild) => {
 
 client.on('message', async message => {
 
-    let word_said = false;
-    let words = await get_nonowords("assets/nono.json");
-    for (i in words) {
-       console.log(words[i]);
-
-        if (message.content.toLowerCase().includes(words[i].toLowerCase())) {
-
-            console.log("word said");
-            word_said = true; 
-         //please god, I'm sorry 
-
-        }
-
-      
-
-
-    }
-
-    if (word_said) {
-        message.channel.send("YOU SAID THE WORD!!!");
-        //message.channel.
-    }
-
-
+ 
 
     let args = message.content.slice(prefix1.length).trim().split(/ +/g);
 
 
-    as
+   
 
     const command = args.shift();
   
 
    
-
-  
   
 if(!message.content.startsWith(prefix1) || message.author.bot) return; 
 
@@ -223,15 +197,31 @@ if(command == 'img')
      client.commands.get('img').execute(client, message, args);
 
 }
-    
 
-if (command == 'fluttershy')
-{
-     client.commands.get('fluttershy').execute(message, args, command, Discord);
-    
-}
-    
-    
+
+
+
+
+ if (command == 'morejpeg')
+ {
+     client.commands.get('jpeg').execute(client, message, args); 
+
+ }
+
+    if (command == "counter" && message.author.id == '252235505318625281')
+ {
+
+        var saved_counter = JSON.parse("assets/nono_counter.json");
+
+        message.channel.send(saved_counter); 
+
+
+
+  }
+
+
+
+
 if(command == 'ifunny') 
 {
     client.commands.get('ifunny').execute(message, args); 
@@ -354,23 +344,6 @@ async function get_banned_words()
 
 
 
-async function get_nonowords(nonofile)
-{
-
-    let rawdata = fs.readFileSync(nonofile);
-
-    var nonowords = JSON.parse(rawdata);
-
-   // console.log(nonowords);
-
-
-    return nonowords; 
-
-
-}
-
-
-
 async function voice(message, args)
 {
         
@@ -378,4 +351,80 @@ async function voice(message, args)
         
 }
 
+client.getImage = async (message) => {
 
+    const the_channel = message.channel.id;
+
+
+
+   // let messageList = await the_channel.fetch().sort(function (a, b) { return b.createdAt - a.createdAt }).array();
+
+    let messageList = (await message.guild.channels.cache.get(the_channel).messages.fetch({ count: 2 })).array();
+    for (const messageCheck of messageList) {
+        if (messageCheck.attachments.array().length !== 0) {
+            const result = await client.fileCheck(messageCheck.attachments.array()[0].url);
+            if (result !== "Attachment not found") {
+                return result;
+            }
+        } else if (messageCheck.embeds.length !== 0) {
+            if (messageCheck.embeds[0].thumbnail) {
+                const result = await client.fileCheck(messageCheck.embeds[0].thumbnail.url);
+                if (result !== "Attachment not found") {
+                    return result;
+                }
+            } else if (messageCheck.embeds[0].image) {
+                const result = await client.fileCheck(messageCheck.embeds[0].image.url);
+                if (result !== "Attachment not found") {
+                    return result;
+                }
+            }
+        }
+    }
+};
+
+
+    //const messageList = the_channel.messages.sort(function (a, b) { 
+   //     return b.createdTimestamp - a.createdTimestamp;
+   // })   
+
+
+
+
+
+
+
+
+
+client.fileCheck = (image) => {
+    return new Promise((resolve, reject) => {
+        request.get(image, (error, response, body) => {
+
+            
+            if (error) throw new Error(error);
+
+         
+          //  console.log(response); 
+            response.on('data', () => {
+                const chunk = response.read(imageType.minimumBytes);
+                response.destroy();
+                console.log(imageTye(chunk));
+
+                if (imageType(chunk) && ["image/jpeg", "image/png", "image/webp", "image/jpg"].includes(imageType.mime)) {
+                    resolve(image);
+                } else {
+                    reject("Attachment not found");
+                }
+                //=> {ext: 'gif', mime: 'image/gif'}
+            });
+           
+
+          
+            //const buff = Buffer.from(body, "utf-8");
+           // console.log(body.toString()); 
+          //  const imageTypeResult = imageType(buff);
+           // console.log(imageTypeResult);
+          ///  message.channel.send(imageTypeResult);
+           
+        });
+    });
+};

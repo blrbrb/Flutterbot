@@ -86,7 +86,7 @@ client.on('message', async message => {
 
             console.log("word said");
             word_said = true; 
-         
+         //please god, I'm sorry 
 
         }
 

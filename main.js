@@ -105,7 +105,7 @@ client.on('message', async message => {
     let args = message.content.slice(prefix1.length).trim().split(/ +/g);
 
 
-    
+    as
 
     const command = args.shift();
   

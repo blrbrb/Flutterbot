@@ -4,7 +4,8 @@ const MessageEmbed  = require('discord.js');
 //const Discord = require('Discord.js');
 const ytdl = require("ytdl-core"); 
 
-let pcounter = []; 
+let pcounter = 1;
+var pdata = {c}
 var servers = {};
 //var debug = false;
 
@@ -77,7 +78,7 @@ client.on('message', async message => {
  
  let cwords = await get_banned_words();
  var word_said = false; 
- save_data(pcounter, "assets/counter.json"); 	
+ save_data(pcounter, "assets/counter.txt"); 	
  
 	
 	for(i = 0; i < cwords.length; i++)  
@@ -97,7 +98,13 @@ client.on('message', async message => {
 	   	}
 	   	 if(word_said) 
 	   	 {
+	   	 	
+	   	 	var pdata = {word: cwords[i], 
+	   	 				times: pcounter,
+	   	 	}; 
+	   	 	
 	   	 	save_data(pcounter, "assets/counter.json"); 
+	   	 	console.log(pdata); 
 	   	   	word_said = false; 
 	   	   	
 	   	 	
@@ -365,7 +372,7 @@ if(command == 'filter')
 if(command == 'wholesome_check' && (message.member.hasPermission("ADMINISTRATOR") == true)) 
 {
 	
-	message.channel.send(`**Our Little Ponies Have said bad words** ${pcounter.length} **times in this server!**`); 
+	message.channel.send(`**Our Little Ponies Have said bad words** ${pcounter} **times in this server!**`); 
 	
 	
 	
@@ -426,9 +433,9 @@ async function voice(message, args)
  	
  	var json = JSON.stringify(values); 
  	
- 	 fs.writeFile(file, json, function (err, result) {
+ 	 fs.writeFile(file, values.toString(), function (err, result) {
         
-        if (err) console.log('JSON file writing error in main.js lin 401 caught', err);
+        if (err) console.log('JSON file writing error in main.js lin 431 caught', err);
         
     });
     
@@ -443,9 +450,14 @@ async function voice(message, args)
 
  async function load_data(file) 
  {
- 	
- 	var values = JSON.parse(file); 
- 	
+ 	let values;
+ 	//var values = JSON.parse(file); 
+ 	 fs.readFile(file, 'utf-8', function (err, result) {
+        
+        if (err) console.log('txt file reading error in main.js lin 450 caught', err);
+        values = result; 
+    });
+
  	
  	return values; 
  }

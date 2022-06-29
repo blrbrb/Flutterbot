@@ -44,14 +44,14 @@ description: 'sends a random image corresponding to a google image search',
         data = JSON.parse(body);
       } catch (error) {
          // console.log(error);
-          console.log('you are doing it wrong dum dum'); 
+          //console.log('you are doing it wrong dum dum'); 
         return;
       }
        // console.log(request); 
        
        if(data.error) 
        {
-       	console.log(data.error.status); 
+       //	console.log(data.error.status); 
        	
        	if(data.error.status = 'RESOURCE_EXHAUSTED') {
        	message.channel.send(data.error.status);  
@@ -61,11 +61,11 @@ description: 'sends a random image corresponding to a google image search',
        	
        	}
       if (!data) {
-        console.log(data);
+       // console.log(data);
         message.channel.send("Error:\n" + JSON.stringify(data));
         return;
       } else if (!data.items || data.items.length == 0) {
-        console.log(data);
+        //console.log(data);
         message.channel.send("No result for '" + args + "'");
         return;
       }

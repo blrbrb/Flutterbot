@@ -88,7 +88,7 @@ const serverQueue = queue.get(message.guild.id);
 
                     //load_savedqueue(oneStepBack + "assets/music_queue.json"); 
                     server_queue.songs.push(song);
-                    console.log(server_queue);
+                    //console.log(server_queue);
 
                     return message.channel.send(`Okay! **${song.title}** added to queue!`);
                     break; 
@@ -294,7 +294,7 @@ function load_savedqueue(queue_file)
 	const saved_songs = JSON.parse(JSON.stringify(queue_file)); 
 	
 	
-	console.log(saved_songs); 
+	//console.log(saved_songs); 
 	return saved_songs; 
 	
 	

@@ -4,7 +4,7 @@ const MessageEmbed  = require('discord.js');
 //const Discord = require('Discord.js');
 const ytdl = require("ytdl-core"); 
 
-
+let pcounter = []; 
 var servers = {};
 //var debug = false;
 
@@ -75,11 +75,48 @@ client.on('guildCreate', (guild) => {
 client.on('message', async message => {
 
  
+ let cwords = await get_banned_words();
+ var word_said = false; 
+ save_data(pcounter, "assets/counter.json"); 	
+ 
+	
+	for(i = 0; i < cwords.length; i++)  
+	{ 
+	
+	   if(message.content.includes(cwords[i].toLowerCase()) || message.content.includes(cwords[i]))
+	   {
+	   	
+	   			
+	   		 			 if(!pcounter){
+ 	pcounter = await load_data("assets/counter.json");
+ }
+ 
+			pcounter = pcounter + 1; 
+			word_said = true; 
+						   	
+	   	}
+	   	 if(word_said) 
+	   	 {
+	   	 	save_data(pcounter, "assets/counter.json"); 
+	   	   	word_said = false; 
+	   	   	
+	   	 	
+	   	 } 
+	   	 
+		
+		
+	}	
+ 
+
+ 
+ 
+
+  
 
     let args = message.content.slice(prefix1.length).trim().split(/ +/g);
 
 
-   
+    
 
     const command = args.shift();
   
@@ -324,12 +361,22 @@ if(command == 'filter')
 	
 }
 
+
+if(command == 'wholesome_check' && (message.member.hasPermission("ADMINISTRATOR") == true)) 
+{
+	
+	message.channel.send(`**Our Little Ponies Have said bad words** ${pcounter.length} **times in this server!**`); 
+	
+	
+	
+}
+
     
  });   
 
 client.login(process.env.DISCORD_TOKEN);
      
-async function get_banned_words() 
+ async function get_banned_words() 
 {
 	
       let rawdata = fs.readFileSync('assets/filterwords.json'); 	
@@ -357,10 +404,53 @@ async function voice(message, args)
 
 
 
+ function profanity_counter(message) 
+{
+	var bannedwords = get_banned_words(); 
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+ }
+ 
+ 
+ async function save_data(values, file) 
+ {
+ 	
+ 	var json = JSON.stringify(values); 
+ 	
+ 	 fs.writeFile(file, json, function (err, result) {
+        
+        if (err) console.log('JSON file writing error in main.js lin 401 caught', err);
+        
+    });
+    
+    
+    
+
+ 	
+ 	
+ 	
+ }
 
 
+ async function load_data(file) 
+ {
+ 	
+ 	var values = JSON.parse(file); 
+ 	
+ 	
+ 	return values; 
+ }
 
-
+ 	
 
 
 client.fileCheck = (image) => {

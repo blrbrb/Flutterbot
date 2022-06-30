@@ -78,7 +78,7 @@ client.on('message', async message => {
  
  let cwords = await get_banned_words();
  var word_said = false; 
- save_data(pcounter, "assets/counter.txt"); 	
+ //save_data(pcounter, "assets/counter.txt"); 	
  
 	
 	for(i = 0; i < cwords.length; i++)  

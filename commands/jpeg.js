@@ -21,41 +21,20 @@ exports.run = async (client, message, args) => { // eslint-disable-line no-unuse
      let img = await gm(imageUrl, [["jpg", [clamp(r, 0, 100)]]], message);
    	// sendImage(message, "JPEG", 10, img, (extension == "gif" ? "gif" : "jpg"), false)
     if (imageUrl !== undefined) {
-        message.channel.startTyping();
-
-        extension = await new Promise((resolve, reject) => {
-            // Get extension from file type
-            gm(img).format({ bufferStream: true }, function (err, format) {
-                if (err) {
-                    resolve(extension.toLowerCase());
-                } else {
-                    resolve(extensions[format] || format.toLowerCase());
-                }
-            });
-        });
-
-     
-        gm(imageUrl).setFormat("jpg").quality(1).stream((error, stdout) => {
-            if (error) throw new Error(error);
-            message.channel.stopTyping();
-			var writeStream = fs.createWriteStream('image.jpg');
-  stdout.pipe(writeStream);
-			
-			
-			fs
-
-            const attachment = new MessageAttachment(
-                
-                "image.jpg" 
-            );
-
-		
-
-
-
-            message.channel.send(attachment);
-        });
-    }
+    	message.channel.startTyping();
+    	 gm(request(imageUrl)).setFormat("jpg").quality(2).stream((error, stdout) => {
+            if (error)  throw new Error(error); //console.log(error);
+            
+         message.channel.send({
+        files: [{
+          attachment: stdout,
+          name: "morejpeg.jpg"
+        }]
+      });
+       
+    	 });
+       
+     }
 };
 
 

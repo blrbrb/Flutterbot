@@ -3,7 +3,12 @@ const gm = require("gm").subClass({
   imageMagick: true
 });
 
-exports.run = async (client, message, args) => { // eslint-disable-line no-unused-vars
+const findImage = require('../utils/findimage.js');
+
+module.exports = {
+    name: 'aaaaah',
+    description: 'aaaaah',
+    async run(client, message, args) { // eslint-disable-line no-unused-vars
  imageUrl = await findImage(message);
    if (imageUrl !== undefined) {
     message.channel.startTyping();
@@ -18,4 +23,5 @@ exports.run = async (client, message, args) => { // eslint-disable-line no-unuse
       });
     });
   }
-};
+}
+}

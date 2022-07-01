@@ -211,6 +211,11 @@ if(command == 'img')
 
 
 ///Begin Image Commands 
+ if (command == 'circle')
+ {
+     client.commands.get('circle').run(client, message, args); 
+ }
+
 
 if(command == 'deepfry') 
 {
@@ -235,29 +240,31 @@ client.commands.get('deepfry').run(client,message,args);
 
  }
 
+ if (command == 'mosaic')
+ {
+     client.commands.get('mosaic').run(client, message, args); 
+ }
+
+if (command == 'swirl')
+{
+client.commands.get('swirl').run(client, message, args);
+}
+
+if (command == 'tartarus')
+{
+    client.commands.get('tartarus').run(client, message, args); 
+}
+
+
+
+
 if (command == 'aaaaah' )
 {
-	await aaaaah.run(client, message, args);
+    client.commands.get('aaaaah').run(client, message, args);
+
 	
 }
  
- 
- 
- 
-
-    if (command == "counter" && message.author.id == '252235505318625281')
- {
-
-        var saved_counter = JSON.parse("assets/nono_counter.json");
-
-        message.channel.send(saved_counter); 
-
-
-
-  }
-
-
-
 
 if(command == 'ifunny') 
 {

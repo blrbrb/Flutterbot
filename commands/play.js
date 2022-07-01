@@ -187,19 +187,18 @@ const getqueue = async (guild, message, server_queue, args) => {
      		   break; 
      	
      	
-     	case 'restore':
-     		
-     		  message.channel.send("loading previous queue from save file…");
-     		 const saved_songs = load_savedqueue("assets/music_queue.json"); 
-     		 message.channel.send("this function is still a WIP");  
-     		 message.channel.send(saved_songs.title); 
-     		 if(!server_queue) 
-     		 {
-     		 	return; 
-     		 }
-     		 else 
-     		 	server_queue.songs = saved_songs; 
-     		 break;
+        case 'restore':
+
+             if (!server_queue) { 
+                 message.channel.send("but... I can't! I haven't had a chance to call my SongBirds yet...");
+                 return; 
+             }
+               else
+     		       message.channel.send("loading previous queue from save file…");
+     		       const saved_songs = load_savedqueue("assets/music_queue.json"); 
+     		       message.channel.send("this function is still a WIP");  
+                   restore_queuesongs(saved_songs, server_queue, message);
+                         break;
     
          
      	default:
@@ -226,7 +225,8 @@ const getqueue = async (guild, message, server_queue, args) => {
     
     if(server_queue.songs.length >= 2 ) {
     	
-    //let size = server_queue.songs.length; 
+   //this is where the save queue function might need to be called If I ever get around to automating it 
+   //just be sure to add an if statement to make sure that the queue isn't completley empty when reading and writing
 let vidInfo1 = await ytdl.getInfo(server_queue.songs[1].url); 
 
      	
@@ -328,4 +328,29 @@ function load_savedqueue(queue_file)
 	
 }
 
+function restore_queuesongs(savedsongs, server_queue, message)
+{
 
+
+    if (!server_queue.songs) {
+      
+        return; 
+    }
+    else 
+        console.log(Object.keys(savedsongs).length);
+
+ 
+             if (Object.keys(savedsongs).length <= 2)
+                {
+                    server_queue.songs[0].title = savedsongs.title;
+                    server_queue.songs[0].url = savedsongs.url; 
+                }
+                     else 
+                             savedsongs.forEach(element => {
+                                console.log(element);
+                                    serverqueue.songs[element].title = element.title;
+                                    serverqueue.songs[element].url = element.url; 
+     
+                                });  
+
+}

@@ -19,7 +19,7 @@ const prefix1 = "-";
 
 const fs = require('fs');
 const jpeg = require("./commands/jpeg.js");
-const destroy = require("./commands/destroy.js"); 
+
 
 client.commands = new Discord.Collection();  
 client.aliases = new Discord.Collection()
@@ -210,15 +210,28 @@ if(command == 'img')
 
 
 
+///Begin Image Commands 
+
+if(command == 'deepfry') 
+{
+	
+	
+client.commands.get('deepfry').run(client,message,args); 	
+	
+}
+
+
  if (command == 'morejpeg')
  {
-     await jpeg.run(client, message, args);
+    // await jpeg.run(client, message, args);
+    client.commands.get('jpeg').run(client,message, args); 
 
  }
  
  if (command == 'destroy')
  {
-      destroy.run(client, message, args);
+      //destroy.run(client, message, args);
+      client.commands.get('destroy').execute(client,message,args);
 
  }
 

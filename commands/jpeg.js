@@ -11,8 +11,11 @@ const clamp = require('../utils/clamp.js');
 let imageUrl;
 let { attachment, embed, MessageAttachment } = require('discord.js');
 
-
-exports.run = async (client, message, args) => { // eslint-disable-line no-unused-vars
+module.exports =  {
+	name: 'jpeg', 
+	description: 'Fluttershy Will Jpeg-ify an image',
+ 	async run(client, message, args) { 
+ 	
     imageUrl = await findImage(message)
 
     //image.catch(
@@ -35,7 +38,8 @@ exports.run = async (client, message, args) => { // eslint-disable-line no-unuse
     	 });
        message.channel.stopTyping(); 
      }
-};
+}
 
 
     
+}

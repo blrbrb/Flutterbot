@@ -189,11 +189,16 @@ const getqueue = async (guild, message, server_queue, args) => {
      	
      	case 'restore':
      		
-     		const saved_songs = load_savedqueue.songs; 
-     		 message.channel.send("loading previous queue from save file...");
-     		 load_savedqueue(oneStepBack + "assets/music_queue.json"); 
+     		  message.channel.send("loading previous queue from save file…");
+     		 const saved_songs = load_savedqueue("assets/music_queue.json"); 
      		 message.channel.send("this function is still a WIP");  
-     		 //message.channel.send(saved_songs, {code: "json"});
+     		 message.channel.send(saved_songs.title); 
+     		 if(!server_queue) 
+     		 {
+     		 	return; 
+     		 }
+     		 else 
+     		 	server_queue.songs = saved_songs; 
      		 break;
     
          
@@ -311,10 +316,11 @@ function load_savedqueue(queue_file)
 	
 	console.log("reading saved queue"); 
 	
-	const saved_songs = JSON.parse(JSON.stringify(queue_file)); 
+	const songdata = fs.readFileSync(queue_file);
+	const saved_songs = JSON.parse(songdata); 
 	
 	
-	//console.log(saved_songs); 
+	console.log(saved_songs); 
 	return saved_songs; 
 	
 	

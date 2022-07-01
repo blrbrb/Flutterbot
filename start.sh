@@ -93,7 +93,7 @@ echo details written to "$FILE"
 echo Restarting Fluttershy in 30 Seconds... 
 
 
-sleep 30
+sleep 15
 
 done 
 

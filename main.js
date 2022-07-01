@@ -19,7 +19,9 @@ const prefix1 = "-";
 
 const fs = require('fs');
 const jpeg = require("./commands/jpeg.js");
-client.commands = new Discord.Collection(); 
+const destroy = require("./commands/destroy.js"); 
+
+client.commands = new Discord.Collection();  
 client.aliases = new Discord.Collection()
  
 const cheerio = require('cheerio');  
@@ -81,43 +83,7 @@ client.on('message', async message => {
  //save_data(pcounter, "assets/counter.txt"); 	
  
 	
-	for(i = 0; i < cwords.length; i++)  
-	{ 
 	
-	   if(message.content.includes(cwords[i].toLowerCase()) || message.content.includes(cwords[i]))
-	   {
-	   	
-	   			
-	   		 			 if(!pcounter){
- 	pcounter = await load_data("assets/counter.json");
- }
- 
-			pcounter = pcounter + 1; 
-			word_said = true; 
-						   	
-	   	}
-	   	 if(word_said) 
-	   	 {
-	   	 	
-	   	 	var pdata = {word: cwords[i], 
-	   	 				times: pcounter,
-	   	 	}; 
-	   	 	
-	   	 	save_data(pcounter, "assets/counter.json"); 
-	   	 	console.log(pdata); 
-	   	   	word_said = false; 
-	   	   	
-	   	 	
-	   	 } 
-	   	 
-		
-		
-	}	
- 
-
- 
- 
-
   
 
     let args = message.content.slice(prefix1.length).trim().split(/ +/g);
@@ -249,6 +215,22 @@ if(command == 'img')
      await jpeg.run(client, message, args);
 
  }
+ 
+ if (command == 'destroy')
+ {
+      destroy.run(client, message, args);
+
+ }
+
+if (command == 'aaaaah' )
+{
+	await aaaaah.run(client, message, args);
+	
+}
+ 
+ 
+ 
+ 
 
     if (command == "counter" && message.author.id == '252235505318625281')
  {
@@ -350,6 +332,8 @@ if(command == 'terminal')
 {
 	client.commands.get('terminal').run(client, message, args); 	
 }
+
+
 
 
 

@@ -22,7 +22,7 @@ exports.run = async (client, message, args) => { // eslint-disable-line no-unuse
    	// sendImage(message, "JPEG", 10, img, (extension == "gif" ? "gif" : "jpg"), false)
     if (imageUrl !== undefined) {
     	message.channel.startTyping();
-    	 gm(request(imageUrl)).setFormat("jpg").quality(2).stream((error, stdout) => {
+    	 gm(request(imageUrl)).setFormat("jpg").quality(1).stream((error, stdout) => {
             if (error)  throw new Error(error); //console.log(error);
             
          message.channel.send({
@@ -30,10 +30,10 @@ exports.run = async (client, message, args) => { // eslint-disable-line no-unuse
           attachment: stdout,
           name: "morejpeg.jpg"
         }]
-      });
+      }); 
        
     	 });
-       
+       message.channel.stopTyping(); 
      }
 };
 

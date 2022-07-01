@@ -23,6 +23,7 @@
     "mongodb": "^4.7.0",
     "opusscript": "0.0.8",
     "request": "^2.88.2",
+    "tempy": "^3.0.0",
     "yt-search": "^2.10.3",
     "ytdl-core": "^4.11.0"
   }

@@ -198,12 +198,20 @@ const getqueue = async (guild, message, server_queue, args) => {
     
          
      	default:
+     	
+     	
+    if(!server_queue.songs) 
+    {
+    	return; 
+    	
+    }
      	        	
     if(server_queue.songs.length <= 1) 
     {
     	 let vidInfo = await ytdl.getInfo(server_queue.songs[0].url); 
-		console.log(vidInfo.player_response.videoDetails); 
-    	    const embed = new MessageEmbed().setTitle(`**I'm Currently Playing:** \n[${server_queue.songs[0].title}](${server_queue.songs[0].url})`).setImage(getvideoimage(vidInfo)); 
+    	//console.log(vidInfo); 
+		console.log(vidInfo.player_response); 
+    	    const embed = new MessageEmbed().setTitle(`**I'm Currently Playing:** \n[${server_queue.songs[0].title}](${server_queue.songs[0].url})`).setImage(getvideo_thumbnail(vidInfo)); 
 
     	 
     	 
@@ -214,14 +222,17 @@ const getqueue = async (guild, message, server_queue, args) => {
     if(server_queue.songs.length >= 2 ) {
     	
     //let size = server_queue.songs.length; 
+let vidInfo1 = await ytdl.getInfo(server_queue.songs[1].url); 
 
      	
-     let vidInfo1 = await ytdl.getInfo(server_queue.songs[1].url); 
-     const embed = new MessageEmbed().setTitle(`**I'm Currently Playing:** \n[${server_queue.songs[0].title}](${server_queue.songs[0].url})').addField(\n\n**Up Next:** \n `).setThumbnail(getvideoimage(vidInfo1)).addField("Songs: \n", `\`${server_queue.songs.length}\``, true) 
+     
+     const embed = new MessageEmbed().setTitle(`**I'm Currently Playing:** \n[${server_queue.songs[0].title}](${server_queue.songs[0].url})').addField(
+     .addField(\n\n**Up Next:** \n `).setImage(getvideo_thumbnail(vidInfo1)).addField("Songs: \n", `\`${server_queue.songs.length}\``, true) 
      
      
      server_queue.songs.forEach(element => {
-     	embed.addField(`${element.title}`)
+     	embed.addField(`${element.title}`);
+     	console.log(element);
      	}); 
      
      message.channel.send(embed); 
@@ -234,13 +245,22 @@ const getqueue = async (guild, message, server_queue, args) => {
      	
      	
      }
+}
      
+async function getvideo_details(video_url) 
+{
+	
+	let vidInfo = await ytdl.getInfo(video_url);
+	
+	return vidInfo.player_response.videoDetails;
+	
+	
+}https://cdn.discordapp.com/attachments/960715753005383710/992278662357463070/morejpeg.jpg
       
-     }
-  
+
 
         	
-function getvideoimage(vidinfo) 
+function getvideo_thumbnail(vidinfo) 
  {
  	
     return vidinfo.player_response.videoDetails.thumbnail.thumbnails[0].url;

@@ -64,20 +64,22 @@ fi
 
 check_os 
 
-echo $os_type
+echo  $os_type
 
 
 while true 
 
 do 
-
+tput setf 4
 echo Starting Fluttershy 
 {
 
-
+tput bold
  node .
-
-}  2>> error_log.txt 
+:
+}  2>> error_log.txt
+ 
+tput sgr0
 
 echo ----------------------------------------------------------------------------------------------------- >> error_log.txt
 date +"Error Generated at: %A %d %B %r" >> error_log.txt 
@@ -90,7 +92,7 @@ echo details written to "$FILE"
 
  
 
-echo Restarting Fluttershy in 30 Seconds... 
+echo Restarting Fluttershy in 15 Seconds... 
 
 
 sleep 15

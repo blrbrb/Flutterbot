@@ -182,7 +182,7 @@ const getqueue = async (guild, message, server_queue, args) => {
      	
      	case 'save':
      		  preserve_queue(server_queue.songs);   
-     		  console.log(server_queue.songs); 
+     		  //console.log(server_queue.songs); 
      		   message.channel.send("music player queue saved to log file"); 
      		   break; 
      	
@@ -278,7 +278,7 @@ async function preserve_queue(queue)
 {
 	console.log("function is working"); 
 	
-
+ 
 
 	//console.log(queue);
 	//console.log(info); 
@@ -286,23 +286,37 @@ async function preserve_queue(queue)
 	//const queue_toObject = $.extend(queue_toObject, queue); 
 	//queue_toObject.songs = queue; 
 	//console.log(queue_toObject); 
+	//queue.forEach(element => {
+
+
+
+//const strings = queue.map((o) => JSON.stringify(o)); 
+
+const queue_data = {}; 
+		
+		
+			
+	//console.log(strings); 
 	
-	const strings = queue.map((o) => JSON.stringify(o)); 
-		console.log(strings); 
-		var clean_strings = [];
-		for(i = 0; i < strings.length; i++) 
-		{
-			console.log(strings[i]); 
-			clean_strings = strings[i].replace(/[+|]+/g, '').replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t").trim();
+	
+			//console.log(strings);       
+		// var clean_strings = [];
+		 for(i = 0; i < queue.length; i++) 
+		 {
+		 	queue_data.song = queue.songs.title; 
+		 	queue_data.url = queue.songs.url; 
+		 	console.log(strings[i]); 
+		  //queue_data['song'].push(queu
+		// clean_strings = strings[i].replace(/[+|]+/g, '').replace(/\r/g, "\\r").replace(/\t/g, "\\t").trim();
 
 			
-		}
+	     }
 	//console.log(clean_strings); 
-    const json = JSON.parse(clean_strings); 
+    const json = JSON.parse(queue_data); 
 
 	
 
-    fs.writeFile(oneStepBack + "assets/music_queue.json", clean_strings, function (err, result) {
+    fs.writeFile(oneStepBack + "assets/music_queue.json", queue_data, function (err, result) {
         
         if (err) console.log('JSON file writing error in play.js caught', err);
         

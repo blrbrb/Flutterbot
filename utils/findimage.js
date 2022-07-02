@@ -13,7 +13,7 @@ module.exports = function findImage(message) {
             //   resolve(imgUrl); // Resolve image URL
             // } else {
             // Channel searching (25 messages)
-            let messages = await message.channel.messages.fetch({ limit: 2 });
+            let messages = await message.channel.messages.fetch({ limit: 12 });
             let attachmentMessages = messages
                 .map((message) => {
                     let attachmentURL = undefined;
@@ -26,9 +26,7 @@ module.exports = function findImage(message) {
                             console.log(attachmentURL); // If message has image embed set as URL
                         }
                         if (message.embeds[0] && message.embeds[0].type == "gifv") {
-                            attachmentURL =
-                                message.embeds[0].url +
-                                (message.embeds[0].url.match(/(\.gif)/gi) ? "" : ".gif");
+                            attachmentURL = message.embeds[0].url + (message.embeds[0].url.match(/(\.gif)/gi) ? "" : ".gif");
                                 console.log(attachentURL); // If message has gifv embed set as URL (Ensuring it ends with .gif)
                         }
                         if (message.embeds[0] && message.embeds[0].image != null) {

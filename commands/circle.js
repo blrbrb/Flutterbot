@@ -12,7 +12,7 @@ module.exports = {
 		imageUrl = await findImage(message);
 	  if (imageUrl !== undefined) {
 		      message.channel.startTyping();
-		      gm(request(imageUrl)).out("-radial-blur", 10).strip().stream((error, stdout) => {
+		      gm(request(imageUrl)).out("-rotational-blur", 10).strip().stream((error, stdout) => {
 			            if (error) throw new Error(error);
 			            message.channel.stopTyping();
 			            message.channel.send({

@@ -1,5 +1,6 @@
 const ytdl = require('ytdl-core');
 const ytSearch = require('yt-search');
+const ytpl = require('ytpl');
 const discord = require('discord.js');
 const { MessageEmbed } = require('discord.js');
 const fs = require('fs');
@@ -9,6 +10,15 @@ let oneStepBack = path.join(__dirname, '../');
 //Global queue for your bot. Every server will have a key and value pair in this map. { guild.id, queue_constructor{} }
 const queue = new Map();
 
+
+//access the current amount of time lapsed on a video 
+/// videoinfo.player_response.attrUrl.elapsedMediaTimeSeconds; 
+///
+
+//acess the total length of a video 
+// videoinfo.player_response.videoDetails.lengthSeconds
+
+///start playing a video again from the point it was stopped at 
 
 module.exports = {
     name: 'play',
@@ -42,18 +52,26 @@ const serverQueue = queue.get(message.guild.id);
                 //If the first argument is a link. Set the song object to have two keys. Title and URl.
                 if (ytdl.validateURL(args[0])) {
                     const song_info = await ytdl.getInfo(args[0]);
-                    song = { title: song_info.videoDetails.title, url: song_info.videoDetails.video_url }
+                    console.log(song_info.player_response.videoDetails.lengthSeconds);
+                    const result_info = await ytSearch(args[0]);
+
+                    song = { title: song_info.videoDetails.title, url: song_info.videoDetails.video_url, lengthSeconds: song_info.videoDetails.lengthSeconds }
                     if (debug) { message.channel.send(song) }
                 } else {
                     //If there was no link, we use keywords to search for a video. Set the song object to have two keys. Title and URl.
                     const video_finder = async (query) => {
                         const video_result = await ytSearch(query);
+                        const search_info = await ytdl.getInfo(video_result.videos[0].url);
+                        console.log(search_info.player_response.videoDetails.lengthSeconds); 
+                       // console.log(video_result); 
+                       
+                        
                         return (video_result.videos.length > 1) ? video_result.videos[0] : null;
                     }
 
                     const video = await video_finder(args.join(' '));
                     if (video) {
-                        song = { title: video.title, url: video.url }
+                        song = { title: video.title, url: video.url, lengthSeconds: video.seconds }
                     } else {
                         message.channel.send('Im so sorry, Im having trouble finding this video');
                     }
@@ -196,7 +214,6 @@ const getqueue = async (guild, message, server_queue, args) => {
                else
      		       message.channel.send("loading previous queue from save file…");
      		       const saved_songs = load_savedqueue("assets/music_queue.json"); 
-     		       message.channel.send("this function is still a WIP");  
                    restore_queuesongs(saved_songs, server_queue, message);
                          break;
     
@@ -211,7 +228,7 @@ const getqueue = async (guild, message, server_queue, args) => {
     }
      	        	
     if(server_queue.songs.length <= 1) 
-    {
+    { 
     	 let vidInfo = await ytdl.getInfo(server_queue.songs[0].url); 
     	//console.log(vidInfo); 
 		console.log(vidInfo.player_response); 
@@ -292,7 +309,7 @@ async function preserve_queue(queue)
 
 //const strings = queue.map((o) => JSON.stringify(o)); 
 
-const queue_data = {}; 
+const queue_data = []; 
 		
 		
 			
@@ -300,23 +317,18 @@ const queue_data = {};
 	
 	
 			//console.log(strings);       
-		// var clean_strings = [];
-		 for(i = 0; i < queue.length; i++) 
-		 {
-		 	queue_data.song = queue.songs.title; 
-		 	queue_data.url = queue.songs.url; 
-		 	console.log(strings[i]); 
-		  //queue_data['song'].push(queu
-		// clean_strings = strings[i].replace(/[+|]+/g, '').replace(/\r/g, "\\r").replace(/\t/g, "\\t").trim();
-
-			
-	     }
-	//console.log(clean_strings); 
-    const json = JSON.parse(queue_data); 
+		// var clean_strings = []; 
+    if (queue.length <= 1)
+    {
+        return; 
+    }
+    queue_data.push(queue); 
+    //console.log(clean_strings); 
+    const json = JSON.stringify(queue_data);
 
 	
 
-    fs.writeFile(oneStepBack + "assets/music_queue.json", queue_data, function (err, result) {
+    fs.writeFile(oneStepBack + "assets/music_queue.json", json, function (err, result) {
         
         if (err) console.log('JSON file writing error in play.js caught', err);
         
@@ -334,7 +346,7 @@ function load_savedqueue(queue_file)
 	const saved_songs = JSON.parse(songdata); 
 	
 	
-	console.log(saved_songs); 
+	//console.log(saved_songs); 
 	return saved_songs; 
 	
 	
@@ -347,24 +359,25 @@ function restore_queuesongs(savedsongs, server_queue, message)
 
 
     if (!server_queue.songs) {
-      
-        return; 
+
+        return;
     }
-    else 
-        console.log(Object.keys(savedsongs).length);
+    else
 
+        var num = 0; 
+    //NOTE TO SELF: this is a two dimensional array. There is no other way around it. There is no easy quick crackhead fix. Just make a messy for loop, and parse your data like a man.
+    for (i = 0; i < savedsongs.length; i++)
+    {
+        num = savedsongs[i].length;
+   
+        for (j = 0; j < savedsongs[i].length; j++)
+            {
+                    server_queue.songs.push(savedsongs[i][j]);
+                         num = savedsongs[i].length; 
+            }
+      }
+      
+    message.channel.send(`My SongBirds successfully restored **${num}** songs from the last session! 🐤🎵~`);
  
-             if (Object.keys(savedsongs).length <= 2)
-                {
-                    server_queue.songs[0].title = savedsongs.title;
-                    server_queue.songs[0].url = savedsongs.url; 
-                }
-                     else 
-                             savedsongs.forEach(element => {
-                                console.log(element);
-                                    serverqueue.songs[element].title = element.title;
-                                    serverqueue.songs[element].url = element.url; 
-     
-                                });  
-
+    
 }

@@ -32,6 +32,36 @@ fi
 }
 
 
+
+function clear_macOSFiles() 
+{
+
+if [ -f ".DS_Store" ]; then
+	rm .DS_Store  
+fi  
+
+if [ -f "commands/.DS_Store" ]; then 
+	cd commands 
+	rm .DS_Store 
+	cd - 
+fi  
+
+if [ -f "assets/.DS_Store" ]; then 
+	cd commands 
+	rm .DS_Store 
+	cd - 
+fi 
+
+if [ -f "utils/.DS_Store" ]; then 
+	cd commands 
+	rm .DS_Store 
+	cd - 
+fi 
+
+}
+
+
+
 function logmanager()   
 {
 		
@@ -67,16 +97,31 @@ check_os
 echo  $os_type
 
 
+
+
+
+
+
+
+
+
+
+
 while true 
 
+
 do 
+
+
+
+
 tput setf 4
 echo Starting Fluttershy 
 {
 
-tput bold
+tput bold 
  node .
-:
+ 
 }  2>> error_log.txt
  
 tput sgr0
@@ -96,6 +141,15 @@ echo Restarting Fluttershy in 15 Seconds...
 
 
 sleep 15
+
+echo -ne 'Clearing Cache: 0%)\r'  
+	sleep 2 
+	clear_macOSFiles 
+echo -ne 'Clearing Cache: 12%\r' 
+	sleep 2
+echo -ne 'Clearing Cache: 67%\r'
+
+echo -ne "Cache Cleared! Restarting Fluttershy..."
 
 done 
 

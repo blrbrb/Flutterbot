@@ -21,7 +21,7 @@ module.exports = {
       message.channel.send({
         files: [{
           attachment: stdout,
-          name: "deepfry.jpg"
+          name: "deepfry.jpg"    
         }]
       });
     });

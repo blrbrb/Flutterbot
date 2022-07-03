@@ -242,7 +242,7 @@ client.commands.get('deepfry').run(client,message,args);
 
  if (command == 'mosaic')
  {
-     client.commands.get('mosaic').run(client, message, args); 
+    await client.commands.get('mosaic').run(client, message, args); 
  }
 
 if (command == 'swirl')

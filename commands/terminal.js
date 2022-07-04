@@ -11,8 +11,17 @@ const command = args.join(" ");
 if(!command) 
 	return message.reply("Please specify a bash command to execute on mane_server");
 
+
+
+
 child.exec(command, (err, res) => {
-if (err) return console.log(err); 
+if (err) return console.log(err);  
+
+if (!res) 
+{
+	
+	return message.channel.send("Null stdout. args" + " " + `*${command}*` + "  " + "executed successfully"); 	
+}
 message.channel.send(res.slice(0,1000), {code: "js"})});
 
 

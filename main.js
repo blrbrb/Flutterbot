@@ -78,6 +78,7 @@ client.on('guildCreate', (guild) => {
 client.on('message', async message => {
 
  
+
  let cwords = await get_banned_words();
  var word_said = false; 
  //save_data(pcounter, "assets/counter.txt"); 	
@@ -308,6 +309,8 @@ if(command === 'ping') {
 
  if (command == 'rate')
 {
+	
+	
   client.commands.get('rate').execute(message, args, client); 
 } 
 

@@ -12,8 +12,7 @@ const queue = new Map();
 
 
 //access the current amount of time lapsed on a video 
-/// videoinfo.player_response.attrUrl.elapsedMediaTimeSeconds; 
-///
+//////search_info.player_response.attrUrl.elapsedMediaTimeSeconds; 
 
 //acess the total length of a video 
 // videoinfo.player_response.videoDetails.lengthSeconds
@@ -26,9 +25,10 @@ module.exports = {
     cooldown: 0,
     description: 'Advanced music bot',
     async execute(message, args, cmd, client, Discord, debug){
-
+let Client = client; 
 const serverQueue = queue.get(message.guild.id); 
-
+const current_time = 0;
+let dispatcher
        
         //Checking for the voicechannel and permissions (you can add more permissions if you like).
         const voice_channel = message.member.voice.channel;
@@ -53,25 +53,30 @@ const serverQueue = queue.get(message.guild.id);
                 if (ytdl.validateURL(args[0])) {
                     const song_info = await ytdl.getInfo(args[0]);
                     console.log(song_info.player_response.videoDetails.lengthSeconds);
-                    const result_info = await ytSearch(args[0]);
+                    const result_info = await ytSearch(args[0]); 
+                    console.log(result_info); 
 
-                    song = { title: song_info.videoDetails.title, url: song_info.videoDetails.video_url, lengthSeconds: song_info.videoDetails.lengthSeconds }
+                    song = { title: song_info.videoDetails.title, url: song_info.videoDetails.video_url, lengthSeconds: song_info.videoDetails.lengthSeconds, current_position: current_time }
                     if (debug) { message.channel.send(song) }
                 } else {
                     //If there was no link, we use keywords to search for a video. Set the song object to have two keys. Title and URl.
                     const video_finder = async (query) => {
                         const video_result = await ytSearch(query);
-                        const search_info = await ytdl.getInfo(video_result.videos[0].url);
-                        console.log(search_info.player_response.videoDetails.lengthSeconds); 
-                       // console.log(video_result); 
+                      
+                       // console.log(search_info.player_response.videoDetails.lengthSeconds); 
+                       //console.log(video_result); 
+                       //videoinfo.player_response.videoDetails.lengthSeconds
                        
                         
                         return (video_result.videos.length > 1) ? video_result.videos[0] : null;
                     }
 
                     const video = await video_finder(args.join(' '));
-                    if (video) {
-                        song = { title: video.title, url: video.url, lengthSeconds: video.seconds }
+                    if (video) { 
+                    	
+                    	  const search_info = await ytdl.getInfo(video.url);
+                                            
+                        song = { title: video.title, url: video.url, lengthSeconds: video.seconds, current_time: current_time }
                     } else {
                         message.channel.send('Im so sorry, Im having trouble finding this video');
                     }
@@ -112,7 +117,7 @@ const serverQueue = queue.get(message.guild.id);
                     break; 
                 }         
 
-            case "queue": getqueue(message.guild, message, server_queue, args);
+            case "queue": getqueue(message.guild, message, server_queue, args, Client);
             		break; 
 
 
@@ -150,7 +155,7 @@ const video_player = async (guild, song, server_queue) => {
         const stream = ytdl(song.url, { highWaterMark: 1 << 25 }, { filter : 'audioonly' });
 
     
-            const dispatcher = connection.play(stream, {seek: 0, volume: 1});               
+             dispatcher = connection.play(stream, {seek: 0, volume: 1});               
             dispatcher.on('finish', () => {          
                
                 song_queue.songs.shift();
@@ -158,7 +163,7 @@ const video_player = async (guild, song, server_queue) => {
             }).on('error', error => {console.log(error)});
         }).catch(err => console.log(err));                
         
-       
+       //console.log(dispatcher.time); 
          
         await song_queue.text_channel.send(`🎶 Now playing **${song.title}**`) 
         
@@ -188,7 +193,7 @@ const stop_song = (message, server_queue, guild) => {
 } 
 
 
-const getqueue = async (guild, message, server_queue, args) => { 
+const getqueue = async (guild, message, server_queue, args, client) => { 
 	
     //var a = server_queue.songs;  
      //console.log(server_queue[0].title); 
@@ -198,8 +203,9 @@ const getqueue = async (guild, message, server_queue, args) => {
      switch (args[0])
      {
      	
-     	case 'save':
-     		  preserve_queue(server_queue.songs);   
+     	case 'save': 
+     	  	const da_queue = server_queue;  
+     		  preserve_queue(server_queue.songs, da_queue, client);   
      		  //console.log(server_queue.songs); 
      		   message.channel.send("music player queue saved to log file"); 
      		   break; 
@@ -291,7 +297,7 @@ function getvideo_thumbnail(vidinfo)
 
 
 
-async function preserve_queue(queue) 
+async function preserve_queue(queue, server_queue, client) 
 {
 	console.log("function is working"); 
 	
@@ -316,6 +322,17 @@ const queue_data = [];
 	//console.log(strings); 
 	
 	
+	for(x=0; x < queue.length; x++) 
+	{
+		for(y=0; y < queue[x].length; y++) 
+		{
+			console.log(queue[y][x]);
+			
+		}
+		
+		
+	}
+	
 			//console.log(strings);       
 		// var clean_strings = []; 
     if (queue.length <= 1)
@@ -323,6 +340,15 @@ const queue_data = [];
         return; 
     }
     queue_data.push(queue); 
+    
+   //Save the Current Timestamp of the playing video 
+   //console.log(server_queue.connection);
+   //console.log(client.voiceConnection);  
+//queue_data[0][0].current_time = client.voiceConnection.streamTime / 1000; 
+    
+    
+  
+    
     //console.log(clean_strings); 
     const json = JSON.stringify(queue_data);
 
@@ -362,7 +388,9 @@ function restore_queuesongs(savedsongs, server_queue, message)
 
         return;
     }
-    else
+    else 
+    
+    
 
         var num = 0; 
     //NOTE TO SELF: this is a two dimensional array. There is no other way around it. There is no easy quick crackhead fix. Just make a messy for loop, and parse your data like a man.

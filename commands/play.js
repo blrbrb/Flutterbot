@@ -155,7 +155,7 @@ const video_player = async (guild, song, server_queue) => {
         const stream = ytdl(song.url, { highWaterMark: 1 << 25 }, { filter : 'audioonly' });
 
     
-             dispatcher = connection.play(stream, {seek: 0, volume: 1});               
+             dispatcher = connection.play(stream, {seek: song.current_time, volume: 1});               
             dispatcher.on('finish', () => {          
                
                 song_queue.songs.shift();
@@ -189,7 +189,8 @@ const stop_song = (message, server_queue, guild) => {
 	
     if (!message.member.voice.channel) return message.channel.send('uhhm. Excuse me. I think you may need to be in a voice channel for me to be able to do this... Im so sorry');
     server_queue.songs = [];
-    server_queue.connection.dispatcher.end();
+    queue.connection.dispatcher.end();
+    //server_queue.connection.dispatcher.end();
 } 
 
 
@@ -206,7 +207,8 @@ const getqueue = async (guild, message, server_queue, args, client) => {
      	case 'save': 
      	//console.log(server_queue.voice_channel.connection);
 
-     	  	const da_queue = server_queue;  
+     	  const da_queue = server_queue;  
+     	  //console.log(server_queue.connection); 
      		  preserve_queue(guild,server_queue.songs, da_queue, client);   
      		  //console.log(server_queue.songs); 
      		   message.channel.send("music player queue saved to log file"); 
@@ -344,17 +346,21 @@ const song_queue_data = [];
     song_queue_data.push(song_queue); 
     
    //Save the Current Timestamp of the playing video 
-      //console.log(client.voiceConnection);  
+     
 
     
     
+  console.log(dispatcher.streamTime);
   
-    const fuck = queue.get(guild.id);  
-    console.log(fuck.voice_channel); 
-    //song_queue_data[0][0].current_time = fuck.voiceConnection;
+  var watch_timeSeconds = Math.round(dispatcher.streamTime / 1000); 
+  
+  console.log(watch_timeSeconds); 
+   const fuck = queue.get(guild.id);   
+    //console.log(queue.connection.dispatcher.streamTime); 
+    song_queue_data[0][0].current_time = watch_timeSeconds; 
     //console.log(clean_strings); 
     const json = JSON.stringify(song_queue_data);
-console.log(fuck.voice_channel.connection);
+
 
 	
 

@@ -94,7 +94,7 @@ fi
 
 check_os 
 
-echo  $os_type
+echo running fluttershy on $os_type
 
 
 
@@ -130,8 +130,11 @@ echo ---------------------------------------------------------------------------
 date +"Error Generated at: %A %d %B %r" >> error_log.txt 
 
 echo There Was An Error… 
+cat assets/image.txt 
 
- echo "${?}\n" 1>&2 
+ echo Fluttershy has exited with a code of "${?}\n" 1>&2 
+
+
 
 echo details written to "$FILE" 
 

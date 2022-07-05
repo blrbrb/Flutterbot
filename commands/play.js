@@ -204,8 +204,10 @@ const getqueue = async (guild, message, server_queue, args, client) => {
      {
      	
      	case 'save': 
+     	//console.log(server_queue.voice_channel.connection);
+
      	  	const da_queue = server_queue;  
-     		  preserve_queue(server_queue.songs, da_queue, client);   
+     		  preserve_queue(guild,server_queue.songs, da_queue, client);   
      		  //console.log(server_queue.songs); 
      		   message.channel.send("music player queue saved to log file"); 
      		   break; 
@@ -297,7 +299,7 @@ function getvideo_thumbnail(vidinfo)
 
 
 
-async function preserve_queue(queue, server_queue, client) 
+async function preserve_queue(guild, song_queue, server_queue, client, message) 
 {
 	console.log("function is working"); 
 	
@@ -315,18 +317,18 @@ async function preserve_queue(queue, server_queue, client)
 
 //const strings = queue.map((o) => JSON.stringify(o)); 
 
-const queue_data = []; 
+const song_queue_data = []; 
 		
 		
 			
 	//console.log(strings); 
 	
 	
-	for(x=0; x < queue.length; x++) 
+	for(x=0; x < song_queue.length; x++) 
 	{
-		for(y=0; y < queue[x].length; y++) 
+		for(y=0; y < song_queue[x].length; y++) 
 		{
-			console.log(queue[y][x]);
+			console.log(song_queue[y][x]);
 			
 		}
 		
@@ -335,22 +337,24 @@ const queue_data = [];
 	
 			//console.log(strings);       
 		// var clean_strings = []; 
-    if (queue.length <= 1)
+    if (song_queue.length <= 1)
     {
         return; 
     }
-    queue_data.push(queue); 
+    song_queue_data.push(song_queue); 
     
    //Save the Current Timestamp of the playing video 
-   //console.log(server_queue.connection);
-   //console.log(client.voiceConnection);  
-//queue_data[0][0].current_time = client.voiceConnection.streamTime / 1000; 
+      //console.log(client.voiceConnection);  
+
     
     
   
-    
+    const fuck = queue.get(guild.id);  
+    console.log(fuck.voice_channel); 
+    //song_queue_data[0][0].current_time = fuck.voiceConnection;
     //console.log(clean_strings); 
-    const json = JSON.stringify(queue_data);
+    const json = JSON.stringify(song_queue_data);
+console.log(fuck.voice_channel.connection);
 
 	
 

@@ -17,6 +17,7 @@ module.exports = {
 		       	if(size.height > 1200 || size.width > 1200) 
 		       	{
 		       		message.channel.send(`t-that's way too big of an image for me!🖌️🐇`);	
+		       		 messsage.channel.stopTyping();	
 		       		return;
 		       	}
 		       	

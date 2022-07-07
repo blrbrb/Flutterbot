@@ -25,6 +25,16 @@ module.exports =  {
    	// sendImage(message, "JPEG", 10, img, (extension == "gif" ? "gif" : "jpg"), false)
     if (imageUrl !== undefined) {
     	message.channel.startTyping();
+    	await gm(request(imageUrl)).size((error, size) => { 
+    		
+    		 if(size.height > 1200 || size.width > 1200) 
+		     {
+		       message.channel.send(`t-that's way too big of an image for me!🖌️🐇`);	
+		       message.channel.stopTyping();	
+		        return;
+		     }
+		     
+
     	 gm(request(imageUrl)).setFormat("jpg").quality(1).stream((error, stdout) => {
             if (error)  throw new Error(error); //console.log(error);
             
@@ -36,6 +46,7 @@ module.exports =  {
       }); 
        
     	 });
+    	});
        message.channel.stopTyping(); 
      }
 }

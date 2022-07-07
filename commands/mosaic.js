@@ -18,7 +18,7 @@ module.exports = {
 		       	if(size.height > 1200 || size.width > 1200) 
 		       	{
 		       		message.channel.send(`t-that's way too big of an image for me!🖌️🐇`);
-		       		 messsage.channel.stopTyping();		
+		       		message.channel.stopTyping();		
 		       		return;
 		       	}
 		       gm(request(imageUrl)).command("montage").out("-duplicate").out(24).tile("5x5").geometry("+0+0").stream((error, stdout) => {

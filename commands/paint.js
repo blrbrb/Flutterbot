@@ -12,8 +12,17 @@ module.exports = {
 	 imageUrl = await findImage(message);
 	  if (imageUrl !== undefined) {
 		      message.channel.startTyping();
-		      await gm(request(imageUrl)).paint(25).stream((error, stdout) => {
-			            if (error) throw new Error(error);
+		       await gm(request(imageUrl)).size((error, size) => { 
+		       
+		       	if(size.height > 1200 || size.width > 1200) 
+		       	{
+		       		message.channel.send(`t-that's way too big of an image for me!🖌️🐇`);	
+		       		return;
+		       	}
+		       	
+		       gm(request(imageUrl)).paint(15).resize("800x800>").stream((error, stdout) => {
+			            if (error) console.log(error); 
+			            //console.log(error);
 			            message.channel.stopTyping();
 			            message.channel.send({
 					            files: [{
@@ -21,7 +30,8 @@ module.exports = {
 							              name: "paint.png"
 							            }]
 					          });
-			          });
+			          }); 
+		       });
 		    }
 }
 }

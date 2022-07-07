@@ -222,23 +222,22 @@ if(command == 'img')
 if(command == 'deepfry') 
 {
 	
-	
-client.commands.get('deepfry').run(client,message,args); 	
+await client.commands.get('deepfry').run(client,message,args); 	
 	
 }
 
 
  if (command == 'morejpeg')
  {
-    // await jpeg.run(client, message, args);
-    client.commands.get('jpeg').run(client,message, args); 
+   
+  await client.commands.get('jpeg').run(client,message, args); 
 
  }
  
  if (command == 'destroy')
  {
-      //destroy.run(client, message, args);
-      client.commands.get('destroy').execute(client,message,args);
+   
+   await client.commands.get('destroy').execute(client,message,args);
 
  }
 
@@ -259,14 +258,6 @@ await client.commands.get('paint').run(client, message, args);
 
 
 
-
-
-if (command == 'aaaaah' )
-{
-    client.commands.get('aaaaah').run(client, message, args);
-
-	
-}
  
 
 if(command == 'ifunny') 

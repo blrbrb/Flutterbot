@@ -6,7 +6,7 @@ const { MessageEmbed } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 let oneStepBack = path.join(__dirname, '../');
-
+const cron = require('node-cron');
 //Global queue for your bot. Every server will have a key and value pair in this map. { guild.id, queue_constructor{} }
 const queue = new Map();
 
@@ -56,7 +56,7 @@ let dispatcher
                     const result_info = await ytSearch(args[0]); 
                     console.log(result_info); 
 
-                    song = { title: song_info.videoDetails.title, url: song_info.videoDetails.video_url, lengthSeconds: song_info.videoDetails.lengthSeconds, current_position: current_time }
+                    song = { title: song_info.videoDetails.title, url: song_info.videoDetails.video_url, lengthSeconds: song_info.videoDetails.lengthSeconds, current_time: current_time }
                     if (debug) { message.channel.send(song) }
                 } else {
                     //If there was no link, we use keywords to search for a video. Set the song object to have two keys. Title and URl.
@@ -160,14 +160,16 @@ const video_player = async (guild, song, server_queue) => {
                
                 song_queue.songs.shift();
                                  video_player(guild, song_queue.songs[0]);
-            }).on('error', error => {console.log(error)});
+            }).on('error', error => {preserve_queue(message.guild, song_queue, server_queue, client, message) });
         }).catch(err => console.log(err));                
         
        //console.log(dispatcher.time); 
          
-        await song_queue.text_channel.send(`🎶 Now playing **${song.title}**`) 
+        await song_queue.text_channel.send(`🎶 Now playing **${song.title}**`)  
         
-}
+        
+        
+} 
 
 
 
@@ -357,7 +359,7 @@ const song_queue_data = [];
   console.log(watch_timeSeconds); 
    const fuck = queue.get(guild.id);   
     //console.log(queue.connection.dispatcher.streamTime); 
-    song_queue_data[0][0].current_time = watch_timeSeconds; 
+    song_queue_data[0][0].current_time = song_queue_data[0][0].current_time + watch_timeSeconds; 
     //console.log(clean_strings); 
     const json = JSON.stringify(song_queue_data);
 

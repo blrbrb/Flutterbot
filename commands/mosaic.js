@@ -13,9 +13,9 @@ module.exports = {
 		imageUrl = await findImage(message);
 	  if (imageUrl !== undefined) {
 		      message.channel.startTyping();
-		      gm(request(imageUrl)).command("montage").out("-duplicate").out(24).tile("5x5").geometry("+0+0").stream((error, stdout) => {
+		      await gm(request(imageUrl)).command("montage").out("-duplicate").out(24).tile("5x5").geometry("+0+0").stream((error, stdout) => {
 			            if (error) throw new Error(error);
-			            gm(stdout).resize("800x800>").stream((error, stdoutFinal) => {
+			           gm(stdout).resize("800x800>").stream((error, stdoutFinal) => {
 					            if (error) throw new Error(error);
 					            message.channel.stopTyping();
 					            message.channel.send({

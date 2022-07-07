@@ -171,6 +171,7 @@ if(command == 'play' || command == 'skip' || command == 'queue' || command == 's
  client.commands.get('play').execute(message,args,command,client,Discord, false);
 
 }
+
     
 if(command == 'img')
 {
@@ -241,20 +242,21 @@ client.commands.get('deepfry').run(client,message,args);
 
  }
 
- if (command == 'mosaic')
- {
-    await client.commands.get('mosaic').run(client, message, args); 
- }
+if (command == 'mosaic')
+{
+ await client.commands.get('mosaic').run(client, message, args); 
+}
 
 if (command == 'swirl')
 {
-client.commands.get('swirl').run(client, message, args);
+await client.commands.get('swirl').run(client, message, args);
 }
 
-if (command == 'tartarus')
+if(command == 'paint') 
 {
-    client.commands.get('tartarus').run(client, message, args); 
-}
+await client.commands.get('paint').run(client, message, args);		
+} 
+
 
 
 

@@ -7,42 +7,45 @@ const fs = require('fs');
 const path = require('path');
 let oneStepBack = path.join(__dirname, '../');
 const cron = require('node-cron');
-//Global queue for your bot. Every server will have a key and value pair in this map. { guild.id, queue_constructor{} }
+
+//Global Variables 
 const queue = new Map();
+let dispatcher
+const current_time = 0;
 
-
-//access the current amount of time lapsed on a video 
-//////search_info.player_response.attrUrl.elapsedMediaTimeSeconds; 
-
-//acess the total length of a video 
-// videoinfo.player_response.videoDetails.lengthSeconds
-
-///start playing a video again from the point it was stopped at 
 
 module.exports = {
     name: 'play',
-    aliases: ['skip', 'stop', 'queue',], //We are using aliases to run the skip and stop command follow this tutorial if lost: https://www.youtube.com/watch?v=QBUJ3cdofqc
+    aliases: ['skip', 'stop', 'queue',], 
     cooldown: 0,
     description: 'Advanced music bot',
-    async execute(message, args, cmd, client, Discord, debug){
-let Client = client; 
+    async execute(message, args, cmd, client, Discord, debug) {
+
+let Client = client;
 const serverQueue = queue.get(message.guild.id); 
-const current_time = 0;
-let dispatcher
-       
-        //Checking for the voicechannel and permissions (you can add more permissions if you like).
+        
+      
+
+
+        
+     
+        //Checking for the voicechannel and permissions 
         const voice_channel = message.member.voice.channel;
         if (!voice_channel) return message.channel.send('Pardon me uhm... you need to be in a voice channel for me to play music...');
         const permissions = voice_channel.permissionsFor(message.client.user);
         if (!permissions.has('CONNECT')) return message.channel.send('Im so sorry, I dont have permission to do that. Please dont be mad at me');
         if (!permissions.has('SPEAK')) return message.channel.send('Im so sorry, I dont have permission to do that. Please dont be mad at me');
 
-        //This is our server queue. We are getting this server queue from the global queue.
-        const server_queue = queue.get(message.guild.id); 
        
+        const server_queue = queue.get(message.guild.id); 
 
-        //If the user has used the play command 
 
+
+
+
+
+
+        //check to see if the user has entered one of multipule different commands 
         switch (cmd)
         {
             case "play":
@@ -83,6 +86,7 @@ let dispatcher
                 }
 
                 //If the server queue does not exist (which doesn't for the first video queued) then create a constructor to be added to our global queue.
+                
                 if (!server_queue) {
 
                     const queue_constructor = {
@@ -100,7 +104,8 @@ let dispatcher
                     try {
                         const connection = await voice_channel.join();
                         queue_constructor.connection = connection;
-                        video_player(message.guild, queue_constructor.songs[0], server_queue); 
+                        video_player(message.guild, queue_constructor.songs[0], server_queue);
+                        autosave(message, queue_constructor.songs); 
                         break; 
                     } catch (err) {
                         queue.delete(message.guild.id);
@@ -109,15 +114,15 @@ let dispatcher
                     }
                 } else {
 
-                    //load_savedqueue(oneStepBack + "assets/music_queue.json"); 
+                   
                     server_queue.songs.push(song);
-                    //console.log(server_queue);
+                    autosave(message, server_queue.songs);
 
                     return message.channel.send(`Okay! **${song.title}** added to queue!`);
                     break; 
                 }         
 
-            case "queue": getqueue(message.guild, message, server_queue, args, Client);
+            case "queue": queuemanager(message.guild, message, server_queue, args, Client);
             		break; 
 
 
@@ -149,26 +154,30 @@ const video_player = async (guild, song, server_queue) => {
 
         return;
     }
- 
-    song_queue.voice_channel.join().then(connection => {
-       
-        const stream = ytdl(song.url, { highWaterMark: 1 << 25 }, { filter : 'audioonly' });
+    else {
+        
+        song_queue.voice_channel.join().then(connection => {
 
-    
-             dispatcher = connection.play(stream, {seek: song.current_time, volume: 1});               
-            dispatcher.on('finish', () => {          
+            const stream = ytdl(song.url, { highWaterMark: 1 << 25 }, { filter: 'audioonly' });
+
+
+            dispatcher = connection.play(stream, { seek: song.current_time, volume: 1 });
+
+            dispatcher
+            dispatcher.on('finish', () => {
                
                 song_queue.songs.shift();
-                                 video_player(guild, song_queue.songs[0]);
-            }).on('error', error => {preserve_queue(message.guild, song_queue, server_queue, client, message) });
-        }).catch(err => console.log(err));                
+                video_player(guild, song_queue.songs[0]);
+            }).on('error', error => { return; });
+        }).catch(err => console.log(err));
+
+       
+
+
+        await song_queue.text_channel.send(`🎶 Now playing **${song.title}**`)
         
-       //console.log(dispatcher.time); 
-         
-        await song_queue.text_channel.send(`🎶 Now playing **${song.title}**`)  
-        
-        
-        
+       
+    }
 } 
 
 
@@ -196,43 +205,77 @@ const stop_song = (message, server_queue, guild) => {
 } 
 
 
-const getqueue = async (guild, message, server_queue, args, client) => { 
-	
-    //var a = server_queue.songs;  
-     //console.log(server_queue[0].title); 
-     //console.log(args); 
-     //var cmd2 = args[0];
+const queuemanager = async (guild, message, server_queue, args, client) => { 
+
+   
+   
      var farts = args[0]; 
      switch (args[0])
      {
      	
      	case 'save': 
-     	//console.log(server_queue.voice_channel.connection);
+     
 
      	  const da_queue = server_queue;  
-     	  //console.log(server_queue.connection); 
-     		  preserve_queue(guild,server_queue.songs, da_queue, client);   
-     		  //console.log(server_queue.songs); 
+     		  preserve_queue(guild,server_queue.songs, da_queue, client);    
      		   message.channel.send("music player queue saved to log file"); 
      		   break; 
      	
      	
-        case 'restore':
+         case 'restore':
 
-             if (!server_queue) { 
-                 message.channel.send("but... I can't! I haven't had a chance to call my SongBirds yet...");
-                 return; 
+             //shamelessly copy paste code to make it as if the user had called play, just replace the arguments with the data in music_queue.json
+             if (!server_queue) {
+                 const voice_channel = message.member.voice.channel;
+                 const queue_constructor = {
+                     voice_channel: voice_channel,
+                     text_channel: message.channel,
+                     connection: null,
+                     songs: []
+                 }
+
+                 queue.set(message.guild.id, queue_constructor);
+                 let restored_songs = load_savedqueue("assets/music_queue.json").slice();
+                 let num; 
+                 for (i = 0; i < restored_songs.length; i++) {
+                     num = restored_songs[i].length;
+
+                     for (j = 0; j < restored_songs[i].length; j++) {
+                         queue_constructor.songs.push(restored_songs[i][j]);
+                         num = restored_songs[i].length;
+                     }
+                 }
+
+                 console.log(queue_constructor.songs);
+                 message.channel.send(`My SongBirds successfully restored **${num}** songs from the last session! 🐤🎵~`);
+
+                 //Establish a connection and play the song with the vide_player function.
+                 try {
+                     const connection = await voice_channel.join();
+                     queue_constructor.connection = connection;
+                     video_player(message.guild, queue_constructor.songs[0], server_queue);
+                     autosave(message, queue_constructor.songs);
+                     break;
+                 } catch (err) {
+                     queue.delete(message.guild.id);
+                     message.channel.send('uhhm. Excuse me. i. Im having trouble connecting...');
+                     throw err;
+                 }
+                 break;
              }
-               else
-     		       message.channel.send("loading previous queue from save file…");
-     		       const saved_songs = load_savedqueue("assets/music_queue.json"); 
-                   restore_queuesongs(saved_songs, server_queue, message);
-                         break;
+             else {
+                 message.channel.send("loading previous queue from save file…");
+                 const saved_songs = load_savedqueue("assets/music_queue.json");
+                 restore_queuesongs(saved_songs, server_queue, message);
+                 break;
+             }
     
          
      	default:
      	
-     	
+             if (!server_queue) {
+                 return;
+             }
     if(!server_queue.songs) 
     {
     	return; 
@@ -242,7 +285,7 @@ const getqueue = async (guild, message, server_queue, args, client) => {
     if(server_queue.songs.length <= 1) 
     { 
     	 let vidInfo = await ytdl.getInfo(server_queue.songs[0].url); 
-    	//console.log(vidInfo); 
+    	
 		console.log(vidInfo.player_response); 
     	    const embed = new MessageEmbed().setTitle(`**I'm Currently Playing:** \n[${server_queue.songs[0].title}](${server_queue.songs[0].url})`).setImage(getvideo_thumbnail(vidInfo)); 
 
@@ -255,8 +298,9 @@ const getqueue = async (guild, message, server_queue, args, client) => {
     if(server_queue.songs.length >= 2 ) {
     	
    //this is where the save queue function might need to be called If I ever get around to automating it 
-   //just be sure to add an if statement to make sure that the queue isn't completley empty when reading and writing
-let vidInfo1 = await ytdl.getInfo(server_queue.songs[1].url); 
+   //just be sure to add an if statement to make sure that the queue isn't completley empty when reading and writing 
+    //server_queue.songs
+    let vidInfo1 = await ytdl.getInfo(server_queue.songs[1].url); 
 
      	
      
@@ -306,7 +350,6 @@ function getvideo_thumbnail(vidinfo)
 async function preserve_queue(guild, song_queue, server_queue, client, message) 
 {
 	console.log("function is working"); 
-	
  
 
 	//console.log(queue);
@@ -341,7 +384,7 @@ const song_queue_data = [];
 	
 			//console.log(strings);       
 		// var clean_strings = []; 
-    if (song_queue.length <= 1)
+    if (song_queue.length < 1)
     {
         return; 
     }
@@ -351,15 +394,12 @@ const song_queue_data = [];
      
 
     
-    
-  console.log(dispatcher.streamTime);
+  
   
   var watch_timeSeconds = Math.round(dispatcher.streamTime / 1000); 
   
-  console.log(watch_timeSeconds); 
-   const fuck = queue.get(guild.id);   
     //console.log(queue.connection.dispatcher.streamTime); 
-    song_queue_data[0][0].current_time = song_queue_data[0][0].current_time + watch_timeSeconds; 
+    song_queue_data[0][0].current_time = watch_timeSeconds; 
     //console.log(clean_strings); 
     const json = JSON.stringify(song_queue_data);
 
@@ -409,15 +449,23 @@ function restore_queuesongs(savedsongs, server_queue, message)
     for (i = 0; i < savedsongs.length; i++)
     {
         num = savedsongs[i].length;
-   
+         
         for (j = 0; j < savedsongs[i].length; j++)
             {
                     server_queue.songs.push(savedsongs[i][j]);
-                         num = savedsongs[i].length; 
+            //num = savedsongs[i].length;
             }
       }
       
     message.channel.send(`My SongBirds successfully restored **${num}** songs from the last session! 🐤🎵~`);
  
     
+}
+
+async function autosave(message, songs)
+{
+    
+    const job = cron.schedule("*/30 * * * * *", () => { preserve_queue(message.guild, songs, message) });
+    job.start();
+
 }

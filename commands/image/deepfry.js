@@ -3,7 +3,7 @@ const gm = require("gm").subClass({
   imageMagick: true
 });
  
-const findImage = require('../utils/findimage.js');
+const findImage = require('../../utils/findimage.js');
 
 module.exports = {
     name: 'deepfry',
@@ -11,7 +11,8 @@ module.exports = {
  async run(client, message, args) { 
  	
  	
- imageUrl = await findImage(message);
+ imageUrl = await findImage.imageFinder(message);
+ const extension = findImage.extensionFinder(imageUrl);
 
   if (imageUrl !== undefined) {
     message.channel.startTyping(); 
@@ -23,6 +24,23 @@ module.exports = {
 		     message.channel.stopTyping();			
 		     return;
 		   }
+		   
+		  if(extension == 'gif') 
+		  {
+		  	gm(request(imageUrl)).colorspace("RGB").out("-brightness-contrast", "30x50").setFormat("jpg").quality(1).stream((error, stdout) => {
+      if (error) throw new Error(error);
+      message.channel.stopTyping();
+      message.channel.send({
+        files: [{
+          attachment: stdout,
+          name: "deepfry.gif"    
+        }]
+      });
+    }); 
+
+		  	
+		  }
+		 else 
 		       	
     gm(request(imageUrl)).colorspace("RGB").out("-brightness-contrast", "30x50").setFormat("jpg").quality(1).stream((error, stdout) => {
       if (error) throw new Error(error);

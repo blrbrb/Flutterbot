@@ -4,16 +4,17 @@ const gm = require("gm").subClass({
 });
 
 
-const findImage = require('../utils/findimage.js');
-const sendImage = require('../utils/sendimage.js');
-const clamp = require('../utils/clamp.js');
+const findImage = require('../../utils/findimage.js');
+const sendImage = require('../../utils/sendimage.js');
+const clamp = require('../../utils/clamp.js');
 
 
 module.exports = {
     name: 'destroy',
     description: 'Fluttershy Will Destroy an image for you',
     async execute(client, message, args)  { // eslint-disable-line no-unused-vars
-  imageUrl = await findImage(message);
+  imageUrl = await findImage.imageFinder(message);
+		const extension = findImage.extensionFinder(imageUrl);
   if (imageUrl !== undefined) {
     message.channel.startTyping(); 
      await gm(request(imageUrl)).size((error, size) => { 

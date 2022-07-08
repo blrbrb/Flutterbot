@@ -18,36 +18,24 @@ require('dotenv').config();
 const prefix1 = "-"; 
 
 const fs = require('fs');
-const jpeg = require("./commands/jpeg.js");
 
 
-client.commands = new Discord.Collection();  
+
+client.commands = new Discord.Collection(); 
+client.imgcommands = new Discord.Collection();  
 client.aliases = new Discord.Collection()
  
 const cheerio = require('cheerio');  
 const request = require('request');  
 //init command source (stored in seperate js modules)
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
- for(const file of commandFiles) {
-	const command = require(`./commands/${file}`);  
-	client.commands.set(command.name, command);    
-	
-	if (command.aliases) {
-    command.aliases.forEach(alias => {
-        client.aliases.set(alias, command) 
-        
-    });
+const imageFiles = fs.readdirSync('./commands/image/').filter(file => file.endsWith('.js')); 
+
+ 
 
 
-	
-	
-	}
-	//console.log(client.aliases); 
-}
 
-//init music player queue
 
-//const queue = new Map();
  
 
 
@@ -56,6 +44,13 @@ let lang = require(`./lang/en.js`);
 var a =0; 
 var b = 0;
 var c = 0;
+
+//init commands before the client is online 
+init_commands(); 
+init_imgcommands();
+
+
+
 //main events 
 client.on('ready', () => {
 console.log('Fluttershy is Awake Yay! :3');
@@ -215,14 +210,14 @@ if(command == 'img')
 ///Begin Image Commands 
  if (command == 'circle')
  {
-     client.commands.get('circle').run(client, message, args); 
+     client.imgcommands.get('circle').run(client, message, args); 
  }
 
 
 if(command == 'deepfry') 
 {
 	
-await client.commands.get('deepfry').run(client,message,args); 	
+await client.imgcommands.get('deepfry').run(client,message,args); 	
 	
 }
 
@@ -230,32 +225,37 @@ await client.commands.get('deepfry').run(client,message,args);
  if (command == 'morejpeg')
  {
    
-  await client.commands.get('jpeg').run(client,message, args); 
+  await client.imgcommands.get('jpeg').run(client,message, args); 
 
  }
  
  if (command == 'destroy')
  {
    
-   await client.commands.get('destroy').execute(client,message,args);
+   await client.imgcommands.get('destroy').execute(client,message,args);
 
  }
 
 if (command == 'mosaic')
 {
- await client.commands.get('mosaic').run(client, message, args); 
+ await client.imgcommands.get('mosaic').run(client, message, args); 
 }
 
 if (command == 'swirl')
 {
-await client.commands.get('swirl').run(client, message, args);
+await client.imgcommands.get('swirl').run(client, message, args);
 }
 
 if(command == 'paint') 
 {
-await client.commands.get('paint').run(client, message, args);		
+await client.imgcommands.get('paint').run(client, message, args);		
 } 
 
+if(command == 'text')
+{
+await client.imgcommands.get('text').run(client, message, args); 	
+	
+}
 
 
  
@@ -498,3 +498,74 @@ client.fileCheck = (image) => {
         });
     });
 };
+
+
+
+
+async function init_commands() 
+{
+	
+	for(const file of commandFiles) {
+		var arr = []; 
+	const command = require(`./commands/${file}`); 
+	arr.push(file);
+	const total = commandFiles.length; 
+	
+		 //console.log(commandFiles.indexOf(file) / total * 100 + "%");
+	
+	
+	//console.log(total);
+	
+	//console.log(command);
+	process.stdout.clearLine();
+	process.stdout.cursorTo(0);
+	process.stdout.write("loading commands:" + Math.round((1 + commandFiles.indexOf(file)) / total * 100) + "%");
+	
+  	//console.log("%s Loading Commands" + 
+	client.commands.set(command.name, command);    
+	
+	if (command.aliases) {
+    command.aliases.forEach(alias => {
+    client.aliases.set(alias, command) 
+       
+    });
+	
+	}	 
+	//process.stdout.write("/n");
+}
+
+	
+	
+	
+}
+
+
+
+
+
+async function init_imgcommands() 
+{
+	
+	
+	for(const file of imageFiles) {
+	const command = require(`./commands/image/${file}`);  
+	client.imgcommands.set(command.name, command);  
+	const total = commandFiles.length; 
+	//process.stdout.clearLine();
+	process.stdout.cursorTo(0);
+	process.stdout.write("loading Image Commands:" + Math.round(imageFiles.indexOf(file) / total * 100) + "%");   
+	
+	if (command.aliases) {
+    command.aliases.forEach(alias => {
+    client.aliases.set(alias, command) 
+       
+    });
+	
+	}	 
+
+	
+	
+
+	}
+	process.stdout.write('\n');
+	}

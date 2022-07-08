@@ -1,6 +1,6 @@
 
 
-module.exports = function findImage(message) {
+module.exports.imageFinder = function findImage(message) {
     return new Promise(async (resolve, reject) => {
         try {
             // if (message.attachments.size > 0) {
@@ -13,25 +13,26 @@ module.exports = function findImage(message) {
             //   resolve(imgUrl); // Resolve image URL
             // } else {
             // Channel searching (25 messages)
-            let messages = await message.channel.messages.fetch({ limit: 2 });
+            let messages = await message.channel.messages.fetch({ limit: 8 });
             let attachmentMessages = messages
                 .map((message) => {
                     let attachmentURL = undefined;
                     if (message.attachments.first()) {
                         attachmentURL = message.attachments.first().proxyURL;
-                        //console.log(attachmentURL); // If message has image attachment set as URL
+                       console.log(attachmentURL); // If message has image attachment set as URL
                     } else {
                         if (message.embeds[0] && message.embeds[0].type == "image") {
                             attachmentURL = message.embeds[0].url;
-                            //console.log(attachmentURL); // If message has image embed set as URL
+                            console.log("jpg/png image found"); // If message has image embed set as URL
                         }
                         if (message.embeds[0] && message.embeds[0].type == "gifv") {
                             attachmentURL = message.embeds[0].url + (message.embeds[0].url.match(/(\.gif)/gi) ? "" : ".gif");
-                                //console.log(attachentURL); // If message has gifv embed set as URL (Ensuring it ends with .gif)
+                                console.log("gif image found"); // If message has gifv embed set as URL (Ensuring it ends with .gif)
                         }
                         if (message.embeds[0] && message.embeds[0].image != null) {
                             attachmentURL = message.embeds[0].image.url; 
                             console.log(message.embeds[0].image.url);// If message is an embed with an image
+                    
                         }
                     }
                     if (attachmentURL) console.log("image found"); return attachmentURL; // Return image URL for each message
@@ -52,7 +53,9 @@ module.exports = function findImage(message) {
 
 
 
-
+module.exports.extensionFinder = function get_url_extension( url ) {
+    return url.split(/[#?]/)[0].split('.').pop().trim();
+}
 
 
 

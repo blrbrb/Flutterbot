@@ -5,7 +5,7 @@ const gm = require("gm").subClass({
 
 const fs = require('fs'); 
 
-const findImage = require('../utils/findimage.js');
+const findImage = require('../../utils/findimage.js');
 
 
 module.exports = {

@@ -24,6 +24,11 @@ module.exports = {
 				
 		       	var newStr = args.join(' ');
 		       
+		       if(args.length > 400) 
+		       {
+		       		message.channel.send(`oh sweetie, I think that's too much text..`); 
+		       	
+		       	}
 		       	
 		       	if(size.height > 2000 && size.width > 2000) 
 		       	{
@@ -31,7 +36,7 @@ module.exports = {
 		       		message.channel.stopTyping();	
 		       		return;
 		       	} 
-		       	if(size.height < 400 && size.width < 400) 
+		       	if(size.height < 400 && size.width < 200) 
 		       	{
 		       		message.channel.send('that image is so small, your text might not show up!');
 		       		

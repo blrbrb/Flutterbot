@@ -11,3 +11,7 @@ to install, make sure you have the latest version of npm installed on the comman
 
 
 Data for mlp episodes and character quotes is sourced from  ZhangYiJiang: mlp-visualization  at https://github.com/ZhangYiJiang/mlp-visualization
+
+
+Contrinutors: 
+![fuzzbuzzbay999]([https://github.com/fuzzbuzzbay999)

@@ -1,4 +1,4 @@
-
+require('dotenv').config();
 const request = require("request");
 const fs = require('fs'); 
 const gm = require("gm").subClass({

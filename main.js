@@ -3,7 +3,7 @@ const Discord = require('discord.js')
 const MessageEmbed  = require('discord.js');
 //const Discord = require('Discord.js');
 const ytdl = require("ytdl-core"); 
-
+const scan = require("utils/findimage.js");
 let pcounter = 1;
 var pdata = {c}
 var servers = {};
@@ -72,7 +72,18 @@ client.on('guildCreate', (guild) => {
 
 client.on('message', async message => {
 
- 
+
+   const scan_url = await scan.imageFinder(message);
+    const extension = await scan.extensionFinder(scan_url);
+
+    if (extension == 'exe' || extension == 'out' || extension == 'bat' || extension == 'sh')
+    {
+        message.channel.send("Container Scan has tested true for executable bytes");
+        message.channel.send("Some has sent a potentially dangerous attachment. Do not click on it, even if it looks like an image at first");
+        //message.channel.send("")
+      
+
+    }
 
  let cwords = await get_banned_words();
  var word_said = false; 

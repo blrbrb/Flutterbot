@@ -12,8 +12,8 @@ module.exports.imageFinder = function findImage(message) {
             //   let imgUrl = message.embeds[0].url;
             //   resolve(imgUrl); // Resolve image URL
             // } else {
-            // Channel searching (25 messages)
-            let messages = await message.channel.messages.fetch({ limit: 8 });
+          
+            let messages = await message.channel.messages.fetch({ limit: 2 });
             let attachmentMessages = messages
                 .map((message) => {
                     let attachmentURL = undefined;

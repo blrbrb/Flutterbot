@@ -17,24 +17,43 @@ module.exports = {
 		      message.channel.startTyping(); 
 		       await gm(request(imageUrl)).size((error, size) => { 
 		       
-		       		       const textsizeprecent = Math.round( 4 *(size.width / 100 * size.height /100));		       console.log(textsizeprecent); 
-		        const x = size.width / 100 * 21;
-		       const y = size.height / 100 * 21;
-
+		       		       const textsizepercent = Math.round(( 2*10*(size.width/size.height)));		       console.log(textsizepercent); 
+		       		       var ratio = size.width / size.height; 
+		        let x = size.width * 0.01; // (textsizepercent / 100);
+		       let y = size.height * 0.5; //(textsizepercent / 100);
+				
+		       	var newStr = args.join(' ');
 		       
-		       	if(size.height > 1200 && size.width > 1200) 
+		       	
+		       	if(size.height > 2000 && size.width > 2000) 
 		       	{
 		       		message.channel.send(`t-that's way too big of an image for me!🖌️🐇`);
 		       		message.channel.stopTyping();	
 		       		return;
-		       	}            
+		       	} 
+		       	if(size.height < 400 && size.width < 400) 
+		       	{
+		       		message.channel.send('that image is so small, your text might not show up!');
+		       		
+		       	}
+		           
 		       	
-		      	
-		       	
-		       	
+		      		       	
 		       	console.log(args[0]);
-		       	
-		      gm(request(imageUrl)).fill('#000000').font('Arial', textsizeprecent).drawText(x,y,args[0].toString()).stream((error, stdout) => {
+		       
+		   const picture = gm(request(imageUrl)).fill('#000000').font('Arial', textsizepercent).drawText(x,y, newStr);
+		      
+		      	
+		       	for(i = 0; i < newStr.length - 20; i++) 
+		       	{
+ 				 y += 25;
+ 				 picture.drawText(x, y, newStr);
+				}
+
+		      
+		      
+		      
+		      picture.geometry("+0+0").stream((error, stdout) => {
 			            if (error) throw new Error(error);
 			            message.channel.stopTyping();
 			            message.channel.send({

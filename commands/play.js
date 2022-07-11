@@ -158,7 +158,7 @@ const video_player = async (guild, song, server_queue) => {
         
         song_queue.voice_channel.join().then(connection => {
 
-            const stream = ytdl(song.url, { highWaterMark: 1 << 25 }, { filter: 'audioonly' });
+            const stream = ytdl(song.url, { highWaterMark: 1 << 16 }, { filter: 'audioonly' });
 
 
             dispatcher = connection.play(stream, { seek: song.current_time, volume: 1 });

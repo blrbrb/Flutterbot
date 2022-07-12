@@ -1,24 +1,23 @@
 
 const Discord = require('discord.js')
 const MessageEmbed  = require('discord.js');
-//const Discord = require('Discord.js');
 const ytdl = require("ytdl-core"); 
 const scan = require('./utils/findimage.js');
 let pcounter = 1;
 var pdata = {c}
 var servers = {};
-//var debug = false;
+
 
 const client = new Discord.Client();
 
 require('dotenv').config();
 
-//client.player = player;
+
 
 const prefix1 = "-"; 
 
 const fs = require('fs');
-
+let debug = false; 
 
 
 client.commands = new Discord.Collection(); 
@@ -168,7 +167,7 @@ if (command == 'angel')
 if(command == 'play' || command == 'skip' || command == 'queue' || command == 'save')
 {
          
- client.commands.get('play').execute(message,args,command,client,Discord, false);
+ client.commands.get('play').execute(message,args,command,client,Discord, debug);
 
 }
 
@@ -374,14 +373,25 @@ if(command == 'filter')
 }
 
 
-if(command == 'wholesome_check' && (message.member.hasPermission("ADMINISTRATOR") == true)) 
+
+if(command == 'debug')
 {
+	let allowedRole = message.guild.roles.cache.find(role=> role.name === "FlutterProgrammer");
 	
-	message.channel.send(`**Our Little Ponies Have said bad words** ${pcounter} **times in this server!**`); 
-	
-	
-	
+	if(message.member.roles.cache.has(allowedRole.id) || message.author.id == '252235505318625281')
+	{
+		
+			if(debug == true) 
+				message.channel.send('debug output disabled');
+			else 
+				 message.channel.send('debugging mode enabled on Fluttershy Build:' + ' ' + process.env.VERSION);  
+				 debug = true;
+				 return; //dangerous
+
+	}
 }
+
+
 
     
  });   

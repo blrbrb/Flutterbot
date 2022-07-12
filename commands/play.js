@@ -57,9 +57,10 @@ const serverQueue = queue.get(message.guild.id);
                   
                    
                     const song_info = await ytdl.getInfo(args[0]);
-                    console.log(song_info.player_response.videoDetails.lengthSeconds);
+                   // console.log(song_info.player_response.videoDetails);
+                    console.log(song_info.player_response);
                     const result_info = await ytSearch(args[0]); 
-                    console.log(result_info); 
+                   // console.log(result_info); 
 
                     song = { title: song_info.videoDetails.title, url: song_info.videoDetails.video_url, lengthSeconds: song_info.videoDetails.lengthSeconds, current_time: current_time }
                     if (debug) { message.channel.send(song) }
@@ -85,11 +86,12 @@ const serverQueue = queue.get(message.guild.id);
                     const video_finder = async (query) => {
                         const video_result = await ytSearch(query);
                         const song_info2 = await ytdl.getInfo(video_result.videos[0].url);
-                        console.log(song_info2); 
-                       // console.log(search_info.player_response.videoDetails.lengthSeconds); 
-                       //console.log(video_result); 
-                       //videoinfo.player_response.videoDetails.lengthSeconds
-                       
+                      
+                           if(debug){
+                           	 console.log(song_info2.player_response);
+                        message.channel.send('data streaming request expires in:' + ' ' + song_info2.player_response.streamingData.expiresInSeconds +' ' + 'seconds'); } 
+            
+                        
                         
                         return (video_result.videos.length > 1) ? video_result.videos[0] : null;
                     }
@@ -124,7 +126,7 @@ const serverQueue = queue.get(message.guild.id);
                     try {
                         const connection = await voice_channel.join();
                         queue_constructor.connection = connection;
-                        video_player(message.guild, queue_constructor.songs[0], server_queue);
+                        video_player(message.guild, queue_constructor.songs[0], server_queue, debug);
                         autosave(message, queue_constructor.songs); 
                         break; 
                     } catch (err) {
@@ -162,7 +164,7 @@ const serverQueue = queue.get(message.guild.id);
     
 }}
 
-const video_player = async (guild, song, server_queue) => {
+const video_player = async (guild, song, server_queue, debug) => {
     const song_queue = queue.get(guild.id);
 
     //If no song is left in the server queue. Leave the voice channel and delete the key and value pair from the global queue.
@@ -182,13 +184,24 @@ const video_player = async (guild, song, server_queue) => {
 
 
             dispatcher = connection.play(stream, { quality: 'highestaudio', seek: song.current_time, volume: 1 });
+			dispatcher.on('start', () => {if(debug)song_queue.text_channel.send('my voice dispatcher has fired the "start" event');})
 
-            dispatcher
+            dispatcher.on('end', () => {	
+            	
+            	song_queue.songs.shift(); 
+            	video_player(guild, song_queue.songs[0]); 
+            	if(debug)
+            		song_queue.text_channel.send('the dispatcher "end" event has fired');
+            	});
+            	
             dispatcher.on('finish', () => {
                
                 song_queue.songs.shift();
                 video_player(guild, song_queue.songs[0]);
-            }).on('error', error => { return; });
+                if(debug) 
+                	song_queue.text_channel.send('the dispatcher "finish" event has fired'); 
+                	
+            }).on('error', error => { if(debug) message.channel.send(error.message); return;});
         }).catch(err => console.log(err));
 
        

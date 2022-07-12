@@ -54,6 +54,8 @@ const serverQueue = queue.get(message.guild.id);
 
                 //If the first argument is a link. Set the song object to have two keys. Title and URl.
                 if (ytdl.validateURL(args[0])) {
+                  
+                   
                     const song_info = await ytdl.getInfo(args[0]);
                     console.log(song_info.player_response.videoDetails.lengthSeconds);
                     const result_info = await ytSearch(args[0]); 
@@ -61,11 +63,29 @@ const serverQueue = queue.get(message.guild.id);
 
                     song = { title: song_info.videoDetails.title, url: song_info.videoDetails.video_url, lengthSeconds: song_info.videoDetails.lengthSeconds, current_time: current_time }
                     if (debug) { message.channel.send(song) }
-                } else {
+                }
+
+                if (args[0].includes('playlist?')) {
+                    message.channel.send("it's a playlist");
+                    let playlist_ID_prototype =  await args[0].toString().split('list='); 
+                    //const playlist_ID = playlist_ID_prototype.join();
+                    console.log(playlist_ID_prototype[1]); 
+                   await message.channel.send(playlist_ID_prototype[1].toString()); 
+                    const first_results_batch = await ytpl(String(playlist_ID_prototype[1]), { pages: 1 });
+                    const second = await ytpl(first_results_batch.continuation);
+                    const third = await ytpl(second.continuation);      
+                    message.channel.send('this is a playlist. I can tell the difference now');
+                    console.log(second);
+                    console.log(third);
+                    console.log(first_results_batch);
+                }
+            
+                else {
                     //If there was no link, we use keywords to search for a video. Set the song object to have two keys. Title and URl.
                     const video_finder = async (query) => {
                         const video_result = await ytSearch(query);
-                      
+                        const song_info2 = await ytdl.getInfo(video_result.videos[0].url);
+                        console.log(song_info2); 
                        // console.log(search_info.player_response.videoDetails.lengthSeconds); 
                        //console.log(video_result); 
                        //videoinfo.player_response.videoDetails.lengthSeconds
@@ -161,7 +181,7 @@ const video_player = async (guild, song, server_queue) => {
             const stream = ytdl(song.url, { highWaterMark: 1 << 16 }, { filter: 'audioonly' });
 
 
-            dispatcher = connection.play(stream, { seek: song.current_time, volume: 1 });
+            dispatcher = connection.play(stream, { quality: 'highestaudio', seek: song.current_time, volume: 1 });
 
             dispatcher
             dispatcher.on('finish', () => {
@@ -333,7 +353,7 @@ async function getvideo_details(video_url)
 	return vidInfo.player_response.videoDetails;
 	
 	
-}https://cdn.discordapp.com/attachments/960715753005383710/992278662357463070/morejpeg.jpg
+}
       
 
 

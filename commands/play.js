@@ -169,6 +169,7 @@ const video_player = async (guild, song, server_queue, debug) => {
 
     //If no song is left in the server queue. Leave the voice channel and delete the key and value pair from the global queue.
     if (!song) {
+    	song_queue.text_channel.send('queue is null… exiting'); 
         song_queue.voice_channel.leave();
         queue.delete(guild.id);
 
@@ -180,29 +181,33 @@ const video_player = async (guild, song, server_queue, debug) => {
         
         song_queue.voice_channel.join().then(connection => {
 
-            const stream = ytdl(song.url, { highWaterMark: 1 << 16 }, { filter: 'audioonly' });
+            const stream = ytdl(song.url, { highWaterMark: 1 << 22, filter: 'audioonly' });
 
 
             dispatcher = connection.play(stream, { quality: 'highestaudio', seek: song.current_time, volume: 1 });
 			dispatcher.on('start', () => {if(debug)song_queue.text_channel.send('my voice dispatcher has fired the "start" event');})
 
             dispatcher.on('end', () => {	
-            	
+            	if(debug) {
+            	song_queue.text_channel.send('the dispatcher "end" event has fired'); }
+
             	song_queue.songs.shift(); 
             	video_player(guild, song_queue.songs[0]); 
-            	if(debug)
-            		song_queue.text_channel.send('the dispatcher "end" event has fired');
-            	});
+            	
+            		            	});
+            	
+            	
             	
             dispatcher.on('finish', () => {
                
+               if(debug) {
+                	song_queue.text_channel.send('the dispatcher "finish" event has fired');} 
                 song_queue.songs.shift();
                 video_player(guild, song_queue.songs[0]);
-                if(debug) 
-                	song_queue.text_channel.send('the dispatcher "finish" event has fired'); 
+                
                 	
-            }).on('error', error => { if(debug) message.channel.send(error.message); return;});
-        }).catch(err => console.log(err));
+            }).on('error', error => {song_queue.text_channel.send('the stream has crashed')});
+        }).catch(err => console.log(err.message));
 
        
 

@@ -261,7 +261,12 @@ await client.imgcommands.get('text').run(client, message, args);
 	
 }
 
+if (command == 'Fluttershy' || command == 'fluttershy' || command == 'fs')
+{
 
+    client.commands.get('Fluttershy').run(client, message, command, args); 
+
+}
  
 
 if(command == 'ifunny') 

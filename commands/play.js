@@ -12,7 +12,7 @@ const cron = require('node-cron');
 const queue = new Map();
 let dispatcher
 const current_time = 0;
-
+const taskMap = {};
 
 module.exports = {
     name: 'play',
@@ -26,7 +26,7 @@ const serverQueue = queue.get(message.guild.id);
         
       
 
-
+init_cronJob(); 
         
      
         //Checking for the voicechannel and permissions 
@@ -66,19 +66,47 @@ const serverQueue = queue.get(message.guild.id);
                     if (debug) { message.channel.send(song) }
                 }
 
-                if (args[0].includes('playlist?')) {
-                    message.channel.send("it's a playlist");
-                    let playlist_ID_prototype =  await args[0].toString().split('list='); 
-                    //const playlist_ID = playlist_ID_prototype.join();
-                    console.log(playlist_ID_prototype[1]); 
-                   await message.channel.send(playlist_ID_prototype[1].toString()); 
-                    const first_results_batch = await ytpl(String(playlist_ID_prototype[1]), { pages: 1 });
-                    const second = await ytpl(first_results_batch.continuation);
-                    const third = await ytpl(second.continuation);      
-                    message.channel.send('this is a playlist. I can tell the difference now');
-                    console.log(second);
-                    console.log(third);
-                    console.log(first_results_batch);
+                if (ytpl.validateID(args[0])) {
+                	//let text = args[0];
+                	//let ID = text.substring(text.indexOf("https://www.youtube.com/playlist?list=") + 38, text.length);
+					//console.log(typeof args[0]);
+                    //message.channel.send("it's a playlist");
+                                     
+                   const first = await ytpl(args[0], { pages: 1 }); 
+                   //const second = ytpl.continueReq(first.continuation); 
+                   //const third = ytpl.continueReg(second.continuation); 	
+                   	let vids = first.items;
+                   	//vids.push(first.items); 
+                   	
+                   	//console.log(vids);  
+                   	let playlist_array = {};
+                   
+                   	for(i = 0; i < vids.length; i++) 
+                   	{ 
+                   		//console.log(vids[i].title);   
+                   			let info = {};
+                   			info += await ytdl.getInfo(vids[i].url); 
+                   			//console.log(info); 
+                   			  info = info[i];
+                   			  console.log(info); 
+                   			 
+                   			info = info[i][i].lengthSeconds;
+                   		console.log(info); 
+     					playlist_array.title = vids[i].title;
+     					playlist_array.url = vids[i].url; 
+     				 	//playlist_array.lengthSeconds = 
+     				 	console.log(info); 
+  
+     					playlist_array.currenttime = current_time; 
+     					//console.log(playlist_array); 
+                   		//info_array.push(await ytdl.getInfo(vids[i].url).videoDetails); 
+                   	
+
+                   		         		
+                   	}
+                   
+ 								
+                   
                 }
             
                 else {
@@ -169,13 +197,17 @@ const video_player = async (guild, song, server_queue, debug) => {
 
     //If no song is left in the server queue. Leave the voice channel and delete the key and value pair from the global queue.
     if (!song) {
-    	song_queue.text_channel.send('queue is null… exiting'); 
+    	
         song_queue.voice_channel.leave();
+        
+        if(debug)
+    		song_queue.text_channel.send('queue is null… exiting');  
+
         queue.delete(guild.id);
-
-
-
-        return;
+      let queuetask = taskMap["update_queue"]; 
+      queuetask.stop(); 
+        
+            	return; 
     }
     else {
         
@@ -498,12 +530,21 @@ function restore_queuesongs(savedsongs, server_queue, message)
     message.channel.send(`My SongBirds successfully restored **${num}** songs from the last session! 🐤🎵~`);
  
     
+} 
+
+const init_cronJob = () => 
+{
+	
+	 var task = cron.schedule("*/30 * * * * *", () => { preserve_queue(message.guild, songs, message) }); 
+     taskMap["update_queue"] = task; 
+     
+    
+	
 }
 
 async function autosave(message, songs)
 {
-    
-    const job = cron.schedule("*/30 * * * * *", () => { preserve_queue(message.guild, songs, message) });
-    job.start();
+    let queuetask = taskMap["update_queue"]; 
+    queuetask.start();
 
 }

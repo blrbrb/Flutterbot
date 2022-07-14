@@ -22,7 +22,7 @@ let debug = false;
 
 client.commands = new Discord.Collection(); 
 client.imgcommands = new Discord.Collection();  
-client.aliases = new Discord.Collection()
+client.aliases = new Discord.Collection(); 
  
 const cheerio = require('cheerio');  
 const request = require('request');  
@@ -46,7 +46,7 @@ var c = 0;
 
 //init commands before the client is online 
 init_commands(); 
-init_imgcommands();
+//init_imgcommands();
 
 
 
@@ -264,14 +264,15 @@ await client.imgcommands.get('text').run(client, message, args);
 
 if(command == 'Fluttershy' || command == 'fluttershy' || command == 'fs') 
 {
-	if(message.author.id != '252235505318625281') 
+	let allowedRole = message.guild.roles.cache.find(role=> role.name === "FlutterProgrammer");
+	
+	if(message.author.id == '252235505318625281' || message.member.roles.cache.has(allowedRole.id)) 
 	{
-			return; 
+		client.commands.get('Fluttershy').run(client, message, command, args); 
 	}
-	else
 	
-	client.commands.get('Fluttershy').run(client, message, command, args); 
-	
+	else 
+		return; 
 }
 
  
@@ -279,7 +280,8 @@ if(command == 'Fluttershy' || command == 'fluttershy' || command == 'fs')
 if(command == 'ifunny') 
 {
     client.commands.get('ifunny').execute(message, args); 
-}
+} 
+
 
 
 
@@ -538,17 +540,11 @@ async function init_commands()
 	arr.push(file);
 	const total = commandFiles.length; 
 	
-		 //console.log(commandFiles.indexOf(file) / total * 100 + "%");
-	
-	
-	//console.log(total);
-	
-	//console.log(command);
 	process.stdout.clearLine();
 	process.stdout.cursorTo(0);
 	process.stdout.write("loading commands:" + Math.round((1 + commandFiles.indexOf(file)) / total * 100) + "%");
 	
-  	//console.log("%s Loading Commands" + 
+  	
 	client.commands.set(command.name, command);    
 	
 	if (command.aliases) {
@@ -558,11 +554,44 @@ async function init_commands()
     });
 	
 	}	 
-	//process.stdout.write("/n");
+	process.stdout.write(" ");
+	//console.log(' '); 
 }
+   
+	
+	console.log(' ');
+	
+	
+	
+	for(const file of imageFiles) {
+		var arr = []; 
+	const command = require(`./commands/image/${file}`);
+		arr.push(file);  
+	
+	const total = imageFiles.length; 
+	//console.log(total); 
+	process.stdout.clearLine();
+	process.stdout.cursorTo(0);
+	process.stdout.write("loading Image Commands:" + Math.round((1 + imageFiles.indexOf(file)) / total * 100) + "%");   
+	
+	
+	client.imgcommands.set(command.name, command);  
+	
+	
+	if (command.aliases) {
+    command.aliases.forEach(alias => {
+    client.aliases.set(alias, command)      
+       
+    });
+	
+	}	 
 
 	
 	
+
+	}
+
+	console.log(' '); 
 	
 }
 
@@ -573,26 +602,32 @@ async function init_commands()
 async function init_imgcommands() 
 {
 	
-	
-	for(const file of imageFiles) {
-	const command = require(`./commands/image/${file}`);  
-	client.imgcommands.set(command.name, command);  
-	const total = commandFiles.length; 
-	//process.stdout.clearLine();
-	process.stdout.cursorTo(0);
-	process.stdout.write("loading Image Commands:" + Math.round(imageFiles.indexOf(file) / total * 100) + "%");   
-	
-	if (command.aliases) {
-    command.aliases.forEach(alias => {
-    client.aliases.set(alias, command) 
-       
-    });
-	
-	}	 
-
-	
-	
-
+		//console.log(' '); 
+	//console.log('done!');
 	}
-	process.stdout.write('\n');
-	}
+
+
+
+
+
+;
+
+//client debugging events 
+client.on("reconnecting", function(){
+    console.log(`FlutterShy Is Attempting to Reconnect to the Websocket`);
+});
+
+
+client.on("guildUnavailable", function(guild){
+	console.log('Fluttershy Cannont Connect to Discord'); 
+    console.error('Unable to connect to discord. Discord is likley offline or not working right now');
+});
+
+
+client.on("error", function(error){
+	console.log('My Websocket has encountered an error :('); 
+    console.error(`client's WebSocket encountered a connection error: ${error}`);
+})
+
+
+

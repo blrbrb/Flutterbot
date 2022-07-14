@@ -8,8 +8,16 @@ module.exports = {
     run: async (client, message, command, args) => {
 
         let conversation = [];
-        let text = message.content;
-
+        let text = message.content; 
+        if(text.includes('fluttershy'))
+        {
+        	//text = text.slice(text.indexOf('-fluttershy')).trim().split(/ +/g).splice(text.indexOf('-fluttershy')); 
+        	text = text.substring(text.indexOf("-fluttershy") + 11, text.length);
+           // text.slice('fluttershy'); 
+     
+        	console.log(text); 
+        }
+		else 
         text = text.substring(text.indexOf(">") + 2, text.length)
         
         cleverbot(text, conversation).then((res) => {

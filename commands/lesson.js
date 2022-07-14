@@ -4,7 +4,7 @@ const { MessageEmbed } = require('discord.js');
 const request = require('request'); 
 const cheerio = require('cheerio'); 
 require('dotenv').config();
-
+const natural = require('natural');
 
 module.exports = {
     name: 'lesson',
@@ -21,10 +21,12 @@ module.exports = {
        //arr.set(
        
         var episode_data = JSON.parse(rawdata); 
+         train(episode_data); 
+        //await train(episode_data); 
         
- var seasons = ["season1", "season2", "season3", "season4", "season5", "season6"]; 
+
  
-     // console.log(episode_data.mlp[12]);
+  
         //Parse Multi-Dimensional JSON episode data 
     let seasonrand = seasons[Math.floor(Math.random() * seasons.length)];  
     let episoderand = Math.floor(Math.random() * episode_data.mlp[seasonrand].length); 
@@ -37,7 +39,7 @@ module.exports = {
       		if(randResult.song === 'true') {
       					const embed = new MessageEmbed().setTitle(randResult.speaker).setDescription('*'+ randResult.text +'*').setColor(0xfbfb2b).setThumbnail(speaker_images.get(randResult.speaker.toString())); } 
       					
-      				console.log(randResult.speaker); 
+      				//console.log(randResult.speaker); 
 
       const embed = new MessageEmbed().setTitle(randResult.speaker).setDescription(randResult.text).setColor(0xfbfb2b).setThumbnail(speaker_images.get(randResult.speaker.toString()));
 
@@ -45,11 +47,15 @@ module.exports = {
     
 
 
-    }
+
+    } 
+    
+    
 }
 
 function initimages(map1)
-{
+{ 
+	console.log('function called'); 
     map1.set("AppleJack", "http://fc01.deviantart.net/fs70/i/2011/260/d/9/applejack_vector_by_hombre0-d4a3lwt.png");
     map1.set("Twilight Sparkle", "https://derpicdn.net/img/2022/6/12/2885727/large.png" );
     map1.set("Starlight Glimmer", "https://derpicdn.net/img/2018/2/17/1657915/small.png" );
@@ -83,15 +89,29 @@ function initimages(map1)
 }
 
 
-function conversation(dialouge, characters)
+function train(dialouge_data) 
 {
-
-
-
-
-
-
-
-
-
+	console.log('training');
+	for(x = 0; x < dialouge_data.mlp.length; x++) 
+	{
+		for(y = 0; y < dialouge_data.mlp[x].length; y++) 
+		{
+			for(z = 0; z < dialouge_data.mlp[x][y].length; z++) 
+			{
+				console.log(dialouge_data.mlp[x][y][z].text); 
+				console.log(z); 
+			}
+		}	
+	}
+	
+	
+	var classifier = new natural.BayesClassifier();
+	
+classifier.addDocument('i am long qqqq', 'buy');
+classifier.addDocument('buy the q\'s', 'buy');
+classifier.addDocument('short gold', 'sell');
+classifier.addDocument('sell gold', 'sell');
+	
+	
+	
 }

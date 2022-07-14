@@ -6,7 +6,7 @@ const scan = require('./utils/findimage.js');
 let pcounter = 1;
 var pdata = {c}
 var servers = {};
-
+let conversation = []; 
 
 const client = new Discord.Client();
 
@@ -52,8 +52,19 @@ init_commands();
 
 //main events 
 client.on('ready', () => {
-console.log('Fluttershy is Awake Yay! :3');
 
+    let init = [];
+   const json = JSON.stringify(init); 
+    fs.truncate('assets/conversation.json', 0, function () { console.log('initalizing conversation...'); return; });
+
+    fs.writeFile("assets/conversation.json", json, function (err, result) {
+
+        if (err) console.log('JSON file writing error in FlutterShy.js caught', err);
+
+    });
+   
+console.log('Fluttershy is Awake Yay! :3');
+   
 });  
 
 client.on('guildMemberAdd', guildMember => {let welcomeRole = guildMember.guild.roles.cache.find(role => role.name ==='new broner')
@@ -267,8 +278,9 @@ if(command == 'Fluttershy' || command == 'fluttershy' || command == 'fs')
 	let allowedRole = message.guild.roles.cache.find(role=> role.name === "FlutterProgrammer");
 	
 	if(message.author.id == '252235505318625281' || message.member.roles.cache.has(allowedRole.id)) 
-	{
-		client.commands.get('Fluttershy').run(client, message, command, args); 
+    {
+        
+		client.commands.get('Fluttershy').run(client, message, command, args, conversation); 
 	}
 	
 	else 
@@ -607,10 +619,6 @@ async function init_imgcommands()
 	}
 
 
-
-
-
-;
 
 //client debugging events 
 client.on("reconnecting", function(){

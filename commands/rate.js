@@ -50,23 +50,13 @@ if(message.mentions.members.first())
 
 if(message.content.includes('chances of'))
 {
-	
-	
-
-	 	
 		message.channel.send(nopro + ' ' + 'Hmmmmm, Id say that' + ' ' + nopro + ' ' + 'are about' + ' ' + '%' + Math.floor(Math.random() * 100.00));    
-		return;    
-		
-		
-	
+		return;    	
 }
 
 if(message.content.includes('chances that'))
 { 
-	
-		
-	message.channel.send(nopro + ' ' + 'Hmmmmm, Id say that' + ' ' + nopro  + ' ' + 'are about' + ' ' + '%' + Math.floor(Math.random() * 100.00));           
-	
+	message.channel.send(nopro + ' ' + 'Hmmmmm, Id say that' + ' ' + nopro  + ' ' + 'are about' + ' ' + '%' + Math.floor(Math.random() * 100.00));           	
 	return; 
 } 
 

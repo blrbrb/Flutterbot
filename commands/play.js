@@ -66,48 +66,7 @@ init_cronJob();
                     if (debug) { message.channel.send(song) }
                 }
 
-                if (ytpl.validateID(args[0])) {
-                	//let text = args[0];
-                	//let ID = text.substring(text.indexOf("https://www.youtube.com/playlist?list=") + 38, text.length);
-					//console.log(typeof args[0]);
-                    //message.channel.send("it's a playlist");
-                                     
-                   const first = await ytpl(args[0], { pages: 1 }); 
-                   //const second = ytpl.continueReq(first.continuation); 
-                   //const third = ytpl.continueReg(second.continuation); 	
-                   	let vids = first.items;
-                   	//vids.push(first.items); 
-                   	
-                   	//console.log(vids);  
-                   	let playlist_array = {};
-                   
-                   	for(i = 0; i < vids.length; i++) 
-                   	{ 
-                   		//console.log(vids[i].title);   
-                   			let info = {};
-                   			info += await ytdl.getInfo(vids[i].url); 
-                   			//console.log(info); 
-                   			  info = info[i];
-                   			  console.log(info); 
-                   			 
-                   			info = info[i][i].lengthSeconds;
-                   		console.log(info); 
-     					playlist_array.title = vids[i].title;
-     					playlist_array.url = vids[i].url; 
-     				 	//playlist_array.lengthSeconds = 
-     				 	console.log(info); 
-  
-     					playlist_array.currenttime = current_time; 
-     					//console.log(playlist_array); 
-                   		//info_array.push(await ytdl.getInfo(vids[i].url).videoDetails); 
-                   	
-
-                   		         		
-                   	}
-                   
- 								
-                   
-                }
+              
             
                 else {
                     //If there was no link, we use keywords to search for a video. Set the song object to have two keys. Title and URl.
@@ -133,6 +92,48 @@ init_cronJob();
                     } else {
                         message.channel.send('Im so sorry, Im having trouble finding this video');
                     }
+                }
+
+                if (ytpl.validateID(args[0])) {
+                    //let text = args[0];
+                    //let ID = text.substring(text.indexOf("https://www.youtube.com/playlist?list=") + 38, text.length);
+                    //console.log(typeof args[0]);
+                    //message.channel.send("it's a playlist");
+
+                    const first = await ytpl(args[0], { pages: 1 });
+                    //const second = ytpl.continueReq(first.continuation); 
+                    //const third = ytpl.continueReg(second.continuation); 	
+                    let vids = first.items;
+                    //vids.push(first.items); 
+
+                    //console.log(vids);  
+                    let playlist_array = {};
+
+                    for (i = 0; i < vids.length; i++) {
+                        //console.log(vids[i].title);   
+                        let info = {};
+                        info += await ytdl.getInfo(vids[i].url);
+                        //console.log(info); 
+                        info = info[i];
+                        console.log(info);
+
+                        info = info[i][i].lengthSeconds;
+                        console.log(info);
+                        playlist_array.title = vids[i].title;
+                        playlist_array.url = vids[i].url;
+                        //playlist_array.lengthSeconds = 
+                        console.log(info);
+
+                        playlist_array.currenttime = current_time;
+                        //console.log(playlist_array); 
+                        //info_array.push(await ytdl.getInfo(vids[i].url).videoDetails); 
+
+
+
+                    }
+
+
+
                 }
 
                 //If the server queue does not exist (which doesn't for the first video queued) then create a constructor to be added to our global queue.

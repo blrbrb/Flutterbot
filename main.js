@@ -51,9 +51,9 @@ init_commands();
 
 
 //main events 
-client.on('ready', () => {
 
-    let init = [];
+client.once('ready', () => {
+	 let init = [];
    const json = JSON.stringify(init); 
     fs.truncate('assets/conversation.json', 0, function () { console.log('initalizing conversation...'); return; });
 
@@ -63,7 +63,13 @@ client.on('ready', () => {
 
     });
    
-console.log('Fluttershy is Awake Yay! :3');
+
+	
+	
+	});
+client.on('ready', () => {
+
+   console.log('Fluttershy is Awake Yay! :3');
    
 });  
 

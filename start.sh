@@ -145,14 +145,14 @@ echo Restarting Fluttershy in 15 Seconds...
 
 sleep 15
 
-echo -ne 'Clearing Cache: 0%)\r'  
-	sleep 2 
+echo  'Clearing Cache: 0%)\r'  
+ 
 	clear_macOSFiles 
-echo -ne 'Clearing Cache: 12%\r' 
-	sleep 2
-echo -ne 'Clearing Cache: 67%\r'
+echo  'Clearing Cache: 12%\r' 
 
-echo -ne "Cache Cleared! Restarting Fluttershy..."
+echo  'Clearing Cache: 67%\r'
+
+echo  "Cache Cleared! Restarting Fluttershy..."
 
 done 
 

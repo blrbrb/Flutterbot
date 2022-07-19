@@ -26,7 +26,7 @@ const serverQueue = queue.get(message.guild.id);
         
       
 
-init_cronJob(); 
+
         
      
         //Checking for the voicechannel and permissions 
@@ -423,23 +423,10 @@ async function preserve_queue(guild, song_queue, server_queue, client, message)
 	console.log("function is working"); 
  
 
-	//console.log(queue);
-	//console.log(info); 
-	//console.log(queue); 
-	//const queue_toObject = $.extend(queue_toObject, queue); 
-	//queue_toObject.songs = queue; 
-	//console.log(queue_toObject); 
-	//queue.forEach(element => {
 
-
-
-//const strings = queue.map((o) => JSON.stringify(o)); 
 
 const song_queue_data = []; 
 		
-		
-			
-	//console.log(strings); 
 	
 	
 	for(x=0; x < song_queue.length; x++) 
@@ -453,8 +440,6 @@ const song_queue_data = [];
 		
 	}
 	
-			//console.log(strings);       
-		// var clean_strings = []; 
     if (song_queue.length < 1)
     {
         return; 
@@ -469,9 +454,9 @@ const song_queue_data = [];
   
   var watch_timeSeconds = Math.round(dispatcher.streamTime / 1000); 
   
-    //console.log(queue.connection.dispatcher.streamTime); 
+   
     song_queue_data[0][0].current_time = watch_timeSeconds; 
-    //console.log(clean_strings); 
+   
     const json = JSON.stringify(song_queue_data);
 
 
@@ -533,19 +518,14 @@ function restore_queuesongs(savedsongs, server_queue, message)
     
 } 
 
-const init_cronJob = () => 
-{
-	
-	 var task = cron.schedule("*/30 * * * * *", () => { preserve_queue(message.guild, songs, message) }); 
-     taskMap["update_queue"] = task; 
-     
-    
-	
-}
+
 
 async function autosave(message, songs)
 {
-    let queuetask = taskMap["update_queue"]; 
-    queuetask.start();
+
+    const job = cron.schedule("*/30 * * * * *", () => { preserve_queue(message.guild, songs, message)
+    console.log('the music queue has been saved'); });
+    job.start();
 
 }
+

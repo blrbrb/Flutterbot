@@ -108,31 +108,18 @@ const serverQueue = queue.get(message.guild.id);
 
                     //console.log(vids);  
                     let playlist_array = {};
+                    let playlist_primitive= []; 
 
-                    for (i = 0; i < vids.length; i++) {
-                        //console.log(vids[i].title);   
-                        let info = {};
-                        info += await ytdl.getInfo(vids[i].url);
-                        //console.log(info); 
-                        info = info[i];
-                        console.log(info);
-
-                        info = info[i][i].lengthSeconds;
-                        console.log(info);
-                        playlist_array.title = vids[i].title;
-                        playlist_array.url = vids[i].url;
-                        //playlist_array.lengthSeconds = 
-                        console.log(info);
-
-                        playlist_array.currenttime = current_time;
-                        //console.log(playlist_array); 
-                        //info_array.push(await ytdl.getInfo(vids[i].url).videoDetails); 
-
-
-
-                    }
-
-
+                    						//console.log(playlist_primitive); 
+						//console.log(Object.keys(playlist_primitive)); 
+						//console.log(playlist_primitive[0].title);  
+					
+					for(i = 0; i < vids.length; i++) 
+					{
+					  playlist_primitive[i] = {title: vids[i].title, url: vids[i].url}; 
+					  console.log(playlist_primitive[i].title); 
+					} 
+					
 
                 }
 
@@ -256,7 +243,7 @@ const video_player = async (guild, song, server_queue, debug) => {
 const skip_song = (message, server_queue, guild) => {
 	const song_queue = queue.get(guild.id);
     if (!message.member.voice.channel) return message.channel.send('You need to be in a channel to execute this command!');
-    if(!server_queue){
+    if(!server_queue || song_queue.songs < 1){
         return message.channel.send(`There are no songs in queue 😔`);
     }
    

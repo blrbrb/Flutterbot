@@ -509,10 +509,15 @@ function restore_queuesongs(savedsongs, server_queue, message)
 
 async function autosave(message, songs)
 {
-
-    const job = cron.schedule("*/30 * * * * *", () => { preserve_queue(message.guild, songs, message)
+	const job = cron.schedule("*/30 * * * * *", () => { preserve_queue(message.guild, songs, message); 
+	if(!songs) 
+   		job.stop(); 
+    
+	else 
+    
     console.log('the music queue has been saved'); });
-    job.start();
-
+    job.start(); 
+    
+    
 }
 

@@ -25,6 +25,7 @@
     "mongodb": "^4.7.0",
     "natural": "^5.2.3",
     "node-cron": "^3.0.1",
+    "node-server-manager": "^0.0.1",
     "opusscript": "0.0.8",
     "request": "^2.88.2",
     "tempy": "^3.0.0",

@@ -8,6 +8,8 @@ var pdata = {c}
 var servers = {};
 let conversation = []; 
 
+
+
 const client = new Discord.Client();
 
 require('dotenv').config();
@@ -52,6 +54,7 @@ init_commands();
 
 //main events 
 
+
 client.once('ready', () => {
 	 let init = [];
    const json = JSON.stringify(init); 
@@ -63,8 +66,7 @@ client.once('ready', () => {
 
     });
    
-
-	
+		
 	
 	});
 client.on('ready', () => {

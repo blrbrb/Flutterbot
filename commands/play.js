@@ -193,7 +193,7 @@ const video_player = async (guild, song, server_queue, debug) => {
 
         queue.delete(guild.id);
       let queuetask = taskMap["update_queue"]; 
-      queuetask.stop(); 
+     // queuetask.stop(); 
         
             	return; 
     }
@@ -226,7 +226,18 @@ const video_player = async (guild, song, server_queue, debug) => {
                 video_player(guild, song_queue.songs[0]);
                 
                 	
-            }).on('error', error => {song_queue.text_channel.send('the stream has crashed')});
+            }).on('error', error => {
+
+
+                song_queue.text_channel.send(`Some of my songbirds have lost their voices... just a moment while I tend to them`);
+                song_queue.songs.shift();
+                let get_failed = restore_queuesongs("assets/music_queue.json").slice();
+                song_queue.push(get_failed[0]);
+              
+
+
+                
+            });
         }).catch(err => console.log(err.message));
 
        

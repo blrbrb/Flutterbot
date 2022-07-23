@@ -16,7 +16,12 @@ assets/music_queue.json
 **/.jpg
 **/.png 
 **/.obj 
-
+**/.gif 
+**/.mp4
+**/.mp3 
+**/.wav
+**/.flac
+**/.ogg
 
 
 

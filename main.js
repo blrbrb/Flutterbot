@@ -261,7 +261,7 @@ await client.imgcommands.get('deepfry').run(client,message,args);
 
 if (command == 'mosaic')
 {
- await client.imgcommands.get('mosaic').run(client, message, args); 
+ //await client.imgcommands.get('mosaic').run(client, message, args, debug); 
 }
 
 if (command == 'swirl')

@@ -7,13 +7,13 @@ const fs = require('fs');
 const path = require('path');
 let oneStepBack = path.join(__dirname, '../');
 const cron = require('node-cron');
-
+require('dotenv'); 
 //Global Variables 
 const queue = new Map();
 let dispatcher
 const current_time = 0;
 const taskMap = {};
-
+var ytAltCookies = [[process.env.FART, process.env.BUTT]];
 module.exports = {
     name: 'play',
     aliases: ['skip', 'stop', 'queue',], 
@@ -56,7 +56,14 @@ const serverQueue = queue.get(message.guild.id);
                 if (ytdl.validateURL(args[0])) {
                   
                    
-                    const song_info = await ytdl.getInfo(args[0]);
+                    const song_info = await ytdl.getInfo(args[0],{
+  requestOptions: {
+    headers: {
+      Cookie: ytAltCookies[0],
+      'x-client-data': process.env.BUTT
+    }
+  }
+} );
                    // console.log(song_info.player_response.videoDetails);
                     console.log(song_info.player_response);
                     const result_info = await ytSearch(args[0]); 
@@ -72,7 +79,14 @@ const serverQueue = queue.get(message.guild.id);
                     //If there was no link, we use keywords to search for a video. Set the song object to have two keys. Title and URl.
                     const video_finder = async (query) => {
                         const video_result = await ytSearch(query);
-                        const song_info2 = await ytdl.getInfo(video_result.videos[0].url);
+                        const song_info2 = await ytdl.getInfo(video_result.videos[0].url,{
+  requestOptions: {
+    headers: {
+      Cookie: ytAltCookies[0],
+      'x-client-data': process.env.BUTT
+    }
+  }
+});
                       
                            if(debug){
                            	 console.log(song_info2.player_response);
@@ -86,7 +100,14 @@ const serverQueue = queue.get(message.guild.id);
                     const video = await video_finder(args.join(' '));
                     if (video) { 
                     	
-                    	  const search_info = await ytdl.getInfo(video.url);
+                    	  const search_info = await ytdl.getInfo(video.url,{
+  requestOptions: {
+    headers: {
+      Cookie: ytAltCookies[0],
+      'x-client-data': process.env.BUTT
+    }
+  }
+});
                                             
                         song = { title: video.title, url: video.url, lengthSeconds: video.seconds, current_time: current_time }
                     } else {
@@ -198,10 +219,15 @@ const video_player = async (guild, song, server_queue, debug) => {
             	return; 
     }
     else {
-        
+        var cookies = ytAltCookies[0];
         song_queue.voice_channel.join().then(connection => {
 
-            const stream = ytdl(song.url, { highWaterMark: 1 << 22, filter: 'audioonly' });
+            const stream = ytdl(song.url,{ requestOptions: {
+    headers: {
+      Cookie: ytAltCookies[0],
+      'x-client-data': process.env.BUTT
+      }},
+          highWaterMark: 1 << 22, filter: 'audioonly'});
 
 
             dispatcher = connection.play(stream, { quality: 'highestaudio', seek: song.current_time, volume: 1 });
@@ -228,7 +254,7 @@ const video_player = async (guild, song, server_queue, debug) => {
                 	
             }).on('error', error => {
 
-
+				console.log(error.message); 
                 song_queue.text_channel.send(`Some of my songbirds have lost their voices... just a moment while I tend to them`);
                 song_queue.songs.shift();
                 let get_failed = load_savedqueue("assets/music_queue.json").slice();

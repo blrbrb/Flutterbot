@@ -283,16 +283,12 @@ await client.imgcommands.get('text').run(client, message, args);
 
 if(command == 'Fluttershy' || command == 'fluttershy' || command == 'fs') 
 {
-	let allowedRole = message.guild.roles.cache.find(role=> role.name === "FlutterProgrammer");
-	
-	if(message.author.id == '252235505318625281' || message.member.roles.cache.has(allowedRole.id)) 
-    {
+	//let allowedRole = message.guild.roles.cache.find(role=> role.name === "FlutterProgrammer");
+
         
 		client.commands.get('Fluttershy').run(client, message, command, args, conversation); 
-	}
 	
-	else 
-		return; 
+	
 }
 
  

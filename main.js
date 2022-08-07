@@ -299,6 +299,11 @@ if(command == 'ifunny')
 } 
 
 
+if(command == 'fart') 
+{
+	message.channel.send('poo poo among us sus'); 
+	
+}
 
 
   if (command == 'randompony')

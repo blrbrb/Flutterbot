@@ -1,9 +1,10 @@
-
+﻿
 const Discord = require('discord.js')
 const MessageEmbed  = require('discord.js');
 const ytdl = require("ytdl-core"); 
 const scan = require('./utils/findimage.js');
-
+const cheerio = require('cheerio');
+const request = require('request');
 
 const client = new Discord.Client({ partials: ["MESSAGE", "CHANNEL", "REACTION" ]});
 const cooldowns = new Map(); 
@@ -21,8 +22,8 @@ client.commands = new Discord.Collection();
 client.imgcommands = new Discord.Collection();  
 client.aliases = new Discord.Collection(); 
  
-const cheerio = require('cheerio');  
-const request = require('request');  
+
+
 //init command source (stored in seperate js modules)
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
 const imageFiles = fs.readdirSync('./commands/image/').filter(file => file.endsWith('.js')); 
@@ -37,19 +38,29 @@ const imageFiles = fs.readdirSync('./commands/image/').filter(file => file.endsW
 
 //Global Variables 
 let lang = require(`./lang/en.js`);
+const roles_channel = '1006737480550207508';
+const gamer_emoji = '🎮';
+const bronerreacts_emoji = '📺';
+const discordian_emoji = '🟨';
+const minor_emoji = '🔞';
+const luna_emoji = '🌙';
+const celestia_emoji = '☀️';
+const Derpist_emoji = '🧁';
+const hive_emoji = '🐞';
+
+
+
 var a =0; 
 var b = 0;
 var c = 0;
 
 //init commands before the client is online 
 init_commands(); 
-//init_imgcommands();
+
 
 
 
 //main events 
-
-
 client.once('ready', () => {
 	
    
@@ -58,7 +69,9 @@ client.once('ready', () => {
 	});
 client.on('ready', () => {
 
-   console.log('Fluttershy is Awake Yay! :3');
+    console.log('Fluttershy is Awake Yay! :3');
+    //scan the roles channel for new role assignments constantly.
+    
    
 });  
 
@@ -149,13 +162,17 @@ if(command == 'role')
         
 }
 
-if (command == 'reactionRole')
-{
-    await client.commands.get('reactionRole').execute(message, args, Discord, client);
 
+
+   
+ if (command == 'reactionRole_HardReset')
+ {
+     let allowedRole = message.guild.roles.cache.find(role => role.name === "FlutterProgrammer");
+     if (message.member.hasPermission("ADMIN") || message.member.roles.cache.has(allowedRole.id))
+     {
+         create_reaction_roles(); 
+     }
 }
-
-
 
 
 if (command == 'angel')
@@ -595,5 +612,154 @@ client.on("error", function(error){
     console.error(`client's WebSocket encountered a connection error: ${error}`);
 })
 
+client.on('messageReactionAdd', async (reaction, user) => {
+    if (reaction.message.partial) await reaction.message.fetch();
+    if (reaction.partial) await reaction.fetch();
+    if (user.bot)
+        return;
+    if (!reaction.message.guild)
+        return;
 
+
+
+    const channel = await client.channels.fetch(roles_channel);
+
+
+   
+    const gamer_role = channel.guild.roles.cache.find(role => role.name === 'Gamer');
+    const bronerreacts_role = channel.guild.roles.cache.find(role => role.name === `Broner's React`);
+    const luna_role = channel.guild.roles.cache.find(role => role.name === 'New Lunar Republic');
+    const celestia_role = channel.guild.roles.cache.find(role => role.name === 'Solar Empire');
+    const minor_role = channel.guild.roles.cache.find(role => role.name === 'Minor')
+    const discordian_role = channel.guild.roles.cache.find(role => role.name === 'Discordian');
+    const derpist_role = channel.guild.roles.cache.find(role => role.name === 'Derpist');
+    const hive_role = channel.guild.roles.cache.find(role => role.name === 'The hive');
+
+    //console.log(gamer_role); 
+
+
+
+
+
+    
+   
+
+    if (reaction.message.channel.id == roles_channel) {
+        //These next if statements are the if statements that will check wether or not the corresponding emoji's for each role have been reacted with
+        //TD: potential make this a switch/case statement for efficency? 
+
+        if (reaction.emoji.name === gamer_emoji) {
+
+            
+            await reaction.message.guild.members.cache.get(user.id).roles.add(gamer_role);
+
+        }
+        if (reaction.emoji.name === bronerreacts_emoji) {
+
+            await reaction.message.guild.members.cache.get(user.id).roles.add(bronerreacts_role);
+
+        }
+        if (reaction.emoji.name === luna_emoji) {
+
+            await reaction.message.guild.members.cache.get(user.id).roles.add(luna_role);
+
+        }
+        if (reaction.emoji.name === celestia_emoji) {
+
+            await reaction.message.guild.members.cache.get(user.id).roles.add(celestia_role);
+
+        }
+        if (reaction.emoji.name === hive_emoji) {
+
+            await reaction.message.guild.members.cache.get(user.id).roles.add(hive_role);
+
+        }
+        if (reaction.emoji.name === Derpist_emoji) {
+
+            await reaction.message.guild.members.cache.get(user.id).roles.add(derpist_role);
+
+        }
+        if (reaction.emoji.name === minor_emoji) {
+
+            await reaction.message.guild.members.cache.get(user.id).roles.add(minor_role);
+
+        }
+        if (reaction.emoji.name === discordian_emoji) {
+
+            await reaction.message.guild.members.cache.get(user.id).roles.add(discordian_role);
+
+        }
+
+
+
+
+    }
+    else {
+        return;
+    }
+});
+
+async function create_reaction_roles()
+{
+    const example_yellow_cucumber_role = '13121412312312';
+
+    const channel = await client.channels.fetch(roles_channel);
+
+
+   
+
+    let embed = new Discord.MessageEmbed()
+        .setColor()
+        .setTitle(`Hello, my name is Fluttershy... Eli (Elly) is asking me to help with roles!`)
+        .setDescription('giving yourself a role here will allow me to write them down, and send my critters over to ping you')
+        .addField(`Gamer ${gamer_emoji}`, "The Gamer Roll. I'll ping you whenever the Broners are about to do something fun in a videogame")
+        .addField(`Broners React ${bronerreacts_emoji}`, "I'll ping you for watch parties, and New G5 stuff!")
+        .addField(`Lunist ${luna_emoji}`, "praise the moon! you are a proud supporter of the night guard")
+        .addField(`Solist ${celestia_emoji}`, "praise the sun! you are a summer sunshine enjoyer")
+        .addField(`The Hive ${hive_emoji}`, "Buzzzzzzz")
+        .addField(`Derpist ${Derpist_emoji}`, `I just don't know what went wrong"`)
+        .addField(`I am A **MINOR** ${minor_emoji}`, "saftey first")
+        .addField(`Discordian ${discordian_emoji}`, `"But it's RAINING CHOCOLATE"`)
+
+
+
+    //The process of sending the message to the channel needs to be an asyncro process, because it will 
+    //take the client and server some time to process the reacion of the end user. 
+
+    let messageembed = await channel.send(embed)
+        .then((sentMessage) => {
+            
+                channel.messages
+                    .fetch(sentMessage.id)
+                    .then((fetchedMessage) => {
+                        console.log('Message exists');
+
+                        fetchedMessage.react(gamer_emoji)
+                        fetchedMessage.react(gamer_emoji);
+                        fetchedMessage.react(gamer_emoji);
+                        fetchedMessage.react(luna_emoji);
+                        fetchedMessage.react(celestia_emoji);
+                        fetchedMessage.react(hive_emoji);
+                        fetchedMessage.react(Derpist_emoji);
+                        fetchedMessage.react(minor_emoji);
+                        fetchedMessage.react(discordian_emoji);
+
+                            
+                    })
+                    .catch((err) => {
+                        if (err.httpStatus === 404) {
+                            console.log('Message already deleted');
+                        } else {
+                            console.log(err);
+                        }
+                    });
+            
+        });
+
+    
+
+  
+
+
+}
 

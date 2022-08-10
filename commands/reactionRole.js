@@ -2,33 +2,32 @@
 {
     name: 'reactionRole',
     description: 'create a message for roles to be added based on interactions with an embed',
-   async execute(message, args, Discord, client)
-    {
-       const channel = '968709113901092864';
+    async execute(message, args, Discord, client) {
+        const channel = '1006737480550207508';
         //const example_yellow_cucumber_role = '13121412312312';
-        
-       const gamer_role = message.guild.roles.cache.find(role => role.name === 'Gamer');
-       const bronerreacts_role = message.guild.roles.cache.find(role => role.name === `Broner's React`);
-       const luna_role = message.guild.roles.cache.find(role => role.name === 'New Lunar Republic');
-       const celestia_role = message.guild.roles.cache.find(role => role.name === 'Solar Empire');
-       const minor_role = message.guild.roles.cache.find(role => role.name === 'Minor')
-       const discordian_role = message.guild.roles.cache.find(role => role.name === 'Discordian');
-       const derpist_role = message.guild.roles.cache.find(role => role.name === 'Derpist');
-       const hive_role = message.guild.roles.cache.find(role => role.name === 'The hive');
-       
-        
-       const gamer_emoji = '🎮';
-       const bronerreacts_emoji = '📺';
-       const discordian_emoji = '🟨';
-       const minor_emoji = '🔞';
-       const luna_emoji = '🌙';
-       const celestia_emoji = '☀️';
-       const Derpist_emoji = '🧁';
-       const hive_emoji = '🐞';
+
+        const gamer_role = message.guild.roles.cache.find(role => role.name === 'Gamer');
+        const bronerreacts_role = message.guild.roles.cache.find(role => role.name === `Broner's React`);
+        const luna_role = message.guild.roles.cache.find(role => role.name === 'New Lunar Republic');
+        const celestia_role = message.guild.roles.cache.find(role => role.name === 'Solar Empire');
+        const minor_role = message.guild.roles.cache.find(role => role.name === 'Minor')
+        const discordian_role = message.guild.roles.cache.find(role => role.name === 'Discordian');
+        const derpist_role = message.guild.roles.cache.find(role => role.name === 'Derpist');
+        const hive_role = message.guild.roles.cache.find(role => role.name === 'The hive');
+
+
+        const gamer_emoji = '🎮';
+        const bronerreacts_emoji = '📺';
+        const discordian_emoji = '🟨';
+        const minor_emoji = '🔞';
+        const luna_emoji = '🌙';
+        const celestia_emoji = '☀️';
+        const Derpist_emoji = '🧁';
+        const hive_emoji = '🐞';
 
         let embed = new Discord.MessageEmbed()
             .setColor()
-           .setTitle(`Hello, my name is Fluttershy...  <@252235505318625281>  is asking me to help with roles!`)
+            .setTitle(`Hello, my name is Fluttershy... Eli (Elly) is asking me to help with roles!`)
            .setDescription('giving yourself a role here will allow me to write them down, and send my critters over to ping you')
             .addField(`Gamer ${gamer_emoji}`, "The Gamer Roll. I'll ping you whenever the Broners are about to do something fun in a videogame")
            .addField(`Broners React ${bronerreacts_emoji}`, "I'll ping you for watch parties, and New G5 stuff!")

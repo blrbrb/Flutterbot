@@ -3,15 +3,10 @@ const Discord = require('discord.js')
 const MessageEmbed  = require('discord.js');
 const ytdl = require("ytdl-core"); 
 const scan = require('./utils/findimage.js');
-let pcounter = 1;
-var pdata = {c}
-var servers = {};
-let conversation = []; 
 
 
-
-const client = new Discord.Client();
-
+const client = new Discord.Client({ partials: ["MESSAGE", "CHANNEL", "REACTION" ]});
+const cooldowns = new Map(); 
 require('dotenv').config();
 
 
@@ -56,15 +51,7 @@ init_commands();
 
 
 client.once('ready', () => {
-	 let init = [];
-   const json = JSON.stringify(init); 
-    fs.truncate('assets/conversation.json', 0, function () { console.log('initalizing conversation...'); return; });
-
-    fs.writeFile("assets/conversation.json", json, function (err, result) {
-
-        if (err) console.log('JSON file writing error in FlutterShy.js caught', err);
-
-    });
+	
    
 		
 	
@@ -97,8 +84,8 @@ client.on('message', async message => {
 
     
 
- let cwords = await get_banned_words();
- var word_said = false; 
+ 
+
  //save_data(pcounter, "assets/counter.txt"); 	
  
 	
@@ -161,7 +148,16 @@ if(command == 'role')
 
         
 }
-    
+
+if (command == 'reactionRole')
+{
+    await client.commands.get('reactionRole').execute(message, args, Discord, client);
+
+}
+
+
+
+
 if (command == 'angel')
 {
     message.channel.send('angel bunny');
@@ -283,12 +279,28 @@ await client.imgcommands.get('text').run(client, message, args);
 
 if(command == 'Fluttershy' || command == 'fluttershy' || command == 'fs') 
 {
-	//let allowedRole = message.guild.roles.cache.find(role=> role.name === "FlutterProgrammer");
+    if (!cooldowns.has(command.name))
+    {
+        cooldowns.set(command.name, new Discord.Collection());
+    }
+    const current_time = Date.now();
+    const time_stamps = cooldowns.get(command.name);
+    const cooldown_time = (command.cooldown) * 1000;
 
-        
-		client.commands.get('Fluttershy').run(client, message, command, args, conversation); 
-	
-	
+    if (time_stamps.get(message.author.id)) {
+        const expiration_time = time_stamps.get(message.author.id) + cooldown_time;
+        if (current_time < expiration_time)
+        {
+            const time_left = (expiration_time - current_time) / 1000;
+            return message.reply(`I need about ${time_left.toFixed(1)} second(s), okay ;3`);
+
+        }
+    }
+
+    time_stamps.set(message.author.id, current_time); 
+
+    
+    client.commands.get('Fluttershy').run(client, message, command, args, conversation); 
 }
 
  
@@ -306,28 +318,14 @@ if(command == 'fart')
 }
 
 
-  if (command == 'randompony')
- {
-      client.commands.get('randompony').execute(message, args); 
-
- }
-    
-    
-
 if(command == 'quote')
 {
-        
-   /// quote(message, args);
-
    client.commands.get('quote').execute(client,message,args); 
-        
 }
 
 if (command == 'rules' && (message.member.hasPermission("ADMINISTRATOR") == true)) 
 {
-
     client.commands.get('rules').execute(message, args, Discord);
-    //TD figure out how to do this 
 }
     
     
@@ -346,18 +344,6 @@ if(command === 'ping') {
   client.commands.get('rate').execute(message, args, client); 
 } 
 
- if (command == 'paintingnamer')
-{
-  client.commands.get('paintingnamer').execute(message, args);
-
-} 
-
-
-if (command == 'library')
-{
-//client.commands.get('library').execute(message,args, Discord);
-
-}
 
 
 
@@ -376,12 +362,7 @@ if(command == 'avatar')
 
 }
 
-if(command == 'emoji') 
-{
-	
-	//client.commands.get('emoji').run(client, message, command, args, prefix1, lang); 
-	
-}
+
 
 if(command == 'terminal')
 {
@@ -399,13 +380,7 @@ if (command == 'help')
 }
 
 
-if(command == 'filter') 
-{
-	
-	filterwords(); 
-	
-	
-}
+
 
 
 
@@ -433,18 +408,6 @@ if(command == 'debug')
 
 client.login(process.env.DISCORD_TOKEN);
      
- async function get_banned_words() 
-{
-	
-      let rawdata = fs.readFileSync('assets/filterwords.json'); 	
-	var banned_words = JSON.parse(rawdata); 
-	//console.log(banned_words); 
-	
-	
-	return banned_words; 
-}
-
-
 
 async function voice(message, args)
 {
@@ -461,21 +424,7 @@ async function voice(message, args)
 
 
 
- function profanity_counter(message) 
-{
-	var bannedwords = get_banned_words(); 
-	
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
- }
  
  
  async function save_data(values, file) 

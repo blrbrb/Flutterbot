@@ -5,20 +5,10 @@ const fs = require('fs');
 module.exports = {
     name: "Fluttershy",
     alias: ["Fluttershy"],
+    cooldown: 5, 
     run: async (client, message, command, args) => {
 
         let conversation = [];
-
-        if (conversation.length < 1)
-        {
-            const conversationdata = fs.readFileSync('assets/conversation.json');
-            conversation = JSON.parse(conversationdata);
-            if (!conversation.length)
-            {
-                let conversation = [];
-            }
-        }
-
 
         let text = message.content; 
         if(text.includes('fluttershy'))

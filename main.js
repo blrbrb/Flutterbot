@@ -1,4 +1,4 @@
-﻿
+
 const Discord = require('discord.js')
 const MessageEmbed  = require('discord.js');
 const ytdl = require("ytdl-core"); 
@@ -317,7 +317,7 @@ if(command == 'Fluttershy' || command == 'fluttershy' || command == 'fs')
     time_stamps.set(message.author.id, current_time); 
 
     
-    client.commands.get('Fluttershy').run(client, message, command, args, conversation); 
+    client.commands.get('Fluttershy').run(client, message, command, args); 
 }
 
  

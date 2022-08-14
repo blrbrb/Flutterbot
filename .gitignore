@@ -10,7 +10,7 @@ error_log.txt
 assets/counter.json
 assets/counter.txt
 assets/conversation.json
-assets/music_queue.json 
+**/music_queue.json 
 
 #image asset files that might be generated while using the image Magik pipeline
 **/.jpg
@@ -23,6 +23,7 @@ assets/music_queue.json
 **/.flac
 **/.ogg
 netscape_cookies.txt
+
 
 
 

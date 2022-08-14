@@ -3,7 +3,7 @@ const request = require('request');
 
 module.exports = {name: 'quote', 
 		  description: 'Fetch randomly generated quotes from inspiro', 
-		  execute(client, message, args) 
+		  execute(client, message, args, debug) 
 		  {
 		  	
 		  	

@@ -14,6 +14,9 @@ let dispatcher
 const current_time = 0;
 const taskMap = {};
 var ytAltCookies = [[process.env.FART, process.env.BUTT]];
+var verbouse = false;
+
+
 module.exports = {
     name: 'play',
     aliases: ['skip', 'stop', 'queue',], 
@@ -51,6 +54,8 @@ const serverQueue = queue.get(message.guild.id);
             case "play":
                 if (!args.length) return message.channel.send('uh.. uhmm.. You need to send the second argument.. I mean, if you want to...');
                 let song = {};
+                let playlist_array = {};
+                let playlist = [];
 
                 //If the first argument is a link. Set the song object to have two keys. Title and URl.
                 if (ytdl.validateURL(args[0])) {
@@ -65,11 +70,11 @@ const serverQueue = queue.get(message.guild.id);
   }
 } );
                    // console.log(song_info.player_response.videoDetails);
-                    console.log(song_info.player_response);
+                    //console.log(song_info.player_response);
                     const result_info = await ytSearch(args[0]); 
                    // console.log(result_info); 
 
-                    song = { title: song_info.videoDetails.title, url: song_info.videoDetails.video_url, lengthSeconds: song_info.videoDetails.lengthSeconds, current_time: current_time }
+                    song = { title: song_info.videoDetails.title, url: song_info.videoDetails.video_url, lengthSeconds: song_info.videoDetails.lengthSeconds, current_time: current_time, playlist: false, index: 0}
                     if (debug) { message.channel.send(song) }
                 }
 
@@ -88,9 +93,7 @@ const serverQueue = queue.get(message.guild.id);
   }
 });
                       
-                           if(debug){
-                           	 console.log(song_info2.player_response);
-                        message.channel.send('data streaming request expires in:' + ' ' + song_info2.player_response.streamingData.expiresInSeconds +' ' + 'seconds'); } 
+                           
             
                         
                         
@@ -109,38 +112,43 @@ const serverQueue = queue.get(message.guild.id);
   }
 });
                                             
-                        song = { title: video.title, url: video.url, lengthSeconds: video.seconds, current_time: current_time }
+                        song = { title: video.title, url: video.url, lengthSeconds: video.seconds, current_time: current_time, playlist: false, index: 0 }
                     } else {
                         message.channel.send('Im so sorry, Im having trouble finding this video');
                     }
                 }
-
+                //if the requested link is a youtube playlist 
                 if (ytpl.validateID(args[0])) {
-                    //let text = args[0];
-                    //let ID = text.substring(text.indexOf("https://www.youtube.com/playlist?list=") + 38, text.length);
-                    //console.log(typeof args[0]);
-                    //message.channel.send("it's a playlist");
 
+                    if (debug) {
+                        message.channel.send('this is a playlist!');
+                    }
+                    
                     const first = await ytpl(args[0], { pages: 1 });
                     //const second = ytpl.continueReq(first.continuation); 
                     //const third = ytpl.continueReg(second.continuation); 	
                     let vids = first.items;
                     //vids.push(first.items); 
 
-                    //console.log(vids);  
-                    let playlist_array = {};
-                    let playlist_primitive= []; 
+                    console.log(vids);
+                    
 
-                    						//console.log(playlist_primitive); 
-						//console.log(Object.keys(playlist_primitive)); 
-						//console.log(playlist_primitive[0].title);  
-					
-					for(i = 0; i < vids.length; i++) 
-					{
-					  playlist_primitive[i] = {title: vids[i].title, url: vids[i].url}; 
-					  console.log(playlist_primitive[i].title); 
-					} 
-					
+                    //console.log(playlist_primitive); 
+                    //console.log(Object.keys(playlist_primitive)); 
+                    //console.log(playlist_primitive[0].title);  
+                    var video_lengths = [];
+
+                    for (i = 0; i < vids.length; i++) {
+
+                        playlist[i] = { title: vids[i].title, url: vids[i].url, lengthSeconds: vids[i].durationSec, current_time: current_time, playlist: true, index: vids[i].index };
+                        console.log(playlist[i]); 
+                    }
+                    console.log(playlist);
+                    save_playlist(playlist);
+
+
+
+
 
                 }
 
@@ -152,18 +160,21 @@ const serverQueue = queue.get(message.guild.id);
                         voice_channel: voice_channel,
                         text_channel: message.channel,
                         connection: null,
-                        songs: []
+                        songs: [],
                     }
 
                     //Add our key and value pair into the global queue. We then use this to get our server queue.
                     queue.set(message.guild.id, queue_constructor);
+
+
                     queue_constructor.songs.push(song);
+                   
 
                     //Establish a connection and play the song with the vide_player function.
                     try {
                         const connection = await voice_channel.join();
                         queue_constructor.connection = connection;
-                        video_player(message.guild, queue_constructor.songs[0], server_queue, debug);
+                        video_player(message.guild, queue_constructor, server_queue, debug);
                         autosave(message, queue_constructor.songs); 
                         break; 
                     } catch (err) {
@@ -190,8 +201,7 @@ const serverQueue = queue.get(message.guild.id);
             	
 
             case "stop": stop_song(message, server_queue);
-            break;
-
+                break;
 
             default:
                 return; 
@@ -199,14 +209,17 @@ const serverQueue = queue.get(message.guild.id);
         
         }
     
-}}
+    },
+    busy: false
+}  
 
-const video_player = async (guild, song, server_queue, debug) => {
+
+const video_player = async (guild, song, queue_constructor, server_queue, debug) => {
     const song_queue = queue.get(guild.id);
 
     //If no song is left in the server queue. Leave the voice channel and delete the key and value pair from the global queue.
     if (!song) {
-    	
+        this.busy = false;
         song_queue.voice_channel.leave();
         
         if(debug)
@@ -218,7 +231,9 @@ const video_player = async (guild, song, server_queue, debug) => {
         
             	return; 
     }
+   
     else {
+   
         var cookies = ytAltCookies[0];
         song_queue.voice_channel.join().then(connection => {
 
@@ -229,16 +244,23 @@ const video_player = async (guild, song, server_queue, debug) => {
       }},
           highWaterMark: 1 << 22, filter: 'audioonly'});
 
+             dispatcher = connection.play(stream, { quality: 'highestaudio', seek: song.current_time, volume: 1 });
+            
 
             dispatcher = connection.play(stream, { quality: 'highestaudio', seek: song.current_time, volume: 1 });
-			dispatcher.on('start', () => {if(debug)song_queue.text_channel.send('my voice dispatcher has fired the "start" event');})
+            dispatcher.on('start', () => {
+                this.busy = true; 
+                if (debug) song_queue.text_channel.send('my voice dispatcher has fired the "start" event');
+            })
 
             dispatcher.on('end', () => {	
             	if(debug) {
             	song_queue.text_channel.send('the dispatcher "end" event has fired'); }
 
-            	song_queue.songs.shift(); 
-            	video_player(guild, song_queue.songs[0]); 
+                song_queue.songs.shift();
+                
+                video_player(guild, song_queue.songs[0]);
+                
             	
             		            	});
             	
@@ -254,10 +276,18 @@ const video_player = async (guild, song, server_queue, debug) => {
                 	
             }).on('error', error => {
 
-				console.log(error.message); 
+				
                 song_queue.text_channel.send(`Some of my songbirds have lost their voices... just a moment while I tend to them`);
+               
                 song_queue.songs.shift();
                 let get_failed = load_savedqueue("assets/music_queue.json").slice();
+                if (debug)
+                {
+                    song_queue.text_channel.send(error.message);
+                    song_queue.text_channel.send(`I'm attempting to restore the queue from music_queue.json...`);
+                    song_queue.text_channel.send(`Okay, the top element is...  ${getfailed[0][0]}  is that the right song?`); 
+                }
+
                 song_queue.songs.push(get_failed[0][0]);
                 video_player(guild, song_queue.songs[0]);
               
@@ -559,3 +589,38 @@ async function autosave(message, songs)
     
 }
 
+async function save_playlist(playlist_primitive) {
+   
+
+    
+
+
+
+    for (x = 0; x < playlist_primitive.length; x++) {
+        for (y = 0; y < playlist_primitive[x].length; y++) {
+            console.log(playlist_primitive[y][x]);
+
+        }
+
+
+    }
+
+    if (playlist_primitive.length < 1) {
+        return;
+    }
+    
+
+    //Save the Current Timestamp of the playing video 
+
+    const json = JSON.stringify(playlist_primitive);
+
+
+
+
+    fs.writeFileSync(oneStepBack + "assets/music_queue.json", json, function (err, result) {
+
+        if (err) console.log('JSON file writing error in play.js caught', err);
+
+    });
+
+}

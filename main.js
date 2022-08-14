@@ -324,7 +324,7 @@ if(command == 'Fluttershy' || command == 'fluttershy' || command == 'fs')
 
 if(command == 'ifunny') 
 {
-    client.commands.get('ifunny').execute(message, args); 
+    client.commands.get('ifunny').execute(message, args, debug); 
 } 
 
 
@@ -337,7 +337,7 @@ if(command == 'fart')
 
 if(command == 'quote')
 {
-   client.commands.get('quote').execute(client,message,args); 
+   client.commands.get('quote').execute(client,message,args, debug); 
 }
 
 if (command == 'rules' && (message.member.hasPermission("ADMINISTRATOR") == true)) 

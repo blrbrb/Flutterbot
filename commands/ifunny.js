@@ -4,7 +4,7 @@ var cheerio = require('cheerio')
 module.exports = {
     name: 'ifunny',
     description: 'god help you',
-    execute(message, args) {
+    execute(message, args, debug) {
 
         // console.log('working');
         
@@ -84,7 +84,9 @@ module.exports = {
 
             //message.channel.send(links[1]);
 
-
+            if (debug) {
+                message.channel.send(`Debug Output: response body =   ${Object.keys(links.eq(1))}`);
+            }
 
             console.log(urls);
             if (!urls.length) {
@@ -103,6 +105,14 @@ module.exports = {
             //filter through array, send resulting random image
             else {
                 message.channel.send("p-please don't make me look through ifunny");
+
+                if (debug) {
+                    message.channel.send("Fetched Links:");
+                    message.channel.send(urls, { code: "js" });
+                    message.channel.send(`Array Length ${urls.length}`); 
+
+                }
+
                 urls.shift();
                 message.channel.send(urls[Math.floor(Math.random() * urls.length)]);
                 

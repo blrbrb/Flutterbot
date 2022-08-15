@@ -57,9 +57,44 @@ const serverQueue = queue.get(message.guild.id);
                 let playlist_array = {};
                 let playlist = [];
 
-                //If the first argument is a link. Set the song object to have two keys. Title and URl.
-                if (ytdl.validateURL(args[0])) {
                   
+                                          //If the first argument is a link. Set the song object to have two keys. Title and URl.
+                 if (ytdl.validateURL(args[0])) {
+                     if (ytpl.validateID(args[0])) {
+
+
+                         message.channel.send('this is a playlist!');
+
+
+                         const first = await ytpl(args[0], { pages: 1 });
+                         //const second = ytpl.continueReq(first.continuation); 
+                         //const third = ytpl.continueReg(second.continuation); 	
+                         let vids = first.items;
+                         //vids.push(first.items); 
+
+                         //console.log(vids);
+
+
+                         //console.log(playlist_primitive); 
+                         //console.log(Object.keys(playlist_primitive)); 
+                         //console.log(playlist_primitive[0].title);  
+                         var video_lengths = [];
+
+                         for (i = 0; i < vids.length; i++) {
+
+                             playlist[i] = { title: vids[i].title, url: vids[i].url, lengthSeconds: vids[i].durationSec, current_time: current_time, playlist: true, index: vids[i].index };
+                             //console.log(playlist[i]);
+                         }
+                        // console.log(playlist);
+                         var fuck = playlist.filter(e => e.length);
+                         //console.log(fuck);
+                         save_playlist(fuck);
+
+
+
+
+
+                     }
                    
                     const song_info = await ytdl.getInfo(args[0],{
   requestOptions: {
@@ -78,7 +113,7 @@ const serverQueue = queue.get(message.guild.id);
                     if (debug) { message.channel.send(song) }
                 }
 
-              
+               
             
                 else {
                     //If there was no link, we use keywords to search for a video. Set the song object to have two keys. Title and URl.
@@ -118,39 +153,7 @@ const serverQueue = queue.get(message.guild.id);
                     }
                 }
                 //if the requested link is a youtube playlist 
-                if (ytpl.validateID(args[0])) {
-
-                    if (debug) {
-                        message.channel.send('this is a playlist!');
-                    }
-                    
-                    const first = await ytpl(args[0], { pages: 1 });
-                    //const second = ytpl.continueReq(first.continuation); 
-                    //const third = ytpl.continueReg(second.continuation); 	
-                    let vids = first.items;
-                    //vids.push(first.items); 
-
-                    console.log(vids);
-                    
-
-                    //console.log(playlist_primitive); 
-                    //console.log(Object.keys(playlist_primitive)); 
-                    //console.log(playlist_primitive[0].title);  
-                    var video_lengths = [];
-
-                    for (i = 0; i < vids.length; i++) {
-
-                        playlist[i] = { title: vids[i].title, url: vids[i].url, lengthSeconds: vids[i].durationSec, current_time: current_time, playlist: true, index: vids[i].index };
-                        console.log(playlist[i]); 
-                    }
-                    console.log(playlist);
-                    save_playlist(playlist);
-
-
-
-
-
-                }
+               
 
                 //If the server queue does not exist (which doesn't for the first video queued) then create a constructor to be added to our global queue.
                 
@@ -160,7 +163,7 @@ const serverQueue = queue.get(message.guild.id);
                         voice_channel: voice_channel,
                         text_channel: message.channel,
                         connection: null,
-                        songs: [],
+                        songs: []
                     }
 
                     //Add our key and value pair into the global queue. We then use this to get our server queue.
@@ -168,13 +171,17 @@ const serverQueue = queue.get(message.guild.id);
 
 
                     queue_constructor.songs.push(song);
-                   
+
+                    if (playlist.length > 0)
+                    {
+                        queue_constructor.songs = playlist; 
+                    }
 
                     //Establish a connection and play the song with the vide_player function.
                     try {
                         const connection = await voice_channel.join();
                         queue_constructor.connection = connection;
-                        video_player(message.guild, queue_constructor, server_queue, debug);
+                        video_player(message.guild, queue_constructor.songs[0], queue_constructor, server_queue, debug);
                         autosave(message, queue_constructor.songs); 
                         break; 
                     } catch (err) {
@@ -201,6 +208,10 @@ const serverQueue = queue.get(message.guild.id);
             	
 
             case "stop": stop_song(message, server_queue);
+                break;
+
+            case "clear":
+                server_queue.songs = [];
                 break;
 
             default:
@@ -244,7 +255,7 @@ const video_player = async (guild, song, queue_constructor, server_queue, debug)
       }},
           highWaterMark: 1 << 22, filter: 'audioonly'});
 
-             dispatcher = connection.play(stream, { quality: 'highestaudio', seek: song.current_time, volume: 1 });
+            
             
 
             dispatcher = connection.play(stream, { quality: 'highestaudio', seek: song.current_time, volume: 1 });
@@ -283,7 +294,7 @@ const video_player = async (guild, song, queue_constructor, server_queue, debug)
                 let get_failed = load_savedqueue("assets/music_queue.json").slice();
                 if (debug)
                 {
-                    song_queue.text_channel.send(error.message);
+                   // song_queue.text_channel.send(error.message);
                     song_queue.text_channel.send(`I'm attempting to restore the queue from music_queue.json...`);
                     song_queue.text_channel.send(`Okay, the top element is...  ${getfailed[0][0]}  is that the right song?`); 
                 }

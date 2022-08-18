@@ -1,6 +1,18 @@
 const discord = require('discord.js');
 const cleverbot = require('cleverbot-free'); 
-const fs = require('fs'); 
+const fs = require('fs');
+const fetch = require('node-fetch');
+require('dotenv'); 
+
+console.log(process.env.HUGGING_TOKEN);
+
+
+const headers = {
+    'Authorization': 'Bearer ' + process.env.HUGGNING_TOKEN
+}
+
+const API_URL = 'https://api-inference.huggingface.co/models/EllyPony/flutterbot';
+
 
 module.exports = {
     name: "Fluttershy",
@@ -8,37 +20,37 @@ module.exports = {
     cooldown: 5, 
     run: async (client, message, command, args) => {
 
-        let conversation = [];
+        message.channel.startTyping();
 
-        let text = message.content; 
-        if(text.includes('fluttershy'))
-        {
-        	//text = text.slice(text.indexOf('-fluttershy')).trim().split(/ +/g).splice(text.indexOf('-fluttershy')); 
-        	text = text.substring(text.indexOf("-fluttershy") + 11, text.length);
-           // text.slice('fluttershy'); 
-     
-        	console.log(text); 
+        const payload = {
+            inputs: {
+                text: message.content
+            }
+        };
+
+
+        const response = await fetch(API_URL, {
+            method: 'post',
+            body: JSON.stringify(payload), 
+            headers: headers
         }
-		else 
-        text = text.substring(text.indexOf(">") + 2, text.length)
-        
-        cleverbot(text, conversation).then((res) => {
+        );
+        const data = await response.json();
+        let bot_reply = ' ';
+        if (data.hasOwnProperty('generated_text')) {
+            bot_reply = data.generated_text;
+        }
+        else if (data.hasOwnProperty('error'))
+        {
+            //do error handling stuff 
+            //bot_reply = data.error;
+            console.log(data.error); 
+            message.reply('there was an error'); 
+        }
 
-            conversation.push(text);
-            conversation.push(res);
-            message.channel.send(res);
+        message.channel.stopTyping();
 
-            const json = JSON.stringify(conversation);      
-
-            fs.writeFile("assets/conversation.json", json, function (err, result) {
-
-                if (err) console.log('JSON file writing error in FlutterShy.js caught', err);
-
-            });
-
-        })
-
-
+        message.reply(bot_reply);
 
 
     }

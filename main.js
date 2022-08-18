@@ -38,7 +38,9 @@ const imageFiles = fs.readdirSync('./commands/image/').filter(file => file.endsW
 
 //Global Variables 
 let lang = require(`./lang/en.js`);
+const { anagrams } = require('./commands/anagramgame.js');
 const roles_channel = '1006737480550207508';
+const anagram_channel = '1009199104812929155';
 const gamer_emoji = '🎮';
 const bronerreacts_emoji = '📺';
 const discordian_emoji = '🟨';
@@ -419,8 +421,20 @@ if(command == 'debug')
 }
 
 
+   
 
-    
+    if (message.channel.id == '1009199104812929155')
+    {
+        console.log('working');
+
+        const anagramgame = client.commands.get('anagramgame').anagrams(command, args[0]); 
+
+        if (anagramgame.anagrams(command, args[0])) {
+            message.channel.send('this is a valid anagram!');
+        }
+        else
+            message.channel.send('this is not a valid anagram');
+    }
  });   
 
 client.login(process.env.DISCORD_TOKEN);
@@ -581,17 +595,6 @@ async function init_commands()
 	console.log(' '); 
 	
 }
-
-
-
-
-
-async function init_imgcommands() 
-{
-	
-		//console.log(' '); 
-	//console.log('done!');
-	}
 
 
 

@@ -4,7 +4,8 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 require('dotenv'); 
 
-console.log(process.env.HUGGING_TOKEN);
+
+const command_prefix = 'fs';
 
 
 const headers = {
@@ -18,10 +19,12 @@ module.exports = {
     name: "Fluttershy",
     alias: ["Fluttershy"],
     cooldown: 5, 
-    run: async (client, message, command, args) => {
+    run: async (client, message, command, args, prefix) => { 
 
         message.channel.startTyping();
-
+        console.log(message.content);
+        let input = message.content.slice(prefix.length + command_prefix.length).trim(); 
+        console.log(input); 
         const payload = {
             inputs: {
                 text: message.content

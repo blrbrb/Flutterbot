@@ -38,7 +38,7 @@ const imageFiles = fs.readdirSync('./commands/image/').filter(file => file.endsW
 
 //Global Variables 
 let lang = require(`./lang/en.js`);
-const { anagrams } = require('./commands/anagramgame.js');
+
 const roles_channel = '1006737480550207508';
 const anagram_channel = '1009199104812929155';
 const gamer_emoji = '🎮';
@@ -296,7 +296,7 @@ await client.imgcommands.get('text').run(client, message, args);
 }
 
 
-if(command == 'Fluttershy' || command == 'fluttershy' || command == 'fs') 
+if(command == 'fs') 
 {
     if (!cooldowns.has(command.name))
     {
@@ -318,8 +318,8 @@ if(command == 'Fluttershy' || command == 'fluttershy' || command == 'fs')
 
     time_stamps.set(message.author.id, current_time); 
 
-    
-    client.commands.get('Fluttershy').run(client, message, command, args); 
+
+    client.commands.get('Fluttershy').run(client, message, command, args, prefix1);
 }
 
  
@@ -423,18 +423,6 @@ if(command == 'debug')
 
    
 
-    if (message.channel.id == '1009199104812929155')
-    {
-        console.log('working');
-
-        const anagramgame = client.commands.get('anagramgame').anagrams(command, args[0]); 
-
-        if (anagramgame.anagrams(command, args[0])) {
-            message.channel.send('this is a valid anagram!');
-        }
-        else
-            message.channel.send('this is not a valid anagram');
-    }
  });   
 
 client.login(process.env.DISCORD_TOKEN);

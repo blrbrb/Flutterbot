@@ -4,7 +4,7 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 require('dotenv'); 
 
-
+let conversation = [];
 const command_prefix = 'fs';
 
 
@@ -24,52 +24,26 @@ module.exports = {
         message.channel.startTyping();
         console.log(message.content);
         let input = message.content.slice(prefix.length + command_prefix.length).trim();
-        let conversation = [];
+        
 
-        if (conversation.length < 1) {
-            const conversationdata = fs.readFileSync('assets/conversation.json');
-            conversation = JSON.parse(conversationdata);
-            if (!conversation.length) {
-                conversation = [];
-            }
-        }
 
 
         console.log(input);
 
-        const payload = {
-            inputs: {
-                past_user_inputs: conversation, 
-                text: message.content
-            }
-        };
-
+     
         console.log(conversation); 
-        const response = await fetch(API_URL, {
-            method: 'post',
-            body: JSON.stringify(payload), 
-            headers: { Authorization: `Bearer ${process.env.HUGGING_TOKEN}` },
-        }
-        );
-        const data = await response.json();
-        let bot_reply = ' ';
-        if (data.hasOwnProperty('generated_text')) {
-            bot_reply = data.generated_text;
-            conversation.push(input); 
-            conversation.push(data.generated_text); 
-        }
-        else if (data.hasOwnProperty('generated_responses'))
-        {
-            console.log(data.generated_responses);
-            bot_reply = data.generated_responses; 
-        }
-        else if (data.hasOwnProperty('error'))
-        {
-            //do error handling stuff 
-            //bot_reply = data.error;
-            console.log(data.error); 
-            message.reply('there was an error'); 
-        }
+
+        query({
+            "inputs": {
+                "past_user_inputs": conversation,
+                "text": input 
+            }
+        }).then((response) => {
+            console.log(JSON.stringify(response));
+
+            conversation.push(input);
+            message.reply(response.generated_text);
+        });
 
 
 
@@ -83,8 +57,23 @@ module.exports = {
 
         message.channel.stopTyping();
 
-        message.reply(bot_reply);
+        //message.reply(bot_reply);
 
 
     }
+}
+
+
+
+async function query(data) {
+    const response = await fetch(
+        "https://api-inference.huggingface.co/models/EllyPony/flutterbot",
+        {
+            headers: { Authorization: `Bearer ${process.env.HUGGING_TOKEN}` },
+            method: "POST",
+            body: JSON.stringify(data),
+        }
+    );
+    const result = await response.json();
+    return result;
 }

@@ -96,17 +96,10 @@ const serverQueue = queue.get(message.guild.id);
 
                      }
                    
-                    const song_info = await ytdl.getInfo(args[0],{
-  requestOptions: {
-    headers: {
-      Cookie: ytAltCookies[0],
-      'x-client-data': process.env.BUTT
-    }
-  }
-} );
+                    const song_info = await ytdl.getInfo(args[0]);
                    // console.log(song_info.player_response.videoDetails);
                     //console.log(song_info.player_response);
-                    const result_info = await ytSearch(args[0]); 
+                     console.log('I am getting the video information well'); 
                    // console.log(result_info); 
 
                     song = { title: song_info.videoDetails.title, url: song_info.videoDetails.video_url, lengthSeconds: song_info.videoDetails.lengthSeconds, current_time: current_time, playlist: false, index: 0}
@@ -119,14 +112,7 @@ const serverQueue = queue.get(message.guild.id);
                     //If there was no link, we use keywords to search for a video. Set the song object to have two keys. Title and URl.
                     const video_finder = async (query) => {
                         const video_result = await ytSearch(query);
-                        const song_info2 = await ytdl.getInfo(video_result.videos[0].url,{
-  requestOptions: {
-    headers: {
-      Cookie: ytAltCookies[0],
-      'x-client-data': process.env.BUTT
-    }
-  }
-});
+                        const song_info2 = await ytdl.getInfo(video_result.videos[0].url);
                       
                            
             

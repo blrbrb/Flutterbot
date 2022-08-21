@@ -42,7 +42,20 @@ module.exports = {
             console.log(JSON.stringify(response));
 
             conversation.push(input);
-            message.reply(response.generated_text);
+
+
+            if (response.hasOwnProperty("error")) {
+                message.channel.send('please wait one moment... I am hosted remotely, and need a moment to start up..');
+                message.channel.send(response.error);
+                message.channel.send(`estimated time: ${response.error.estimated_time}s`);
+
+            }
+            else if (response.hasOwnProperty("generated_text"))
+            {
+                message.reply(response.generated_text);
+            }
+
+           
         });
 
 

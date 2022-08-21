@@ -6,7 +6,7 @@ const scan = require('./utils/findimage.js');
 const cheerio = require('cheerio');
 const request = require('request');
 
-const client = new Discord.Client({ partials: ["MESSAGE", "CHANNEL", "REACTION" ]});
+const client = new Discord.Client({ partials: ["MESSAGE", "CHANNEL", "REACTION"], intents: 67317 });
 const cooldowns = new Map(); 
 require('dotenv').config();
 
@@ -201,7 +201,7 @@ if (command == 'angel')
 if(command == 'play' || command == 'skip' || command == 'queue' || command == 'save')
 {
          
- client.commands.get('play').execute(message,args,command,client,Discord, debug);
+ await client.commands.get('play').execute(message,args,command,client,Discord, debug);
 
 }
 

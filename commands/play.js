@@ -308,9 +308,9 @@ const video_player = async (guild, song, queue_constructor, server_queue, debug)
         }).catch(err => console.log(err.message));
 
        
-
-
-        await song_queue.text_channel.send(`feature removed`); 
+								
+	      
+        await song_queue.text_channel.send(`🎶 Now playing **${song.title}**`);   
         
        
     }

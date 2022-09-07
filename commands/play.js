@@ -310,7 +310,7 @@ const video_player = async (guild, song, queue_constructor, server_queue, debug)
        
 
 
-        await song_queue.text_channel.send(`🎶 Now playing **${song.title}**`)
+        await song_queue.text_channel.send(`feature removed`); 
         
        
     }

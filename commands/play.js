@@ -96,8 +96,14 @@ const serverQueue = queue.get(message.guild.id);
 
                      }
                    
-                    const song_info = await ytdl.getInfo(args[0]);
-                   // console.log(song_info.player_response.videoDetails);
+                   const song_info = await ytdl.getInfo(args[0],{
+  requestOptions: {
+    headers: {
+      Cookie: ytAltCookies[0],
+      'x-client-data': process.env.BUTT
+    }
+  }
+} );                   // console.log(song_info.player_response.videoDetails);
                     //console.log(song_info.player_response);
                      console.log('I am getting the video information well'); 
                    // console.log(result_info); 
@@ -112,7 +118,14 @@ const serverQueue = queue.get(message.guild.id);
                     //If there was no link, we use keywords to search for a video. Set the song object to have two keys. Title and URl.
                     const video_finder = async (query) => {
                         const video_result = await ytSearch(query);
-                        const song_info2 = await ytdl.getInfo(video_result.videos[0].url);
+                        const song_info2 = await ytdl.getInfo(video_result.videos[0].url,{
+  requestOptions: {
+    headers: {
+      Cookie: ytAltCookies[0],
+      'x-client-data': process.env.BUTT
+   	 }
+  	}
+  });
                       
                            
             
@@ -295,9 +308,9 @@ const video_player = async (guild, song, queue_constructor, server_queue, debug)
         }).catch(err => console.log(err.message));
 
        
-
-
-        await song_queue.text_channel.send(`🎶 Now playing **${song.title}**`)
+								
+	      
+        await song_queue.text_channel.send(`🎶 Now playing **${song.title}**`);   
         
        
     }

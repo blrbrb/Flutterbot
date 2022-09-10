@@ -690,6 +690,101 @@ client.on('messageReactionAdd', async (reaction, user) => {
     }
 });
 
+
+client.on("messageReactionRemove", async (reaction, user) => {
+    if (reaction.message.partial) await reaction.message.fetch();
+    if (reaction.partial) await reaction.fetch();
+    if (user.bot)
+        return;
+    if (!reaction.message.guild)
+        return;
+
+
+
+    const channel = await client.channels.fetch(roles_channel);
+
+
+
+    const gamer_role = channel.guild.roles.cache.find(role => role.name === 'Gamer');
+    const bronerreacts_role = channel.guild.roles.cache.find(role => role.name === `Broner's React`);
+    const luna_role = channel.guild.roles.cache.find(role => role.name === 'New Lunar Republic');
+    const celestia_role = channel.guild.roles.cache.find(role => role.name === 'Solar Empire');
+    const minor_role = channel.guild.roles.cache.find(role => role.name === 'Minor')
+    const discordian_role = channel.guild.roles.cache.find(role => role.name === 'Discordian');
+    const derpist_role = channel.guild.roles.cache.find(role => role.name === 'Derpist');
+    const hive_role = channel.guild.roles.cache.find(role => role.name === 'The hive');
+
+
+    if (reaction.message.channel.id == roles_channel) {
+        //These next if statements are the if statements that will check wether or not the corresponding emoji's for each role have been reacted with
+        //TD: potential make this a switch/case statement for efficency? 
+
+        if (reaction.emoji.name === gamer_emoji) {
+
+
+            await reaction.message.guild.members.cache.get(user.id).roles.remove(gamer_role);
+
+        }
+        if (reaction.emoji.name === bronerreacts_emoji) {
+
+            await reaction.message.guild.members.cache.get(user.id).roles.remove(bronerreacts_role);
+
+        }
+        if (reaction.emoji.name === luna_emoji) {
+
+            await reaction.message.guild.members.cache.get(user.id).roles.remove(luna_role);
+
+        }
+        if (reaction.emoji.name === celestia_emoji) {
+
+            await reaction.message.guild.members.cache.get(user.id).roles.remove(celestia_role);
+
+        }
+        if (reaction.emoji.name === hive_emoji) {
+
+            await reaction.message.guild.members.cache.get(user.id).roles.remove(hive_role);
+
+        }
+        if (reaction.emoji.name === Derpist_emoji) {
+
+            await reaction.message.guild.members.cache.get(user.id).roles.remove(derpist_role);
+
+        }
+        if (reaction.emoji.name === minor_emoji) {
+
+            await reaction.message.guild.members.cache.get(user.id).roles.remove(minor_role);
+
+        }
+        if (reaction.emoji.name === discordian_emoji) {
+
+            await reaction.message.guild.members.cache.get(user.id).roles.remove(discordian_role);
+
+        }
+
+
+
+
+    }
+    else {
+        return;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+});
+
+
+
+
 async function create_reaction_roles()
 {
     const example_yellow_cucumber_role = '13121412312312';
@@ -754,3 +849,38 @@ async function create_reaction_roles()
 
 }
 
+function calculateGame(channel) {
+    console.log("Calculating...");
+    let games = {};
+    channel.members.map((member) => {
+        if (member.presence.game) {
+            if (!(member.presence.game.name in games))
+                games[member.presence.game.name] = 1;
+            else
+                games[member.presence.game.name]++
+        }
+    });
+
+    let max = {val: 0, game: ""};
+    Object.keys(games).forEach(key => {
+        if (games[key] > max.val) {
+            max.game = key;
+            max.val = games[key];
+        } else if (games[key] === max.val) {
+            max.game = "";
+        }
+    });
+
+    if (!(channel.id in chanDefault)) {
+        chanDefault[channel.id] = channel.name;
+    }
+    if (max.game) {
+        console.log("\"" + channel.name + "\" is now playing \"" + max.game + "\"");
+        //do something cool here, use max.game to get the title of the game currently 
+        channel.setName(max.game);
+    } else {
+        console.log("\"" + channel.name + "\" is now playing \"" + chanDefault[channel.id] + "\"");
+       // channel.setName(chanDefault[channel.id]);
+       
+    }
+}

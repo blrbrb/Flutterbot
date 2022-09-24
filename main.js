@@ -5,7 +5,6 @@ const ytdl = require("ytdl-core");
 const scan = require('./utils/findimage.js');
 const cheerio = require('cheerio');
 const request = require('request');
-const 
 const client = new Discord.Client({ partials: ["MESSAGE", "CHANNEL", "REACTION"], intents: 67317 });
 const cooldowns = new Map(); 
 require('dotenv').config();
@@ -77,7 +76,7 @@ client.on('ready', () => {
    
 });  
 
-client.on('guildMemberAdd', guildMember => {let welcomeRole = guildMember.guild.roles.cache.find(role => role.name ==='new broner')
+client.on('guildMemberAdd', async guildMember => {let welcomeRole = guildMember.guild.roles.cache.find(role => role.name ==='new broner')
 
 
 

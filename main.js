@@ -5,7 +5,7 @@ const ytdl = require("ytdl-core");
 const scan = require('./utils/findimage.js');
 const cheerio = require('cheerio');
 const request = require('request');
-
+const 
 const client = new Discord.Client({ partials: ["MESSAGE", "CHANNEL", "REACTION"], intents: 67317 });
 const cooldowns = new Map(); 
 require('dotenv').config();
@@ -79,8 +79,68 @@ client.on('ready', () => {
 
 client.on('guildMemberAdd', guildMember => {let welcomeRole = guildMember.guild.roles.cache.find(role => role.name ==='new broner')
 
+
+
+
+
+
+
+
+
+
+
+
 guildMember.roles.add(welcomeRole); 
-guildMember.guild.channels.cache.get('960713019753644035').send(` <@${guildMember.user.id}> HI NEW FRIEND!!`); 
+    guildMember.guild.channels.cache.get('960713019753644035').send(` <@${guildMember.user.id}> HI NEW FRIEND!!`);
+
+
+
+    if (Date.now() - guildMember.user.createdAt < 1000 * 60 * 60 * 24 * 1) {
+        // Log Channel
+        const logChan = "1023136877940838400";
+        let channel = client.channels.cache.get(logChan);
+
+
+        const staffChan = "962720288850731109";
+        let staffchannel = client.channels.cache.get(staffChan);
+
+
+        //Embed for log channel
+        const embed = new MessageEmbed()
+            .setColor('RED')
+            .setAuthor('\u200b', client.user.displayAvatarURL())
+            .setDescription(`⚠ **Possible Alt Account**
+                User: ${guildMember.user}
+                Created: ${moment(guildMember.user.createdAt).format("MMM Do YYYY").toLocaleString()} @ **${moment(guildMember.user.createdAt).format('hh:mm a')}**
+                *Check to see if they look like an alt account of a recent banned member (Could be a profile picture, name, etc)*`)
+            .setFooter(`User's ID: ${guildMember.id}`)
+            .setTimestamp();
+
+        // Sends embed & kick msg with reactions
+        channel.send(embed)
+        msg = await channel.send('Would you like for me to kick them?')
+        msg.react('👍').then(() => msg.react('👎'))
+
+        // Checking for reactionss
+        msg.awaitReactions((reaction, user) => (reaction.emoji.name == '👍' || reaction.emoji.name == '👎') && (user.id !== client.user.id), { max: 1, time: 600000, errors: ['time'] })
+            .then(collected => {
+                const reaction = collected.first();
+                if (reaction.emoji.name === '👍') {
+                    guildMember.kick()
+                    return msg.edit('User has been kicked!')
+                } else if (reaction.emoji.name === '👎') {
+                    return msg.edit('Phew! Okay, good!')
+                }
+            })
+            .catch(collected => {
+                channel.send('I-Im sorry, its been too long. Ive forgotten who we were talking about');
+            })
+            .catch(error => {
+                console.log(error)
+            });
+    }
+
+
 
 }); 
 

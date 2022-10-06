@@ -1,11 +1,43 @@
-
+const { Client, Partials, Collection, GatewayIntentBits } = require('discord.js');
 const Discord = require('discord.js')
 const MessageEmbed  = require('discord.js');
 const ytdl = require("ytdl-core"); 
 const scan = require('./utils/findimage.js');
 const cheerio = require('cheerio');
 const request = require('request');
-const client = new Discord.Client({ partials: ["MESSAGE", "CHANNEL", "REACTION"], intents: 67317 });
+
+
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildPresences,
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.MessageContent
+  ],
+  partials: [
+    Partials.Channel,
+    Partials.Message,
+    Partials.User,
+    Partials.GuildMember,
+    Partials.Reaction
+  ],
+  presence: {
+    activities: [{
+      name: "Hi",
+      type: 0
+    }],
+    status: 'You know im not a tree, right?'
+  }
+});
+
+
+
+require('http').createServer((req, res) => res.end('Ready.')).listen(3000);
+
+
+//const client = new Discord.Client({partials: ["MESSAGE", "CHANNEL", "REACTION"], intents: 67317 });
 const cooldowns = new Map(); 
 require('dotenv').config();
 
@@ -149,7 +181,7 @@ client.on('guildCreate', (guild) => {
 	createGuild(guild, true);
 });
 
-client.on('message', async message => {
+client.on('messageCreate', async (message) => {
 
         //message.channel.send("Container Scan has tested true for executable bytes");
         //message.channel.send("SomePony has sent a potentially dangerous attachment. Do not click on it, even if it looks like an image at first");

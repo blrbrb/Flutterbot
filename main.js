@@ -5,6 +5,11 @@ const ytdl = require("ytdl-core");
 const scan = require('./utils/findimage.js');
 const cheerio = require('cheerio');
 const request = require('request');
+const { DisTube } = require('distube'); 
+
+
+
+
 
 
 const client = new Client({
@@ -13,6 +18,7 @@ const client = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildPresences,
     GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GuildVoiceStates,
     GatewayIntentBits.DirectMessages,
     GatewayIntentBits.MessageContent
   ],
@@ -34,7 +40,7 @@ const client = new Client({
 
 
 
-require('http').createServer((req, res) => res.end('Ready.')).listen(3000);
+//require('http').createServer((req, res) => res.end('Ready.')).listen(3000);
 
 
 //const client = new Discord.Client({partials: ["MESSAGE", "CHANNEL", "REACTION"], intents: 67317 });
@@ -91,7 +97,14 @@ var c = 0;
 init_commands(); 
 
 
-
+client.DisTube = new DisTube(client, {
+	leaveOnStop: false,
+	emitAddSongWhenCreatingQueue: false, 
+	emitAddListWhenCreatingQueue: false,
+	youtubeCookie: process.env.FART, 
+	youtubeIdentityToken: process.env.ID_TOKEN,
+	
+	})
 
 //main events 
 client.once('ready', () => {
@@ -179,7 +192,16 @@ guildMember.roles.add(welcomeRole);
 client.on('guildCreate', (guild) => {
 	console.log(`Client joined guild ${guild.name} with ID ${guild.id}`);
 	createGuild(guild, true);
-});
+}); 
+
+
+
+
+
+
+client.DisTube.on("finish", queue => client.DisTube.voices.leave(message));   
+     client.DisTube.on("finishSong", queue => queue.songs.pop()); 
+
 
 client.on('messageCreate', async (message) => {
 
@@ -188,7 +210,15 @@ client.on('messageCreate', async (message) => {
         //message.channel.send("")
       
 
-    
+     
+     client.DisTube.on("error", (error) => { console.log(error); message.channel.send(`there was an error 
+     ${error}`);});
+
+    	client.DisTube.on("playSong", (queue, song) =>{ 
+    			  
+    			queue.textChannel.send(`🎶 Now playing **${song.name}** / ${song.formattedDuration} / requested by ${song.user}`);   
+    			});	
+
 
  
 
@@ -255,7 +285,7 @@ if(command == 'role')
         
 }
 
-
+ 			
 
    
  if (command == 'reactionRole_HardReset')
@@ -268,6 +298,7 @@ if(command == 'role')
 }
 
 
+ 
 if (command == 'angel')
 {
     message.channel.send('angel bunny');
@@ -289,12 +320,25 @@ if (command == 'angel')
         
     }
 
-if(command == 'play' || command == 'skip' || command == 'queue' || command == 'save')
-{
-         
- await client.commands.get('play').execute(message,args,command,client,Discord, debug);
 
+if(command == 'queue') 
+{
+	
+	
 }
+
+
+if(command == 'play' || command == 'queue' || command == 'skip' || command == 'resume' || command == 'pause')
+{
+	client.commands.get('play').execute(message, args, command, client, Discord, debug); 
+}
+    		
+    		
+
+         
+ //await client.commands.get('play').execute(message,args,command,client,Discord, debug);
+ 
+
 
     
 if(command == 'img')
@@ -691,7 +735,7 @@ client.on("guildUnavailable", function(guild){
 
 client.on("error", function(error){
 	console.log('My Websocket has encountered an error :('); 
-    console.error(`client's WebSocket encountered a connection error: ${error}`);
+    console.log(`client's WebSocket encountered a connection error: ${error}`);
 })
 
 client.on('messageReactionAdd', async (reaction, user) => {
@@ -975,3 +1019,5 @@ function calculateGame(channel) {
        
     }
 }
+
+

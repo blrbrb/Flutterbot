@@ -21,7 +21,7 @@ module.exports = {
     cooldown: 5, 
     run: async (client, message, command, args, prefix) => { 
 
-        message.channel.startTyping();
+        message.channel.sendTyping(); 
         console.log(message.content);
         let input = message.content.slice(prefix.length + command_prefix.length).trim();
         
@@ -68,7 +68,7 @@ module.exports = {
 
         });
 
-        message.channel.stopTyping();
+        //message.channel.stopTyping();
 
         //message.reply(bot_reply);
 

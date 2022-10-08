@@ -6,7 +6,7 @@ const scan = require('./utils/findimage.js');
 const cheerio = require('cheerio');
 const request = require('request');
 const { DisTube } = require('distube'); 
-
+const { REST, Routes } = require('discord.js');
 
 
 
@@ -56,15 +56,16 @@ let debug = false;
 
 
 client.commands = new Discord.Collection(); 
-client.imgcommands = new Discord.Collection();  
+client.imgcommands = new Discord.Collection();
+client.slashcommands = new Discord.Collection(); 
 client.aliases = new Discord.Collection(); 
  
 
 
 //init command source (stored in seperate js modules)
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
-const imageFiles = fs.readdirSync('./commands/image/').filter(file => file.endsWith('.js')); 
-
+const imageFiles = fs.readdirSync('./commands/image/').filter(file => file.endsWith('.js'));
+const slashFiles = fs.readdirSync('./commands/slash/').filter(file => file.endsWith('.js')); 
  
 
 
@@ -74,7 +75,7 @@ const imageFiles = fs.readdirSync('./commands/image/').filter(file => file.endsW
 
 
 //Global Variables 
-let lang = require(`./lang/en.js`);
+let lang = require(`./lang/en.js`); 
 
 const roles_channel = '1006737480550207508';
 const anagram_channel = '1009199104812929155';
@@ -94,7 +95,7 @@ var b = 0;
 var c = 0;
 
 //init commands before the client is online 
-init_commands(); 
+init_commands();
 
 
 client.DisTube = new DisTube(client, {
@@ -197,11 +198,23 @@ client.on('guildCreate', (guild) => {
 
 
 
+//these event listeners shouldn't be ever nested. It will cause a memory leak, everytime discord's client events are called these will 
+// be called in tandem created multipule uncess. instances. 
+
+client.DisTube.on("finish", queue => client.DisTube.voices.leave());   
+client.DisTube.on("finishSong", queue => queue.songs.pop()); 
+
+client.DisTube.on("playSong", (queue, song) => {
+
+    queue.textChannel.send(`🎶 Now playing **${song.name}** / ${song.formattedDuration} / requested by ${song.user}`);
+});
 
 
-client.DisTube.on("finish", queue => client.DisTube.voices.leave(message));   
-     client.DisTube.on("finishSong", queue => queue.songs.pop()); 
 
+client.DisTube.on("error", (error) => {
+    console.log(error); message.channel.send(`there was an error 
+     ${error}`);
+});
 
 client.on('messageCreate', async (message) => {
 
@@ -211,13 +224,9 @@ client.on('messageCreate', async (message) => {
       
 
      
-     client.DisTube.on("error", (error) => { console.log(error); message.channel.send(`there was an error 
-     ${error}`);});
+    
 
-    	client.DisTube.on("playSong", (queue, song) =>{ 
-    			  
-    			queue.textChannel.send(`🎶 Now playing **${song.name}** / ${song.formattedDuration} / requested by ${song.user}`);   
-    			});	
+    	
 
 
  
@@ -330,7 +339,7 @@ if(command == 'queue')
 
 if(command == 'play' || command == 'queue' || command == 'skip' || command == 'resume' || command == 'pause')
 {
-	client.commands.get('play').execute(message, args, command, client, Discord, debug); 
+	
 }
     		
     		
@@ -472,22 +481,13 @@ if(command == 'fart')
 }
 
 
-if(command == 'quote')
-{
-   client.commands.get('quote').execute(client,message,args, debug); 
-}
-
 if (command == 'rules' && (message.member.hasPermission("ADMINISTRATOR") == true)) 
 {
     client.commands.get('rules').execute(message, args, Discord);
 }
     
     
-if(command === 'ping') {
 
-	client.commands.get('ping').execute(message,args);
- }
- 
    
  
 
@@ -560,6 +560,27 @@ if(command == 'debug')
 
  });   
 
+client.on('interactionCreate', async interaction => {
+  
+ 
+    const { commandName } = interaction;
+    const command = client.slashcommands.get(commandName); 
+
+    try {
+        await command.execute(interaction, debug);
+    } catch (error) {
+        console.error(error);
+        await interaction.reply({
+            content: `Something went wrong while executing this command...`,
+            ephemeral: true,
+        });
+    }
+
+
+
+
+
+});
 client.login(process.env.DISCORD_TOKEN);
      
 
@@ -570,16 +591,6 @@ async function voice(message, args)
         
 }
 
-
-
-    //const messageList = the_channel.messages.sort(function (a, b) { 
-   //     return b.createdTimestamp - a.createdTimestamp;
-   // })   
-
-
-
-
- 
  
  async function save_data(values, file) 
  {
@@ -655,69 +666,7 @@ client.fileCheck = (image) => {
 
 
 
-async function init_commands() 
-{
-	
-	for(const file of commandFiles) {
-		var arr = []; 
-	const command = require(`./commands/${file}`); 
-	arr.push(file);
-	const total = commandFiles.length; 
-	
-	process.stdout.clearLine();
-	process.stdout.cursorTo(0);
-	process.stdout.write("loading commands:" + Math.round((1 + commandFiles.indexOf(file)) / total * 100) + "%");
-	
-  	
-	client.commands.set(command.name, command);    
-	
-	if (command.aliases) {
-    command.aliases.forEach(alias => {
-    client.aliases.set(alias, command) 
-       
-    });
-	
-	}	 
-	process.stdout.write(" ");
-	//console.log(' '); 
-}
-   
-	
-	console.log(' ');
-	
-	
-	
-	for(const file of imageFiles) {
-		var arr = []; 
-	const command = require(`./commands/image/${file}`);
-		arr.push(file);  
-	
-	const total = imageFiles.length; 
-	//console.log(total); 
-	process.stdout.clearLine();
-	process.stdout.cursorTo(0);
-	process.stdout.write("loading Image Commands:" + Math.round((1 + imageFiles.indexOf(file)) / total * 100) + "%");   
-	
-	
-	client.imgcommands.set(command.name, command);  
-	
-	
-	if (command.aliases) {
-    command.aliases.forEach(alias => {
-    client.aliases.set(alias, command)      
-       
-    });
-	
-	}	 
 
-	
-	
-
-	}
-
-	console.log(' '); 
-	
-}
 
 
 
@@ -984,40 +933,120 @@ async function create_reaction_roles()
 
 }
 
-function calculateGame(channel) {
-    console.log("Calculating...");
-    let games = {};
-    channel.members.map((member) => {
-        if (member.presence.game) {
-            if (!(member.presence.game.name in games))
-                games[member.presence.game.name] = 1;
-            else
-                games[member.presence.game.name]++
-        }
-    });
 
-    let max = {val: 0, game: ""};
-    Object.keys(games).forEach(key => {
-        if (games[key] > max.val) {
-            max.game = key;
-            max.val = games[key];
-        } else if (games[key] === max.val) {
-            max.game = "";
-        }
-    });
+async function init_commands() {
 
-    if (!(channel.id in chanDefault)) {
-        chanDefault[channel.id] = channel.name;
+    //init text input commands 
+    for (const file of commandFiles) {
+        var arr = [];
+        const command = require(`./commands/${file}`);
+        arr.push(file);
+        const total = commandFiles.length;
+
+        process.stdout.clearLine();
+        process.stdout.cursorTo(0);
+        process.stdout.write("loading commands:" + Math.round((1 + commandFiles.indexOf(file)) / total * 100) + "%");
+
+
+        client.commands.set(command.name, command);
+
+        if (command.aliases) {
+            command.aliases.forEach(alias => {
+                client.aliases.set(alias, command)
+
+            });
+
+        }
+        process.stdout.write(" ");
+        //console.log(' '); 
     }
-    if (max.game) {
-        console.log("\"" + channel.name + "\" is now playing \"" + max.game + "\"");
-        //do something cool here, use max.game to get the title of the game currently 
-        channel.setName(max.game);
-    } else {
-        console.log("\"" + channel.name + "\" is now playing \"" + chanDefault[channel.id] + "\"");
-       // channel.setName(chanDefault[channel.id]);
-       
+
+
+    console.log(' ');
+
+
+    //init image manipulation commands 
+    for (const file of imageFiles) {
+        var arr = [];
+        const command = require(`./commands/image/${file}`);
+        arr.push(file);
+
+        const total = imageFiles.length;
+        //console.log(total); 
+        process.stdout.clearLine();
+        process.stdout.cursorTo(0);
+        process.stdout.write("loading Image Commands:" + Math.round((1 + imageFiles.indexOf(file)) / total * 100) + "%");
+
+
+        client.imgcommands.set(command.name, command);
+
+
+        if (command.aliases) {
+            command.aliases.forEach(alias => {
+                client.aliases.set(alias, command)
+
+            });
+
+        }
+
+
+
+
     }
+
+    console.log(' ');
+
+    //init the slash commands 
+    for (const file of slashFiles) {
+        var arr = [];
+        const command = require(`./commands/slash/${file}`);
+        arr.push(file);
+
+        const total = imageFiles.length;
+        //console.log(total); 
+        process.stdout.clearLine();
+        process.stdout.cursorTo(0);
+        process.stdout.write("loading Image Commands:" + Math.round((1 + imageFiles.indexOf(file)) / total * 100) + "%");
+
+
+        client.slashcommands.set(command.name, command);
+
+
+        if (command.aliases) {
+            command.aliases.forEach(alias => {
+                client.aliases.set(alias, command)
+
+            });
+
+        }
+
+
+
+
+    }
+
+    console.log(' '); 
+   
+
+    //register the slash commands 
+    (async () => {
+        try {
+            const clientId = '817161573201608715';
+            const guildId = '960713019753644032';
+            const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN); 
+            const data = await rest.put(
+                Routes.applicationGuildCommands(clientId, guildId),
+                { body: client.slashcommands },
+            );
+
+            console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+        } catch (error) {
+
+
+            console.error(error);
+            console.log(error.errors); 
+        }
+    })();
+
 }
-
 

@@ -1,6 +1,6 @@
 module.exports = { 
 name: 'reverb', 
-description: "Send A Nice Reverb Fart", 
+description: 'Send A Nice Reverb Fart', 
 execute(message, args, Discord)  {    
   	
 	//configure the fart sound effect embed 

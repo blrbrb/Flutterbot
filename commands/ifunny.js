@@ -3,7 +3,7 @@ var cheerio = require('cheerio')
 
 module.exports = {
     name: 'ifunny',
-    description: 'god help you',
+    description: 'grab an image from Ifunny. god help you',
     execute(message, args, debug) {
 
         // console.log('working');

@@ -2,7 +2,8 @@ const {Client, Message, MessageEmbed} = require("discord.js");
 const child = require("child_process"); 
 
 module.exports = { 
-name: "terminal", 
+	name: "terminal",
+	description: "bring up a unix commandline interface",
 run: async (client, message, args) => 
 {
  if(message.author.id !== '252235505318625281') return; 

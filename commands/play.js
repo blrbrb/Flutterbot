@@ -1,84 +1,39 @@
-const { GuildMemberManager, PermissionsBitField} = require('discord.js');
-const Discord = require('@discordjs/voice');
-const { createAudioPlayer, joinVoiceChannel, createAudioResource , AudioPlayerStatus } = require('@discordjs/voice');
-const ytdl = require('ytdl-core');
-const ytSearch = require('yt-search');
-const ytpl = require('ytpl');
-const discord = require('discord.js');
-const { MessageEmbed } = require('discord.js');
-const fs = require('fs'); 
-var Stopwatch = require("node-stopwatch").Stopwatch; 
-const { DisTube } = require('distube'); 
-
-const path = require('path');
-let oneStepBack = path.join(__dirname, '../');
-const cron = require('node-cron');
-require('dotenv'); 
-//Global Variables 
-//const queue = new Map();
-let dispatcher
-const current_time = 0;
-const taskMap = {};
-var ytAltCookies = [[process.env.FART, process.env.BUTT]];
-var verbouse = false;
-                        	
-
- var stopwatch = Stopwatch.create();
-
 
 module.exports = {
-    name: 'play',
+	name: 'play',
     aliases: ['skip', 'stop', 'queue',], 
     cooldown: 0,
-    description: 'Advanced music bot',
+    description: 'Queue a song, or youtube video!',
     async execute(message, args, cmd, client, Discord, debug) {
     	
     	
 switch(cmd) 
 {
 	case "play":
-	
-	const queue = client.DisTube.getQueue(message);
-	if(!queue){
-	client.DisTube.play(message.member.voice.channel, args.join(' '), {
-    		member:message.member,
-    		textChannel: message.channel,
-    		message
-    		
-    		}); }
-    		
-    	
 
-   
-   else 
-   {
-   	client.DisTube.play(message.member.voice.channel, args.join(' '), {
-    		member:message.member,
-    		textChannel: message.channel,
-    		message
-    		
-    		}); 
-    		let songtitle = args.join(' ');
-    	message.channel.send(`${args.join(' ')} added to the queue!`); 
-    }
+		this.queue_video(message,client, args); 
+		
     break; 
     
    case "skip":
    
    const current_queue = client.DisTube.getQueue(message); 
-	if(!current_queue)
-	{
-		message.channel.send(`There are no songs in queue 😔`); 
-		return;
-	}
+		if (!current_queue) {
+			message.channel.send(`There are no songs in queue 😔`);
+			return;
+		}
+		else if(current_queue.songs.length <= 1)
+		{
+			client.DisTube.stop(message); 
+		}
 	try 
 	{
 		
-		const song = await current_queue.skip(); 
+	 const song = await current_queue.skip(); 
 		
 	}catch(e)
 	{
-		message.channel.send('error');
+		message.channel.send(`there was an error ${e.what()}`);
 		console.log(e);  
 	}
 	break; 
@@ -101,7 +56,9 @@ switch(cmd)
 		break; 
 	case "stop": 
 		client.DisTube.stop(message); 
-		break; 
+		break;
+	case "volume":
+		client.DisTue
 
 
 default: 
@@ -115,4 +72,54 @@ default:
     	
   	
 
-    }}
+	},
+	async queue_video(message, client, args)
+	{
+		
+
+		const queue = client.DisTube.getQueue(message);
+		if (!queue) {
+			client.DisTube.play(message.member.voice.channel, args.join(' '), {
+				member: message.member,
+				textChannel: message.channel,
+				message
+
+			});
+
+			const song_result = client.DisTube.getQueue(message);
+
+			if (song_result.song.age_restricted)
+			{
+				return message.channel.send(`I'm sorry, but this is an age restricted video. I can't play it unless you are in a NSFW channel`); 
+					
+			}
+		}
+
+
+
+
+		else {
+			client.DisTube.play(message.member.voice.channel, args.join(' '), {
+				member: message.member,
+				textChannel: message.channel,
+				message
+
+			});
+			const song_result_queue = client.DisTube.getQueue(message);
+
+			if (song_result_queue.song.age_restricted) {
+				return message.channel.send(`I'm sorry, but this is an age restricted video. I can't play it unless you are in a NSFW channel`);
+
+			}
+			else
+			{
+				message.channel.send(`${song_result_queue.song.name} added to the queue!`);
+			}
+
+
+		}
+
+		
+
+	}
+}

@@ -7,42 +7,42 @@ module.exports = {
     async execute(message, args, cmd, client, Discord, debug) {
     	
     	
+    	 
 switch(cmd) 
 {
+	
 	case "play":
-
+		
 		this.queue_video(message,client, args); 
 		
     break; 
     
    case "skip":
    
-   const current_queue = client.DisTube.getQueue(message); 
-		if (!current_queue) {
-			message.channel.send(`There are no songs in queue 😔`);
-			return;
-		}
-		else if(current_queue.songs.length <= 1)
-		{
-			client.DisTube.stop(message); 
-		}
+   const queue1 = await client.DisTube.getQueue(message);  
+	if(queue1.songs.length >= 1) 
+	{	
 	try 
 	{
-		
-	 const song = await current_queue.skip(); 
-		
+		client.DisTube.skip(message); 	
+	 
 	}catch(e)
 	{
 		message.channel.send(`there was an error ${e.what()}`);
 		console.log(e);  
 	}
+	}
+	else 
+	{
+		client.Distube.stop(message); 
+	}
 	break; 
 	
 	case "queue": 
-	const currentqueue = client.DisTube.getQueue(message);
-	if(!currentqueue) return message.channel.send(`There are no songs in queue 😔`);
+	const queue = client.DisTube.getQueue(message);
+	if(!queue) return message.channel.send(`There are no songs in queue 😔`);
 	
-	const q = currentqueue.songs.map((song, i) =>`${i===0 ? 'Playing:' : `${i}.`} ${song.name} - \`${song.formattedDuration}\``).join('\n')
+	const q = queue.songs.map((song, i) =>`${i===0 ? 'Playing:' : `${i}.`} ${song.name} - \`${song.formattedDuration}\``).join('\n')
 	
 	message.channel.send(`**Queue**\n${q}`);
 	break; 
@@ -77,7 +77,7 @@ default:
 	{
 		
 
-		const queue = client.DisTube.getQueue(message);
+		const queue = await client.DisTube.getQueue(message);
 		if (!queue) {
 			client.DisTube.play(message.member.voice.channel, args.join(' '), {
 				member: message.member,
@@ -86,13 +86,9 @@ default:
 
 			});
 
-			const song_result = client.DisTube.getQueue(message);
+			
 
-			if (song_result.song.age_restricted)
-			{
-				return message.channel.send(`I'm sorry, but this is an age restricted video. I can't play it unless you are in a NSFW channel`); 
-					
-			}
+			
 		}
 
 
@@ -105,16 +101,13 @@ default:
 				message
 
 			});
-			const song_result_queue = client.DisTube.getQueue(message);
+			const song_result_queue = await client.DisTube.getQueue(message);
 
-			if (song_result_queue.song.age_restricted) {
-				return message.channel.send(`I'm sorry, but this is an age restricted video. I can't play it unless you are in a NSFW channel`);
-
-			}
-			else
-			{
-				message.channel.send(`${song_result_queue.song.name} added to the queue!`);
-			}
+			
+			
+			
+				message.channel.send(`${args.join(' ')} I'm searching for a result, and  adding it to the queue!`);
+			
 
 
 		}

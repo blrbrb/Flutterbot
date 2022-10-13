@@ -9,24 +9,46 @@ const findImage = require('../../utils/findimage.js');
 module.exports = {
 	name: 'mosaic',
 	description: 'Fluttershy Will Turn an image into a mosaic',
-	async run(client, message, args, debug) { 
-		
-		imageUrl = await findImage.imageFinder(message);
+	options: [
+		{
+			type: 11,
+			name: "image",
+			description: "Image for Fluttershy to turn into a mosaic",
+			required: true
+		},
+		{
+			type: 10,
+			name: "scale",
+			description: "scale factor of the mosaic"
+		}
+	],
+	async execute(Discord, client, interaction, debug) { 
+
+		var scale = 5;
+
+		imageUrl = await interaction.options.getAttachment('image').url;
+
+		if (interaction.options.getNumber('scale'))
+		       scale = interaction.options.getNumber('scale');
+		if (scale > 100 || scale <= 0)
+			  scale = 5; 
+
 		const extension = findImage.extensionFinder(imageUrl);
+
 		console.log(extension); 
 	  if (imageUrl !== undefined) {
-		      message.channel.sendTyping(); 
-		       await gm(request(imageUrl)).filesize((error, format) => { 
+		      interaction.channel.sendTyping(); 
+		        gm(request(imageUrl)).filesize((error, format) => { 
 		     				
 		    
 		       
 		       
-		       gm(request(imageUrl)).command("mosaic").out("-duplicate").tile("5x5").geometry("+0+0").stream((error, stdout) => {
+		        gm(request(imageUrl)).command("mosaic").out("-duplicate").tile(`${scale}x${scale}`).geometry("+0+0").stream((error, stdout) => {
 			            if (error) throw new Error(error);
 			           gm(stdout).resize("800x800>").stream((error, stdoutFinal) => {
 					            if (error) throw new Error(error);
 					           
-					            message.channel.send({
+					             interaction.reply({
 							              files: [{
 									                  attachment: stdoutFinal,
 									                  name: "mosaic.png"

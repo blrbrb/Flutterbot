@@ -9,30 +9,38 @@ const findImage = require('../../utils/findimage.js');
 const sendImage = require('../../utils/sendimage.js');
 const clamp = require('../../utils/clamp.js');
 let imageUrl;
-let { attachment, embed, MessageAttachment } = require('discord.js');
+let { attachment, embed, AttachmentBuilder } = require('discord.js');
 
 module.exports =  {
 	name: 'jpeg', 
-	description: 'Fluttershy Will Jpeg-ify an image',
- 	async run(client, message, args) { 
+    description: 'Fluttershy Will Jpeg-ify an image',
+    options: [
+        {
+            type: 11,
+            name: "image",
+            description: "The image for Flutterhsy to add more JPEG to ",
+            required: true
+        }
+    ],
+ 	async execute(Discord, client, interaction, args) { 
  	
    
-    imageUrl = await findImage.imageFinder(message);
-	const extension = findImage.extensionFinder(imageUrl);
+          imageUrl = await interaction.options.getAttachment('image').url;
+	      const extension = findImage.extensionFinder(imageUrl);
 
     //image.catch(
     //let extension = imageUrl.split("?")[0].split(".")[imageUrl.split(".").length - 1]; // Get extension of image
     let r = (args[0] && Number.isInteger(Number(args[0]))) ? Number(args[0]) : 10;
-     let img = await gm(imageUrl, [["jpg", [clamp(r, 0, 100)]]], message);
-   	// sendImage(message, "JPEG", 10, img, (extension == "gif" ? "gif" : "jpg"), false)
+     let img = await gm(imageUrl, [["jpg", [clamp(r, 0, 100)]]], interaction);
+   	// sendImage(interaction, "JPEG", 10, img, (extension == "gif" ? "gif" : "jpg"), false)
     if (imageUrl !== undefined) {
-    	message.channel.sendTyping();
+    	interaction.channel.sendTyping();
     	await gm(request(imageUrl)).size((error, size) => { 
     		
     		 if(size.height > 1200 && size.width > 1200) 
 		     {
-		       message.channel.send(`t-that's way too big of an image for me!🖌️🐇`);	
-		       message.channel.stopTyping();	
+		       interaction.reply(`t-that's way too big of an image for me!🖌️🐇`);	
+		      
 		        return;
 		     }
 		     
@@ -40,7 +48,7 @@ module.exports =  {
     	 gm(request(imageUrl)).setFormat("jpg").quality(1).stream((error, stdout) => {
             if (error)  throw new Error(error); //console.log(error);
             
-         message.channel.send({
+         interaction.reply({
         files: [{
           attachment: stdout,
           name: "morejpeg.jpg"

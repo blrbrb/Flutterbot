@@ -9,9 +9,22 @@ const findImage = require('../../utils/findimage.js');
 module.exports = {
 	name: 'circle',
 	description: 'Fluttershy Will Circularize an image',
-	async run(client, message, args) { // eslint-disable-line no-unused-vars
-		imageUrl = await findImage.imageFinder(message);
+	options: [
+		{
+			type: 11,
+			name: "image",
+			description: "an image attachment to manipulate",
+			required: true
+		}
+	],
+	async execute(Discord, client, interaction, debug) { // eslint-disable-line no-unused-vars
+
+		//imageUrl = await findImage.imageFinder(message);
+		imageUrl = await interaction.options.getAttachment("image");
+		console.log(interaction.options.getAttachment("image")); 
 		const extension = findImage.extensionFinder(imageUrl);
+
+
 	  if (imageUrl !== undefined) {
 		  message.channel.sendTyping();
 		  await gm(request(imageUrl)).size((error, size) => {

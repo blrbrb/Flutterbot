@@ -4,8 +4,8 @@ const mention2id = require('../utils/mention2id.js');
 
 module.exports = {
   name: 'avatar',
-  alias: ['pfp'],
-  run: async (client, message, command, args, lang) => {
+ 
+  async execute(Discord, message, command, args, lang){
 
     let taggedUser =  message.mentions.members.first(); 
      // taggedUser = await message.guild.members.fetch(taggedUser)

@@ -206,8 +206,9 @@ client.on('guildCreate', (guild) => {
 // be called in tandem created multipule uncess. instances. 
 
 client.DisTube.on("finish", queue => client.DisTube.voices.leave());   
-client.DisTube.on("finishSong", queue => queue.songs.pop()); 
+client.DisTube.on("finishSong", queue => queue.songs.pop());
 
+client.DisTube.on("searchNoResult", (message, query) => message.channel.send(`No result found for ${query}!`)); 
 client.DisTube.on("playSong", (queue, song) => {
 
     queue.textChannel.send(`🎶 Now playing **${song.name}** / ${song.formattedDuration} / requested by ${song.user}`);
@@ -215,32 +216,15 @@ client.DisTube.on("playSong", (queue, song) => {
 
 
 
-client.DisTube.on("error", (error) => {
-    console.log(error); message.channel.send(`there was an error 
+client.DisTube.on("error", (error, channel) => {
+    console.log(error); if (channel) message.channel.send(`there was an error
      ${error}`);
+ 
 });
 
 client.on('messageCreate', async (message) => {
 
-        //message.channel.send("Container Scan has tested true for executable bytes");
-        //message.channel.send("SomePony has sent a potentially dangerous attachment. Do not click on it, even if it looks like an image at first");
-        //message.channel.send("")
-      
-
-     
-    
-
-    	
-
-
- 
-
- //save_data(pcounter, "assets/counter.txt"); 	
- 
-	
-	
   
-
     let args = message.content.slice(prefix1.length).trim().split(/ +/g);
 
 

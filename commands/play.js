@@ -31,16 +31,10 @@ switch(cmd)
    const queue1 = await client.DisTube.getQueue(message);  
 	
 
-		
-		if (!queue) {
-			message.channel.send(`There are no songs in queue 😔`);
-			return;
-		}
-		else if(queue.songs.length >= 1)
-		{
-			try
-			{
-				await client.DisTube.skip(queue); 
+	
+		if (queue1.songs.length >= 1) {
+			try {
+				await client.DisTube.skip(message);
 
 
 			} catch (e) {
@@ -48,25 +42,28 @@ switch(cmd)
 				console.log(e);
 			}
 		}
-	
+		else
+		{
 
+			client.DisTube.stop(message); 
+		}
 	break; 
 	
 	case "queue": 
-	const queue = client.DisTube.getQueue(message);
-	if(!queue) return message.channel.send(`There are no songs in queue 😔`);
+		const queue2 = await client.DisTube.getQueue(message);
+		if (queue2.songs.length < 1) return message.channel.send(`There are no songs in queue 😔`);
 	
-	const q = queue.songs.map((song, i) =>`${i===0 ? 'Playing:' : `${i}.`} ${song.name} - \`${song.formattedDuration}\``).join('\n')
+	const q = queue2.songs.map((song, i) =>`${i===0 ? 'Playing:' : `${i}.`} ${song.name} - \`${song.formattedDuration}\``).join('\n')
 	
 	message.channel.send(`**Queue**\n${q}`);
 	break; 
 	
 	
 	case "pause": 
-		queue.pause(message.member.voice.channel);
+		queue2.pause(message.membe);
 		break;
 	case "resume": 
-		queue.resume(message.member.voice.channel); 
+		queue2.resume(message.member.voice.channel); 
 		break; 
 	case "stop": 
 		client.DisTube.stop(message); 

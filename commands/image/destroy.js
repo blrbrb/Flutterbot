@@ -17,7 +17,7 @@ module.exports = {
   imageUrl = await findImage.imageFinder(message);
 		const extension = findImage.extensionFinder(imageUrl);
   if (imageUrl !== undefined) {
-    message.channel.startTyping(); 
+    message.channel.sendTyping(); 
      await gm(request(imageUrl)).size((error, size) => { 
 		       
 		       	if(size.height > 1200 && size.width > 1200) 

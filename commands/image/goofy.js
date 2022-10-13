@@ -15,7 +15,7 @@ module.exports = {
 	async run(client, message, args)
     {
         imageUrl = await findImage(message);
-        message.channel.startTyping();
+        message.channel.sendTyping();
         const goofy = fs.readFileSync('assets/images/goofynerd.png');
           await gm(request(imageUrl)).size((error, size) => { 
           	 		       
@@ -29,7 +29,7 @@ module.exports = {
             if (error) throw new Error(error);
              gm(request(imageUrl)).composite(goofy).gravity("Center").resize(null, size.height).strip().stream((error, stdout) => {
                 if (error) throw new Error(error);
-                message.channel.stopTyping();
+               
                 message.channel.send({
                     files: [{
                         attachment: stdout,

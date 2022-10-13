@@ -14,18 +14,18 @@ module.exports = {
 	const extension = findImage.extensionFinder(imageUrl);
 	 
 	  if (imageUrl !== undefined) {
-		      message.channel.startTyping(); 
+		      message.channel.sendTyping(); 
 		       await gm(request(imageUrl)).size((error, size) => { 
 		       
 		       	if(size.height > 1200 && size.width > 1200) 
 		       	{
 		       		message.channel.send(`t-that's way too big of an image for me!🖌️🐇`);
-		       		message.channel.stopTyping();	
+		       			
 		       		return;
 		       	}
 		      gm(request(imageUrl)).swirl(180).strip().stream((error, stdout) => {
 			            if (error) throw new Error(error);
-			            message.channel.stopTyping();
+			           
 			            message.channel.send({
 					            files: [{
 							              attachment: stdout,

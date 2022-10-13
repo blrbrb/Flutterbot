@@ -26,7 +26,7 @@ module.exports =  {
      let img = await gm(imageUrl, [["jpg", [clamp(r, 0, 100)]]], message);
    	// sendImage(message, "JPEG", 10, img, (extension == "gif" ? "gif" : "jpg"), false)
     if (imageUrl !== undefined) {
-    	message.channel.startTyping();
+    	message.channel.sendTyping();
     	await gm(request(imageUrl)).size((error, size) => { 
     		
     		 if(size.height > 1200 && size.width > 1200) 
@@ -49,7 +49,7 @@ module.exports =  {
        
     	 });
     	});
-       message.channel.stopTyping(); 
+      
      }
 }
 

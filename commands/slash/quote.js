@@ -4,7 +4,7 @@ const request = require('request');
 module.exports = {
     name: 'quote',
     description: 'Fetch randomly generated quotes from inspirobot',
-    async execute(interaction, debug) {
+    async execute(Discord, client,interaction, debug) {
 
         let interact = interaction; 
         var options = {

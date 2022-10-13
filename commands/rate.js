@@ -1,7 +1,10 @@
+const discord = require('discord.js');
+
 
 module.exports = {   
 name: 'rate', 
-description: 'rate anything on a scale of one to ten', 
+description: 'rate anything on a scale of one to ten',
+category: 'Chat Input',
 execute(message, args, client) 
 {
 var rating = new Array(1,2,3,4,5,6,7,8,9,10);

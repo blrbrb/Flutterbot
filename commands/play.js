@@ -46,7 +46,7 @@ switch(cmd)
 	break; 
 	
 	case "queue": 
-	const queue = client.DisTube.getQueue(message);
+	
 	if(!queue) return message.channel.send(`There are no songs in queue 😔`);
 	
 	const q = queue.songs.map((song, i) =>`${i===0 ? 'Playing:' : `${i}.`} ${song.name} - \`${song.formattedDuration}\``).join('\n')
@@ -84,7 +84,7 @@ default:
 	{
 		
 
-		const queue = await client.DisTube.getQueue(message);
+	
 
 		if (!queue) {
 			client.DisTube.play(message.member.voice.channel, args.join(' '), {

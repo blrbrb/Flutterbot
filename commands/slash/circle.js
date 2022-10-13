@@ -15,15 +15,23 @@ module.exports = {
 			name: "image",
 			description: "an image attachment to manipulate",
 			required: true
+		},
+		{
+			type: 10,
+			name: "ior",
+			description: "increase or decrease the IOR of the UV sphere 1 to 10" 
 		}
 	],
 	async execute(Discord, client, interaction, debug) { // eslint-disable-line no-unused-vars
 
-		//url = await findImage.imageFinder(interaction);
+		var IOR = 10;
+
 		var url = await interaction.options.getAttachment("image").url;
 		console.log(url);
 		const extension = findImage.extensionFinder(url);
 
+		if (interaction.options.getNumber('ior'))
+			IOR = interaction.options.getNumber('ior'); 
 
 	  if (url !== undefined) {
 		  interaction.channel.sendTyping();
@@ -36,7 +44,7 @@ module.exports = {
 				  return;
 			  }
 
-			  gm(request(url)).out("-rotational-blur", 10).strip().stream((error, stdout) => {
+			  gm(request(url)).out("-rotational-blur", IOR).strip().stream((error, stdout) => {
 				  if (error) throw new Error(error);
 				 
 				  interaction.reply({

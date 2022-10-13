@@ -20,19 +20,26 @@ module.exports =  {
             name: "image",
             description: "The image for Flutterhsy to add more JPEG to ",
             required: true
+        },
+        {
+            type: 10,
+            name: "quality",
+            description: "increase or decrese the quality of the JPEG from 1 to 10"
+           
         }
     ],
- 	async execute(Discord, client, interaction, args) { 
+ 	async execute(Discord, client, interaction, debug) { 
  	
-   
-          imageUrl = await interaction.options.getAttachment('image').url;
-	      const extension = findImage.extensionFinder(imageUrl);
+          var quality = 1; 
 
-    //image.catch(
-    //let extension = imageUrl.split("?")[0].split(".")[imageUrl.split(".").length - 1]; // Get extension of image
-    let r = (args[0] && Number.isInteger(Number(args[0]))) ? Number(args[0]) : 10;
-     let img = await gm(imageUrl, [["jpg", [clamp(r, 0, 100)]]], interaction);
-   	// sendImage(interaction, "JPEG", 10, img, (extension == "gif" ? "gif" : "jpg"), false)
+          imageUrl = await interaction.options.getAttachment('image').url;
+          const extension = findImage.extensionFinder(imageUrl);
+
+          if (interaction.options.getNumber('quality'))
+              quality = interaction.options.getNumber('quality'); 
+  
+   
+   
     if (imageUrl !== undefined) {
     	interaction.channel.sendTyping();
     	await gm(request(imageUrl)).size((error, size) => { 
@@ -45,7 +52,7 @@ module.exports =  {
 		     }
 		     
 
-    	 gm(request(imageUrl)).setFormat("jpg").quality(1).stream((error, stdout) => {
+    	 gm(request(imageUrl)).setFormat("jpg").quality(quality).stream((error, stdout) => {
             if (error)  throw new Error(error); //console.log(error);
             
          interaction.reply({

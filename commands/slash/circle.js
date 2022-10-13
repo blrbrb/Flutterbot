@@ -19,26 +19,27 @@ module.exports = {
 	],
 	async execute(Discord, client, interaction, debug) { // eslint-disable-line no-unused-vars
 
-		//imageUrl = await findImage.imageFinder(message);
-		imageUrl = await interaction.options.getAttachment("image");
-		console.log(interaction.options.getAttachment("image")); 
-		const extension = findImage.extensionFinder(imageUrl);
+		//url = await findImage.imageFinder(interaction);
+		var url = await interaction.options.getAttachment("image").url;
+		console.log(url);
+		const extension = findImage.extensionFinder(url);
 
 
-	  if (imageUrl !== undefined) {
-		  message.channel.sendTyping();
-		  await gm(request(imageUrl)).size((error, size) => {
+	  if (url !== undefined) {
+		  interaction.channel.sendTyping();
+		  await gm(request(url)).size((error, size) => {
 
-			  if (size.height > 1200 && size.width > 1200) {
-				  message.channel.send(`t-that's way too big of an image for me!🖌️🐇`);
-				  message.channel.stopTyping();
+			  if (size.height > 1200 && size.width > 1200)
+			  {
+			   interaction.channel.send(`t-that's way too big of an image for me!🖌️🐇`);
+				
 				  return;
 			  }
 
-			  gm(request(imageUrl)).out("-rotational-blur", 10).strip().stream((error, stdout) => {
+			  gm(request(url)).out("-rotational-blur", 10).strip().stream((error, stdout) => {
 				  if (error) throw new Error(error);
 				 
-				  message.channel.send({
+				  interaction.reply({
 					  files: [{
 						  attachment: stdout,
 						  name: "circle.png"

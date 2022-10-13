@@ -15,7 +15,7 @@ module.exports = {
 		const extension = findImage.extensionFinder(imageUrl);
 		console.log(extension); 
 	  if (imageUrl !== undefined) {
-		      message.channel.startTyping(); 
+		      message.channel.sendTyping(); 
 		       await gm(request(imageUrl)).filesize((error, format) => { 
 		     				
 		    
@@ -25,7 +25,7 @@ module.exports = {
 			            if (error) throw new Error(error);
 			           gm(stdout).resize("800x800>").stream((error, stdoutFinal) => {
 					            if (error) throw new Error(error);
-					            message.channel.stopTyping();
+					           
 					            message.channel.send({
 							              files: [{
 									                  attachment: stdoutFinal,

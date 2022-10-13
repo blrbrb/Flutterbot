@@ -2,10 +2,30 @@ require('dotenv').config();
 const { MessageEmbed } = require('discord.js'); 
 
 module.exports = { name: 'help', 
-		   description: 'get helpful information', 
-		   execute(client, message, command, args, prefix1, lang, commandfiles) {
+    description: 'get some help',
+    options: [
+        {
+            type: 3,
+            name: "help_option",
+            description: "What do you need help with?",
+            choices: [
+                {
+                    name: "about_help",
+                    value: "about"
+                },
+                {
+                    name: "command_help",
+                    value: "commands"
+                },
+                {
+                    name: "kofi",
+                    value: "contribute"
+                }
+            ]
+        }],
+		   execute(Discord, client, interaction, debug) {
 
-        switch (args[1])
+               switch (interaction.options.getString())
          {
             case 'commands':
                	//const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js')); 
@@ -19,23 +39,18 @@ module.exports = { name: 'help',
                 
 
             case 'about':
-                message.channel.send(process.env.VERSION);
-                message.channel.send('Hello! :3 I am a free open source discordbot made with love by <@252235505318625281> documentation for me can be found here,' + ' ' + process.env.GIT);
+                       // message.channel.send(process.env.VERSION);
+                       interaction.reply('Hello! :3 I am a free open source discordbot made with love by <@252235505318625281> documentation for me can be found here,' + ' ' + process.env.GIT);
                 break; 
                 
-
-            case 'info':
-            		 message.channel.send(process.env.VERSION);
-             
-                break;
                 
-            case 'support': 
+            case 'contribute': 
             
             let embed = new MessageEmbed()
             .setTitle('Buy a Coffee for Flutterbot').setColor(0xfbfb2b).setURL('https://ko-fi.com/flutterbot')
             .setDescription(`Powered by \nKo-fi`).setThumbnail("https://storage.ko-fi.com/cdn/useruploads/852fff3c-a4a2-4cdb-98fa-2a0d97f2dff3.png"); 
-            
-            	message.channel.send(embed); 
+
+                       interaction.reply({ embeds: [embed] });
             	
             	break;
             			

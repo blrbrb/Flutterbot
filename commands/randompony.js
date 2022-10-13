@@ -5,6 +5,7 @@ module.exports = {
     name: 'randompony',
     alias: 'pony', 
     description: 'fetch randomly generated pone',
+    category: 'Chat Input',
     execute(message, args) {
 
         // console.log('working');

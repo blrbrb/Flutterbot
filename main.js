@@ -192,7 +192,11 @@ guildMember.roles.add(welcomeRole);
 
 client.on('guildCreate', (guild) => {
 	console.log(`Client joined guild ${guild.name} with ID ${guild.id}`);
-	createGuild(guild, true);
+    createGuild(guild, true);
+
+    guild.commands.set(client.slashcommands);
+       
+
 }); 
 
 
@@ -240,7 +244,8 @@ client.on('messageCreate', async (message) => {
     let args = message.content.slice(prefix1.length).trim().split(/ +/g);
 
 
-    
+    message.guild.commands.set(client.slashcommands).then(() =>
+        console.log(`Commands deployed in guild ${message.guild.name}!`));
 
     const command = args.shift();
   
@@ -254,12 +259,15 @@ if(command == 'rip')
 {
    message.channel.send('Oh no!, it looks like someone died'); 
 
-   client.commands.get('rip').run(client, message, args);
+    client.commands.get('rip').run(client, message, args);
+  
+   
 }
     
 if(command == 'uwu')
 {
     message.channel.send(' I am fluttershy and Owo Uwu');
+   
 }
     
     
@@ -339,6 +347,7 @@ if(command == 'queue')
 
 if(command == 'play' || command == 'queue' || command == 'skip' || command == 'resume' || command == 'pause')
 {
+
 	await client.commands.get('play').execute(message,args,command,client,Discord, debug);
 }
     		
@@ -504,7 +513,7 @@ if (command == 'rules' && (message.member.hasPermission("ADMINISTRATOR") == true
 
 if (command == 'boop') 
 {
- client.commands.get('boop').run(client, message, command, args, prefix1); 
+ //client.commands.get('boop').run(client, message, command, args, prefix1); 
 
 
 } 
@@ -564,12 +573,12 @@ client.on('interactionCreate', async interaction => {
   
  
     const { commandName } = interaction;
-    const command = client.slashcommands.get(commandName); 
-
+    const command = client.slashcommands.get(commandName);
+    console.log(interaction.options.values); 
     try {
-        await command.execute(interaction, debug);
+        await command.execute(Discord, client, interaction, debug);
     } catch (error) {
-        console.error(error);
+         console.error(error);
         await interaction.reply({
             content: `Something went wrong while executing this command...`,
             ephemeral: true,
@@ -1043,8 +1052,9 @@ async function init_commands() {
         } catch (error) {
 
 
-            console.error(error);
-            console.log(error.errors); 
+           // console.error(error);
+            console.log('error loading one or more slash commands'); 
+            console.log(error.rawError); 
         }
     })();
 

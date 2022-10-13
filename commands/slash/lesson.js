@@ -1,6 +1,6 @@
 const fs = require('fs');
 const Discord = require("discord.js");
-const { MessageEmbed } = require('discord.js'); 
+const { EmbedBuilder } = require('discord.js');
 const request = require('request'); 
 const cheerio = require('cheerio'); 
 require('dotenv').config();
@@ -8,11 +8,11 @@ const natural = require('natural');
 
 module.exports = {
     name: 'lesson',
-    description: 'get a random friendship lesson from the My Little Pony Friendship is Magic TV Series',
-  async execute(client, message, args) {
+    description: 'get a randomly fetched quote from the FIM TV series!',
+   async execute(Discord, client, interaction, debug) {
      //TO DO: Find a way to fetch corresponding images for each pony speaking. 
     
-       let rawdata = fs.readFileSync('assets/season1.json'); 
+      let rawdata = fs.readFileSync('assets/season1.json'); 
        
       var speaker_images = new Map();
 
@@ -21,10 +21,10 @@ module.exports = {
        //arr.set(
        
         var episode_data = JSON.parse(rawdata); 
-         train(episode_data); 
+       
         //await train(episode_data); 
         
-
+       var seasons = ["season1", "season2", "season3", "season4", "season5", "season6"];
  
   
         //Parse Multi-Dimensional JSON episode data 
@@ -41,9 +41,9 @@ module.exports = {
       					
       				//console.log(randResult.speaker); 
 
-      const embed = new MessageEmbed().setTitle(randResult.speaker).setDescription(randResult.text).setColor(0xfbfb2b).setThumbnail(speaker_images.get(randResult.speaker.toString()));
+       const embed = new EmbedBuilder().setTitle(randResult.speaker.toString(), null).setDescription(randResult.text.toString()).setColor(0xfbfb2b).setThumbnail(speaker_images.get(randResult.speaker.toString()));
 
-       message.channel.send(embed);    
+       interaction.reply({ embeds: [embed] }); 
     
 
 
@@ -88,30 +88,3 @@ function initimages(map1)
 
 }
 
-
-function train(dialouge_data) 
-{
-	console.log('training');
-	for(x = 0; x < dialouge_data.mlp.length; x++) 
-	{
-		for(y = 0; y < dialouge_data.mlp[x].length; y++) 
-		{
-			for(z = 0; z < dialouge_data.mlp[x][y].length; z++) 
-			{
-				console.log(dialouge_data.mlp[x][y][z].text); 
-				console.log(z); 
-			}
-		}	
-	}
-	
-	
-	var classifier = new natural.BayesClassifier();
-	
-classifier.addDocument('i am long qqqq', 'buy');
-classifier.addDocument('buy the q\'s', 'buy');
-classifier.addDocument('short gold', 'sell');
-classifier.addDocument('sell gold', 'sell');
-	
-	
-	
-}

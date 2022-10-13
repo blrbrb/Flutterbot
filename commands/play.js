@@ -2,40 +2,51 @@
 module.exports = {
 	name: 'play',
     aliases: ['skip', 'stop', 'queue',], 
-    cooldown: 0,
+	cooldown: 0,
+	category: 'Chat Input',
     description: 'Queue a song, or youtube video!',
     async execute(message, args, cmd, client, Discord, debug) {
     	
+
     	
     	 
+
+		const queue = client.DisTube.getQueue(message);
+
+
 switch(cmd) 
 {
 	
 	case "play":
-		
-		this.queue_video(message,client, args); 
+
+		this.queue_video(message,client, args, queue); 
 		
     break; 
     
    case "skip":
    
+
    const queue1 = await client.DisTube.getQueue(message);  
-	if(queue1.songs.length >= 1) 
-	{	
-	try 
-	{
-		client.DisTube.skip(message); 	
-	 
-	}catch(e)
-	{
-		message.channel.send(`there was an error ${e.what()}`);
-		console.log(e);  
-	}
-	}
-	else 
-	{
-		client.Distube.stop(message); 
-	}
+	
+		
+		if (!queue) {
+			message.channel.send(`There are no songs in queue 😔`);
+			return;
+		}
+		else if(queue.songs.length >= 1)
+		{
+			try
+			{
+				await client.DisTube.skip(queue); 
+
+
+			} catch (e) {
+				message.channel.send(`there was an error ${e.what()}`);
+				console.log(e);
+			}
+		}
+	
+
 	break; 
 	
 	case "queue": 
@@ -49,16 +60,16 @@ switch(cmd)
 	
 	
 	case "pause": 
-		client.DisTube.pause(message); 
+		queue.pause(message.member.voice.channel);
 		break;
 	case "resume": 
-		client.DisTube.resume(message);
+		queue.resume(message.member.voice.channel); 
 		break; 
 	case "stop": 
 		client.DisTube.stop(message); 
 		break;
-	case "volume":
-		client.DisTue
+	case "volume-":
+		client.DisTube.setVolume(message.member.voice.channel, 40); 
 
 
 default: 
@@ -73,11 +84,12 @@ default:
   	
 
 	},
-	async queue_video(message, client, args)
+	async queue_video(message, client, args, queue)
 	{
 		
 
-		const queue = await client.DisTube.getQueue(message);
+
+		
 		if (!queue) {
 			client.DisTube.play(message.member.voice.channel, args.join(' '), {
 				member: message.member,
@@ -85,8 +97,6 @@ default:
 				message
 
 			});
-
-			
 
 			
 		}
@@ -101,13 +111,14 @@ default:
 				message
 
 			});
+
 			const song_result_queue = await client.DisTube.getQueue(message);
 
 			
 			
 			
 				message.channel.send(`${args.join(' ')} I'm searching for a result, and  adding it to the queue!`);
-			
+						
 
 
 		}

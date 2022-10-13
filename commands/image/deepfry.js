@@ -16,7 +16,7 @@ module.exports = {
  const extension = findImage.extensionFinder(imageUrl);
 
   if (imageUrl !== undefined) {
-    message.channel.startTyping(); 
+    message.channel.sendTyping(); 
      await gm(request(imageUrl)).size((error, size) => { 
 		       
 		 if(size.height > 1200 && size.width > 1200) 
@@ -30,7 +30,7 @@ module.exports = {
 		  {
 		  	gm(request(imageUrl)).colorspace("RGB").out("-brightness-contrast", "30x50").setFormat("jpg").quality(1).stream((error, stdout) => {
       if (error) throw new Error(error);
-      message.channel.stopTyping();
+     ;
       message.channel.send({
         files: [{
           attachment: stdout,

@@ -14,7 +14,7 @@ module.exports = {
  const extension = await findImage.extensionFinder(imageUrl); 
  console.log(extension); 
 	  if (imageUrl !== undefined) {
-		      message.channel.startTyping(); 
+		      message.channel.sendTyping(); 
 		       await gm(request(imageUrl)).size((error, size) => { 
 		       
 		       		       const textsizepercent = Math.round(( 2*10*(size.width/size.height)));		       console.log(textsizepercent); 
@@ -33,7 +33,7 @@ module.exports = {
 		       	if(size.height > 2000 && size.width > 2000) 
 		       	{
 		       		message.channel.send(`t-that's way too big of an image for me!🖌️🐇`);
-		       		message.channel.stopTyping();	
+		       			
 		       		return;
 		       	} 
 		       	if(size.height < 400 && size.width < 200) 
@@ -60,7 +60,7 @@ module.exports = {
 		      
 		      picture.geometry("+0+0").stream((error, stdout) => {
 			            if (error) throw new Error(error);
-			            message.channel.stopTyping();
+			           
 			            message.channel.send({
 					            files: [{
 							              attachment: stdout,

@@ -14,12 +14,12 @@ module.exports = {
 	 imageUrl = await findImage.imageFinder(message);
 		const extension = findImage.extensionFinder(imageUrl);
 	  if (imageUrl !== undefined) {
-		      message.channel.startTyping();
+		      message.channel.sendTyping();
 		       await gm(request(imageUrl)).size((error, size) => { 
 		       
 		       	if(size.height > 1200 && size.width > 1200) 
 		       	{
-		       		message.channel.stopTyping();	
+		       			
 		       		message.channel.send(`t-that's way too big of an image for me!🖌️🐇`);	
 		       		 
 		       		return;
@@ -28,7 +28,7 @@ module.exports = {
 		       gm(request(imageUrl)).paint(15).resize("800x800>").stream((error, stdout) => {
 			            if (error) console.log(error); 
 			            //console.log(error);
-			            message.channel.stopTyping();
+			            
 			            message.channel.send({
 					            files: [{
 							              attachment: stdout,

@@ -19,7 +19,7 @@ module.exports = {
 		if (r <= 1) scaleFactor = 1 / (r * r) * 2; 
 
 		if (imageUrl !== undefined) {
-			message.channel.startTyping();
+			message.channel.sendTyping();
 			await gm(request(imageUrl)).fisheye((error, size) => {
 
 				if (size.height > 1200 && size.width > 1200) {

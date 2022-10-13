@@ -347,13 +347,15 @@ if(command == 'queue')
 
 if(command == 'play' || command == 'queue' || command == 'skip' || command == 'resume' || command == 'pause')
 {
+
     await client.commands.get('play').execute(message,args,command,client,Discord, debug);
+
 }
     		
     		
 
          
- //await client.commands.get('play').execute(message,args,command,client,Discord, debug);
+ 
  
 
 

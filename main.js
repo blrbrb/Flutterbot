@@ -348,8 +348,12 @@ if(command == 'queue')
 if(command == 'play' || command == 'queue' || command == 'skip' || command == 'resume' || command == 'pause')
 {
 
+<<<<<<< HEAD
+	await client.commands.get('play').execute(message,args,command,client,Discord, debug);
+=======
     await client.commands.get('play').execute(message,args,command,client,Discord, debug);
 
+>>>>>>> 855ddc359b73438470f3e880a8e1064f7ec75356
 }
     		
     		

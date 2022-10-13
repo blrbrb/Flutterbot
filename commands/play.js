@@ -8,9 +8,12 @@ module.exports = {
     async execute(message, args, cmd, client, Discord, debug) {
     	
 
+<<<<<<< HEAD
     	
     	 
 
+=======
+>>>>>>> 855ddc359b73438470f3e880a8e1064f7ec75356
 		const queue = client.DisTube.getQueue(message);
 
 
@@ -18,16 +21,26 @@ switch(cmd)
 {
 	
 	case "play":
+<<<<<<< HEAD
 
 		this.queue_video(message,client, args, queue); 
 		
+=======
+		
+
+		this.queue_video(message,client, args, queue); 
+
+>>>>>>> 855ddc359b73438470f3e880a8e1064f7ec75356
     break; 
     
    case "skip":
    
 
+<<<<<<< HEAD
    const queue1 = await client.DisTube.getQueue(message);  
 	
+=======
+>>>>>>> 855ddc359b73438470f3e880a8e1064f7ec75356
 		
 		if (!queue) {
 			message.channel.send(`There are no songs in queue 😔`);
@@ -88,8 +101,13 @@ default:
 	{
 		
 
+<<<<<<< HEAD
 
 		
+=======
+		const queue = await client.DisTube.getQueue(message);
+
+>>>>>>> 855ddc359b73438470f3e880a8e1064f7ec75356
 		if (!queue) {
 			client.DisTube.play(message.member.voice.channel, args.join(' '), {
 				member: message.member,
@@ -98,6 +116,10 @@ default:
 
 			});
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 855ddc359b73438470f3e880a8e1064f7ec75356
 			
 		}
 
@@ -111,14 +133,23 @@ default:
 				message
 
 			});
+<<<<<<< HEAD
 
+=======
+>>>>>>> 855ddc359b73438470f3e880a8e1064f7ec75356
 			const song_result_queue = await client.DisTube.getQueue(message);
 
 			
 			
+
 			
 				message.channel.send(`${args.join(' ')} I'm searching for a result, and  adding it to the queue!`);
+<<<<<<< HEAD
 						
+=======
+
+			
+>>>>>>> 855ddc359b73438470f3e880a8e1064f7ec75356
 
 
 		}

@@ -9,8 +9,8 @@ module.exports = {
     	
 
 
-		const queue = client.DisTube.getQueue(message);
-
+		
+		const queue = await client.DisTube.getQueue(message);
 
 switch(cmd) 
 {
@@ -18,44 +18,17 @@ switch(cmd)
 	case "play":
 
 		
-
+		console.log(queue); 
 		this.queue_video(message,client, args, queue); 
 
 
     break; 
     
-   case "skip":
-   
-
-
-   const queue1 = await client.DisTube.getQueue(message);  
+ 
 	
 
 	
-		if (queue1.songs.length >= 1) {
-			try {
-				await client.DisTube.skip(message);
-
-
-			} catch (e) {
-				message.channel.send(`there was an error ${e.what()}`);
-				console.log(e);
-			}
-		}
-		else
-		{
-
-			client.DisTube.stop(message); 
-		}
-	break; 
 	
-	case "queue": 
-		const queue2 = await client.DisTube.getQueue(message);
-		if (queue2.songs.length < 1) return message.channel.send(`There are no songs in queue 😔`);
-	
-	const q = queue2.songs.map((song, i) =>`${i===0 ? 'Playing:' : `${i}.`} ${song.name} - \`${song.formattedDuration}\``).join('\n')
-	
-	message.channel.send(`**Queue**\n${q}`);
 	break; 
 	
 	
@@ -83,31 +56,24 @@ default:
     	
   	
 
-	},
+	}, 
 	async queue_video(message, client, args, queue)
 	{
-		
 
+		if (!queue)
+		{
+			 
+				client.DisTube.play(message.member.voice.channel, args.join(' '), {
+					member: message.member,
+					textChannel: message.channel,
+					message
 
+				});
 
-		
-
-		
-
-		if (!queue) {
-			client.DisTube.play(message.member.voice.channel, args.join(' '), {
-				member: message.member,
-				textChannel: message.channel,
-				message
-
-			});
 
 
 			
 		}
-
-
-
 
 		else {
 			client.DisTube.play(message.member.voice.channel, args.join(' '), {
@@ -117,13 +83,9 @@ default:
 
 			});
 
-			const song_result_queue = await client.DisTube.getQueue(message);
-
+		
+			message.channel.send(`${args.join(' ')} I'm searching for a result, and  adding it to the queue!`);
 			
-			
-
-			
-				message.channel.send(`${args.join(' ')} I'm searching for a result, and  adding it to the queue!`);
 
 
 

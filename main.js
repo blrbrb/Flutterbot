@@ -117,8 +117,26 @@ client.once('ready', () => {
 client.on('ready', () => {
 
     console.log('Fluttershy is Awake Yay! :3');
-    //scan the roles channel for new role assignments constantly.
-    
+
+    (async () => {
+        try {
+            const clientId = '817161573201608715';
+            const guildId = '960713019753644032';
+            const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+            const data = await rest.put(
+                Routes.applicationGuildCommands(clientId, guildId),
+                { body: client.slashcommands },
+            );
+            console.log(data);
+            console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+        } catch (error) {
+
+
+            // console.error(error);
+            console.log('error loading one or more slash commands');
+            console.log(error.rawError);
+        }
+    })();
    
 });  
 
@@ -1024,25 +1042,7 @@ async function init_commands() {
    
 
     //register the slash commands 
-    (async () => {
-        try {
-            const clientId = '817161573201608715';
-            const guildId = '960713019753644032';
-            const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN); 
-            const data = await rest.put(
-                Routes.applicationGuildCommands(clientId, guildId),
-                { body: client.slashcommands },
-            );
-
-            console.log(`Successfully reloaded ${data.length} application (/) commands.`);
-        } catch (error) {
-
-
-           // console.error(error);
-            console.log('error loading one or more slash commands'); 
-            console.log(error.rawError); 
-        }
-    })();
+   
 
 }
 

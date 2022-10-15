@@ -1,33 +1,22 @@
-var Scraper = require('images-scraper');
 
-const google = new Scraper({
-puppeteer: {
-    headless:true
-}
-})
+var cheerio = require('cheerio');
+var request = require('request');
 
 module.exports = {
-name: 'image',
-description: 'sends a random image corresponding to a google image search',
-    async execute(client, message, args, debug)
+name: 'newpony',
+description: 'Get an entierly Unique Pony from thisponydoesnotexist!',
+    async execute(Discord, client, interacion,debug)
     {
-       // message.channel.send(scraper);
-        const image_query = args.join(" ");
-        console.log(image_query);
-        if(debug) {
-            message.channel.send('fetching with kq! =' + image_query);
-            message.channel.send('running scripts...');
+        var options = {
+            url: "https://ifunny.co/tags/" + args,
+            method: "GET",
+            headers: {
+                "Accept": "text/html",
+                "User-Agent": "Chrome"
+
+            }
         }
 
-        if(!image_query) return message.channel.send('Please Supply a SearchTerm');
-        
-        const image_results = await google.scrape(image_query, 1);
-        message.channel.send(image_results[0].url);
-        
-        if(debug)
-        {
-            message.channel.send('successfully scraped:' + " " + image_results.length + " " +'image results');
-        }
     }
 }
 

@@ -41,9 +41,17 @@ module.exports = {
         const selection = interaction.options.getString('filter');
 
         // const queue = client.DisTube.getQueue(interaction);
+        if (selection == 'bassboost')
+            client.DisTube.setFilter(interaction, 'bassboost');
+        else if (selection == 'reverse')
+            client.DisTube.setFilter(interaction, 'reverse');
+        else if (selection == 'phaser')
+            client.DisTube.setFilter(interaction, 'phaser');
+        else if (selection == 'vaporwave')
+            client.DisTube.setFilter(interaction, 'vaporwave');
 
-        client.DisTube.setFilter(interaction, selection);
-
+        const string = `Added the ${selection} filter~!`; 
+        interaction.reply(string); 
 
 
     }}

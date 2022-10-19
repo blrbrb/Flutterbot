@@ -1,11 +1,11 @@
 
 const { MessageEmbed } = require('discord.js');
-const mention2id = require('../utils/mention2id.js');
+const mention2id = require('../../utils/mention2id.js');
 
 module.exports = {
-  name: 'avatar',
- 
-  async execute(Discord, message, command, args, lang){
+    name: 'avatar',
+    description: 'Get Someponys Avatar',
+  async execute(Discord, client, interaction, debug ){
 
     let taggedUser =  message.mentions.members.first(); 
      // taggedUser = await message.guild.members.fetch(taggedUser)

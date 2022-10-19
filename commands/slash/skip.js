@@ -5,7 +5,7 @@ module.exports =
     description: 'skip the currently playing song',
     async execute(Discord, client, interaction, debug)
     {
-  
+                                    
         const queue = await client.DisTube.getQueue(interaction);
         const q = queue.songs.map((song, i) => `skipping ${song.name} - \`${song.formattedDuration}\``).join('\n');
  

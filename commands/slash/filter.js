@@ -1,3 +1,4 @@
+const { FilterManager, defaultFilters } = require('distube');
 
 module.exports = {
     name: 'filter',
@@ -31,27 +32,106 @@ module.exports = {
                 {
                     name: 'Phaser',
                     value: 'phaser'
+                },
+                {
+                    name: 'Karaoke',
+                    value: 'karaoke'
+
+                },
+                {
+                    name: '3D',
+                    value: '3d'
+
+                },
+                {
+                    name: 'Surround',
+                    value: 'surround'
+        
+                },
+                {
+                    name: 'Gate',
+                    value: 'gate'
+                },
+                {
+                    name: 'Tremolo',
+                    value: 'tremolo'
+                }, 
+                {
+                    name: 'EarWax',
+                    value: 'earwax'
+
+                },
+                {
+                    name: 'Mcompand',
+                    value: 'mcompand'
+                },
+                {
+                    name: 'Echo',
+                    value: 'echo'
+
+                },
+                {
+                    name: 'Haas',
+                    value: 'haas'
                 }
             ],
             required: true
-        }
+        },
+        
     ],
     async execute(Discord, client, interaction, debug) {
 
         const selection = interaction.options.getString('filter');
+        const queue = await client.DisTube.getQueue(interaction);
+        let string = `the ${selection} filter~!`;
 
-        // const queue = client.DisTube.getQueue(interaction);
-        if (selection == 'bassboost')
-            client.DisTube.setFilter(interaction, 'bassboost');
-        else if (selection == 'reverse')
-            client.DisTube.setFilter(interaction, 'reverse');
-        else if (selection == 'phaser')
-            client.DisTube.setFilter(interaction, 'phaser');
-        else if (selection == 'vaporwave')
-            client.DisTube.setFilter(interaction, 'vaporwave');
+        if (!queue.filters.has(selection)) {
+            queue.filters.add(selection);
+            string = `Added the ${selection} filter~!`;
+        }
+        else if (queue.filters.has(selection))
+        {
+            queue.filters.remove(selection);
+            string = `Removed the ${selection} filter~!`
+        }
 
-        const string = `Added the ${selection} filter~!`; 
-        interaction.reply(string); 
+        var test_filters = [{
+            name: "bassboost",
+            value: "bass=g=10"
+        },
+        {
+            name: 'EarWax',
+            value: 'earwax'
+
+        },
+        {
+            name: 'Mcompand',
+            value: 'mcompand'
+        },
+        {
+            name: 'Echo',
+            value: 'echo'
+
+        },
+        {
+            name: 'Haas',
+            value: 'haas'
+        },
+        {
+            name: 'eartorture',
+            value: 'earTorture'
+
+
+        }
+
+           
+
+
+        ];
+
+        JSON.stringify(test_filters);
+        console.log(test_filters); 
+        await interaction.reply(string); 
 
 
     }}

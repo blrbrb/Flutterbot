@@ -5,10 +5,8 @@ const ytdl = require("ytdl-core");
 const scan = require('./utils/findimage.js');
 const cheerio = require('cheerio');
 const request = require('request');
-const { DisTube } = require('distube'); 
+const { DisTube } = require('distube');
 const { REST, Routes } = require('discord.js');
-
-
 
 
 
@@ -67,7 +65,7 @@ const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith(
 const imageFiles = fs.readdirSync('./commands/image/').filter(file => file.endsWith('.js'));
 const slashFiles = fs.readdirSync('./commands/slash/').filter(file => file.endsWith('.js')); 
  
-
+let filters = []; 
 
 
 
@@ -96,14 +94,16 @@ var c = 0;
 
 //init commands before the client is online 
 init_commands();
-
+ init_customFilters();
 
 client.DisTube = new DisTube(client, {
-	leaveOnStop: false,
-	emitAddSongWhenCreatingQueue: false, 
-	emitAddListWhenCreatingQueue: false,
-	youtubeCookie: process.env.FART, 
-	youtubeIdentityToken: process.env.ID_TOKEN,
+    leaveOnStop: false,
+    emitAddSongWhenCreatingQueue: false,
+    emitAddListWhenCreatingQueue: false,
+    youtubeCookie: process.env.FART,
+    youtubeIdentityToken: process.env.ID_TOKEN,
+
+    customFilters: filters[5]
 	
 	})
 
@@ -118,25 +118,11 @@ client.on('ready', () => {
 
     console.log('Fluttershy is Awake Yay! :3');
 
-    (async () => {
-        try {
-            const clientId = '817161573201608715';
-            const guildId = '960713019753644032';
-            const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
-            const data = await rest.put(
-                Routes.applicationGuildCommands(clientId, guildId),
-                { body: client.slashcommands },
-            );
-            console.log(data);
-            console.log(`Successfully reloaded ${data.length} application (/) commands.`);
-        } catch (error) {
+   
+  
+   
 
-
-            // console.error(error);
-            console.log('error loading one or more slash commands');
-            console.log(error.rawError);
-        }
-    })();
+    
    
 });  
 
@@ -342,8 +328,8 @@ if (command == 'angel')
 
 if(command == 'queue') 
 {
-	
-	
+
+   // if (message.guild.me.hasPermission()); 
 }
 
 
@@ -1046,3 +1032,38 @@ async function init_commands() {
 
 }
 
+async function register_slash_commands() {
+    try {
+        const clientId = '817161573201608715';
+        const guildId = '960713019753644032';
+       
+        const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+        const data = await rest.put(
+            Routes.applicationGuildCommands(clientId, guildId),
+            { body: client.slashcommands },
+        );
+        console.log(data);
+        console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+    } catch (error) {
+
+
+        // console.error(error);
+        console.log('error loading one or more slash commands');
+        console.log(error.rawError);
+    }
+
+
+}
+
+
+register_slash_commands();
+
+
+async function init_customFilters()
+{
+
+    let rawdata = fs.readFileSync('assets/filters.json');
+     filters = JSON.parse(rawdata);
+     console.log(filters); 
+
+}

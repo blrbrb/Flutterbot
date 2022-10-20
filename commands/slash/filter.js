@@ -73,16 +73,53 @@ module.exports = {
                 {
                     name: 'Haas',
                     value: 'haas'
-                }
+                },
+                {
+                    name: 'Earkiller',
+                    value: 'earkiller'
+
+                },
+                {
+                    name: 'Chorus',
+                    value: 'chorus'
+                },
+                {
+                    name: 'Speed200%',
+                    value: 'speedx200%'
+                },
+                {
+                    name: 'Speed50%',
+                    value: 'speed50%'
+                },
+                {
+                    name: 'OneBit',
+                    value: '1bit'
+                },
+                {   
+                    name: 'EightBits',
+                    value: '8bits'
+                },
+                {
+                    name: 'NormalizeLoudness',
+                    value: 'normalize'
+                },
+               
+              
             ],
             required: true
+        },
+        {
+            type: 3,
+            name: 'ffmpeg',
+            description: 'Manually specify a FFMPEG filter to apply directly to the stream'
         },
         
     ],
     async execute(Discord, client, interaction, debug) {
 
-        const selection = interaction.options.getString('filter');
+        const selection = ((interaction.options.getString('filter')) ? interaction.options.getString('filter') : interaction.options.getString('ffmpeg'))
         const queue = await client.DisTube.getQueue(interaction);
+
         let string = `the ${selection} filter~!`;
 
         if (!queue.filters.has(selection)) {
@@ -95,42 +132,8 @@ module.exports = {
             string = `Removed the ${selection} filter~!`
         }
 
-        var test_filters = [{
-            name: "bassboost",
-            value: "bass=g=10"
-        },
-        {
-            name: 'EarWax',
-            value: 'earwax'
-
-        },
-        {
-            name: 'Mcompand',
-            value: 'mcompand'
-        },
-        {
-            name: 'Echo',
-            value: 'echo'
-
-        },
-        {
-            name: 'Haas',
-            value: 'haas'
-        },
-        {
-            name: 'eartorture',
-            value: 'earTorture'
-
-
-        }
-
-           
-
-
-        ];
-
-        JSON.stringify(test_filters);
-        console.log(test_filters); 
+       
+       
         await interaction.reply(string); 
 
 

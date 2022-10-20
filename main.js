@@ -7,7 +7,7 @@ const cheerio = require('cheerio');
 const request = require('request');
 const { DisTube } = require('distube');
 const { REST, Routes } = require('discord.js');
-
+const filters = require("./assets/filters.json");
 
 
 const client = new Client({
@@ -65,7 +65,7 @@ const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith(
 const imageFiles = fs.readdirSync('./commands/image/').filter(file => file.endsWith('.js'));
 const slashFiles = fs.readdirSync('./commands/slash/').filter(file => file.endsWith('.js')); 
  
-let filters = []; 
+
 
 
 
@@ -94,16 +94,17 @@ var c = 0;
 
 //init commands before the client is online 
 init_commands();
- init_customFilters();
+
 
 client.DisTube = new DisTube(client, {
     leaveOnStop: false,
+    leaveOnFinish: true, 
     emitAddSongWhenCreatingQueue: false,
     emitAddListWhenCreatingQueue: false,
     youtubeCookie: process.env.FART,
     youtubeIdentityToken: process.env.ID_TOKEN,
-
-    customFilters: filters[5]
+    customFilters: filters
+    
 	
 	})
 
@@ -209,8 +210,8 @@ client.on('guildCreate', (guild) => {
 //these event listeners shouldn't be ever nested. It will cause a memory leak, everytime discord's client events are called these will 
 // be called in tandem created multipule uncess. instances. 
 
-client.DisTube.on("finish", queue => client.DisTube.voices.leave());   
-client.DisTube.on("finishSong", queue => queue.songs.pop());
+ 
+//client.DisTube.on("finishSong", queue => queue.songs.pop());
 
 client.DisTube.on("searchNoResult", (message, query) => message.channel.send(`No result found for ${query}!`)); 
 client.DisTube.on("playSong", (queue, song) => {
@@ -221,8 +222,10 @@ client.DisTube.on("playSong", (queue, song) => {
 
 
 client.DisTube.on("error", (error, channel) => {
-    console.log(error); if (channel) message.channel.send(`there was an error
-     ${error}`);
+    console.log(error);
+    if (channel)
+        channel.send(`My songbirds are having trouble for some reason... I need to go back to my cottage for a minute`); 
+    
  
 });
 
@@ -1043,7 +1046,7 @@ async function register_slash_commands() {
             { body: client.slashcommands },
         );
         console.log(data);
-        console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+      // DEBUG  console.log(`Successfully reloaded ${data.length} application (/) commands.`);
     } catch (error) {
 
 
@@ -1059,11 +1062,3 @@ async function register_slash_commands() {
 register_slash_commands();
 
 
-async function init_customFilters()
-{
-
-    let rawdata = fs.readFileSync('assets/filters.json');
-     filters = JSON.parse(rawdata);
-     console.log(filters); 
-
-}

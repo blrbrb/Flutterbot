@@ -4,7 +4,8 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 require('dotenv'); 
 
-let conversation = [];
+let conversation = { past_user_inputs: [], generated_responses: [] };
+let response_temp = ' '; 
 const command_prefix = 'fs';
 
 
@@ -24,36 +25,59 @@ module.exports = {
 
         message.channel.sendTyping(); 
         console.log(message.content);
-        let input = message.content.slice(prefix.length + command_prefix.length).trim();
-        
+        let input = {
+            message: message.content.slice(prefix.length + command_prefix.length).trim(),
+            question: false
 
+        }
 
-
-        console.log(input);
 
      
-        console.log(conversation); 
+        if (input.message.includes('?'))
+            input.question = true;
+
+
+        conversation.past_user_inputs.push(input.message);
+
+       
+
+     
+       
 
         query({
             "inputs": {
-                "past_user_inputs": conversation,
-                "text": input 
+                "past_user_inputs": conversation.past_user_input,
+                "generated_responses": conversation.generated_responses,
+                "text": input.message
             }
         }).then((response) => {
-            console.log(JSON.stringify(response));
+           console.log(response); 
+           
 
-            conversation.push(input);
 
+            
+          
 
             if (response.hasOwnProperty("error")) {
-                message.channel.send('please wait one moment... I am hosted remotely, and need a moment to start up..');
+              
                 message.channel.send(response.error);
-                message.channel.send(`estimated time: ${response.error.estimated_time}s`);
+                console.log(response.error);
+
+                if (error.hasOwnProperty('estimated_time'))
+                {
+                    console.log(response.error.estimated_time); 
+                }
+               
 
             }
             else if (response.hasOwnProperty("generated_text"))
             {
+
+                response_temp = response.generated_text;
+              
+                console.log(conversation); 
                 message.reply(response.generated_text);
+                conversation.generated_responses.push(response_temp); 
             }
 
            
@@ -69,10 +93,9 @@ module.exports = {
 
         });
 
-        //message.channel.stopTyping();
+      
 
-        //message.reply(bot_reply);
-
+        
 
     }
 }

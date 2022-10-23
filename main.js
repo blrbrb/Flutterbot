@@ -1,5 +1,5 @@
-const { Client, Partials, Collection, GatewayIntentBits } = require('discord.js');
-const Discord = require('discord.js')
+const { Client, Partials, Collection, GatewayIntentBits, Discord, Formatters } = require('discord.js');
+
 const MessageEmbed  = require('discord.js');
 const ytdl = require("ytdl-core"); 
 const scan = require('./utils/findimage.js');
@@ -53,10 +53,10 @@ const fs = require('fs');
 let debug = false; 
 
 
-client.commands = new Discord.Collection(); 
-client.imgcommands = new Discord.Collection();
-client.slashcommands = new Discord.Collection(); 
-client.aliases = new Discord.Collection(); 
+client.commands = new Collection(); 
+client.imgcommands = new Collection();
+client.slashcommands = new Collection(); 
+client.aliases = new Collection(); 
  
 
 
@@ -76,7 +76,6 @@ const slashFiles = fs.readdirSync('./commands/slash/').filter(file => file.endsW
 let lang = require(`./lang/en.js`); 
 
 const roles_channel = '1006737480550207508';
-const anagram_channel = '1009199104812929155';
 const gamer_emoji = '🎮';
 const bronerreacts_emoji = '📺';
 const discordian_emoji = '🟨';
@@ -131,65 +130,8 @@ client.on('guildMemberAdd', async guildMember => {let welcomeRole = guildMember.
 
 
 
-
-
-
-
-
-
-
-
-
 guildMember.roles.add(welcomeRole); 
     guildMember.guild.channels.cache.get('960713019753644035').send(` <@${guildMember.user.id}> HI NEW FRIEND!!`);
-
-
-
-    if (Date.now() - guildMember.user.createdAt < 1000 * 60 * 60 * 24 * 1) {
-        // Log Channel
-        const logChan = "1023136877940838400";
-        let channel = client.channels.cache.get(logChan);
-
-
-        const staffChan = "962720288850731109";
-        let staffchannel = client.channels.cache.get(staffChan);
-
-
-        //Embed for log channel
-        const embed = new MessageEmbed()
-            .setColor('RED')
-            .setAuthor('\u200b', client.user.displayAvatarURL())
-            .setDescription(`⚠ **Possible Alt Account**
-                User: ${guildMember.user}
-                Created: ${moment(guildMember.user.createdAt).format("MMM Do YYYY").toLocaleString()} @ **${moment(guildMember.user.createdAt).format('hh:mm a')}**
-                *Check to see if they look like an alt account of a recent banned member (Could be a profile picture, name, etc)*`)
-            .setFooter(`User's ID: ${guildMember.id}`)
-            .setTimestamp();
-
-        // Sends embed & kick msg with reactions
-        channel.send(embed)
-        msg = await channel.send('Would you like for me to kick them?')
-        msg.react('👍').then(() => msg.react('👎'))
-
-        // Checking for reactionss
-        msg.awaitReactions((reaction, user) => (reaction.emoji.name == '👍' || reaction.emoji.name == '👎') && (user.id !== client.user.id), { max: 1, time: 600000, errors: ['time'] })
-            .then(collected => {
-                const reaction = collected.first();
-                if (reaction.emoji.name === '👍') {
-                    guildMember.kick()
-                    return msg.edit('User has been kicked!')
-                } else if (reaction.emoji.name === '👎') {
-                    return msg.edit('Phew! Okay, good!')
-                }
-            })
-            .catch(collected => {
-                channel.send('I-Im sorry, its been too long. Ive forgotten who we were talking about');
-            })
-            .catch(error => {
-                console.log(error)
-            });
-    }
-
 
 
 }); 
@@ -205,13 +147,9 @@ client.on('guildCreate', (guild) => {
 }); 
 
 
-
-
 //these event listeners shouldn't be ever nested. It will cause a memory leak, everytime discord's client events are called these will 
 // be called in tandem created multipule uncess. instances. 
 
- 
-//client.DisTube.on("finishSong", queue => queue.songs.pop());
 
 client.DisTube.on("searchNoResult", (message, query) => message.channel.send(`No result found for ${query}!`)); 
 client.DisTube.on("playSong", (queue, song) => {
@@ -262,36 +200,6 @@ if(command == 'uwu')
 }
     
     
-if(command == 'role')
-{
-    if (!message.member.hasPermission("MANAGE_ROLES"))
-       return message.channel.send("Insufficient permissions")
-    const member = message.mentions.members.first()
-    if (!member)
-       return message.channel.send("No user mentioned")
-    const add = args.slice(1).join(" ");
-    console.log(add);
-    if (!add)
-       return message.channel.send("No role said")
-    //const roleAdd = message.guild.roles.cache.find(role => role.name === add);
-    const roleAdd = message.guild.roles.cache.find(role => role.name === add);
-    if (!roleAdd)
-       return message.channel.send("Role does not exist")
-    if (member.roles.cache.has(roleAdd.id)) {
-       return message.channel.send("User already has role")
-    }
-    if (member) {
-      member.roles.add(roleAdd).catch((error) => {
-          console.log(error);
-         message.channel.send("I cant add...")
-       }).then((member) => {
-           message.channel.send(`:thumbsup: ${roleAdd} added to ${message.author}`)
-          
-       })
-    }
-
-        
-}
 
  			
 
@@ -310,7 +218,7 @@ if(command == 'role')
 if (command == 'angel')
 {
     message.channel.send('angel bunny');
-    message.channel.send
+   
 }
 
 
@@ -329,11 +237,6 @@ if (command == 'angel')
     }
 
 
-if(command == 'queue') 
-{
-
-   // if (message.guild.me.hasPermission()); 
-}
 
 
 if(command == 'play' || command == 'queue' || command == 'skip' || command == 'resume' || command == 'pause')
@@ -354,35 +257,7 @@ if(command == 'play' || command == 'queue' || command == 'skip' || command == 'r
     
 if(command == 'img')
 {
-    if (message.author.id == '582097357768753168') { 
-    	
-    	var bannedwords = await get_banned_words(); 
-    	let x = false; 
-		
-		for(i = 0; i < bannedwords.length; i++) 
-		{
-			if(message.content.includes(bannedwords[i]))
-			{
-				//message.channel.send('https://i.kym-cdn.com/photos/images/original/000/598/304/bca.gif');
-				x = true;  
-			}
-			
-		}
-		
-		if(x == true) 
-		{
-			message.channel.send('https://i.kym-cdn.com/photos/images/original/000/598/304/bca.gif');
-			
-			}
-			
-		else {
-		client.commands.get('img').execute(client, message, args); }
-			
-       
-
-       
-    }
-    else
+   
      client.commands.get('img').execute(client, message, args);
 
 }
@@ -392,18 +267,8 @@ if(command == 'img')
 
 
 ///Begin Image Commands 
- if (command == 'circle')
- {
-     client.imgcommands.get('circle').run(client, message, args); 
- }
 
 
-if(command == 'deepfry') 
-{
-	
-await client.imgcommands.get('deepfry').run(client,message,args); 	
-	
-}
 
 
  if (command == 'morejpeg')
@@ -446,7 +311,7 @@ if(command == 'fs')
 {
     if (!cooldowns.has(command.name))
     {
-        cooldowns.set(command.name, new Discord.Collection());
+        cooldowns.set(command.name, new Collection());
     }
     const current_time = Date.now();
     const time_stamps = cooldowns.get(command.name);
@@ -489,7 +354,13 @@ if (command == 'rules' && (message.member.hasPermission("ADMINISTRATOR") == true
 }
     
     
+ if (command == 'setRoleChannel')
+{
+    
 
+
+
+}
    
  
 
@@ -630,48 +501,6 @@ async function voice(message, args)
 
  	
 
-
-client.fileCheck = (image) => {
-    return new Promise((resolve, reject) => {
-        request.get(image, (error, response, body) => {
-
-            
-            if (error) throw new Error(error);
-
-         
-          //  console.log(response); 
-            response.on('data', () => {
-                const chunk = response.read(imageType.minimumBytes);
-                response.destroy();
-                console.log(imageTye(chunk));
-
-                if (imageType(chunk) && ["image/jpeg", "image/png", "image/webp", "image/jpg"].includes(imageType.mime)) {
-                    resolve(image);
-                } else {
-                    reject("Attachment not found");
-                }
-                //=> {ext: 'gif', mime: 'image/gif'}
-            });
-           
-
-          
-            //const buff = Buffer.from(body, "utf-8");
-           // console.log(body.toString()); 
-          //  const imageTypeResult = imageType(buff);
-           // console.log(imageTypeResult);
-          ///  message.channel.send(imageTypeResult);
-           
-        });
-    });
-};
-
-
-
-
-
-
-
-
 //client debugging events 
 client.on("reconnecting", function(){
     console.log(`FlutterShy Is Attempting to Reconnect to the Websocket`);
@@ -684,9 +513,10 @@ client.on("guildUnavailable", function(guild){
 });
 
 
-client.on("error", function(error){
+client.on("error", function(error, message){
 	console.log('My Websocket has encountered an error :('); 
     console.log(`client's WebSocket encountered a connection error: ${error}`);
+  
 })
 
 client.on('messageReactionAdd', async (reaction, user) => {
@@ -725,50 +555,72 @@ client.on('messageReactionAdd', async (reaction, user) => {
         //These next if statements are the if statements that will check wether or not the corresponding emoji's for each role have been reacted with
         //TD: potential make this a switch/case statement for efficency? 
 
-        if (reaction.emoji.name === gamer_emoji) {
+        try {
+            if (reaction.emoji.name === gamer_emoji) {
 
-            
-            await reaction.message.guild.members.cache.get(user.id).roles.add(gamer_role);
+
+                await reaction.message.guild.members.cache.get(user.id).roles.add(gamer_role);
+
+            }
+            if (reaction.emoji.name === bronerreacts_emoji) {
+
+                await reaction.message.guild.members.cache.get(user.id).roles.add(bronerreacts_role);
+
+            }
+            if (reaction.emoji.name === luna_emoji) {
+
+
+                await reaction.message.guild.members.cache.get(user.id).roles.add(luna_role)
+
+
+            }
+            if (reaction.emoji.name === celestia_emoji) {
+
+
+                await reaction.message.guild.members.cache.get(user.id).roles.add(celestia_role);
+
+
+
+
+            }
+            if (reaction.emoji.name === hive_emoji) {
+
+
+                await reaction.message.guild.members.cache.get(user.id).roles.add(hive_role);
+
+
+            }
+            if (reaction.emoji.name === Derpist_emoji) {
+
+
+                await reaction.message.guild.members.cache.get(user.id).roles.add(derpist_role);
+
+
+
+
+            }
+            if (reaction.emoji.name === minor_emoji) {
+
+
+
+              
+
+
+            }
+            if (reaction.emoji.name === discordian_emoji) {
+
+                await reaction.message.guild.members.cache.get(user.id).roles.add(discordian_role);
+
+            }
 
         }
-        if (reaction.emoji.name === bronerreacts_emoji) {
-
-            await reaction.message.guild.members.cache.get(user.id).roles.add(bronerreacts_role);
-
+        catch (error)
+        {
+            console.log(error.message);
+            const timestap = Date.now();
+            const error_date = new Date(timestamp);
+            await message.channel.send(`error assigning ${reaction.message.guild.members.cache.get(user.id)} to ${reaction.emoji.name} because of ${error.message}`);
         }
-        if (reaction.emoji.name === luna_emoji) {
-
-            await reaction.message.guild.members.cache.get(user.id).roles.add(luna_role);
-
-        }
-        if (reaction.emoji.name === celestia_emoji) {
-
-            await reaction.message.guild.members.cache.get(user.id).roles.add(celestia_role);
-
-        }
-        if (reaction.emoji.name === hive_emoji) {
-
-            await reaction.message.guild.members.cache.get(user.id).roles.add(hive_role);
-
-        }
-        if (reaction.emoji.name === Derpist_emoji) {
-
-            await reaction.message.guild.members.cache.get(user.id).roles.add(derpist_role);
-
-        }
-        if (reaction.emoji.name === minor_emoji) {
-
-            await reaction.message.guild.members.cache.get(user.id).roles.add(minor_role);
-
-        }
-        if (reaction.emoji.name === discordian_emoji) {
-
-            await reaction.message.guild.members.cache.get(user.id).roles.add(discordian_role);
-
-        }
-
-
-
 
     }
     else {
@@ -1045,7 +897,7 @@ async function register_slash_commands() {
             Routes.applicationGuildCommands(clientId, guildId),
             { body: client.slashcommands },
         );
-        console.log(data);
+      console.log(data);
       // DEBUG  console.log(`Successfully reloaded ${data.length} application (/) commands.`);
     } catch (error) {
 

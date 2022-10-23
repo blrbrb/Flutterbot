@@ -8,7 +8,7 @@ const request = require('request');
 const { DisTube } = require('distube');
 const { REST, Routes } = require('discord.js');
 const filters = require("./assets/filters.json");
-
+const path = require('path'); 
 
 const client = new Client({
   intents: [
@@ -38,11 +38,6 @@ const client = new Client({
 
 
 
-//require('http').createServer((req, res) => res.end('Ready.')).listen(3000);
-
-
-//const client = new Discord.Client({partials: ["MESSAGE", "CHANNEL", "REACTION"], intents: 67317 });
-const cooldowns = new Map(); 
 require('dotenv').config();
 
 
@@ -61,6 +56,8 @@ client.aliases = new Collection();
 
 
 //init command source (stored in seperate js modules)
+const eventsPath = path.join(__dirname, 'events');
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
 const imageFiles = fs.readdirSync('./commands/image/').filter(file => file.endsWith('.js'));
 const slashFiles = fs.readdirSync('./commands/slash/').filter(file => file.endsWith('.js')); 
@@ -75,15 +72,7 @@ const slashFiles = fs.readdirSync('./commands/slash/').filter(file => file.endsW
 //Global Variables 
 let lang = require(`./lang/en.js`); 
 
-const roles_channel = '1006737480550207508';
-const gamer_emoji = '🎮';
-const bronerreacts_emoji = '📺';
-const discordian_emoji = '🟨';
-const minor_emoji = '🔞';
-const luna_emoji = '🌙';
-const celestia_emoji = '☀️';
-const Derpist_emoji = '🧁';
-const hive_emoji = '🐞';
+
 
 
 
@@ -93,7 +82,7 @@ var c = 0;
 
 //init commands before the client is online 
 init_commands();
-
+register_slash_commands();
 
 client.DisTube = new DisTube(client, {
     leaveOnStop: false,
@@ -108,40 +97,55 @@ client.DisTube = new DisTube(client, {
 	})
 
 //main events 
+
+
+    for (const file of eventFiles) {
+        const filePath = path.join(eventsPath, file);
+        const event = require(filePath);
+        if (event.once) {
+            client.once(event.name, (client, ...args) => event.execute(client, ...args));
+        } else {
+            client.on(event.name, (client, ...args) => event.execute(client, ...args));
+        }
+    }
+
+
+client.on('interactionCreate', async interaction => {
+    const { commandName } = interaction;
+
+    const command = client.slashcommands.get(commandName);
+    console.log(interaction.options.values);
+    try {
+        await command.execute(Discord, client, interaction, debug);
+    } catch (error) {
+        console.error(error);
+        await interaction.reply({
+            content: `Something went wrong while executing this command... tell Eli that: \n  **${error.message}**`,
+            ephemeral: true,
+        });
+    }
+}); 
+
 client.once('ready', () => {
 	
    
 		
 	
 	});
-client.on('ready', () => {
 
-    console.log('Fluttershy is Awake Yay! :3');
-
-   
-  
-   
-
-    
-   
-});  
 
 client.on('guildMemberAdd', async guildMember => {let welcomeRole = guildMember.guild.roles.cache.find(role => role.name ==='new broner')
 
 
 
-guildMember.roles.add(welcomeRole); 
-    guildMember.guild.channels.cache.get('960713019753644035').send(` <@${guildMember.user.id}> HI NEW FRIEND!!`);
+
 
 
 }); 
 
 
 client.on('guildCreate', (guild) => {
-	console.log(`Client joined guild ${guild.name} with ID ${guild.id}`);
-    createGuild(guild, true);
-
-    guild.commands.set(client.slashcommands);
+	
        
 
 }); 
@@ -167,289 +171,7 @@ client.DisTube.on("error", (error, channel) => {
  
 });
 
-client.on('messageCreate', async (message) => {
 
-  
-    let args = message.content.slice(prefix1.length).trim().split(/ +/g);
-
-
-    message.guild.commands.set(client.slashcommands).then(() =>
-        console.log(`Commands deployed in guild ${message.guild.name}!`));
-
-    const command = args.shift();
-  
-
-   
-  
-if(!message.content.startsWith(prefix1) || message.author.bot) return; 
-
-    
-if(command == 'rip')
-{
-   message.channel.send('Oh no!, it looks like someone died'); 
-
-    client.commands.get('rip').run(client, message, args);
-  
-   
-}
-    
-if(command == 'uwu')
-{
-    message.channel.send(' I am fluttershy and Owo Uwu');
-   
-}
-    
-    
-
- 			
-
-   
- if (command == 'reactionRole_HardReset')
- {
-     let allowedRole = message.guild.roles.cache.find(role => role.name === "FlutterProgrammer");
-     if (message.member.hasPermission("ADMIN") || message.member.roles.cache.has(allowedRole.id))
-     {
-         create_reaction_roles(); 
-     }
-}
-
-
- 
-if (command == 'angel')
-{
-    message.channel.send('angel bunny');
-   
-}
-
-
- if (command == 'lesson')
- {
-     client.commands.get('lesson').execute(client, message, args); 
-
- }
-
-	
-    if (command == 'tweet')
-    {
-        client.commands.get('tweet').run(client, message, args); 
-        
-        
-    }
-
-
-
-
-if(command == 'play' || command == 'queue' || command == 'skip' || command == 'resume' || command == 'pause')
-{
-
-
-	await client.commands.get('play').execute(message,args,command,client,Discord, debug);
-
-}
-    		
-    		
-
-         
- 
- 
-
-
-    
-if(command == 'img')
-{
-   
-     client.commands.get('img').execute(client, message, args);
-
-}
-
-
-
-
-
-///Begin Image Commands 
-
-
-
-
- if (command == 'morejpeg')
- {
-   
-  await client.imgcommands.get('jpeg').run(client,message, args); 
-
- }
- 
- if (command == 'destroy')
- {
-   
-   await client.imgcommands.get('destroy').execute(client,message,args);
-
- }
-
-if (command == 'mosaic')
-{
- //await client.imgcommands.get('mosaic').run(client, message, args, debug); 
-}
-
-if (command == 'swirl')
-{
-await client.imgcommands.get('swirl').run(client, message, args);
-}
-
-if(command == 'paint') 
-{
-await client.imgcommands.get('paint').run(client, message, args);		
-} 
-
-if(command == 'text')
-{
-await client.imgcommands.get('text').run(client, message, args); 	
-	
-}
-
-
-if(command == 'fs') 
-{
-    if (!cooldowns.has(command.name))
-    {
-        cooldowns.set(command.name, new Collection());
-    }
-    const current_time = Date.now();
-    const time_stamps = cooldowns.get(command.name);
-    const cooldown_time = (command.cooldown) * 1000;
-
-    if (time_stamps.get(message.author.id)) {
-        const expiration_time = time_stamps.get(message.author.id) + cooldown_time;
-        if (current_time < expiration_time)
-        {
-            const time_left = (expiration_time - current_time) / 1000;
-            return message.reply(`I need about ${time_left.toFixed(1)} second(s), okay ;3`);
-
-        }
-    }
-
-    time_stamps.set(message.author.id, current_time); 
-
-
-    client.commands.get('Fluttershy').run(client, message, command, args, prefix1);
-}
-
- 
-
-if(command == 'ifunny') 
-{
-    client.commands.get('ifunny').execute(message, args, debug); 
-} 
-
-
-if(command == 'fart') 
-{
-	message.channel.send('poo poo among us sus'); 
-	
-}
-
-
-if (command == 'rules' && (message.member.hasPermission("ADMINISTRATOR") == true)) 
-{
-    client.commands.get('rules').execute(message, args, Discord);
-}
-    
-    
- if (command == 'setRoleChannel')
-{
-    
-
-
-
-}
-   
- 
-
- if (command == 'rate')
-{
-	
-	
-  client.commands.get('rate').execute(message, args, client); 
-} 
-
-
-
-
-
-if (command == 'boop') 
-{
- //client.commands.get('boop').run(client, message, command, args, prefix1); 
-
-
-} 
-
-if(command == 'avatar') 
-{
- client.commands.get('avatar').run(client, message, command, args,lang); 
-  
-
-}
-
-
-
-if(command == 'terminal')
-{
-	client.commands.get('terminal').run(client, message, args); 	
-}
-
-
-
-
-
-if (command == 'help') 
-{
-  let args = message.content.slice('help').trim().split(/ +/g);
-   client.commands.get('help').execute(client, message, command, args, prefix1, lang, commandFiles); 
-}
-
-
-
-
-
-
-if(command == 'debug')
-{
-	let allowedRole = message.guild.roles.cache.find(role=> role.name === "FlutterProgrammer");
-	
-	if(message.member.roles.cache.has(allowedRole.id) || message.author.id == '252235505318625281')
-	{
-		
-			if(debug == true) 
-				message.channel.send('debug output disabled');
-			else 
-				 message.channel.send('debugging mode enabled on Fluttershy Build:' + ' ' + process.env.VERSION);  
-				 debug = true;
-				 return; //dangerous
-
-	}
-}
-
-
-   
-
- });   
-
-client.on('interactionCreate', async interaction => {
-  
- 
-    const { commandName } = interaction;
-    const command = client.slashcommands.get(commandName);
-    console.log(interaction.options.values); 
-    try {
-        await command.execute(Discord, client, interaction, debug);
-    } catch (error) {
-         console.error(error);
-        await interaction.reply({
-            content: `Something went wrong while executing this command... tell Eli that: \n  **${error.message}**`,
-            ephemeral: true,
-        });
-    }
-
-});
 client.login(process.env.DISCORD_TOKEN);
      
 
@@ -510,205 +232,15 @@ client.on("guildUnavailable", function(guild){
 
 
 client.on("error", function(error, message){
-	console.log('My Websocket has encountered an error :('); 
-    console.log(`client's WebSocket encountered a connection error: ${error}`);
+	
   
 })
 
-client.on('messageReactionAdd', async (reaction, user) => {
-    if (reaction.message.partial) await reaction.message.fetch();
-    if (reaction.partial) await reaction.fetch();
-    if (user.bot)
-        return;
-    if (!reaction.message.guild)
-        return;
 
-
-
-    const channel = await client.channels.fetch(roles_channel);
-
-
-   
-    const gamer_role = channel.guild.roles.cache.find(role => role.name === 'Gamer');
-    const bronerreacts_role = channel.guild.roles.cache.find(role => role.name === `Broner's React`);
-    const luna_role = channel.guild.roles.cache.find(role => role.name === 'New Lunar Republic');
-    const celestia_role = channel.guild.roles.cache.find(role => role.name === 'Solar Empire');
-    const minor_role = channel.guild.roles.cache.find(role => role.name === 'Minor')
-    const discordian_role = channel.guild.roles.cache.find(role => role.name === 'Discordian');
-    const derpist_role = channel.guild.roles.cache.find(role => role.name === 'Derpist');
-    const hive_role = channel.guild.roles.cache.find(role => role.name === 'The hive');
-
-    //console.log(gamer_role); 
-
-
-
-
- 
-    
-   
-
-    if (reaction.message.channel.id == roles_channel) {
-        //These next if statements are the if statements that will check wether or not the corresponding emoji's for each role have been reacted with
-        //TD: potential make this a switch/case statement for efficency? 
-
-        try {
-            if (reaction.emoji.name === gamer_emoji) {
-
-
-                await reaction.message.guild.members.cache.get(user.id).roles.add(gamer_role);
-
-            }
-            if (reaction.emoji.name === bronerreacts_emoji) {
-
-                await reaction.message.guild.members.cache.get(user.id).roles.add(bronerreacts_role);
-
-            }
-            if (reaction.emoji.name === luna_emoji) {
-
-
-                await reaction.message.guild.members.cache.get(user.id).roles.add(luna_role)
-
-
-            }
-            if (reaction.emoji.name === celestia_emoji) {
-
-
-                await reaction.message.guild.members.cache.get(user.id).roles.add(celestia_role);
-
-
-
-
-            }
-            if (reaction.emoji.name === hive_emoji) {
-
-
-                await reaction.message.guild.members.cache.get(user.id).roles.add(hive_role);
-
-
-            }
-            if (reaction.emoji.name === Derpist_emoji) {
-
-
-                await reaction.message.guild.members.cache.get(user.id).roles.add(derpist_role);
-
-
-
-
-            }
-            if (reaction.emoji.name === minor_emoji) {
-
-
-
-              
-
-
-            }
-            if (reaction.emoji.name === discordian_emoji) {
-
-                await reaction.message.guild.members.cache.get(user.id).roles.add(discordian_role);
-
-            }
-
-        }
-        catch (error)
-        {
-            console.log(error.message);
-            const timestap = Date.now();
-            const error_date = new Date(timestamp);
-            await message.channel.send(`error assigning ${reaction.message.guild.members.cache.get(user.id)} to ${reaction.emoji.name} because of ${error.message}`);
-        }
-
-    }
-    else {
-        return;
-    }
-});
 
 
 client.on("messageReactionRemove", async (reaction, user) => {
-    if (reaction.message.partial) await reaction.message.fetch();
-    if (reaction.partial) await reaction.fetch();
-    if (user.bot)
-        return;
-    if (!reaction.message.guild)
-        return;
-
-
-
-    const channel = await client.channels.fetch(roles_channel);
-
-
-
-    const gamer_role = channel.guild.roles.cache.find(role => role.name === 'Gamer');
-    const bronerreacts_role = channel.guild.roles.cache.find(role => role.name === `Broner's React`);
-    const luna_role = channel.guild.roles.cache.find(role => role.name === 'New Lunar Republic');
-    const celestia_role = channel.guild.roles.cache.find(role => role.name === 'Solar Empire');
-    const minor_role = channel.guild.roles.cache.find(role => role.name === 'Minor')
-    const discordian_role = channel.guild.roles.cache.find(role => role.name === 'Discordian');
-    const derpist_role = channel.guild.roles.cache.find(role => role.name === 'Derpist');
-    const hive_role = channel.guild.roles.cache.find(role => role.name === 'The hive');
-
-
-    if (reaction.message.channel.id == roles_channel) {
-        //These next if statements are the if statements that will check wether or not the corresponding emoji's for each role have been reacted with
-        //TD: potential make this a switch/case statement for efficency? 
-
-        if (reaction.emoji.name === gamer_emoji) {
-
-
-            await reaction.message.guild.members.cache.get(user.id).roles.remove(gamer_role);
-
-        }
-        if (reaction.emoji.name === bronerreacts_emoji) {
-
-            await reaction.message.guild.members.cache.get(user.id).roles.remove(bronerreacts_role);
-
-        }
-        if (reaction.emoji.name === luna_emoji) {
-
-            await reaction.message.guild.members.cache.get(user.id).roles.remove(luna_role);
-
-        }
-        if (reaction.emoji.name === celestia_emoji) {
-
-            await reaction.message.guild.members.cache.get(user.id).roles.remove(celestia_role);
-
-        }
-        if (reaction.emoji.name === hive_emoji) {
-
-            await reaction.message.guild.members.cache.get(user.id).roles.remove(hive_role);
-
-        }
-        if (reaction.emoji.name === Derpist_emoji) {
-
-            await reaction.message.guild.members.cache.get(user.id).roles.remove(derpist_role);
-
-        }
-        if (reaction.emoji.name === minor_emoji) {
-
-            await reaction.message.guild.members.cache.get(user.id).roles.remove(minor_role);
-
-        }
-        if (reaction.emoji.name === discordian_emoji) {
-
-            await reaction.message.guild.members.cache.get(user.id).roles.remove(discordian_role);
-
-        }
-
-
-
-
-    }
-    else {
-        return;
-    }
-
-
-
-
-
-
-
+   
 
 
 
@@ -782,6 +314,12 @@ async function create_reaction_roles()
 
 
 }
+
+client.on("guildMemberSpeaking", function (member, speaking) {
+    console.log(`a guild member starts/stops speaking: ${member.tag}`);
+});
+
+
 
 
 async function init_commands() {
@@ -907,6 +445,6 @@ async function register_slash_commands() {
 }
 
 
-register_slash_commands();
+
 
 

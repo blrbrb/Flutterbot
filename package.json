@@ -34,6 +34,7 @@
     "opusscript": "0.0.8",
     "request": "^2.88.2",
     "stable": "^0.1.8",
+    "string-progressbar": "^1.0.4",
     "tempy": "^3.0.0",
     "yt-search": "^2.10.3",
     "ytdl-core": "github:fent/node-ytdl-core",

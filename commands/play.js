@@ -5,58 +5,20 @@ module.exports = {
 	cooldown: 0,
 	category: 'Chat Input',
     description: 'Queue a song, or youtube video!',
-    async execute(message, args, cmd, client, Discord, debug) {
+    async execute(client, message, args) {
     	
 
 
 		
 		const queue = await client.DisTube.getQueue(message);
-
-switch(cmd) 
-{
-	
-	case "play":
-
-		
 		console.log(queue); 
 		this.queue_video(message,client, args, queue); 
 
 
-    break; 
-    
- 
-	
-
-	
-	
-	break; 
-	
-	
-	case "pause": 
-		queue2.pause(message.membe);
-		break;
-	case "resume": 
-		queue2.resume(message.member.voice.channel); 
-		break; 
-	case "stop": 
-		client.DisTube.stop(message); 
-		break;
-	case "volume-":
-		client.DisTube.setVolume(message.member.voice.channel, 40); 
-
-
-default: 
-	break; 
+   
    	
-}
+},
 
-    	    	
-    	
-    	
-    	
-  	
-
-	}, 
 	async queue_video(message, client, args, queue)
 	{
 

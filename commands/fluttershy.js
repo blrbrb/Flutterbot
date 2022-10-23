@@ -20,7 +20,6 @@ module.exports = {
     name: "Fluttershy",
     description: "talk with FlutterShy",
     alias: ["Fluttershy"],
-    cooldown: 5, 
     run: async (client, message, command, args, prefix) => { 
 
         message.channel.sendTyping(); 

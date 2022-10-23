@@ -4,7 +4,7 @@ const gm = require("gm").subClass({
 	imageMagick: true
 });
 
-
+ 
 
 module.exports = {
 	name: 'average',
@@ -15,11 +15,6 @@ module.exports = {
 			name: "image",
 			description: "an image attachment to manipulate",
 			required: true
-		},
-		{
-			type: 10,
-			name: "ior",
-			description: "increase or decrease the IOR of the UV sphere 1 to 10"
 		}
 	],
 	async execute(Discord, client, interaction, debug) {
@@ -42,7 +37,7 @@ module.exports = {
 
 					if (size.height > 1200 && size.width > 1200) {
 						interaction.reply(`t-that's way too big of an image for me!🖌️🐇`);
-
+						
 						return;
 					}
 
@@ -65,14 +60,7 @@ module.exports = {
 				return interaction.reply('sorry. the image needs to be in a gif format :('); 
 
 
-
-
-
-
 		}
-
-
-
 
 
 	}

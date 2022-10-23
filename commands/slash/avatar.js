@@ -8,16 +8,7 @@ module.exports = {
   async execute(Discord, client, interaction, debug ){
 
     let taggedUser =  message.mentions.members.first(); 
-     // taggedUser = await message.guild.members.fetch(taggedUser)
-   // } catch (e) {
-     // try {
-       // taggedUser =  client.users.fetch(taggedUser);
-     // } catch (e) {
-       // if (message.author) return message.reply('couldn_t_find_that_user');
-       // else return message.editReply({content:lang.couldn_t_find_that_user})
-      //}
-    //}
-    
+   
     console.log(taggedUser); 
 
 

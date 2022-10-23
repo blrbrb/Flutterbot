@@ -1,4 +1,6 @@
-﻿module.exports =
+﻿
+
+module.exports =
 {
     name: 'volume',
     description: 'increase or decrease the volume of the queue',

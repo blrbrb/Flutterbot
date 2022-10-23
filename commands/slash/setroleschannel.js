@@ -1,7 +1,5 @@
 const { PermissionFlagsBits } = require('discord.js');
 
-
-
 module.exports = {
     name: 'setroleschannel',
     description: 'set the channel for the server to auto-update roles in',
@@ -13,8 +11,11 @@ module.exports = {
             required: true
         }
     ],
+    defaultPermission: false,
+    permissions: '8n',
     async execute(Discord, client, interaction, debug)
     {
+      
         if (interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
 
             const new_roles_channel = interaction.options.getChannel('channel');

@@ -21,10 +21,10 @@ module.exports = {
         {
             type: 11,
             name: "image",
-            description: "The image for Fluttershy to destroy",
+            description: "the image for fluttershy to destroy",
             required: true
         }
-    ],
+    ], 
     async execute(Discord, client, interaction, args, debug) {
 
 

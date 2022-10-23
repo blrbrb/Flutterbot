@@ -13,8 +13,6 @@ module.exports = {
             required: true
         }
     ],
-    default_permission: false,
-    default_member_permissions: 0,
     async execute(Discord, client, interaction, debug)
     {
         if (interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {

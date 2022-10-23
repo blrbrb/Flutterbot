@@ -444,14 +444,10 @@ client.on('interactionCreate', async interaction => {
     } catch (error) {
          console.error(error);
         await interaction.reply({
-            content: `Something went wrong while executing this command...`,
+            content: `Something went wrong while executing this command... tell Eli that: \n  **${error.message}**`,
             ephemeral: true,
         });
     }
-
-
-
-
 
 });
 client.login(process.env.DISCORD_TOKEN);

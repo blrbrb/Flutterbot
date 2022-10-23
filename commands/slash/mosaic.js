@@ -43,7 +43,7 @@ module.exports = {
 		    
 		       
 		       
-		        gm(request(imageUrl)).command("mosaic").out("-duplicate").tile(`${scale}x${scale}`).geometry("+0+0").stream((error, stdout) => {
+		        gm(request(imageUrl)).command("-mosaic").out("-duplicate").tile(`${scale}x${scale}`).geometry("+0+0").stream((error, stdout) => {
 			            if (error) throw new Error(error);
 			           gm(stdout).resize("800x800>").stream((error, stdoutFinal) => {
 					            if (error) throw new Error(error);

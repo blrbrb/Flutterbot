@@ -24,6 +24,6 @@ module.exports = {
     (`https://api.devs-hub.xyz/rip?image=${Member.displayAvatarURL({ format: "png" })}`))
     .setTimestamp();
 
-      return interaction.reply({ embeds: [Embed] });
+      return await interaction.reply({ embeds: [Embed] });
   }
 };

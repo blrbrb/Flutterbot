@@ -25,7 +25,7 @@ module.exports = {
         var onSelf = false;
         var onFluttershy = false;
         console.log(interaction.options.pony); 
-        var target_user = interaction.options.getMentionable('pony');
+        var target_user = interaction.options.getUser('pony');
        
         const reply_string = `${interaction.user} booped ${target_user}`; 
         const gifs = [
@@ -58,7 +58,7 @@ module.exports = {
            await interaction.reply(`${interaction.user} booped ${target_user} \n ${gifs[Math.floor(Math.random() * gifs.length)]}`);
        
    
-      //  interaction.editReply("Stop wasting their time. Stop wasting your time");
+     
 
     }
 

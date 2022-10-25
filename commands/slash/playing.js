@@ -17,8 +17,7 @@ module.exports =
         const time = track.duration * 1000;
        
         const current_time = await queue.currentTime; 
-        console.log(current_time); 
-        console.log(queue.songs[0].name); 
+        
         const string = `🎵🕊️:  \n ***${queue.songs[0].name}***  ${progressbar.splitBar(current_time === 0 ? current_time: time, current_time, 10)[0]} \ [${queue.formattedCurrentTime}/${track.formattedDuration}]`;
         interaction.reply(string);
 

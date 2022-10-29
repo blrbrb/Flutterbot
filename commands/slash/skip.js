@@ -20,7 +20,7 @@ module.exports =
         let selection;
 
 
-        if (queue.songs.length <= 1) {
+        if (!queue.autoplay && queue.songs.length <= 1) {
             
             skipped_song = queue.songs.song;
             interaction.reply(`There aren't any more songs in the queue! I'll tell my birdies to stop singing`);
@@ -38,6 +38,7 @@ module.exports =
                 queue.songs.splice(selection, 1); 
             }
             else 
+
            client.DisTube.skip(interaction);
         }
 

@@ -28,10 +28,16 @@ const client = new Client({
     Partials.Reaction
   ],
   presence: {
-    activities: [{
+    activities: [
+    {
       name: "Hi",
       type: 0
-    }],
+    }, 
+    {
+        name: "Y'Mother", 
+        type: 0
+    }
+],
     status: 'You know im not a tree, right?'
   }
 });
@@ -110,16 +116,78 @@ client.DisTube = new DisTube(client, {
     }
 
 
-client.on('interactionCreate', async interaction => {
+client.on('interactionCreate', interaction => {
     const { commandName } = interaction;
+    const user = interaction.user
+    const command = client.slashcommands.get(commandName); 
+    //update button interactions 
+    if(interaction.isButton())
+    { 
+     if(interaction.customId == 'Gamer')
+     {
+        
+        const gamer_role = interaction.message.channel.guild.roles.cache.find(role => role.name === 'Gamer');
+        try 
+        {
+          
+            interaction.message.guild.members.cache.get(user.id).roles.add(gamer_role) 
+        } 
+        catch(error) {
+           
+            if(error.message == 'Missing Permissions') 
+            {
+                interaction.reply({
+                    content: `I'm sorry, it looks like I don't have permission to modify your roles on this server: \n  **${error.message}**`,
+                    ephemeral: true,
+                })
 
-    const command = client.slashcommands.get(commandName);
+            } 
+            interaction.reply({
+               content: `Something went wrong while executing this command... tell Eli that: \n  **${error.message}**`,
+               ephemeral: true,
+           })
+        }
+
+     }
+     if(interaction.customId == 'Luna') 
+     {
+        const gamer_role = interaction.message.channel.guild.roles.cache.find(role => role.name === 'New Lunar Republic');
+        try 
+        {
+            interaction.component.setStyle("SUCCESS");
+            interaction.message.guild.members.cache.get(user.id).roles.add(gamer_role) 
+        } 
+        catch(error) {
+            interaction.component.setStyle("DANGER");
+            if(error.message == 'Missing Permissions') 
+            {
+                interaction.reply({
+                    content: `I'm sorry, it looks like I don't have permission to modify your roles on this server: \n  **${error.message}**`,
+                    ephemeral: true,
+                })
+
+            } 
+            interaction.reply({
+               content: `Something went wrong while executing this command... tell Eli that: \n  **${error.message}**`,
+               ephemeral: true,
+           })
+        }
+
+
+
+     }
+       
+        return 
+    }
+    
+
+   
     console.log(interaction.options.values);
     try {
-        await command.execute(Discord, client, interaction, debug);
+         command.execute(Discord, client, interaction, debug);
     } catch (error) {
         console.error(error);
-        await interaction.reply({
+         interaction.reply({
             content: `Something went wrong while executing this command... tell Eli that: \n  **${error.message}**`,
             ephemeral: true,
         });

@@ -27,10 +27,10 @@ module.exports =
 
         if(seconds >= 60)
         {
-            const result = new Date(total_seconds * 1000).toISOString().slice(14, 19); 
+            let result = new Date(total_seconds * 1000).toISOString().slice(14, 19); 
         }
          
-         const current_time = new Date(total_seconds * 1000).toISOString().slice(11, 8)
+         let result = new Date(total_seconds * 1000).toISOString().slice(11, 8)
         
 
 

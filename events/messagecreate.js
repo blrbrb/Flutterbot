@@ -11,10 +11,12 @@ module.exports = {
         const client = message.client; 
         let args = message.content.slice(prefix1.length).trim().split(/ +/g);
 
-        
+       
         message.guild.commands.set(client.slashcommands).then(() =>
-            console.log(`Commands deployed in guild ${message.guild.name}!`));
+            console.log(`Commands deployed in guild ${message.guild.name}!`)); 
+           
 
+        console.log(message.guild.id)
         const command = args.shift();
 
         if (!message.content.startsWith(prefix1) || message.author.bot) return;

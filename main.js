@@ -224,6 +224,7 @@ client.on('guildCreate', (guild) => {
 
 
 client.DisTube.on("searchNoResult", (message, query) => message.channel.send(`No result found for ${query}!`)); 
+client.DisTube.on("searchResult", (message, results) => {console.log(results)} )
 client.DisTube.on("playSong", (queue, song) => {
 
     queue.textChannel.send(`🎶 Now playing **${song.name}** / ${song.formattedDuration} / requested by ${song.user}`);
@@ -231,10 +232,11 @@ client.DisTube.on("playSong", (queue, song) => {
 
 
 
-client.DisTube.on("error", (error, channel) => {
-    console.log(error);
-    if (channel)
-        channel.send(`My songbirds are having trouble for some reason... I need to go back to my cottage for a minute`); 
+client.DisTube.on("error", (channel, e) => {
+    channel.send(`My songbirds are having trouble for some reason... I need to go back to my cottage for a minute`); 
+    console.log(e);
+   
+      
     
  
 });

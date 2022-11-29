@@ -62,7 +62,7 @@ module.exports =
 				
 			}
 		
-			message.channel.send(`${query}} I'm searching for a result, and  adding it to the queue!`);
+		 	interaction.reply(`${query}} I'm searching for a result, and  adding it to the queue!`);
 			
 
 

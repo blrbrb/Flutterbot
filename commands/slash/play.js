@@ -14,9 +14,11 @@ module.exports =
     async execute(Discord, client, interaction, debug)
     {
 		
-		const queue = await client.DisTube.getQueue(interaction);
-		const query = interaction.options.getString('query')
-		this.queue_video(interaction,client,query, queue); 
+		const queue = await client.DisTube.getQueue(interaction)        
+		const query = interaction.options.getString('query')     
+		console.log(interaction.member)    
+		console.log(interaction.message)   
+		this.queue_video(interaction,client,query, queue);     
 
 
    	
@@ -29,7 +31,7 @@ module.exports =
 		{
 			 try
 			 {
-				client.DisTube.play(interaction, query, {
+				client.DisTube.play(interaction.member.voice.channel, query, {
 					member: interaction.member,
 					textChannel: interaction.channel,
 					interaction
@@ -39,7 +41,8 @@ module.exports =
 			catch(DisTubeError) 
 			{
 
-				console.log(DisTubeError)
+				console.log(DisTubeError) 
+				interaction.reply('there was an error :( ' + DisTubeError)
 
 			}
 
@@ -49,7 +52,7 @@ module.exports =
 		else {
 			try
 			{
-			client.DisTube.play(interaction, query, {
+			client.DisTube.play(interaction.member.voice.channel, query, {
 				member: interaction.member,
 				textChannel: interaction.channel,
 				interaction
@@ -59,14 +62,11 @@ module.exports =
 			catch(DisTubeError)
 			{
 				console.log(DisTubeError)
-				
+				interaction.reply('there was an error :( ' + DisTubeError)
 			}
 		
 		 	interaction.reply(`${query}} I'm searching for a result, and  adding it to the queue!`);
 			
-
-
-
 		}
 
 		

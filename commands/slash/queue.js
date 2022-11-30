@@ -7,7 +7,9 @@ module.exports =
 
        
     const queue2 = await client.DisTube.getQueue(interaction);
-    if(queue2.songs.length < 1) return interaction.reply(`There are no songs in queue 😔`);    
+    if(!queue2)
+    return interaction.reply(`There are no songs in queue 😔`)
+    else if(queue2.songs.length < 1) return interaction.reply(`There are no songs in queue 😔 , use /play`);    
 
 
       const q = queue2.songs.map((song, i) => `${i === 0 ? 'Playing:' : `${i}.`} ${song.name} - \`${song.formattedDuration}\``).join('\n')

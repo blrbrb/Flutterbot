@@ -1,4 +1,4 @@
-const { Client, Partials, Collection, GatewayIntentBits, Discord, Formatters } = require('discord.js');
+const { Client, Partials, Collection, GatewayIntentBits, MessagesActionRow, ActionRowBuilder, Discord, Formatters } = require('discord.js');
 
 const MessageEmbed  = require('discord.js');
 const ytdl = require("ytdl-core"); 
@@ -100,7 +100,11 @@ client.DisTube = new DisTube(client, {
     customFilters: filters
     
 	
-	})
+})
+
+
+
+
 
 //main events 
 
@@ -116,13 +120,36 @@ client.DisTube = new DisTube(client, {
     }
 
 
-client.on('interactionCreate', interaction => {
+client.on('interactionCreate', interaction => { 
+    
+ 
     const { commandName } = interaction;
     const user = interaction.user
     const command = client.slashcommands.get(commandName); 
     //update button interactions 
+
     if(interaction.isButton())
     { 
+      //if the Button interaction is coming from the play command. e.g. Someone has given the queue a non link string, and search results are being displayed in an ActionRow
+      if(interaction.customId.includes('youtube'))
+      {
+        
+        interaction.reply({content:`Okay, I'll put that song into the queue for you!`, ephemeral: true}) 
+
+        const queue = client.DisTube.getQueue(interaction) 
+        if(!queue)
+        {
+            return
+        }
+
+        client.DisTube.play(interaction.member.voice.channel,interaction.component.customId,{
+            member: interaction.member,
+            textChannel: interaction.channel,
+            interaction
+
+        });
+
+      }
      if(interaction.customId == 'Gamer')
      {
         
@@ -194,7 +221,7 @@ client.on('interactionCreate', interaction => {
     }
 }); 
 
-client.once('ready', () => {
+client.once('ready', () => { 
 	
    
 		
@@ -224,8 +251,15 @@ client.on('guildCreate', (guild) => {
 
 
 client.DisTube.on("searchNoResult", (message, query) => message.channel.send(`No result found for ${query}!`)); 
-client.DisTube.on("searchResult", (message, results) => {console.log(results)} )
+
 client.DisTube.on("playSong", (queue, song) => {
+    
+
+    if(song.age_restricted)
+    {
+
+
+    }
 
     queue.textChannel.send(`🎶 Now playing **${song.name}** / ${song.formattedDuration} / requested by ${song.user}`);
 });
@@ -233,13 +267,26 @@ client.DisTube.on("playSong", (queue, song) => {
 
 
 client.DisTube.on("error", (channel, e) => {
-    channel.send(`My songbirds are having trouble for some reason... I need to go back to my cottage for a minute`); 
-    console.log(e);
+
+    
+  
+   // console.log(e.stack)
+    console.log(Object.getOwnPropertyNames(e))
+    console.log(Object.keys(e))
+    console.log(e.message)
+    console.log(e.name)
+    
+    
+    channel.send(`I'm sorry, My songbirds are having trouble playing this song because...\n\`${e.message}\``); 
+    //console.log(e);
+    
    
       
     
  
 });
+
+
 
 
 client.login(process.env.DISCORD_TOKEN);
@@ -258,7 +305,7 @@ async function voice(message, args)
  	
  	var json = JSON.stringify(values); 
  	
- 	 fs.writeFile(file, values.toString(), function (err, result) {
+ 	 fs.writeFile(file, json, function (err, result) {
         
         if (err) console.log('JSON file writing error in main.js lin 431 caught', err);
         
@@ -501,7 +548,7 @@ async function register_slash_commands() {
             Routes.applicationGuildCommands(clientId, guildId),
             { body: client.slashcommands },
         );
-      console.log(data);
+      
       // DEBUG  console.log(`Successfully reloaded ${data.length} application (/) commands.`);
     } catch (error) {
 
@@ -515,6 +562,27 @@ async function register_slash_commands() {
 }
 
 
-
-
-
+async function fetchAllMessages() {
+    console.log('fetching messages...')
+    const channel = client.channels.cache.get("960713019753644035");
+    let messages = [];
+  
+    // Create message pointer
+    let message = await channel.messages
+      .fetch({ limit: 1 })
+      .then(messagePage => (messagePage.size === 1 ? messagePage.at(0) : null));
+  
+    while (message) {
+      await channel.messages
+        .fetch({ limit: 100, before: message.id })
+        .then(messagePage => {
+          messagePage.forEach(msg => messages.push(msg));
+           console.log(message)         
+          // Update our message pointer to be last message in page of messages 
+          message = 0 < messagePage.size ? messagePage.at(messagePage.size - 1) : null;
+        })
+    }
+    console.log('fucking your mother')   
+    console.log(messages)
+    save_data(messages, "messages.json");  // Print all messages
+  }

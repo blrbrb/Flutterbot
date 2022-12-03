@@ -64,15 +64,20 @@ fi
 
 function logmanager()   
 {
-		
-minimumsize=90000
+
+#Force-Trunicate the error log if the error log is larger than 90mb 
+#Warn the if the error log is approaching ./		
+minimumsize=90000000
+warningsize=80000000
 actualsize=$(wc -c <$1)
 if [ $actualsize -ge $minimumsize ]; then
 	echo log file size is over $minimumsize bytes 
 	echo Clearing Log File… 
 	
 	> error_log.txt
-   
+
+elif [ $actualsize -ge $warningsize ]; then
+	echo -e "\033[33mWARN: \033[0m" log file size is over $warningsize bytes 80mb, and will be trunicated at $minimumsize 90mb
 else
 	echo log file size is under $minimumsize bytes
 fi
@@ -94,7 +99,7 @@ fi
 
 check_os 
 
-echo running fluttershy on $os_type
+echo preparing fluttershy to run on enviornment:  $os_type
 
 
 

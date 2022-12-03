@@ -55,16 +55,22 @@ module.exports = {
 
 
             
-          
+          if (response.hasOwnProperty('estimated_time'))
+          {
+            console.log(response.estimated_time); 
+            message.reply(`instantizing from ellypony/flutterbot on huggingface.io...  \ Il y a: \ ${response.estimated_time}`)
+
+          }
 
             if (response.hasOwnProperty("error")) {
               
                 message.channel.send(response.error);
                 console.log(response.error);
+               
 
-                if (error.hasOwnProperty('estimated_time'))
+                if (response.error.hasOwnProperty('estimated_time'))
                 {
-                    console.log(response.error.estimated_time); 
+                   
                 }
                
 

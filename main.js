@@ -367,78 +367,13 @@ client.on("messageReactionRemove", async (reaction, user) => {
 
 
 
-
-async function create_reaction_roles()
-{
-    const example_yellow_cucumber_role = '13121412312312';
-
-    const channel = await client.channels.fetch(roles_channel);
-
-
-   
-
-    let embed = new Discord.MessageEmbed()
-        .setColor()
-        .setTitle(`Hello, my name is Fluttershy... Eli (Elly) is asking me to help with roles!`)
-        .setDescription('giving yourself a role here will allow me to write them down, and send my critters over to ping you')
-        .addField(`Gamer ${gamer_emoji}`, "The Gamer Roll. I'll ping you whenever the Broners are about to do something fun in a videogame")
-        .addField(`Broners React ${bronerreacts_emoji}`, "I'll ping you for watch parties, and New G5 stuff!")
-        .addField(`Lunist ${luna_emoji}`, "praise the moon! you are a proud supporter of the night guard")
-        .addField(`Solist ${celestia_emoji}`, "praise the sun! you are a summer sunshine enjoyer")
-        .addField(`The Hive ${hive_emoji}`, "Buzzzzzzz")
-        .addField(`Derpist ${Derpist_emoji}`, `I just don't know what went wrong"`)
-        .addField(`I am A **MINOR** ${minor_emoji}`, "saftey first")
-        .addField(`Discordian ${discordian_emoji}`, `"But it's RAINING CHOCOLATE"`)
-
-
-
-    //The process of sending the message to the channel needs to be an asyncro process, because it will 
-    //take the client and server some time to process the reacion of the end user. 
-
-    let messageembed = await channel.send(embed)
-        .then((sentMessage) => {
-            
-                channel.messages
-                    .fetch(sentMessage.id)
-                    .then((fetchedMessage) => {
-                        console.log('Message exists');
-
-                        fetchedMessage.react(gamer_emoji)
-                        fetchedMessage.react(gamer_emoji);
-                        fetchedMessage.react(gamer_emoji);
-                        fetchedMessage.react(luna_emoji);
-                        fetchedMessage.react(celestia_emoji);
-                        fetchedMessage.react(hive_emoji);
-                        fetchedMessage.react(Derpist_emoji);
-                        fetchedMessage.react(minor_emoji);
-                        fetchedMessage.react(discordian_emoji);
-
-                            
-                    })
-                    .catch((err) => {
-                        if (err.httpStatus === 404) {
-                            console.log('Message already deleted');
-                        } else {
-                            console.log(err);
-                        }
-                    });
-            
-        });
-
-    
-
-  
-
-
-}
-
 client.on("guildMemberSpeaking", function (member, speaking) {
     console.log(`a guild member starts/stops speaking: ${member.tag}`);
 });
 
 
 
-
+//Mares mares mares mares mares, when I am sad I like to thnk about mares. Mares make me feel better when I am depressed. Life can make me depressed often but I like mares and thinking about cute mares mares mares. So It is okay
 async function init_commands() {
 
     //init text input commands 
@@ -542,7 +477,7 @@ async function register_slash_commands() {
     try {
         const clientId = '817161573201608715';
         const guildId = '960713019753644032';
-       
+    
         const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
         const data = await rest.put(
             Routes.applicationGuildCommands(clientId, guildId),

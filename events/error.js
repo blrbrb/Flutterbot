@@ -7,5 +7,10 @@ module.exports = {
 
 		console.log('My Websocket has encountered an error :(');
 		console.log(`client's WebSocket encountered a connection error: ${error}`);
+
+		fs.appendFile("error_log.txt", "World", (err) => {
+  	 	if (err) {
+   	 			console.log(err);
+		}});
 	},
 };

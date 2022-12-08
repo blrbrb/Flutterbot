@@ -107,9 +107,18 @@ module.exports =
 				try
 				{
 
-				const result = await client.DisTube.search(query)
-				console.log(result)
-
+					if(!channel.nsfw){   
+				   
+						try
+						{
+						  info = await ytdl.getInfo(query)
+						}
+						catch(error)
+						{
+						  return interaction.reply({content: 'This is proabably an **age restricted video**. Because ytdl-core.getInfo() is returning an error 404 instead of just telling me the video is age restricted. This is casuing me to die and explode, and restart for everyone, on every server I am in. Apparently the youtube API hates whatever link you have just queued so much, that it hasnt given me or my creator any useful error information at all. Google just refuses to admit that this page exists, most likely because someone said a bad word somewhere in the video. \n there is absolutely nothing that me or my creator can do about this and it is beginning to make him rather bitter. I will send you this long, contrived message every single time that this happens until google gets it together. So dont count on it changing \n **you have now inconvienced yourself, and everyone else on every other server for the 15 seconds it will take me to restart because YouTube is too afraid to show you the word "fuck"** \n', ephemeral: true})
+						}
+					}
+				else 
 				client.DisTube.play(interaction.member.voice.channel, query, {
 					member: interaction.member,
 					textChannel: interaction.channel,

@@ -1,7 +1,6 @@
 const { Client, Partials, Collection, GatewayIntentBits, MessagesActionRow, ActionRowBuilder, Discord, Formatters } = require('discord.js');
 
 const MessageEmbed  = require('discord.js');
-const ytdl = require("ytdl-core"); 
 const scan = require('./utils/findimage.js');
 const cheerio = require('cheerio');
 const request = require('request');
@@ -9,7 +8,6 @@ const { DisTube } = require('distube');
 const { REST, Routes } = require('discord.js');
 const filters = require("./assets/filters.json");
 const path = require('path'); 
-
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -250,14 +248,16 @@ client.on('guildCreate', (guild) => {
 // be called in tandem created multipule uncess. instances. 
 
 
-client.DisTube.on("searchNoResult", (message, query) => message.channel.send(`No result found for ${query}!`)); 
+
+
+
 
 client.DisTube.on("playSong", (queue, song) => {
     
 
     if(song.age_restricted)
     {
-
+        queue.textChannel.send(`I am going to crash now, because this song has been marked as adult content on youtube and the people who write CS for google are about as consistent with their regex garbage as \n a fresh steaming pile of node `)
 
     }
 

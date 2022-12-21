@@ -18,15 +18,33 @@ module.exports =
     ],
     async execute(Discord, client, interaction, debug)
     {
-		
+		const interactio = interaction 
 		const queue = await client.DisTube.getQueue(interaction)        
-		const query = interaction.options.getString('query')     
-		const nsfw = interaction.channel.nsfw; 
-		this.queue_video(interaction,client,query, queue, nsfw) 
+		const query = interaction.options.getString('query')   
+		this.in_nsfw_channel = interaction.channel.nsfw;  
+		is_link = await this.validate_url(query);
+		console.log("this is a link ", is_link);
+		if(is_link){
+			if(await this.is_nsfw(query) && !this.in_nsfw_channel){
+				return
+			} else
+			{
+				await client.DisTube.play(interaction.member.voice.channel, query, {
+					member: interaction.member,
+					textChannel: interaction.channel,
+				}).then(interaction.reply(`ok! I'll put this into the queues`)) 
+			}
 
 
-   	
-},
+			
+		} //if the query is not a link, Distube will handle age restricted videos on it's own 
+		else
+		{
+			await this.results_selection(interaction, client, query);
+		}
+		},
+	
+
 
 	async queue_video(interaction, client, query, queue, nsfw)
 	{
@@ -134,12 +152,22 @@ module.exports =
 		
 			} 
 			else {
-			try
+			console.log('I have removed a function from this bracket because fuck it');
+
+			}
+		 	//interaction.reply(`${query}} I'm searching for a result, and  adding it to the queue!`);
+			
+		}
+
+		
+
+	}, 
+	
+	async results_selection(interaction, client, query) {
+	try
 			{
 			const result = await client.DisTube.search(query)
-				console.log(result) 
-				console.log(result.length)
-		
+				
 				let select_embeds = []
 				const row = new ActionRowBuilder()
 
@@ -164,13 +192,54 @@ module.exports =
 				console.log(DisTubeError)
 				interaction.reply({content: ' Tell @Eli there was an error :( ' +  DisTubeError, ephemeral: true})
 			}
+		}, 
+	
+	async validate_url(url) {
+		
+		const exp = RegExp(/^(http(s)??\:\/\/)?(www\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])+$/); 
+		console.log(await exp.test(url)); 
+		return await exp.test(url); 
 
-			}
-		 	//interaction.reply(`${query}} I'm searching for a result, and  adding it to the queue!`);
+	},
+	///we need to make sure that none of the queries that end up on the queue are nsfw, which is why we check to make sure
+	///they aren't age restricted here with ytdl before they can end up queued and crash Distube. 
+	async can_play_nsfw(url)
+	{
+		const video_info = ytdl.getInfo(url); 
+
+		console.log(video_info); 
+		if(video_info.age_restricted && !this.in_nsfw_channel)
+			return false; 
+		else if (video_info.age_restricted && this.in_nsfw_channel)
+			return true; 
+		else 
+			return true; 
+	},
+
+	async is_nsfw(url)
+	{
+		try{
+		const video_info = await ytdl.getInfo(url); 
+		console.log(video_info); 
+		
+		if (video_is.age_restricted)
+		{
+			interaction.reply({content: `I'm sorry, it looks like this is an age restricted video. You'll need to be in an NSFW channel for me to be able to play this.`, ephemeral: true}); 
 			
 		}
-
+		}
+	
 		
+		///the error that is thrown by ytdl occurs because the video is age restricted and ytdl does not have 
+		///a ID token. Youtube will not even allow you to see wether or not a video has been marked as nsfw if you aren't signed in 
+		catch(err)
+		{
+			interaction.reply({content:`I'm sorry, youtube won't allow me to see wether or not this is nsfw because I am not signed in with an adult's account. Miniget is crashing, which usually means this is an age restricted video`, ephemeral: true}); 
+			return true 
+		}
 
-	}
+		return video_info.age_restricted; 
+	}, 
+	in_nsfw_channel: 0
+	
 }

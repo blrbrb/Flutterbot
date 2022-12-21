@@ -23,23 +23,29 @@ module.exports =
         if (!queue.autoplay && queue.songs.length <= 1) {
             
             skipped_song = queue.songs.song;
+            client.DisTube.stop(interaction);
             interaction.reply(`There aren't any more songs in the queue! I'll tell my birdies to stop singing`);
-            interaction.reply(`stopping`);
-           client.DisTube.stop(interaction);
+           
         }
         else
         {
            
 }
-            interaction.reply('skipping!'); 
+          
             if (interaction.options.getNumber('song'))
             {
                 selection = interaction.options.getNumber('song');
-                queue.songs.splice(selection, 1); 
+                if(selection -1 > queue.songs.size())
+                    return interaction.reply(`but that song doesn't exist!`);
+                else
+                queue.songs.splice(selection-1, 1);  
+                interaction.reply(`removed ${queue.songs[selection-1].name}`);
             }
             else 
 
            client.DisTube.skip(interaction);
+           console.log(queue.songs[0].name)
+           interaction.reply(`skipping! ${queue.songs[0].name}`); 
         }
 
       

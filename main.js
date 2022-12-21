@@ -132,14 +132,11 @@ client.on('interactionCreate', interaction => {
       if(interaction.customId.includes('youtube'))
       {
         
-        interaction.reply({content:`Okay, I'll put that song into the queue for you!`, ephemeral: true}) 
-
-        const queue = client.DisTube.getQueue(interaction) 
-        if(!queue)
-        {
+        interaction.reply({content:`Okay, I'll put that song into the queue for you!`, ephemeral: true})
+        
+        if(client.slashcommands.get('play').is_nsfw(interaction.component.customId))
             return
-        }
-
+        else 
         client.DisTube.play(interaction.member.voice.channel,interaction.component.customId,{
             member: interaction.member,
             textChannel: interaction.channel,
@@ -175,15 +172,16 @@ client.on('interactionCreate', interaction => {
 
      }
      if(interaction.customId == 'Luna') 
-     {
+     { 
+        
         const gamer_role = interaction.message.channel.guild.roles.cache.find(role => role.name === 'New Lunar Republic');
         try 
         {
-            interaction.component.setStyle("SUCCESS");
+          
             interaction.message.guild.members.cache.get(user.id).roles.add(gamer_role) 
         } 
         catch(error) {
-            interaction.component.setStyle("DANGER");
+           
             if(error.message == 'Missing Permissions') 
             {
                 interaction.reply({
@@ -255,11 +253,6 @@ client.on('guildCreate', (guild) => {
 client.DisTube.on("playSong", (queue, song) => {
     
 
-    if(song.age_restricted)
-    {
-        queue.textChannel.send(`I am going to crash now, because this song has been marked as adult content on youtube and the people who write CS for google are about as consistent with their regex garbage as \n a fresh steaming pile of node `)
-
-    }
 
     queue.textChannel.send(`🎶 Now playing **${song.name}** / ${song.formattedDuration} / requested by ${song.user}`);
 });

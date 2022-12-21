@@ -58,7 +58,7 @@ client.slashcommands = new Collection();
 client.aliases = new Collection(); 
  
 
-
+//test change
 //init command source (stored in seperate js modules)
 const eventsPath = path.join(__dirname, 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));

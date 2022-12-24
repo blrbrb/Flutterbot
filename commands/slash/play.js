@@ -224,7 +224,7 @@ module.exports =
 		
 		if (video_is.age_restricted)
 		{
-			interaction.reply({content: `I'm sorry, it looks like this is an age restricted video. You'll need to be in an NSFW channel for me to be able to play this.`, ephemeral: true}); 
+			return true; 
 			
 		}
 		}

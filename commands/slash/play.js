@@ -24,24 +24,15 @@ module.exports =
 		this.in_nsfw_channel = interaction.channel.nsfw;  
 		is_link = await this.validate_url(query);
 		console.log("this is a link ", is_link);
-		if(is_link){
-			if(await this.is_nsfw(query) && !this.in_nsfw_channel){
-				return
-			} else
-			{
+		
 				await client.DisTube.play(interaction.member.voice.channel, query, {
 					member: interaction.member,
 					textChannel: interaction.channel,
 				}).then(interaction.reply(`ok! I'll put this into the queues`)) 
-			}
-
-
 			
-		} //if the query is not a link, Distube will handle age restricted videos on it's own 
-		else
-		{
-			await this.results_selection(interaction, client, query);
-		}
+
+
+	
 		},
 	
 

@@ -133,10 +133,7 @@ client.on('interactionCreate', interaction => {
       {
         
         interaction.reply({content:`Okay, I'll put that song into the queue for you!`, ephemeral: true})
-        
-        if(client.slashcommands.get('play').is_nsfw(interaction.component.customId))
-            return interaction.reply({content: `I'm sorry, it looks like this is an age restricted video. You'll need to be in an NSFW channel for me to be able to play this.`, ephemeral: true}); 
-        else 
+    
         client.DisTube.play(interaction.member.voice.channel,interaction.component.customId,{
             member: interaction.member,
             textChannel: interaction.channel,

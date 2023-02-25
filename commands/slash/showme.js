@@ -1,49 +1,36 @@
-var request = require('request')
-var cheerio = require('cheerio')
+var request = require('request');
+var cheerio = require('cheerio');
 
-
-module.exports =
-{
+module.exports = {
     name: 'showme',
     description: 'Show Me Some Art',
-    options:[
+    options: [
         {
             type: 3,
-            description: "a colour", 
+            description: "a colour",
             name: "colour",
             required: true
         }
+    ],
 
-
-    ], 
-
-    async execute(Discord, client, interaction, debug)
-    {
-
- 
+    async execute(Discord, client, interaction, debug) {
         var options = {
             url: "https://artsandculture.google.com/color?col=" + interaction.options.getString('colour').toUpperCase(),
-                    method: "GET",
-                    headers: {
-                        "Accept": "text/html",
-                        "User-Agent": "Chrome"
+            method: "GET",
+            headers: {
+                "Accept": "text/html",
+                "User-Agent": "Chrome"
+            }
+        };
 
-                    }
-                };
-        
-        console.log(options.url); 
-
-
-
-
-
+        console.log(options.url);
 
         request(options, async function (error, response, responseBody) {
 
             if (error) { console.log('Im yellow shy, and Eli is a useless, incapable human being'); return; }
 
             $ = await cheerio.load(responseBody);
-          
+
             var links = $(".DuHQbc.pdfEnd a");
 
             console.log(links[0]);
@@ -52,42 +39,23 @@ module.exports =
 
             //message.channel.send(links[1]);
 
-            console.log(urls[0]); 
-           
-          
+            console.log(urls[0]);
+
             if (!urls.length) {
                 interaction.reply('something went wrong');
                 //message.channel.send(urls[1]);
 
-
-
-
                 console.log('you fucked it up, objectvie B kill all humans');
 
                 return;
-            }
-
-
-            //filter through array, send resulting random image
-            else {
-               
-
+            } else { //filter through array, send resulting random image
                 urls.shift();
 
                 const string = `https:${urls[Math.floor(Math.random() * urls.length)]}`;
-                 
-                interaction.reply(string);
 
-               
+                interaction.reply(string);
                 return;
             }
-
-
         });
-
-
-
-
     }
-
 }

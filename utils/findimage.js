@@ -1,5 +1,3 @@
-
-
 module.exports.imageFinder = function findImage(message) {
     return new Promise(async (resolve, reject) => {
         try {
@@ -32,7 +30,6 @@ module.exports.imageFinder = function findImage(message) {
                         if (message.embeds[0] && message.embeds[0].image != null) {
                             attachmentURL = message.embeds[0].image.url; 
                             console.log(message.embeds[0].image.url);// If message is an embed with an image
-                    
                         }
                     }
                     if (attachmentURL) console.log("image found"); return attachmentURL; // Return image URL for each message
@@ -49,16 +46,7 @@ module.exports.imageFinder = function findImage(message) {
         }
     });
 }
-     
-
-
 
 module.exports.extensionFinder = function get_url_extension( url ) {
     return url.split(/[#?]/)[0].split('.').pop().trim();
 }
-
-
-
-
-
-

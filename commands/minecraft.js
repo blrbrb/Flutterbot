@@ -4,7 +4,6 @@ module.exports = {
 	name: 'minecraft',
 	description: 'Fluttershy Will Spoofy you a Minecraft Achivement',
 	async run(client, message, args) { // eslint-disable-line no-unused-vars 
-
 		console.log('minecraft');
 		if (args.length > 0) {
 			message.channel.startTyping();
@@ -20,6 +19,4 @@ module.exports = {
 			message.reply("Uhhm... I need text to customize a minecraft achivement");
 		}
 	}
-
-	
 }

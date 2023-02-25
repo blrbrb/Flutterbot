@@ -1,7 +1,7 @@
 require('dotenv').config();
 const request = require("request");
 const gm = require("gm").subClass({
-	  imageMagick: true
+	imageMagick: true
 });
 
 const findImage = require('../../utils/findimage.js');
@@ -22,45 +22,37 @@ module.exports = {
 			description: "scale factor of the mosaic"
 		}
 	],
-	async execute(Discord, client, interaction, debug) { 
+	async execute(Discord, client, interaction, debug) {
 
 		var scale = 5;
 
 		imageUrl = await interaction.options.getAttachment('image').url;
 
 		if (interaction.options.getNumber('scale'))
-		       scale = interaction.options.getNumber('scale');
+			scale = interaction.options.getNumber('scale');
 		if (scale > 100 || scale <= 0)
-			  scale = 5; 
+			scale = 5;
 
 		const extension = findImage.extensionFinder(imageUrl);
 
-		console.log(extension); 
-	  if (imageUrl !== undefined) {
-		      interaction.channel.sendTyping(); 
-		        gm(request(imageUrl)).filesize((error, format) => { 
-		     				
-		    
-		       
-		       
-		        gm(request(imageUrl)).command("-mosaic").out("-duplicate").tile(`${scale}x${scale}`).geometry("+0+0").stream((error, stdout) => {
-			            if (error) throw new Error(error);
-			           gm(stdout).resize("800x800>").stream((error, stdoutFinal) => {
-					            if (error) throw new Error(error);
-					           
-					             interaction.reply({
-							              files: [{
-									                  attachment: stdoutFinal,
-									                  name: "mosaic.png"
-									                }]
-							            });
-					          });
-			          });
-		       });
-		    } 
-		    
-		    
-		    
-}
+		console.log(extension);
+		if (imageUrl !== undefined) {
+			interaction.channel.sendTyping();
+			gm(request(imageUrl)).filesize((error, format) => {
+				gm(request(imageUrl)).command("-mosaic").out("-duplicate").tile(`${scale}x${scale}`).geometry("+0+0").stream((error, stdout) => {
+					if (error) throw new Error(error);
+					gm(stdout).resize("800x800>").stream((error, stdoutFinal) => {
+						if (error) throw new Error(error);
 
+						interaction.reply({
+							files: [{
+								attachment: stdoutFinal,
+								name: "mosaic.png"
+							}]
+						});
+					});
+				});
+			});
+		}
+	}
 }

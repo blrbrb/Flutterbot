@@ -13,24 +13,17 @@ module.exports = {
     ],
     defaultPermission: false,
     permissions: '8n',
-    async execute(Discord, client, interaction, debug)
-    {
-      
+    async execute(Discord, client, interaction, debug) {
+
         if (interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
 
             const new_roles_channel = interaction.options.getChannel('channel');
 
-
             console.log(new_roles_channel);
             const string = `command under construction`;
             await interaction.reply(string);
-        }
-        else
-        {
+        } else {
             await interaction.reply('you must be an administrator to modify bot settings');
-
         }
-
-
     }
 }

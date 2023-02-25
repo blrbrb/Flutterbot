@@ -1,4 +1,3 @@
-
 var cheerio = require('cheerio');
 var request = require('request');
 
@@ -13,10 +12,7 @@ description: 'Get an entierly Unique Pony from thisponydoesnotexist!',
             headers: {
                 "Accept": "text/html",
                 "User-Agent": "Chrome"
-
             }
         }
-
     }
 }
-

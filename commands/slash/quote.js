@@ -4,9 +4,8 @@ const request = require('request');
 module.exports = {
     name: 'quote',
     description: 'Fetch randomly generated quotes from inspirobot',
-    async execute(Discord, client,interaction, debug) {
-
-        let interact = interaction; 
+    async execute(Discord, client, interaction, debug) {
+        let interact = interaction;
         var options = {
             url: "https://inspirobot.me/api?generate=true",
             method: "GET",
@@ -15,10 +14,6 @@ module.exports = {
                 "User-Agent": "Chrome"
             }
         };
-
-
-
-
         request(options, function (error, response, responseBody) {
 
             if (error) { console.log('Something is wrong, and my creator is dumb'); return; }
@@ -27,24 +22,7 @@ module.exports = {
 
             var url = $('body').text();
 
-            interaction.reply({content: url});
-
-
-
-
+            interaction.reply({ content: url });
         });
-
-
-
-
-
-
-
-
-
     }
-
-
-
 }
-

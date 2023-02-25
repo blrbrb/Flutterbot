@@ -2,7 +2,7 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'love',
-    description: 'love meter thingy', 
+    description: 'love meter thingy',
     alias: ['amor', 'lovemeter', 'ship'],
     run: (client, message, command, args, lang,) => {
 

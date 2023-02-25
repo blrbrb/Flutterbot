@@ -1,5 +1,5 @@
-var request = require('request')
-var cheerio = require('cheerio')
+var request = require('request');
+var cheerio = require('cheerio');
 
 module.exports = {
     name: 'ifunny',
@@ -7,66 +7,52 @@ module.exports = {
     execute(message, args, debug) {
 
         // console.log('working');
-        
-        var options = {};  
-        
-        if(message.content.includes('help'))
-        {
-        	message.channel.send('try entering a one word tag, and or a one word filter. Like "-ifunny "funny" "weird"');  
-        	return; 
+
+        var options = {};
+
+        if (message.content.includes('help')) {
+            message.channel.send('try entering a one word tag, and or a one word filter. Like "-ifunny "funny" "weird"');
+            return;
         }
-        
-        
-        switch(args.length) 
-        {
-        	case 1:
-        	//console.log('args are one'); 
-        //	console.log(args[0]); 
-       
-        	 var options = {
-                url: "https://ifunny.co/tags/" + args,
-                method: "GET",
-                headers: {
-                    "Accept": "text/html",
-                    "User-Agent": "Chrome" 
-                    
-                }
-        	 };
-                break; 
-        	              
-             case 2:  
-           //  console.log('args are 2'); 
-           //  console.log(args[1]); 
-             
-            
-             var options = {
-                url: "https://ifunny.co/tags/" + args[0] + "?filter=" + args[1],
-                method: "GET",
-                headers: {
-                    "Accept": "text/html",
-                    "User-Agent": "Chrome"
-                }
-             }; 
-             break;
-                
-                
-             default: var options = {
-                url: "https://ifunny.co/other",
-                method: "GET",
-                headers: {
-                    "Accept": "text/html",
-                    "User-Agent": "Chrome"
+
+        switch (args.length) {
+            case 1: {
+                //console.log('args are one'); 
+                //	console.log(args[0]); 
+
+                options = {
+                    url: "https://ifunny.co/tags/" + args,
+                    method: "GET",
+                    headers: {
+                        "Accept": "text/html",
+                        "User-Agent": "Chrome"
+                    }
+                };
+            } break;
+            case 2: {
+                //  console.log('args are 2'); 
+                //  console.log(args[1]); 
+
+                options = {
+                    url: "https://ifunny.co/tags/" + args[0] + "?filter=" + args[1],
+                    method: "GET",
+                    headers: {
+                        "Accept": "text/html",
+                        "User-Agent": "Chrome"
+                    }
+                };
+            } break;
+            default: {
+                options = {
+                    url: "https://ifunny.co/other",
+                    method: "GET",
+                    headers: {
+                        "Accept": "text/html",
+                        "User-Agent": "Chrome"
+                    }
                 }
             };
-             
-             
-            }
-        	
-        	
-        	
-        
-        
-        
+        }
 
         request(options, function (error, response, responseBody) {
 
@@ -93,44 +79,23 @@ module.exports = {
                 message.channel.send('I just dont know what went wrong');
                 //message.channel.send(urls[1]);
 
-
-
-
                 console.log('you fucked it up, objectvie B kill all humans');
 
                 return;
-            }
-
-
-            //filter through array, send resulting random image
-            else {
+            } else { // filter through array, send resulting random image
                 message.channel.send("p-please don't make me look through ifunny");
 
                 if (debug) {
                     message.channel.send("Fetched Links:");
                     message.channel.send(urls, { code: "js" });
-                    message.channel.send(`Array Length ${urls.length}`); 
-
+                    message.channel.send(`Array Length ${urls.length}`);
                 }
 
                 urls.shift();
                 message.channel.send(urls[Math.floor(Math.random() * urls.length)]);
-                
 
                 return;
             }
-
-
         });
-        
-        
-        
-}} 
-
-
-
-
-
-
-
-
+    }
+}

@@ -1,11 +1,11 @@
 const discord = require('discord.js');
-const cleverbot = require('cleverbot-free'); 
+const cleverbot = require('cleverbot-free');
 const fs = require('fs');
 const fetch = require('node-fetch');
-require('dotenv'); 
+require('dotenv');
 
 let conversation = { past_user_inputs: [], generated_responses: [] };
-let response_temp = ' '; 
+let response_temp = ' ';
 const command_prefix = 'fs';
 
 
@@ -20,28 +20,18 @@ module.exports = {
     name: "Fluttershy",
     description: "talk with FlutterShy",
     alias: ["Fluttershy"],
-    run: async (client, message, command, args, prefix) => { 
-
-        message.channel.sendTyping(); 
+    run: async (client, message, command, args, prefix) => {
+        message.channel.sendTyping();
         console.log(message.content);
         let input = {
             message: message.content.slice(prefix.length + command_prefix.length).trim(),
             question: false
-
         }
 
-
-     
         if (input.message.includes('?'))
             input.question = true;
 
-
         conversation.past_user_inputs.push(input.message);
-
-       
-
-     
-       
 
         query({
             "inputs": {
@@ -50,62 +40,36 @@ module.exports = {
                 "text": input.message
             }
         }).then((response) => {
-           console.log(response); 
-           
+            console.log(response);
 
-
-            
-          if (response.hasOwnProperty('estimated_time'))
-          {
-            console.log(response.estimated_time); 
-            message.reply(`instantizing from ellypony/flutterbot on huggingface.io...  \ Il y a: \ ${response.estimated_time}`)
-
-          }
+            if (response.hasOwnProperty('estimated_time')) {
+                console.log(response.estimated_time);
+                message.reply(`instantizing from ellypony/flutterbot on huggingface.io...  \ Il y a: \ ${response.estimated_time}`)
+            }
 
             if (response.hasOwnProperty("error")) {
-              
+
                 message.channel.send(response.error);
                 console.log(response.error);
-               
 
-                if (response.error.hasOwnProperty('estimated_time'))
-                {
-                   
-                }
-               
-
-            }
-            else if (response.hasOwnProperty("generated_text"))
-            {
+                if (response.error.hasOwnProperty('estimated_time')) { }
+            } else if (response.hasOwnProperty("generated_text")) {
 
                 response_temp = response.generated_text;
-              
-                console.log(conversation); 
+
+                console.log(conversation);
                 message.reply(response.generated_text);
-                conversation.generated_responses.push(response_temp); 
+                conversation.generated_responses.push(response_temp);
             }
-
-           
         });
-
-
 
         const json = JSON.stringify(conversation);
 
         fs.writeFile("assets/conversation.json", json, function (err, result) {
-
             if (err) console.log('JSON file writing error in FlutterShy.js caught', err);
-
         });
-
-      
-
-        
-
     }
 }
-
-
 
 async function query(data) {
     const response = await fetch(

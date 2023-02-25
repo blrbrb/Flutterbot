@@ -143,8 +143,8 @@ client.on('interactionCreate', interaction => {
 
       }
      if(interaction.customId == 'Gamer')
-     {
-        
+     { 
+        console.log('attempting to assign the gamer role') 
         const gamer_role = interaction.message.channel.guild.roles.cache.find(role => role.name === 'Gamer');
         try 
         {

@@ -3,9 +3,9 @@ const Discord = require("discord.js");
 const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
-  name: "rip",
-  description: "RIP",
-  options: [
+    name: "rip",
+    description: "RIP",
+    options: [
         {
             type: 6,
             name: "user",
@@ -13,17 +13,17 @@ module.exports = {
             required: true
         }
     ],
-  async execute(Discord, client, interaction, debug) {
+    async execute(Discord, client, interaction, debug) {
 
-      const Member = interaction.options.getUser('user');
+        const Member = interaction.options.getUser('user');
 
-      const Embed = new EmbedBuilder()
-     .setColor(0xfbfb2b)
-    .setTitle("Rest In Peace")
-    .setImage(encodeURI
-    (`https://api.devs-hub.xyz/rip?image=${Member.displayAvatarURL({ format: "png" })}`))
-    .setTimestamp();
+        const Embed = new EmbedBuilder()
+            .setColor(0xfbfb2b)
+            .setTitle("Rest In Peace")
+            .setImage(encodeURI
+                (`https://api.devs-hub.xyz/rip?image=${Member.displayAvatarURL({ format: "png" })}`))
+            .setTimestamp();
 
-      return await interaction.reply({ embeds: [Embed] });
-  }
+        return await interaction.reply({ embeds: [Embed] });
+    }
 };

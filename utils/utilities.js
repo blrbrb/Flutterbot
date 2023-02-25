@@ -6,10 +6,7 @@ const imageCheck = require("file-type");
 module.exports = (client) =>
 {
     client.getImage = async (message) => {
-
         const the_channel = message.channel.id;
-
-
 
         // let messageList = await the_channel.fetch().sort(function (a, b) { return b.createdAt - a.createdAt }).array();
 
@@ -35,55 +32,4 @@ module.exports = (client) =>
             }
         }
     };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

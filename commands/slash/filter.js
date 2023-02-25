@@ -36,17 +36,14 @@ module.exports = {
                 {
                     name: 'Karaoke',
                     value: 'karaoke'
-
                 },
                 {
                     name: '3D',
                     value: '3d'
-
                 },
                 {
                     name: 'Surround',
                     value: 'surround'
-        
                 },
                 {
                     name: 'Gate',
@@ -55,11 +52,10 @@ module.exports = {
                 {
                     name: 'Tremolo',
                     value: 'tremolo'
-                }, 
+                },
                 {
                     name: 'EarWax',
                     value: 'earwax'
-
                 },
                 {
                     name: 'Mcompand',
@@ -68,7 +64,6 @@ module.exports = {
                 {
                     name: 'Echo',
                     value: 'echo'
-
                 },
                 {
                     name: 'Haas',
@@ -77,7 +72,6 @@ module.exports = {
                 {
                     name: 'Earkiller',
                     value: 'earkiller'
-
                 },
                 {
                     name: 'Chorus',
@@ -95,7 +89,7 @@ module.exports = {
                     name: 'OneBit',
                     value: '1bit'
                 },
-                {   
+                {
                     name: 'EightBits',
                     value: '8bits'
                 },
@@ -103,8 +97,7 @@ module.exports = {
                     name: 'NormalizeLoudness',
                     value: 'normalize'
                 },
-               
-              
+
             ],
             required: true
         },
@@ -113,7 +106,7 @@ module.exports = {
             name: 'ffmpeg',
             description: 'Manually specify a FFMPEG filter to apply directly to the stream'
         },
-        
+
     ],
     async execute(Discord, client, interaction, debug) {
 
@@ -126,15 +119,10 @@ module.exports = {
             queue.filters.add(selection);
             string = `Added the ${selection} filter~!`;
         }
-        else if (queue.filters.has(selection))
-        {
+        else if (queue.filters.has(selection)) {
             queue.filters.remove(selection);
             string = `Removed the ${selection} filter~!`
         }
-
-       
-       
-        await interaction.reply(string); 
-
-
-    }}
+        await interaction.reply(string);
+    }
+}

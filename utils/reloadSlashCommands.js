@@ -18,30 +18,30 @@
 */
 
 module.exports = async (client, guild, guildInfo) => {
-  let lang = require(`../lang/${guildInfo.lang}.js`);
-  let applicationCommands = [];
-  for (command of client.commands.values()) {
-    if (command.name == 'leaderboard') continue;
-    if (command.admin || !guildInfo.modules.find((c) => c.name == command.name).enabled) continue;
-    let cmdtxt = lang.commands.find((c) => c.name == command.name);
-    if (!cmdtxt) continue;
-    applicationCommands.push({
-      name: command.name,
-      description: cmdtxt.description,
-      options: cmdtxt.options || []
+    let lang = require(`../lang/${guildInfo.lang}.js`);
+    let applicationCommands = [];
+    for (command of client.commands.values()) {
+        if (command.name == 'leaderboard') continue;
+        if (command.admin || !guildInfo.modules.find((c) => c.name == command.name).enabled) continue;
+        let cmdtxt = lang.commands.find((c) => c.name == command.name);
+        if (!cmdtxt) continue;
+        applicationCommands.push({
+            name: command.name,
+            description: cmdtxt.description,
+            options: cmdtxt.options || []
+        });
+    }
+
+    // If rank is enbaled, enable leaderboard too
+    if (guildInfo.modules.find((c) => c.name == 'rank').enabled) applicationCommands.push({
+        name: 'leaderboard',
+        description: lang.commands.find((c) => c.name == 'leaderboard').description
     });
-  }
 
-  // If rank is enbaled, enable leaderboard too
-  if (guildInfo.modules.find((c) => c.name == 'rank').enabled) applicationCommands.push({
-    name: 'leaderboard',
-    description: lang.commands.find((c) => c.name == 'leaderboard').description
-  });
-
-  try {
-    await guild.commands.set(applicationCommands);
-    console.log(`Successfully (re)loaded slash commands on ${guild.name}`)
-  } catch (e) {
-    console.log(`Can't load slash commands on ${guild.name}`)
-  }
+    try {
+        await guild.commands.set(applicationCommands);
+        console.log(`Successfully (re)loaded slash commands on ${guild.name}`)
+    } catch (e) {
+        console.log(`Can't load slash commands on ${guild.name}`)
+    }
 }

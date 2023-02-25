@@ -1,5 +1,4 @@
-module.exports =
-{
+module.exports = {
     name: 'resume',
     description: 'resume a paused song',
     async execute(Discord, client, interaction, debug) {
@@ -8,6 +7,5 @@ module.exports =
 
         queue.resume(interaction);
         interaction.reply('Resuming!');
-
     }
 }

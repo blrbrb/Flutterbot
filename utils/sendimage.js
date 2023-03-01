@@ -1,4 +1,4 @@
-const gm = require("gm");
+const gm = require('gm');
 
 let { attachment, embed, MessageAttachment } = require('discord.js');
 

@@ -5,5 +5,5 @@ module.exports = {
 	once: true,
 	execute(client) {
 		console.log('Fluttershy is Awake Yay! :3');
-	},
+	}
 };

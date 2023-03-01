@@ -1,7 +1,7 @@
-const request = require("request").defaults({encoding: null}); 
+const request = require('request').defaults({encoding: null}); 
 
-const imageType = require("image-type");
-const imageCheck = require("file-type");
+const imageType = require('image-type');
+const imageCheck = require('file-type');
 
 module.exports = (client) =>
 {

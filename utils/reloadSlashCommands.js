@@ -32,7 +32,7 @@ module.exports = async (client, guild, guildInfo) => {
         });
     }
 
-    // If rank is enbaled, enable leaderboard too
+    // If rank is enabled, enable leaderboard too
     if (guildInfo.modules.find((c) => c.name == 'rank').enabled) applicationCommands.push({
         name: 'leaderboard',
         description: lang.commands.find((c) => c.name == 'leaderboard').description
@@ -40,8 +40,8 @@ module.exports = async (client, guild, guildInfo) => {
 
     try {
         await guild.commands.set(applicationCommands);
-        console.log(`Successfully (re)loaded slash commands on ${guild.name}`)
+        console.log(`Successfully (re)loaded slash commands on ${guild.name}`);
     } catch (e) {
-        console.log(`Can't load slash commands on ${guild.name}`)
+        console.log(`Can't load slash commands on ${guild.name}`);
     }
 }

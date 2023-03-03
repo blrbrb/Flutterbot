@@ -1,12 +1,7 @@
-const { Client, Partials, Collection, GatewayIntentBits, MessagesActionRow, ActionRowBuilder, Discord, Formatters } = require('discord.js');
-
-const MessageEmbed = require('discord.js');
-const scan = require('./utils/findimage.js');
-const cheerio = require('cheerio');
-const request = require('request');
+const { Client, Partials, Collection, GatewayIntentBits, Discord } = require('discord.js');
 const { DisTube } = require('distube');
 const { REST, Routes } = require('discord.js');
-const filters = require("./assets/filters.json");
+const filters = require('./assets/filters.json');
 const path = require('path');
 const client = new Client({
     intents: [
@@ -36,35 +31,38 @@ const client = new Client({
                 type: 0
             }
         ],
-        status: 'You know im not a tree, right?'
+        status: 'You know I\'m not a tree, right?'
     }
 });
 
 require('dotenv').config();
 
-const prefix1 = "-";
-
 const fs = require('fs');
-let debug = false;
 
-client.commands = new Collection();
-client.imgcommands = new Collection();
+client.prefixcommands = new Collection();
 client.slashcommands = new Collection();
-client.aliases = new Collection();
+
+// client.commands = new Collection();
+// client.imgcommands = new Collection();
+// client.aliases = new Collection();
 
 //test change
 //init command source (stored in seperate js modules)
-const eventsPath = path.join(__dirname, 'events');
+// const eventsPath = path.join(__dirname, 'events');
+const eventsPath = './events/';
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
-const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
-const imageFiles = fs.readdirSync('./commands/image/').filter(file => file.endsWith('.js'));
-const slashFiles = fs.readdirSync('./commands/slash/').filter(file => file.endsWith('.js'));
+
+const commandFiles = fs.readdirSync('./commands/prefix/').filter(file => file.endsWith('.js'));
+const slashFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
 
 //Global Variables 
 let lang = require(`./lang/en.js`);
 
-//init commands before the client is online 
+//init commands before the client is online
+
 init_commands();
+// you need to stop doing this every time the bot starts up
+// we should create a separate file to run for this purpose whenever the bot has a new update
 register_slash_commands();
 
 client.DisTube = new DisTube(client, {
@@ -82,11 +80,8 @@ client.DisTube = new DisTube(client, {
 for (const file of eventFiles) {
     const filePath = path.join(eventsPath, file);
     const event = require(filePath);
-    if (event.once) {
-        client.once(event.name, (client, ...args) => event.execute(client, ...args));
-    } else {
-        client.on(event.name, (client, ...args) => event.execute(client, ...args));
-    }
+    if (event.once) client.once(event.name, (message, ...args) => event.execute(message, ...args));
+    else client.on(event.name, (message, ...args) => event.execute(message, ...args));
 }
 
 
@@ -153,7 +148,7 @@ client.on('interactionCreate', interaction => {
 
     console.log(interaction.options.values);
     try {
-        command.execute(Discord, client, interaction, debug);
+        command.execute(Discord, client, interaction);
     } catch (error) {
         console.error(error);
         interaction.reply({
@@ -162,8 +157,6 @@ client.on('interactionCreate', interaction => {
         });
     }
 });
-
-client.once('ready', () => { });
 
 client.on('guildMemberAdd', async guildMember => {
     let welcomeRole = guildMember.guild.roles.cache.find(role => role.name === 'new broner');
@@ -194,11 +187,11 @@ client.DisTube.on("error", (channel, e) => {
 client.login(process.env.DISCORD_TOKEN);
 
 async function voice(message, args) {
-    message.channel.send(await ai(args))
+    message.channel.send(await ai(args));
 }
 
 async function save_data(values, file) {
-    var json = JSON.stringify(values);
+    let json = JSON.stringify(values);
     fs.writeFile(file, json, function (err, result) {
         if (err) console.log('JSON file writing error in main.js lin 431 caught', err);
     });
@@ -235,78 +228,44 @@ client.on("guildMemberSpeaking", function (member, speaking) {
 //Mares mares mares mares mares, when I am sad I like to thnk about mares. Mares make me feel better when I am depressed. Life can make me depressed often but I like mares and thinking about cute mares mares mares. So It is okay
 async function init_commands() {
 
-    //init text input commands 
-    for (const file of commandFiles) {
-        var arr = [];
-        const command = require(`./commands/${file}`);
-        arr.push(file);
-        const total = commandFiles.length;
+    //init text input commands
+    for (let file of commandFiles) {
+        let command = require(`./commands/prefix/${file}`);
+        let total = commandFiles.length;
 
         process.stdout.clearLine();
         process.stdout.cursorTo(0);
-        process.stdout.write("loading commands:" + Math.round((1 + commandFiles.indexOf(file)) / total * 100) + "%");
+        process.stdout.write("loading commands: " + Math.round((1 + commandFiles.indexOf(file)) / total * 100) + "%");
 
-        client.commands.set(command.name, command);
+        client.prefixcommands.set(command.name, command);
 
-        if (command.aliases) {
-            command.aliases.forEach(alias => {
-                client.aliases.set(alias, command)
-            });
-        }
         process.stdout.write(" ");
-        //console.log(' '); 
+        //console.log(' ');
     }
     console.log(' ');
 
-    //init image manipulation commands 
-    for (const file of imageFiles) {
-        var arr = [];
-        const command = require(`./commands/image/${file}`);
-        arr.push(file);
+    //init the slash commands
+    for (let file of slashFiles) {
+        let command = require(`./commands/${file}`);
+        let total = slashFiles.length;
 
-        const total = imageFiles.length;
-        //console.log(total); 
         process.stdout.clearLine();
         process.stdout.cursorTo(0);
-        process.stdout.write("loading Image Commands:" + Math.round((1 + imageFiles.indexOf(file)) / total * 100) + "%");
-
-        client.imgcommands.set(command.name, command);
-
-        if (command.aliases) {
-            command.aliases.forEach(alias => {
-                client.aliases.set(alias, command)
-            });
-        }
-    }
-
-    console.log(' ');
-
-    //init the slash commands 
-    for (const file of slashFiles) {
-        var arr = [];
-        const command = require(`./commands/slash/${file}`);
-        arr.push(file);
-
-        const total = imageFiles.length;
-        //console.log(total); 
-        process.stdout.clearLine();
-        process.stdout.cursorTo(0);
-        process.stdout.write("loading Image Commands:" + Math.round((1 + imageFiles.indexOf(file)) / total * 100) + "%");
+        process.stdout.write("loading Slash Commands: " + Math.round((1 + slashFiles.indexOf(file)) / total * 100) + "%");
 
         client.slashcommands.set(command.name, command);
-
-        if (command.aliases) {
-            command.aliases.forEach(alias => {
-                client.aliases.set(alias, command);
-            });
-        }
     }
-
     console.log(' ');
 
-    //register the slash commands
+    //setup help command helpText's
+    {
+        let helpJS = require('./utils/help.js');
+        helpJS.helpSetup(client.slashcommands);
+        client.slashcommands.set(helpJS.name, helpJS);
+    }
 }
 
+//register the slash commands
 async function register_slash_commands() {
     try {
         const clientId = '817161573201608715';
@@ -315,7 +274,7 @@ async function register_slash_commands() {
         const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
         const data = await rest.put(
             Routes.applicationGuildCommands(clientId, guildId),
-            { body: client.slashcommands },
+            { body: client.slashcommands }
         );
 
         // DEBUG  console.log(`Successfully reloaded ${data.length} application (/) commands.`);
@@ -329,7 +288,7 @@ async function register_slash_commands() {
 
 
 async function fetchAllMessages() {
-    console.log('fetching messages...')
+    console.log('fetching messages...');
     const channel = client.channels.cache.get("960713019753644035");
     let messages = [];
 
@@ -343,12 +302,12 @@ async function fetchAllMessages() {
             .fetch({ limit: 100, before: message.id })
             .then(messagePage => {
                 messagePage.forEach(msg => messages.push(msg));
-                console.log(message)
+                console.log(message);
                 // Update our message pointer to be last message in page of messages 
                 message = 0 < messagePage.size ? messagePage.at(messagePage.size - 1) : null;
             })
     }
-    console.log('fucking your mother')
-    console.log(messages)
+    console.log('fucking your mother');
+    console.log(messages);
     save_data(messages, "messages.json");  // Print all messages
 }

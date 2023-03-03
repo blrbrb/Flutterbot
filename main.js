@@ -1,6 +1,5 @@
-const { Client, Partials, Collection, GatewayIntentBits, Discord } = require('discord.js');
+const { REST, Routes, Client, Partials, Collection, GatewayIntentBits, Discord } = require('discord.js');
 const { DisTube } = require('distube');
-const { REST, Routes } = require('discord.js');
 const filters = require('./assets/filters.json');
 const path = require('path');
 const client = new Client({
@@ -49,7 +48,7 @@ client.slashcommands = new Collection();
 //test change
 //init command source (stored in seperate js modules)
 // const eventsPath = path.join(__dirname, 'events');
-const eventsPath = './events/';
+const eventsPath = path.join(__dirname, 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
 const commandFiles = fs.readdirSync('./commands/prefix/').filter(file => file.endsWith('.js'));
@@ -83,7 +82,6 @@ for (const file of eventFiles) {
     if (event.once) client.once(event.name, (message, ...args) => event.execute(message, ...args));
     else client.on(event.name, (message, ...args) => event.execute(message, ...args));
 }
-
 
 client.on('interactionCreate', interaction => {
     const { commandName } = interaction;
@@ -216,8 +214,6 @@ client.on("guildUnavailable", function (guild) {
     console.log('Fluttershy Cannont Connect to Discord');
     console.error('Unable to connect to discord. Discord is likley offline or not working right now');
 });
-
-client.on("error", function (error, message) { });
 
 client.on("messageReactionRemove", async (reaction, user) => { });
 

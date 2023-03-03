@@ -10,7 +10,7 @@ error_log.txt
 assets/counter.json
 assets/counter.txt
 assets/conversation.json
-**/music_queue.json 
+**/music_queue.json
 notes.txt
 
 #image asset files that might be generated while using the image Magik pipeline
@@ -24,7 +24,3 @@ notes.txt
 **/.flac
 **/.ogg
 netscape_cookies.txt
-
-
-
-

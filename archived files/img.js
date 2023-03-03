@@ -1,6 +1,6 @@
 const request = require('request');
 const Discord = require('discord.js');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed } = Discord;
 require('dotenv').config();
 
 module.exports = {

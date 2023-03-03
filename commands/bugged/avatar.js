@@ -1,5 +1,4 @@
 const { MessageEmbed } = require('discord.js');
-const mention2id = require('../../utils/mention2id.js');
 
 module.exports = {
     name: 'avatar',

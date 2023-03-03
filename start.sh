@@ -1,10 +1,6 @@
 #! /bin/sh
 
-
-
 FILE=error_log.txt 
-
-
 
  check_os() 
 {
@@ -30,8 +26,6 @@ elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW64_NT" ]; then
 fi
 
 }
-
-
 
 function clear_macOSFiles() 
 {
@@ -60,8 +54,6 @@ fi
 
 }
 
-
-
 function logmanager()   
 {
 
@@ -82,8 +74,7 @@ else
 	echo log file size is under $minimumsize bytes
 fi
 
-	
-	
+
 }
 
 
@@ -100,15 +91,6 @@ fi
 check_os 
 
 echo preparing fluttershy to run on enviornment:  $os_type
-
-
-
-
-
-
-
-
-
 
 
 

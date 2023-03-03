@@ -1,6 +1,4 @@
-const gm = require('gm');
-
-let { attachment, embed, MessageAttachment } = require('discord.js');
+let { MessageAttachment } = require('discord.js');
 
 module.exports = async function sendImage(msg, cmdName, startTime, img, extension, procMsg, forceWeb = false) {
     if (procMsg) procMsg.edit(process.env.MSG_UPLOADING);
@@ -38,5 +36,4 @@ module.exports = async function sendImage(msg, cmdName, startTime, img, extensio
             console.log(err);
             attemptSendImageWeb(msg, cmdName, timeTaken, img, extension, procMsg); // If send fails, try with local web host
         });
-
 }

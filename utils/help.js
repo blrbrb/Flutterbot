@@ -1,7 +1,3 @@
-require('dotenv').config();
-const { MessageEmbed } = require('discord.js');
-const { } = require('');
-
 module.exports = {
     name: 'help',
     description: "get helpful information about Flutterbot",

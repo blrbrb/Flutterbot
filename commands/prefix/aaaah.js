@@ -14,7 +14,6 @@ module.exports = {
             message.channel.startTyping();
             gm(request(imageUrl)).out("-radial-blur", 10).strip().stream((error, stdout) => {
                 if (error) throw new Error(error);
-                message.channel.stopTyping();
                 message.channel.send({
                     files: [{
                         attachment: stdout,

@@ -1,6 +1,6 @@
 node_modules/
 .vs/
-.env  
+.env
 **/CLEARSIZE
 **/.DS_Store
 error_log.txt
@@ -11,6 +11,9 @@ assets/counter.json
 assets/counter.txt
 assets/conversation.json
 **/music_queue.json 
+notes.txt
+package-lock.json
+package.json
 
 #image asset files that might be generated while using the image Magik pipeline
 **/.jpg

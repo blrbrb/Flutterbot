@@ -1,9 +1,4 @@
-const { Client, Partials, Collection, GatewayIntentBits, MessagesActionRow, ActionRowBuilder, Discord, Formatters } = require('discord.js');
-
-const MessageEmbed = require('discord.js');
-const scan = require('./utils/findimage.js');
-const cheerio = require('cheerio');
-const request = require('request');
+const { Client, Partials, Collection, GatewayIntentBits, Discord } = require('discord.js');
 const { DisTube } = require('distube');
 const { REST, Routes } = require('discord.js');
 const filters = require('./assets/filters.json');
@@ -57,8 +52,8 @@ client.slashcommands = new Collection();
 const eventsPath = './events/';
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
-const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
-const slashFiles = fs.readdirSync('./commands/slash/').filter(file => file.endsWith('.js'));
+const commandFiles = fs.readdirSync('./commands/prefix/').filter(file => file.endsWith('.js'));
+const slashFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
 
 //Global Variables 
 let lang = require(`./lang/en.js`);
@@ -162,8 +157,6 @@ client.on('interactionCreate', interaction => {
         });
     }
 });
-
-client.once('ready', () => { });
 
 client.on('guildMemberAdd', async guildMember => {
     let welcomeRole = guildMember.guild.roles.cache.find(role => role.name === 'new broner');

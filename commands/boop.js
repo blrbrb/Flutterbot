@@ -1,6 +1,3 @@
-//const { MessageEmbed } = require('discord.js');
-const Discord = require('discord.js');
-
 module.exports = {
     name: "boop",
     description: "boop somepony!",

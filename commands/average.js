@@ -4,7 +4,6 @@ const gm = require('gm').subClass({
 	imageMagick: true
 });
 
-
 module.exports = {
 	name: 'average',
 	description: 'Fluttershy Will combine ',

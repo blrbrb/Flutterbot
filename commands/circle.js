@@ -1,4 +1,3 @@
-require('dotenv').config();
 const request = require('request');
 const gm = require('gm').subClass({
 	imageMagick: true
@@ -38,11 +37,8 @@ module.exports = {
 			interaction.channel.sendTyping();
 			await gm(request(url)).size((error, size) => {
 				if (size.height > 1200 || size.width > 1200) {
-					interaction.channel.send(`t-that's way too big of an image for me!🖌️🐇`);
-
-					return;
+					return interaction.channel.send(`t-that's way too big of an image for me!🖌️🐇`);
 				}
-
 				gm(request(url)).out("-rotational-blur", IOR).strip().stream((error, stdout) => {
 					if (error) throw new Error(error);
 

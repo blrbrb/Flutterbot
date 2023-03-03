@@ -1,5 +1,3 @@
-const { FilterManager, defaultFilters } = require('distube');
-
 module.exports = {
     name: 'filter',
     description: 'Apply a filter to playing music',
@@ -106,8 +104,7 @@ module.exports = {
             type: 3,
             name: 'ffmpeg',
             description: 'Manually specify a FFMPEG filter to apply directly to the stream'
-        },
-
+        }
     ],
     async execute(Discord, client, interaction) {
 

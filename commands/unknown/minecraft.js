@@ -8,7 +8,6 @@ module.exports = {
 		if (args.length > 0) {
 			message.channel.startTyping();
 			const memeOutput = request(`https://www.minecraftskinstealer.com/achievement/a.php?i=13&h=Achievement+get%21&t=${args.join("+")}`);
-			message.channel.stopTyping();
 			message.channel.send({
 				files: [{
 					attachment: memeOutput,

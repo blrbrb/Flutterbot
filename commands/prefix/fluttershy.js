@@ -1,20 +1,12 @@
-const discord = require('discord.js');
-const cleverbot = require('cleverbot-free');
 const fs = require('fs');
 const fetch = require('node-fetch');
-require('dotenv');
+require('dotenv').config();
 
 let conversation = { past_user_inputs: [], generated_responses: [] };
 let response_temp = ' ';
 const command_prefix = 'fs';
 
-
-const headers = {
-    'Authorization': 'Bearer ' + process.env.HUGGNING_TOKEN
-}
-
 const API_URL = 'https://api-inference.huggingface.co/models/EllyPony/flutterbot';
-
 
 module.exports = {
     name: "fs",

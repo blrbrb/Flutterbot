@@ -1,4 +1,3 @@
-const { Client, Message, MessageEmbed } = require('discord.js');
 const child = require('child_process');
 
 module.exports = {

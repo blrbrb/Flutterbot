@@ -1,5 +1,4 @@
-const { YtDlpPlugin } = require('@distube/yt-dlp');
-const { MessageEmbed, MessageButton, Message, ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, EmbedBuilder } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require('discord.js');
 const ytdl = require('ytdl-core');
 const { channel } = require('../lang/en');
 
@@ -105,7 +104,6 @@ module.exports = {
 			//interaction.reply(`${query}} I'm searching for a result, and  adding it to the queue!`);
 		}
 	},
-
 	async results_selection(interaction, client, query) {
 		try {
 			const result = await client.DisTube.search(query);
@@ -131,7 +129,6 @@ module.exports = {
 			interaction.reply({ content: ' Tell @Eli there was an error :( ' + DisTubeError, ephemeral: true });
 		}
 	},
-
 	async validate_url(url) {
 		const exp = RegExp(/^(http(s)??\:\/\/)?(www\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])+$/);
 		console.log(await exp.test(url));
@@ -150,7 +147,6 @@ module.exports = {
 		else
 			return true;
 	},
-
 	async is_nsfw(url) {
 		try {
 			const video_info = await ytdl.getInfo(url);

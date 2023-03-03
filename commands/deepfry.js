@@ -1,5 +1,3 @@
-require('dotenv').config();
-const { InteractionCollector } = require('discord.js');
 const request = require('request');
 const gm = require('gm').subClass({
     imageMagick: true
@@ -29,13 +27,11 @@ module.exports = {
             interaction.channel.sendTyping();
             await gm(request(imageUrl)).size((error, size) => {
                 if (size.height > 1200 || size.width > 1200) {
-                    interaction.reply(`t-that's way too big of an image for me!🖌️🐇`);
-                    return;
+                    return interaction.reply(`t-that's way too big of an image for me!🖌️🐇`);
                 }
                 if (extension == 'gif') {
                     gm(request(imageUrl)).colorspace("RGB").out("-brightness-contrast", "30x50").setFormat("jpg").quality(1).stream((error, stdout) => {
                         if (error) throw new Error(error);
-                        ;
                         interaction.reply({
                             files: [{
                                 attachment: stdout,

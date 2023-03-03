@@ -1,4 +1,3 @@
-require('dotenv').config();
 const request = require('request');
 const gm = require('gm').subClass({
 	imageMagick: true
@@ -16,10 +15,8 @@ module.exports = {
 		if (imageUrl !== undefined) {
 			message.channel.sendTyping();
 			await gm(request(imageUrl)).size((error, size) => {
-
-				if (size.height > 1200 && size.width > 1200) {
-					message.channel.send(`t-that's way too big of an image for me!🖌️🐇`);
-					return;
+				if (size.height > 1200 || size.width > 1200) {
+					return message.channel.send(`t-that's way too big of an image for me!🖌️🐇`);
 				}
 				gm(request(imageUrl)).swirl(180).strip().stream((error, stdout) => {
 					if (error) throw new Error(error);

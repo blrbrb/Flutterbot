@@ -1,14 +1,10 @@
-require('dotenv').config();
 const request = require('request');
-const fs = require('fs');
 const gm = require('gm').subClass({
     imageMagick: true
 });
 
 const findImage = require('../utils/findimage.js');
-const sendImage = require('../utils/sendimage.js');
 let imageUrl;
-let { attachment, embed, AttachmentBuilder } = require('discord.js');
 
 module.exports = {
     name: 'jpeg',
@@ -41,9 +37,7 @@ module.exports = {
             interaction.channel.sendTyping();
             await gm(request(imageUrl)).size((error, size) => {
                 if (size.height > 1200 || size.width > 1200) {
-                    interaction.reply(`t-that's way too big of an image for me!🖌️🐇`);
-
-                    return;
+                    return interaction.reply(`t-that's way too big of an image for me!🖌️🐇`);
                 }
                 gm(request(imageUrl)).setFormat("jpg").quality(quality).stream((error, stdout) => {
                     if (error) throw new Error(error); //console.log(error);

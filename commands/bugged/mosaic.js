@@ -1,4 +1,3 @@
-require('dotenv').config();
 const request = require('request');
 const gm = require('gm').subClass({
 	imageMagick: true
@@ -42,9 +41,8 @@ module.exports = {
 			gm(request(imageUrl)).filesize((error, format) => {
 				gm(request(imageUrl)).command("-mosaic").out("-duplicate").tile(`${scale}x${scale}`).geometry("+0+0").stream((error, stdout) => {
 					if (error) throw new Error(error);
-					gm(stdout).resize("800x800>").stream((error, stdoutFinal) => {
+					gm(stdout).resize(800, 800).stream((error, stdoutFinal) => {
 						if (error) throw new Error(error);
-
 						interaction.reply({
 							files: [{
 								attachment: stdoutFinal,

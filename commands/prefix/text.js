@@ -1,9 +1,7 @@
 const request = require('request');
-require('dotenv').config();
 const gm = require('gm').subClass({
 	imageMagick: true
 });
-
 const findImage = require('../../utils/findimage.js');
 
 module.exports = {
@@ -16,7 +14,6 @@ module.exports = {
 		if (imageUrl !== undefined) {
 			message.channel.sendTyping();
 			await gm(request(imageUrl)).size((error, size) => {
-
 				const textsizepercent = Math.round((2 * 10 * (size.width / size.height))); console.log(textsizepercent);
 				var ratio = size.width / size.height;
 				let x = size.width * 0.01; // (textsizepercent / 100);
@@ -25,18 +22,15 @@ module.exports = {
 				var newStr = args.join(' ');
 
 				if (args.length > 400) {
-					message.channel.send(`oh sweetie, I think that's too much text..`);
-
+					return message.channel.send(`oh sweetie, I think that's too much text..`);
 				}
 
-				if (size.height > 2000 && size.width > 2000) {
-					message.channel.send(`t-that's way too big of an image for me!🖌️🐇`);
-
-					return;
+				if (size.height > 2000 || size.width > 2000) {
+					return message.channel.send(`t-that's way too big of an image for me!🖌️🐇`);
 				}
+
 				if (size.height < 400 && size.width < 200) {
-					message.channel.send('that image is so small, your text might not show up!');
-
+					return message.channel.send('that image is so small, your text might not show up!');
 				}
 
 				console.log(args[0]);
@@ -49,7 +43,6 @@ module.exports = {
 				}
 				picture.geometry("+0+0").stream((error, stdout) => {
 					if (error) throw new Error(error);
-
 					message.channel.send({
 						files: [{
 							attachment: stdout,

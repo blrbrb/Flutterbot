@@ -1,10 +1,5 @@
 const fs = require('fs');
-const Discord = require('discord.js');
 const { EmbedBuilder } = require('discord.js');
-const request = require('request');
-const cheerio = require('cheerio');
-require('dotenv').config();
-const natural = require('natural');
 
 module.exports = {
     name: 'lesson',

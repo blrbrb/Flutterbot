@@ -261,7 +261,7 @@ async function init_commands() {
     }
 }
 
-//register the slash commands
+//register the slash commandss
 async function register_slash_commands() {
     try {
         const clientId = '817161573201608715';

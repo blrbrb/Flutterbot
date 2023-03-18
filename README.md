@@ -14,5 +14,9 @@ Data for mlp episodes and character quotes is sourced from  ZhangYiJiang: mlp-vi
 
 
 Contrinutors: 
+
 ![fuzzbuzzbay999]([https://github.com/fuzzbuzzbay999)
 (patch for some of the image commands. Branch Merged July 2022. Thnx! ❤️) 
+
+![NekoNoka]([https://github.com/NekoNoka])
+Lead Programmer.  

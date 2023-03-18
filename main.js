@@ -89,60 +89,7 @@ client.on('interactionCreate', interaction => {
     const command = client.slashcommands.get(commandName);
     //update button interactions 
 
-    if (interaction.isButton()) {
-        //if the Button interaction is coming from the play command. e.g. Someone has given the queue a non link string, and search results are being displayed in an ActionRow
-        if (interaction.customId.includes('youtube')) {
-
-            interaction.reply({ content: `Okay, I'll put that song into the queue for you!`, ephemeral: true })
-
-            client.DisTube.play(interaction.member.voice.channel, interaction.component.customId, {
-                member: interaction.member,
-                textChannel: interaction.channel,
-                interaction
-            });
-        }
-        if (interaction.customId == 'Gamer') {
-            console.log('attempting to assign the gamer role')
-            const gamer_role = interaction.message.channel.guild.roles.cache.find(role => role.name === 'Gamer');
-            try {
-                interaction.message.guild.members.cache.get(user.id).roles.add(gamer_role)
-            }
-            catch (error) {
-                if (error.message == 'Missing Permissions') {
-                    interaction.reply({
-                        content: `I'm sorry, it looks like I don't have permission to modify your roles on this server: \n  **${error.message}**`,
-                        ephemeral: true,
-                    })
-                }
-                interaction.reply({
-                    content: `Something went wrong while executing this command... tell Eli that: \n  **${error.message}**`,
-                    ephemeral: true,
-                })
-            }
-        }
-        if (interaction.customId == 'Luna') {
-
-            const gamer_role = interaction.message.channel.guild.roles.cache.find(role => role.name === 'New Lunar Republic');
-            try {
-                interaction.message.guild.members.cache.get(user.id).roles.add(gamer_role)
-            }
-            catch (error) {
-                if (error.message == 'Missing Permissions') {
-                    interaction.reply({
-                        content: `I'm sorry, it looks like I don't have permission to modify your roles on this server: \n  **${error.message}**`,
-                        ephemeral: true,
-                    })
-
-                }
-                interaction.reply({
-                    content: `Something went wrong while executing this command... tell Eli that: \n  **${error.message}**`,
-                    ephemeral: true,
-                })
-            }
-
-        }
-        return;
-    }
+    
 
     console.log(interaction.options.values);
     try {
@@ -243,6 +190,7 @@ async function init_commands() {
     //init the slash commands
     for (let file of slashFiles) {
         let command = require(`./commands/${file}`);
+       
         let total = slashFiles.length;
 
         process.stdout.clearLine();
@@ -257,7 +205,8 @@ async function init_commands() {
     {
         let helpJS = require('./utils/help.js');
         helpJS.helpSetup(client.slashcommands);
-        client.slashcommands.set(helpJS.name, helpJS);
+        //just for now until we can get a fix going, sorry emily :(
+        //client.slashcommands.set(helpJS.name, helpJS);
     }
 }
 
@@ -266,7 +215,6 @@ async function register_slash_commands() {
     try {
         const clientId = '817161573201608715';
         const guildId = '960713019753644032';
-
         const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
         const data = await rest.put(
             Routes.applicationGuildCommands(clientId, guildId),

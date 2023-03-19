@@ -206,7 +206,8 @@ async function init_commands() {
         let helpJS = require('./utils/help.js');
         helpJS.helpSetup(client.slashcommands);
         //just for now until we can get a fix going, sorry emily :(
-        //client.slashcommands.set(helpJS.name, helpJS);
+        // we'll see
+        client.slashcommands.set(helpJS.name, helpJS);
     }
 }
 

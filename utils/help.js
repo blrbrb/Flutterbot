@@ -3,6 +3,9 @@ module.exports = {
     description: "get helpful information about Flutterbot",
     options: [
         {
+            type: 3,
+            name: "commands",
+            description: "Choose the name of the command ",
             choices: [],
             required: true
         }

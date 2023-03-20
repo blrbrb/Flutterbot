@@ -2,6 +2,8 @@ const { REST, Routes, Client, Partials, Collection, GatewayIntentBits, Discord }
 const { DisTube } = require('distube');
 const filters = require('./assets/filters.json');
 const path = require('path');
+const util = require('util');
+const {debugging_channel }= require('./config/config.json');
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -62,7 +64,7 @@ let lang = require(`./lang/en.js`);
 init_commands();
 // you need to stop doing this every time the bot starts up
 // we should create a separate file to run for this purpose whenever the bot has a new update
-register_slash_commands();
+//register_slash_commands();
 
 client.DisTube = new DisTube(client, {
     leaveOnStop: false,
@@ -152,6 +154,13 @@ async function load_data(file) {
     return values;
 }
 
+
+client.on('ready',() => {
+   register_slash_commands();
+  });
+
+
+
 //client debugging events 
 client.on("reconnecting", function () {
     console.log(`FlutterShy Is Attempting to Reconnect to the Websocket`);
@@ -207,29 +216,22 @@ async function init_commands() {
         helpJS.helpSetup(client.slashcommands);
         //just for now until we can get a fix going, sorry emily :(
         // we'll see
-        client.slashcommands.set(helpJS.name, helpJS);
+        // client.slashcommands.set(helpJS.name, helpJS);
     }
 }
 
 //register the slash commandss
 async function register_slash_commands() {
-    try {
+    
         const clientId = '817161573201608715';
         const guildId = '960713019753644032';
         const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
         const data = await rest.put(
             Routes.applicationGuildCommands(clientId, guildId),
             { body: client.slashcommands }
-        );
-
-        // DEBUG  console.log(`Successfully reloaded ${data.length} application (/) commands.`);
-    } catch (error) {
-
-        // console.error(error);
-        console.log('error loading one or more slash commands');
-        console.log(error.rawError);
-    }
-}
+        ); 
+     
+  }
 
 
 async function fetchAllMessages() {
@@ -255,4 +257,18 @@ async function fetchAllMessages() {
     console.log('fucking your mother');
     console.log(messages);
     save_data(messages, "messages.json");  // Print all messages
-}
+} 
+
+
+
+
+//Debuggery and shenanigans
+process.on('uncaughtException', async function (error) {
+    
+    const channel = client.channels.cache.get(debugging_channel);
+    
+    if (channel) {
+    const message = 'An error occurred:\n```js\n%s\n```';
+      channel.send(util.format(message, error.message));
+    }
+  });

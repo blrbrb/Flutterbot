@@ -2,7 +2,9 @@ const { REST, Routes, Client, Partials, Collection, GatewayIntentBits, Discord }
 const { DisTube } = require('distube');
 const filters = require('./assets/filters.json');
 const path = require('path');
-const util = require('util');
+const util = require('util'); 
+const os = require("os");
+
 const {debugging_channel }= require('./config/config.json');
 const client = new Client({
     intents: [
@@ -265,10 +267,17 @@ async function fetchAllMessages() {
 //Debuggery and shenanigans
 process.on('uncaughtException', async function (error) {
     
+    //Collect basic information about where the error occured
     const channel = client.channels.cache.get(debugging_channel);
+    const guildName = interaction.guild.name
+    const guild_name = client.guilds.cache.get(client.user.id).name(); 
     
+
     if (channel) {
-    const message = 'An error occurred:\n```js\n%s\n```';
-      channel.send(util.format(message, error.message));
+    const message = 'An error occurred:\n```js\n%s\n```' + `Instance: ${os.hostname} \n Server: ${guild_name}`;
+    const error_msg = error.message.substring(0, 500); 
+
+    //Use substring to ensure that plenty of error information is sent, while leaving enough space for host info 
+      channel.send(util.format(message, error_msg));
     }
   });

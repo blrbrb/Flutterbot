@@ -66,7 +66,7 @@ let lang = require(`./lang/en.js`);
 init_commands();
 // you need to stop doing this every time the bot starts up
 // we should create a separate file to run for this purpose whenever the bot has a new update
-//register_slash_commands();
+
 
 client.DisTube = new DisTube(client, {
     leaveOnStop: false,

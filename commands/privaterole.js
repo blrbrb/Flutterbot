@@ -3,58 +3,52 @@ const { PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
   name: 'roleprivate',
-  description: 'Creates a new role with the given name and adds its ID to a JSON file. Optionally accepts a role mention to add to the file as well.',
+  description: 'Creates a new role with the given name and adds its ID to a JSON file',
   options: [
     {
-      name: 'name',
-      description: 'the name of the role to create',
-      type: 3,
-      required: true,
-    },
-    {
-      name: 'mention',
-      description: 'optional: mention an existing role to add its ID to the file',
+      name: "role",
+      description: "an existing role to add its ID to the file",
       type: 8,
-      required: false,
+      required: true,
     },
   ],
   async execute(Discord, client,interaction) {
+
+
     // Check if user is an administrator
     if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
       return interaction.reply({ content: 'Only administrators can use this command.', ephemeral: true });
     }
+   
 
-    // Get the name of the new role from the command options
-    const roleName = interaction.options.getString('name');
-
-    // Create the new role
-    let newRole;
+    const role = interaction.options.getRole('role');
+    
+    // Check if the roles JSON file exists
+    let data;
     try {
-      newRole = await interaction.guild.roles.create({
-        name: roleName,
-      });
+      data = JSON.parse(fs.readFileSync('config/private_roles.json'));
+         
+      // Check if the role is already in the list
+      if (data.private_roles.includes(role.id)) {
+        return interaction.reply({ content: `Role "${role.name}" is already in the list of private roles`, ephemeral: true });
+      }
+
+      // Add the role to the list
+      data.private_roles.push(role.id);
+
+      // Write the updated list to the JSON file
+      fs.writeFileSync('config/private_roles.json', JSON.stringify(data, null, 2));
+
     } catch (error) {
-      console.error(error);
-      return interaction.reply({ content: 'There was an error creating the new role.', ephemeral: true });
+      // If the file doesn't exist, initialize it with an empty roles array
+      data = { private_roles: [] };
+      fs.writeFileSync('config/private_roles.json', JSON.stringify(data, null, 2));
     }
 
-    // Append the new role ID to the JSON file
-    const data = JSON.parse(fs.readFileSync('./roles.json'));
-    data[newRole.id] = roleName;
-
-    // If there is a mentioned role, append its ID to the JSON file as well
-    const mentionedRole = interaction.options.getRole('mention');
-    if (mentionedRole) {
-      data[mentionedRole.id] = mentionedRole.name;
-    }
-
-    fs.writeFileSync('./roles.json', JSON.stringify(data, null, 2));
-
+    
     // Reply with a confirmation message
-    const message = `Created role "${roleName}" with ID "${newRole.id}".`;
-    if (mentionedRole) {
-      message += ` Also added role "${mentionedRole.name}" with ID "${mentionedRole.id}".`;
-    }
-    return interaction.reply(message);
+    return interaction.reply(`Added role "${role.name}" with ID "${role.id}" to the list of private roles! (restart required to take affect)`);
+
   },
+    
 };

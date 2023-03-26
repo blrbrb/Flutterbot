@@ -157,8 +157,9 @@ async function load_data(file) {
 }
 
 
-client.on('ready',() => {
-   register_slash_commands();
+client.on('ready', async () => { 
+    
+  await register_slash_commands();
   });
 
 
@@ -231,7 +232,8 @@ async function register_slash_commands() {
         const data = await rest.put(
             Routes.applicationGuildCommands(clientId, guildId),
             { body: client.slashcommands }
-        ); 
+        );  
+     
      
   }
 

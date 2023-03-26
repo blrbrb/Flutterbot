@@ -87,12 +87,17 @@ for (const file of eventFiles) {
     else client.on(event.name, (message, ...args) => event.execute(message, ...args));
 }
 
-client.on('interactionCreate', interaction => {
+client.on('interactionCreate', async interaction => {
     const { commandName } = interaction;
     const user = interaction.user
     const command = client.slashcommands.get(commandName);
     //update button interactions 
-
+    const clientId = '817161573201608715';
+    const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+    const data = await rest.put(
+        Routes.applicationGuildCommands(clientId, interaction.guild.id),
+        { body: client.slashcommands }
+    );  
     
 
     console.log(interaction.options.values);
@@ -117,8 +122,8 @@ client.on('guildCreate', (guild) => { });
 //these event listeners shouldn't be ever nested. It will cause a memory leak, everytime discord's client events are called these will 
 // be called in tandem created multipule uncess. instances. 
 
-client.DisTube.on("playSong", (queue, song) => {
-    queue.textChannel.send(`🎶 Now playing **${song.name}** / ${song.formattedDuration} / requested by ${song.user}`);
+client.DisTube.on("playSong", (queue, song) => {      
+    queue.textChannel.send(removeEveryoneMentions(`🎶 Now playing **${song.name}** / ${song.formattedDuration} / requested by ${song.user}`));
 });
 
 client.DisTube.on("error", (channel, e) => {
@@ -283,3 +288,15 @@ process.on('uncaughtException', async function (error) {
       channel.send(util.format(message, error_msg));
     }
   });
+
+
+  function removeEveryoneMentions(text) {
+    // Define regex pattern to match @everyone mentions
+    const pattern = /@everyone/g;
+    
+    // Use String.replace() to replace all matches of the pattern with an empty string
+    const updatedText = text.replace(pattern, "");
+    
+    // Return the updated text
+    return updatedText;
+  }

@@ -1,64 +1,22 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { PermissionFlagsBits } = require('discord.js');
-const { isDisturbed } = require('form-data');
-
+const {ActionRow, Embed, EmbedBuilder, ActionRowBuilder, ComponentType, ButtonStyle, ButtonBuilder,PermissionFlagsBits} = require('discord.js');
+const { private_roles } = require('../config/private_roles.json')
 
 module.exports = {
-    name: 'role',
-    description: 'assign yourself a non-admin role',
-    options: 
-    [
-        {
-        type: 3,
-        name: 'role',
-        required: true,
-        description: 'The role you want to assign yourself.'
-        },
+  name: 'roles',
+  description: 'list all available roles',
+  async execute(Discord, client, interaction) { 
+    console.log('working');
+    const roles = interaction.guild.roles.cache.filter(role => role.name !== '@everyone' && !role.permissions.has(PermissionFlagsBits.Administrator) && !role.managed && !private_roles.includes(role.id)); // Get all roles except @everyone, administrator roles, and roles that have been registered as private roles 
+    const roleNames = roles.map(role => role.name); // Get an array of role names
+    
+    
+    // Create an embed to display the available roles
+    const embed = new EmbedBuilder()
+      .setColor('#0099ff')
+      .setTitle('Available Roles')
+      .setDescription(roleNames.join('\n'));
 
-    ],
-    async execute(Discord, client, interaction) {
-        const guild = interaction.guild;
-        const roleName = interaction.options.getString('role');
-        const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
-       
-        // Find the role by name
-        
-        const role = guild.roles.cache.find(role => role.name === roleName) || await guild.roles.fetch('ROLEID');
-
-        // Check if the role exists
-        if (!role) {
-            return interaction.reply({ content: `The role ${roleName} does not exist.`, ephemeral: true });
-        }
-
-
-        //  Make sure users cannot give themselves admin roles
-        if (role.permissions.has(PermissionFlagsBits.Administrator))
-        {
-             return interaction.reply({ content: `I'm sorry, I can't give you that role :(`, ephemeral: true });
-        }
-        // Check if the user already has the role, if they do allow them to remove it.
-        if (interaction.member.roles.cache.has(role.id)) {
-
-            //  make sure admins don't accidentally remove the admin role from themselves 
-            if(isAdmin)
-            {
-                return interaction.reply({ content: `I can't manage that role!`, ephemeral: true });
-            }
-            else
-            {
-                await interaction.member.roles.remove(role);
-                return interaction.reply({ content: `You already have the role ${roleName}. So I'll remove it`, ephemeral: true });
-            }
-        }
-
-
-        // Assign the role to the user
-        try {
-            await interaction.member.roles.add(role);
-            return interaction.reply({ content: `You have been assigned the role ${roleName}.`, ephemeral: true });
-        } catch (error) {
-            console.error(error);
-            return interaction.reply({ content: 'An error occurred while assigning the role.', ephemeral: true });
-        }
-    },
+   interaction.reply({ embeds: [embed] });
+  },
 };

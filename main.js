@@ -2,6 +2,10 @@ const { REST, Routes, Client, Partials, Collection, GatewayIntentBits, Discord }
 const { DisTube } = require('distube');
 const filters = require('./assets/filters.json');
 const path = require('path');
+const util = require('util'); 
+const os = require("os");
+
+const {debugging_channel }= require('./config/config.json');
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -62,7 +66,7 @@ let lang = require(`./lang/en.js`);
 init_commands();
 // you need to stop doing this every time the bot starts up
 // we should create a separate file to run for this purpose whenever the bot has a new update
-register_slash_commands();
+
 
 client.DisTube = new DisTube(client, {
     leaveOnStop: false,
@@ -83,12 +87,17 @@ for (const file of eventFiles) {
     else client.on(event.name, (message, ...args) => event.execute(message, ...args));
 }
 
-client.on('interactionCreate', interaction => {
+client.on('interactionCreate', async interaction => {
     const { commandName } = interaction;
     const user = interaction.user
     const command = client.slashcommands.get(commandName);
     //update button interactions 
-
+    const clientId = '817161573201608715';
+    const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+    const data = await rest.put(
+        Routes.applicationGuildCommands(clientId, interaction.guild.id),
+        { body: client.slashcommands }
+    );  
     
 
     console.log(interaction.options.values);
@@ -113,8 +122,8 @@ client.on('guildCreate', (guild) => { });
 //these event listeners shouldn't be ever nested. It will cause a memory leak, everytime discord's client events are called these will 
 // be called in tandem created multipule uncess. instances. 
 
-client.DisTube.on("playSong", (queue, song) => {
-    queue.textChannel.send(`🎶 Now playing **${song.name}** / ${song.formattedDuration} / requested by ${song.user}`);
+client.DisTube.on("playSong", (queue, song) => {      
+    queue.textChannel.send(removeEveryoneMentions(`🎶 Now playing **${song.name}** / ${song.formattedDuration} / requested by ${song.user}`));
 });
 
 client.DisTube.on("error", (channel, e) => {
@@ -151,6 +160,14 @@ async function load_data(file) {
     });
     return values;
 }
+
+
+client.on('ready', async () => { 
+    
+  await register_slash_commands();
+  });
+
+
 
 //client debugging events 
 client.on("reconnecting", function () {
@@ -207,29 +224,23 @@ async function init_commands() {
         helpJS.helpSetup(client.slashcommands);
         //just for now until we can get a fix going, sorry emily :(
         // we'll see
-        client.slashcommands.set(helpJS.name, helpJS);
+        // client.slashcommands.set(helpJS.name, helpJS);
     }
 }
 
 //register the slash commandss
 async function register_slash_commands() {
-    try {
+    
         const clientId = '817161573201608715';
         const guildId = '960713019753644032';
         const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
         const data = await rest.put(
             Routes.applicationGuildCommands(clientId, guildId),
             { body: client.slashcommands }
-        );
-
-        // DEBUG  console.log(`Successfully reloaded ${data.length} application (/) commands.`);
-    } catch (error) {
-
-        // console.error(error);
-        console.log('error loading one or more slash commands');
-        console.log(error.rawError);
-    }
-}
+        );  
+     
+     
+  }
 
 
 async function fetchAllMessages() {
@@ -255,4 +266,37 @@ async function fetchAllMessages() {
     console.log('fucking your mother');
     console.log(messages);
     save_data(messages, "messages.json");  // Print all messages
-}
+} 
+
+
+
+
+//Debuggery and shenanigans
+process.on('uncaughtException', async function (error) {
+    
+    //Collect basic information about where the error occured
+    const channel = client.channels.cache.get(debugging_channel);
+    const guildName = interaction.guild.name
+    const guild_name = client.guilds.cache.get(client.user.id).name(); 
+    
+
+    if (channel) {
+    const message = 'An error occurred:\n```js\n%s\n```' + `Instance: ${os.hostname} \n Server: ${guild_name}`;
+    const error_msg = error.message.substring(0, 500); 
+
+    //Use substring to ensure that plenty of error information is sent, while leaving enough space for host info 
+      channel.send(util.format(message, error_msg));
+    }
+  });
+
+
+  function removeEveryoneMentions(text) {
+    // Define regex pattern to match @everyone mentions
+    const pattern = /@everyone/g;
+    
+    // Use String.replace() to replace all matches of the pattern with an empty string
+    const updatedText = text.replace(pattern, "");
+    
+    // Return the updated text
+    return updatedText;
+  }

@@ -102,7 +102,7 @@ client.on('interactionCreate', async interaction => {
     let old = interaction.reply;
     interaction.reply = function (object) {
         object.content = rE(object.content);
-        old(object);
+        return old(object);
     }
 
     console.log(interaction.options.values);

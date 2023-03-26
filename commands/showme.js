@@ -36,13 +36,10 @@ module.exports = {
 
             var urls = new Array(links.length).fill(0).map((v, i) => links.eq(i).attr("data-bgsrc"));
 
-            //message.channel.send(links[1]);
-
             console.log(urls[0]);
 
             if (!urls.length) {
                 interaction.reply('something went wrong');
-                //message.channel.send(urls[1]);
 
                 console.log('you fucked it up, objectvie B kill all humans');
 

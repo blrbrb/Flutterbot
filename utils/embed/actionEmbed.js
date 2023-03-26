@@ -58,7 +58,6 @@ module.exports = async (message, color, args, action) => {
                 .setImage(pickRandomElement(action.gifs));
 
     return message.author ? message.channel.send({ embeds: [embed] }) : message.editReply({ embeds: [embed] });
-
 }
 
 function pickRandomElement(arr) {

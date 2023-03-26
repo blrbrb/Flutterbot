@@ -11,16 +11,10 @@ module.exports = {
         }
     ],
     async execute(Discord, client, interaction) {
-        //if (args[0]==null || args[0]=="") return message.channel.send('uhhhhm. please sepecify an argument for booping'); 
-
-        // author = interaction.member.nickname || interaction.member.user.username;
-
         var onSelf = false;
         var onFluttershy = false;
         console.log(interaction.options.pony);
         var target_user = interaction.options.getUser('pony');
-
-        const reply_string = `${interaction.user} booped ${target_user}`;
         const gifs = [
             "https://cdn.discordapp.com/attachments/862296245922037800/862297017576718356/2bf.gif",
             "https://cdn.discordapp.com/attachments/862296245922037800/862297031712440320/8f6720fb8b277f120658fbceef9303b0.gif",

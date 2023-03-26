@@ -2,10 +2,11 @@ const { REST, Routes, Client, Partials, Collection, GatewayIntentBits, Discord }
 const { DisTube } = require('distube');
 const filters = require('./assets/filters.json');
 const path = require('path');
-const util = require('util'); 
-const os = require("os");
+const util = require('util');
+const os = require('os');
+const { send, removeEveryone: rE } = require('./utils/handleMessages.js');
 
-const {debugging_channel }= require('./config/config.json');
+const { debugging_channel } = require('./config/config.json');
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -67,7 +68,6 @@ init_commands();
 // you need to stop doing this every time the bot starts up
 // we should create a separate file to run for this purpose whenever the bot has a new update
 
-
 client.DisTube = new DisTube(client, {
     leaveOnStop: false,
     leaveOnFinish: true,
@@ -97,8 +97,13 @@ client.on('interactionCreate', async interaction => {
     const data = await rest.put(
         Routes.applicationGuildCommands(clientId, interaction.guild.id),
         { body: client.slashcommands }
-    );  
-    
+    );
+
+    let old = interaction.reply;
+    interaction.reply = function (object) {
+        object.content = rE(object.content);
+        old(object);
+    }
 
     console.log(interaction.options.values);
     try {
@@ -122,8 +127,8 @@ client.on('guildCreate', (guild) => { });
 //these event listeners shouldn't be ever nested. It will cause a memory leak, everytime discord's client events are called these will 
 // be called in tandem created multipule uncess. instances. 
 
-client.DisTube.on("playSong", (queue, song) => {      
-    queue.textChannel.send(removeEveryoneMentions(`🎶 Now playing **${song.name}** / ${song.formattedDuration} / requested by ${song.user}`));
+client.DisTube.on("playSong", (queue, song) => {
+    send(queue.textChannel.send, `🎶 Now playing **${song.name}** / ${song.formattedDuration} / requested by ${song.user}`);
 });
 
 client.DisTube.on("error", (channel, e) => {
@@ -133,7 +138,7 @@ client.DisTube.on("error", (channel, e) => {
     console.log(e.message);
     console.log(e.name);
 
-    channel.send(`I'm sorry, My songbirds are having trouble playing this song because...\n\`${e.message}\``);
+    send(channel.send, `I'm sorry, My songbirds are having trouble playing this song because...\n\`${e.message}\``);
     //console.log(e);
 });
 
@@ -161,13 +166,9 @@ async function load_data(file) {
     return values;
 }
 
-
-client.on('ready', async () => { 
-    
-  await register_slash_commands();
-  });
-
-
+client.on('ready', async () => {
+    await register_slash_commands();
+});
 
 //client debugging events 
 client.on("reconnecting", function () {
@@ -207,7 +208,7 @@ async function init_commands() {
     //init the slash commands
     for (let file of slashFiles) {
         let command = require(`./commands/${file}`);
-       
+
         let total = slashFiles.length;
 
         process.stdout.clearLine();
@@ -230,17 +231,14 @@ async function init_commands() {
 
 //register the slash commandss
 async function register_slash_commands() {
-    
-        const clientId = '817161573201608715';
-        const guildId = '960713019753644032';
-        const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
-        const data = await rest.put(
-            Routes.applicationGuildCommands(clientId, guildId),
-            { body: client.slashcommands }
-        );  
-     
-     
-  }
+    const clientId = '817161573201608715';
+    const guildId = '960713019753644032';
+    const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+    const data = await rest.put(
+        Routes.applicationGuildCommands(clientId, guildId),
+        { body: client.slashcommands }
+    );
+}
 
 
 async function fetchAllMessages() {
@@ -266,37 +264,21 @@ async function fetchAllMessages() {
     console.log('fucking your mother');
     console.log(messages);
     save_data(messages, "messages.json");  // Print all messages
-} 
-
-
-
+}
 
 //Debuggery and shenanigans
 process.on('uncaughtException', async function (error) {
-    
+
     //Collect basic information about where the error occured
     const channel = client.channels.cache.get(debugging_channel);
     const guildName = interaction.guild.name
-    const guild_name = client.guilds.cache.get(client.user.id).name(); 
-    
+    const guild_name = client.guilds.cache.get(client.user.id).name();
 
     if (channel) {
-    const message = 'An error occurred:\n```js\n%s\n```' + `Instance: ${os.hostname} \n Server: ${guild_name}`;
-    const error_msg = error.message.substring(0, 500); 
+        const message = 'An error occurred:\n```js\n%s\n```' + `Instance: ${os.hostname} \n Server: ${guild_name}`;
+        const error_msg = error.message.substring(0, 500);
 
-    //Use substring to ensure that plenty of error information is sent, while leaving enough space for host info 
-      channel.send(util.format(message, error_msg));
+        //Use substring to ensure that plenty of error information is sent, while leaving enough space for host info 
+        send(channel.send, util.format(message, error_msg));
     }
-  });
-
-
-  function removeEveryoneMentions(text) {
-    // Define regex pattern to match @everyone mentions
-    const pattern = /@everyone/g;
-    
-    // Use String.replace() to replace all matches of the pattern with an empty string
-    const updatedText = text.replace(pattern, "");
-    
-    // Return the updated text
-    return updatedText;
-  }
+});

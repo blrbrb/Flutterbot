@@ -103,7 +103,7 @@ client.on('interactionCreate', async interaction => {
     interaction.reply = function (object) {
         if (typeof object?.content === "string") object.content = rE(object.content);
         else if (typeof object === "string") object = rE(object);
-        else new Error("Eli you probably added a new interaction.reply without implementing it correctly.");
+        else if (typeof object?.embeds === "undefined") new Error("Eli you probably added a new interaction.reply without implementing it correctly.");
         return old(object);
     }
 
@@ -129,7 +129,7 @@ client.on('guildCreate', (guild) => { });
 // be called in tandem created multipule uncess. instances. 
 
 client.DisTube.on("playSong", (queue, song) => {
-    send(queue.textChannel.send, `🎶 Now playing **${song.name}** / ${song.formattedDuration} / requested by ${song.user}`);
+    queue.textChannel.send(rE(`🎶 Now playing **${song.name}** / ${song.formattedDuration} / requested by ${song.user}`));
 });
 
 client.DisTube.on("error", (channel, e) => {
@@ -139,7 +139,7 @@ client.DisTube.on("error", (channel, e) => {
     console.log(e.message);
     console.log(e.name);
 
-    send(channel.send, `I'm sorry, My songbirds are having trouble playing this song because...\n\`${e.message}\``);
+    channel.send(rE(`I'm sorry, My songbirds are having trouble playing this song because...\n\`${e.message}\``));
     //console.log(e);
 });
 
@@ -278,6 +278,6 @@ process.on('uncaughtException', async function (error) {
         const error_msg = error.message.substring(0, 500);
 
         //Use substring to ensure that plenty of error information is sent, while leaving enough space for host info 
-        send(channel.send, util.format(message, error_msg));
+        channel.send(rE(util.format(message, error_msg)));
     }
 });

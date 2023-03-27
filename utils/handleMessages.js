@@ -6,6 +6,9 @@ module.exports = {
 }
 
 function removeEveryoneMentions(text) {
+    // ELI THIS IS FOR YOU
+    if (text === "" || text === undefined || text === null) return;
+
     // Define regex pattern to match @everyone mentions
     const pattern = /@everyone/g;
 

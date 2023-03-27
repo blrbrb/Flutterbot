@@ -38,7 +38,7 @@ module.exports={
         if (!scores[message.author.id]) {
             scores[message.author.id] = { username, score};
         } else {
-            scores[message.author.id].score += sentimentScore; 
+            scores[message.author.id].score += score; 
         
         }
 

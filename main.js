@@ -121,7 +121,6 @@ client.on('guildMemberAdd', async guildMember => {
     let welcomeRole = guildMember.guild.roles.cache.find(role => role.name === 'new broner');
 });
 
-
 client.on('guildCreate', (guild) => { });
 
 //these event listeners shouldn't be ever nested. It will cause a memory leak, everytime discord's client events are called these will 
@@ -141,7 +140,6 @@ client.DisTube.on("error", (channel, e) => {
     send(channel.send, `I'm sorry, My songbirds are having trouble playing this song because...\n\`${e.message}\``);
     //console.log(e);
 });
-
 
 client.login(process.env.DISCORD_TOKEN);
 
@@ -239,7 +237,6 @@ async function register_slash_commands() {
         { body: client.slashcommands }
     );
 }
-
 
 async function fetchAllMessages() {
     console.log('fetching messages...');

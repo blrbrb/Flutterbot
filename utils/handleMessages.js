@@ -7,7 +7,7 @@ module.exports = {
 
 function removeEveryoneMentions(text) {
 
-    if (typeof text !== "String") {
+    if (typeof text !== "string") {
         console.warn("Something called this function without passing in a string");
         text = String(text);
     }

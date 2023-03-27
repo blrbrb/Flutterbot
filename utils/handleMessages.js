@@ -6,8 +6,11 @@ module.exports = {
 }
 
 function removeEveryoneMentions(text) {
-    // ELI THIS IS FOR YOU
-    if (text === "" || text === undefined || text === null) return;
+
+    if (typeof text !== "String") {
+        console.warn("Something called this function without passing in a string");
+        text = String(text);
+    }
 
     // Define regex pattern to match @everyone mentions
     const pattern = /@everyone/g;

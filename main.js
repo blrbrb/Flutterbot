@@ -101,9 +101,9 @@ client.on('interactionCreate', async interaction => {
 
     let old = interaction.reply;
     interaction.reply = function (object) {
-        if (typeof object?.content === "string") object.content = rE(object.content);
-        else if (typeof object === "string") object = rE(object);
-        else if (typeof object?.embeds === "undefined") new Error("Eli you probably added a new interaction.reply without implementing it correctly.");
+        // if (typeof object?.content === "string") object.content = rE(object.content);
+        // else if (typeof object === "string") object = rE(object);
+        // else if (typeof object?.embeds === "undefined") new Error("Eli you probably added a new interaction.reply without implementing it correctly.");
         return old(object);
     }
 

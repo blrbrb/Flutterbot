@@ -87,14 +87,14 @@ for (const file of eventFiles) {
     else client.on(event.name, (message, ...args) => event.execute(message, ...args));
 }
 
-client.on('interactionCreate', async interaction => {
+client.on('interactionCreate',  interaction => {
     const { commandName } = interaction;
     const user = interaction.user
     const command = client.slashcommands.get(commandName);
     //update button interactions 
     const clientId = '817161573201608715';
     const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
-    const data = await rest.put(
+    const data =  rest.put(
         Routes.applicationGuildCommands(clientId, interaction.guild.id),
         { body: client.slashcommands }
     );  

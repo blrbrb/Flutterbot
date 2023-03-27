@@ -10,21 +10,14 @@ module.exports={
     async execute(client, message)
     {
         let scores = {}; 
-
+        const {username, id } = message.author;
+        console.log(scores);
         fs.readFile(scoreFile, 'utf-8', function (err, result) {
             if (err) console.log('poo', err);
-            scores = result;
-        });
-        
-        if(!scores)
-        {
-            scores = {}; 
-        }
-        
-       
-        const username = client.users.cache.get(message.author.id).username;
-       
-      
+           
+           
+            scores = JSON.parse(result);
+            
         // Get the score for the user who sent the message
        
 
@@ -32,14 +25,15 @@ module.exports={
         const results = sentiment.analyze(message.content);   
         const token = results.tokens; 
         const score = results.score;
-           
+        
         // Add the sentiment score to the user's score
        
-        if (!scores[message.author.id]) {
+        if (!scores[message.author.id]) { 
             scores[message.author.id] = { username, score};
-        } else {
+        } else { 
+           // let temp = scores[message.author.id].score; 
             scores[message.author.id].score += score; 
-        
+            console.log( scores[message.author.id].score)
         }
 
        
@@ -51,6 +45,16 @@ module.exports={
         });
         
         
+
+
+        });
+        //console.log(scores);
+        
+        
+       
+       
+       
+      
 
     },
 }

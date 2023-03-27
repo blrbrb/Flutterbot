@@ -1,51 +1,41 @@
 const { Events } = require('discord.js');
 const { prefix } = require('../config/config.json');
 ///April fools expirement,
-const Sentiment = require('sentiment');
+
 const fs = require('fs');
-const sentiment = new Sentiment();
-scores = {}; 
-////
-require('dotenv').config();
+
+
+require('dotenv').config();  
+
+
+
+
 
 module.exports = {
     name: Events.MessageCreate,
     once: false,
-    async execute(message) {
+    async execute(message) {  
         const client = message.client;
         let args = message.content.slice(prefix.length).trim().split(/ +/g);
         const command = args.shift();
 
-        const saveScoresToJson = async (scores, filePath) => {
-            try {
-              const data = JSON.stringify(scores, null, 2);
-              await fs.promises.writeFile('./assets/scores.json', data, { flag: 'a', encoding: 'utf-8'});
-              console.log(`Scores appended to ${'./assets/scores.json'}`);
-            } catch (err) {
-              console.error(err);
-            }
-          };
+       
 
         // message.guild.commands.set(client.slashcommands).then(() => console.log(`Commands deployed in guild ${message.guild.name}!`));
 
 
-            ///april fools expirement 
-            if(message.author.bot || message.interaction) return; 
-
-            const { id, username } = message.author;
-            const result = sentiment.analyze(message.content);
-            const score = result.score; 
-            if (!scores[id]) {
-                scores[id] = { username, score };
-            } else {
-                scores[id].score += score;
-            }
+            ///april fools expirement  
             
+            if(!message.author.bot || !message.interaction)
+            {
+                await client.systemcommands.get('updatescore').execute(client, message);
+                return;
+            }
 
-            saveScoresToJson(scores);
-            ///
-        if (!message.content.startsWith(prefix)) return;    
-
+           else {
+          
+           if (!message.content.startsWith(prefix)) return;    
+ 
         
 
      
@@ -86,7 +76,7 @@ module.exports = {
             } break;
         }
         return;
-        
+    }
     }, 
     
 };

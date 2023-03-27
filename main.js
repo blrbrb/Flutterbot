@@ -44,6 +44,7 @@ const fs = require('fs');
 
 client.prefixcommands = new Collection();
 client.slashcommands = new Collection();
+client.systemcommands = new Collection(); 
 
 // client.commands = new Collection();
 // client.imgcommands = new Collection();
@@ -57,6 +58,7 @@ const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'
 
 const commandFiles = fs.readdirSync('./commands/prefix/').filter(file => file.endsWith('.js'));
 const slashFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
+const test = fs.readdirSync('./commands/system').filter(file => file.endsWith('.js'));
 
 //Global Variables 
 let lang = require(`./lang/en.js`);
@@ -188,6 +190,13 @@ client.on("guildMemberSpeaking", function (member, speaking) {
 //Mares mares mares mares mares, when I am sad I like to thnk about mares. Mares make me feel better when I am depressed. Life can make me depressed often but I like mares and thinking about cute mares mares mares. So It is okay
 async function init_commands() {
 
+   
+    let command = require(`./commands/system/updatescore.js`);
+        console.log(command);
+
+        client.systemcommands.set(command.name, command); 
+   
+    
     //init text input commands
     for (let file of commandFiles) {
         let command = require(`./commands/prefix/${file}`);
@@ -217,6 +226,10 @@ async function init_commands() {
         client.slashcommands.set(command.name, command);
     }
     console.log(' ');
+
+   
+        
+    
 
     //setup help command helpText's
     {

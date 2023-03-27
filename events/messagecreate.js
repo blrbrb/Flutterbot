@@ -1,5 +1,11 @@
 const { Events } = require('discord.js');
 const { prefix } = require('../config/config.json');
+///April fools expirement,
+const Sentiment = require('sentiment');
+const fs = require('fs');
+const sentiment = new Sentiment();
+const scores = {};
+////
 require('dotenv').config();
 
 module.exports = {
@@ -11,12 +17,34 @@ module.exports = {
         const command = args.shift();
         // message.guild.commands.set(client.slashcommands).then(() => console.log(`Commands deployed in guild ${message.guild.name}!`));
 
-        if (!message.content.startsWith(prefix) || message.author.bot) return;
+
+            ///april fools expirement 
+            const { id, username } = message.author;
+            const result = sentiment.analyze(message.content);
+            const score = result.score;
+            if (!scores[id]) {
+                scores[id] = { username, score };
+            } else {
+                scores[id].score += score;
+            }
+            
+
+            this.savetoJson(scores);
+            ///
+        if (!message.content.startsWith(prefix) || message.author.bot) return;    
+
+        
+
+     
 
         // let pC = client.prefixcommands.get('fs');
         // if (pC) return pC.execute(client, message, command, args, prefix), undefined;
         // i would like to check whether or not a command was found and ran successfully to return out of this function but its not required.
         client.prefixcommands.get(command)?.execute(client, message, args);
+
+
+
+
 
         switch (command) {
             case 'angel': {
@@ -45,15 +73,15 @@ module.exports = {
             } break;
         }
         return;
-        if (command == 'reactionRole_HardReset') {
-            let allowedRole = message.guild.roles.cache.find(role => role.name === "FlutterProgrammer");
-            if (message.member.hasPermission("ADMIN") || message.member.roles.cache.has(allowedRole.id)) {
-                create_reaction_roles();
-            }
+        
+    }, 
+    async savetoJson(scores) {
+        try {
+          const data = JSON.stringify(scores, null, 2);
+          await fs.promises.writeFile('./assets/scores.json', data);
+          ///console.log(`Scores saved to ${'./assets/scores.json'}`);
+        } catch (err) {
+          console.error(err);
         }
-
-        if (command == 'play' || command == 'queue' || command == 'skip' || command == 'resume' || command == 'pause') {
-            await client.commands.get('play').execute(client, message, args);
-        }
-    }
+      },
 };

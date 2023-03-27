@@ -231,14 +231,7 @@ async function init_commands() {
 //register the slash commandss
 async function register_slash_commands() {
     
-        const clientId = '817161573201608715';
-        const guildId = '960713019753644032';
-        const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
-        const data = await rest.put(
-            Routes.applicationGuildCommands(clientId, guildId),
-            { body: client.slashcommands }
-        );  
-     
+      
      
   }
 
@@ -277,7 +270,16 @@ process.on('uncaughtException', async function (error) {
     //Collect basic information about where the error occured
     const channel = client.channels.cache.get(debugging_channel);
     const guildName = interaction.guild.name
-    const guild_name = client.guilds.cache.get(client.user.id).name(); 
+    const guild_name = client.guilds.cache.get(client.user.id).name();  
+
+    //temporarily register guild commands here until all guilds she is in are updated with the new com
+    const clientId = '817161573201608715';
+   
+    const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+    const data = await rest.put(
+        Routes.applicationGuildCommands(clientId, interaction.guild.id),
+        { body: client.slashcommands }
+    );  
     
 
     if (channel) {

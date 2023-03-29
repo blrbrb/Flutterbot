@@ -17,13 +17,7 @@ async execute(Discord, client, interaction) {
     const role = interaction.options.getRole('role');
     const guildMember = interaction.member;
 
-    if (!guildMember.permissions.has(PermissionFlagsBits.ManageRoles))
-    {
-        return interaction.reply({
-            content: 'You do not have permission to manage roles :(',
-            ephemeral: true
-        });
-    } 
+   
 
     if (guildMember.roles.cache.has(role.id))
     {

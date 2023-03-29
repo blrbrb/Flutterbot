@@ -29,10 +29,10 @@ module.exports = {
             if(!message.author.bot || !message.interaction)
             {
                 await client.systemcommands.get('updatescore').execute(client, message);
-                return;
+               
             }
 
-           else {
+           
           
            if (!message.content.startsWith(prefix)) return;    
  
@@ -76,7 +76,7 @@ module.exports = {
             } break;
         }
         return;
-    }
+    
     }, 
     
 };

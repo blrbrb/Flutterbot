@@ -19,27 +19,10 @@ module.exports = {
         let args = message.content.slice(prefix.length).trim().split(/ +/g);
         const command = args.shift();
 
-       
-
-        // message.guild.commands.set(client.slashcommands).then(() => console.log(`Commands deployed in guild ${message.guild.name}!`));
-
-
-            ///april fools expirement  
-            
-            if(!message.author.bot || !message.interaction)
-            {
-                await client.systemcommands.get('updatescore').execute(client, message);
-               
-            }
-
-           
-          
-           if (!message.content.startsWith(prefix)) return;    
+    
+        if (!message.content.startsWith(prefix) || message.author.bot) return;    
  
         
-
-     
-
         // let pC = client.prefixcommands.get('fs');
         // if (pC) return pC.execute(client, message, command, args, prefix), undefined;
         // i would like to check whether or not a command was found and ran successfully to return out of this function but its not required.

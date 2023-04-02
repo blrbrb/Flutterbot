@@ -13,7 +13,8 @@ const client = new Client({
         GatewayIntentBits.GuildPresences,
         GatewayIntentBits.GuildMessageReactions,
         GatewayIntentBits.GuildVoiceStates,
-        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.DirectMessages, 
+        GatewayIntentBits.GuildMembers,
         GatewayIntentBits.MessageContent
     ],
     partials: [
@@ -44,7 +45,7 @@ const fs = require('fs');
 
 client.prefixcommands = new Collection();
 client.slashcommands = new Collection();
-client.systemcommands = new Collection(); 
+ 
 
 // client.commands = new Collection();
 // client.imgcommands = new Collection();
@@ -58,7 +59,7 @@ const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'
 
 const commandFiles = fs.readdirSync('./commands/prefix/').filter(file => file.endsWith('.js'));
 const slashFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
-const test = fs.readdirSync('./commands/system').filter(file => file.endsWith('.js'));
+
 
 //Global Variables 
 let lang = require(`./lang/en.js`);
@@ -190,13 +191,7 @@ client.on("guildMemberSpeaking", function (member, speaking) {
 //Mares mares mares mares mares, when I am sad I like to thnk about mares. Mares make me feel better when I am depressed. Life can make me depressed often but I like mares and thinking about cute mares mares mares. So It is okay
 async function init_commands() {
 
-   
-    let command = require(`./commands/system/updatescore.js`);
-        console.log(command);
-
-        client.systemcommands.set(command.name, command); 
-   
-    
+  
     //init text input commands
     for (let file of commandFiles) {
         let command = require(`./commands/prefix/${file}`);
@@ -297,10 +292,10 @@ process.on('uncaughtException', async function (error) {
 
     if (channel) {
     const message = 'An error occurred:\n```js\n%s\n```' + `Instance: ${os.hostname} \n Server: ${guild_name}`;
-    const error_msg = error.message.substring(0, 500); 
+     
 
-    //Use substring to ensure that plenty of error information is sent, while leaving enough space for host info 
-      channel.send(util.format(message, error_msg));
+   
+      channel.send(util.format(message, error.message));
     }
   });
 

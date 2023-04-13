@@ -25,10 +25,10 @@ module.exports = {
 
     // Select a random member
     const randomMember = validMembers.random();
- 
+
 
     if (randomMember) {
-      return interaction.reply({content: `Random user selected: ${randomMember.displayName}`, ephemeral: true});
+      return interaction.reply({content: `Random user selected: ${randomMember.displayName}`});
     } else {
       return interaction.reply({content: 'No valid users found in this guild.', ephemeral: true});
     }

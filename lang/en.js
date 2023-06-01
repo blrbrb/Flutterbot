@@ -236,7 +236,27 @@ module.exports = {
     goodbye: {
       message: 'Goodbye, **{user}**. Hope we can see you again soon.',
       banMessage: '**{user}** was banned from the server.'
+    }, 
+    
+  },
+  errorMessage:
+  {
+    Distube:
+    {
+      noQueue: 
+      {
+        message: "But there isn't a queue! Use /play to search for songs!" 
+      }, 
+      ageRestricted:
+      {
+        message: "I'm sorry, it looks like this video is age restricted. "
+      }, 
+      unavailable: 
+      {
+        message: "I'm sorry, this video isn't avalible in your region... I can't get to it"
+      }
     }
+
   },
   wrong_channel: 'The command you sent cannot be used in that channel.',
  

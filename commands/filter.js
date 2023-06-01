@@ -111,6 +111,8 @@ module.exports = {
         const selection = ((interaction.options.getString('filter')) ? interaction.options.getString('filter') : interaction.options.getString('ffmpeg'))
         const queue = await client.DisTube.getQueue(interaction);
 
+        if(!queue) return interaction.reply(`But there's no music playing! Use /play to search for songs`);
+
         let string = `the ${selection} filter~!`;
 
         if (!queue.filters.has(selection)) {

@@ -4,6 +4,7 @@ module.exports = {
 	name: "terminal",
 	description: "bring up a unix commandline interface",
 	async execute(client, message, args) {
+		console.log('terminal command was called'); 
 		if (message.author.id !== '252235505318625281') return;
 
 		const command = args.join(" ");
@@ -17,7 +18,7 @@ module.exports = {
 
 				return message.channel.send("Null stdout. args" + " " + `*${command}*` + "  " + "executed successfully");
 			}
-			message.channel.send(res.slice(0, 1000), { code: "js" })
+			message.reply(res.slice(0, 1000), { code: "js" })
 		});
 
 	}

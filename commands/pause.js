@@ -5,7 +5,9 @@ module.exports = {
     async execute(Discord, client, interaction) {
         const queue = await client.DisTube.getQueue(interaction);
 
+        if(!queue) return interaction.reply(`But there is no queue! Use /play to search for songs`);
+
         queue.pause(interaction);
-        interaction.reply('Paused!');
+        return interaction.reply('Paused!');
     }
 }

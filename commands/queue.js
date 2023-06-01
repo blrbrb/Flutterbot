@@ -1,13 +1,18 @@
-﻿module.exports = {
+﻿const { formatTime } = require('../utils/utilities.js')
+
+module.exports = {
     name: 'queue',
     description: 'display the queue of currently playing songs',
     helpText: `View all of the currently queued songs and videos \n Use: **/queue**`,
     async execute(Discord, client, interaction) {
-        let queue2 = await client.DisTube.getQueue(interaction);
-        if (!queue2 || queue2.songs.length < 1) return interaction.reply(`There are no songs in queue 😔`);
 
-        let q = queue2.songs.map((song, i) => `${i === 0 ? 'Playing:' : `${i}.`} ${song.name} - \`${song.formattedDuration}\``).join('\n');
+        let queue = await client.DisTube.getQueue(interaction);
 
-        interaction.reply(`**Queue**\n${q}`);
+        if(!queue) return interaction.reply(`But there is no queue! Use /play to search for songs`);
+        
+        
+        let q = queue.songs.map((song, i) => `${i === 0 ? 'Currently Playing:' : `${i}.`} ${song.name} - \`${formatTime(Math.floor(queue.currentTime))}\` \ \`${song.formattedDuration}\``).join('\n');
+
+        interaction.reply(`**# What's Playing? 🎶**\n${q}`);
     }
 }

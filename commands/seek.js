@@ -24,10 +24,10 @@ module.exports = {
 
         let result = new Date(total_seconds * 1000).toISOString().slice(14, 19);
 
-        if (!queue) interaction.reply(`There are no songs in queue 😔`);
+        if(!queue) return interaction.reply(`But there is no queue! Use /play to search for songs`);
         else client.DisTube.seek(interaction, total_seconds);
         
         const skip = `skipping ${queue.songs[0].name} to \`${result} / ${queue.songs[0].formattedDuration}\``;
-        interaction.reply(skip);
+        return interaction.reply(skip);
     }
 }

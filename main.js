@@ -74,6 +74,8 @@ init_commands();
 client.DisTube = new DisTube(client, {
     leaveOnStop: false,
     leaveOnFinish: true,
+    leaveOnEmpty: true, 
+    emptyCooldown: 5, 
     emitAddSongWhenCreatingQueue: false,
     emitAddListWhenCreatingQueue: false,
     youtubeCookie: process.env.FART,
@@ -81,6 +83,7 @@ client.DisTube = new DisTube(client, {
     customFilters: filters
 });
 
+client.DisTube.setMaxListeners(40);
 //main events 
 
 for (const file of eventFiles) {
@@ -127,7 +130,20 @@ client.on('guildCreate', (guild) => { });
 
 client.DisTube.on("playSong", (queue, song) => {      
     queue.textChannel.send(removeEveryoneMentions(`🎶 Now playing **${song.name}** / ${song.formattedDuration} / requested by ${song.user}`));
+}); 
+
+client.DisTube.on('finish', (queue) => 
+{
+    queue.textChannel.send(`no more songs in queue. Flying back to my cottage in ${client.Distube.emptyCooldownseconds}s`);
+}     
+
+);
+
+client.DisTube.on('empty', (queue) => 
+{
+    queue.textChannel.send(`no more songs in queue. Flying back to my cottage in ${client.Distube.emptyCooldownseconds}s`);
 });
+
 
 client.DisTube.on("error", (channel, e) => {
     // console.log(e.stack);
@@ -239,7 +255,15 @@ async function init_commands() {
 //register the slash commandss
 async function register_slash_commands() {
     
-      
+      //temporarily register guild commands here until all guilds she is in are updated with the new com
+    const clientId = '817161573201608715';
+   
+    const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+    const data = await rest.put(
+        Routes.applicationGuildCommands(clientId, "960713019753644032"),
+        { body: client. slashcommands }
+    );  
+    
      
   }
 
@@ -280,15 +304,15 @@ process.on('uncaughtException', async function (error) {
     const guildName = interaction.guild.name
     const guild_name = client.guilds.cache.get(client.user.id).name();  
 
-    //temporarily register guild commands here until all guilds she is in are updated with the new com
-    const clientId = '817161573201608715';
+       //temporarily register guild commands here until all guilds she is in are updated with the new com
+       const clientId = '817161573201608715';
    
-    const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
-    const data = await rest.put(
-        Routes.applicationGuildCommands(clientId, interaction.guild.id),
-        { body: client.slashcommands }
-    );  
-    
+       const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+       const data = await rest.put(
+           Routes.applicationGuildCommands(clientId, interaction.guild.id),
+           { body: client. slashcommands }
+       );  
+       
 
     if (channel) {
     const message = 'An error occurred:\n```js\n%s\n```' + `Instance: ${os.hostname} \n Server: ${guild_name}`;

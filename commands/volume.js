@@ -12,8 +12,9 @@ module.exports = {
     ],
     async execute(Discord, client, interaction) {
         const queue = await client.DisTube.getQueue(interaction);
+        if(!queue) return interaction.reply(`But there is no queue! Use /play to search for songs`);
         var set_volume = interaction.options.getNumber('volume');
-        if (!queue) return interaction.reply(`There are no songs in queue 😔`);
+      
         if (!within(set_volume, 1, 100)) return interaction.reply(`Sorry I can't set that volume.`); // its "1" to 100 because if its 0 then why have the bot making sounds
 
         client.DisTube.setVolume(interaction, set_volume);

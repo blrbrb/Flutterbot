@@ -20,8 +20,9 @@ module.exports = {
 		
 		const queue = await client.DisTube.getQueue(interaction);
 		const query = interaction.options.getString('query');
-	
-
+		
+		if(!queue) console.log('the queue does not exist, and will be created now'); 
+		
 		client.DisTube.play(interaction.member.voice.channel, query, {
 			member: interaction.member,
 			textChannel: interaction.channel,

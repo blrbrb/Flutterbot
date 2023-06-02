@@ -83,7 +83,7 @@ client.DisTube = new DisTube(client, {
     customFilters: filters
 });
 
-client.DisTube.setMaxListeners(40);
+
 //main events 
 
 for (const file of eventFiles) {
@@ -106,7 +106,7 @@ client.on('interactionCreate',  interaction => {
     );  
     
 
-    console.log(interaction.options.values);
+   // console.log(interaction.options.values);
     try {
         command.execute(Discord, client, interaction);
     } catch (error) {
@@ -128,33 +128,9 @@ client.on('guildCreate', (guild) => { });
 //these event listeners shouldn't be ever nested. It will cause a memory leak, everytime discord's client events are called these will 
 // be called in tandem created multipule uncess. instances. 
 
-client.DisTube.on("playSong", (queue, song) => {      
-    queue.textChannel.send(removeEveryoneMentions(`🎶 Now playing **${song.name}** / ${song.formattedDuration} / requested by ${song.user}`));
-}); 
-
-client.DisTube.on('finish', (queue) => 
-{
-    queue.textChannel.send(`no more songs in queue. Flying back to my cottage in ${client.Distube.emptyCooldownseconds}s`);
-}     
-
-);
-
-client.DisTube.on('empty', (queue) => 
-{
-    queue.textChannel.send(`no more songs in queue. Flying back to my cottage in ${client.Distube.emptyCooldownseconds}s`);
-});
 
 
-client.DisTube.on("error", (channel, e) => {
-    // console.log(e.stack);
-    console.log(Object.getOwnPropertyNames(e));
-    console.log(Object.keys(e));
-    console.log(e.message);
-    console.log(e.name);
 
-    channel.send(`I'm sorry, My songbirds are having trouble playing this song because...\n\`${e.message}\``);
-    //console.log(e);
-});
 
 
 client.login(process.env.DISCORD_TOKEN);
@@ -184,7 +160,31 @@ async function load_data(file) {
 client.on('ready', async () => { 
     
   await register_slash_commands();
-  });
+ //Distube listeners need to be initalized here, according to the documentation on DisTube.js 
+ //discord bot "ready" event is only called once, but the listeners will still be activated.
+ client.DisTube.on("playSong", (queue, song) => {      
+    queue.textChannel.send(removeEveryoneMentions(`🎶 Now playing **${song.name}** / ${song.formattedDuration} / requested by ${song.user}`));
+
+
+client.DisTube.on("error", (channel, e) => {
+        // console.log(e.stack);
+        console.log(Object.getOwnPropertyNames(e));
+        console.log(Object.keys(e));
+        console.log(e.message);
+        console.log(e.name);
+        client.DisTube.deleteQueue(); 
+        channel.send(`I'm sorry, My songbirds are having trouble playing this song because...\n\`${e.message}\``);
+        //console.log(e);
+    });
+
+
+client.DisTube.on("empty", (queue) => { queue.textChannel.send("Oh has everyone gone home? I'll stop playing the music");});   
+
+}); 
+
+
+
+});
 
 
 
@@ -201,7 +201,7 @@ client.on("guildUnavailable", function (guild) {
 client.on("messageReactionRemove", async (reaction, user) => { });
 
 client.on("guildMemberSpeaking", function (member, speaking) {
-    console.log(`a guild member starts/stops speaking: ${member.tag}`);
+   
 });
 
 //Mares mares mares mares mares, when I am sad I like to thnk about mares. Mares make me feel better when I am depressed. Life can make me depressed often but I like mares and thinking about cute mares mares mares. So It is okay

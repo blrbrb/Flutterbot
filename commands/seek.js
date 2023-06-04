@@ -17,6 +17,8 @@ module.exports = {
     ],
     async execute(Discord, client, interaction) {
         const queue = await client.DisTube.getQueue(interaction);
+        if(!queue) return interaction.reply(`But there is no queue! Use /play to search for songs`);
+
         const song_time = queue.songs[0].formattedDuration;
         var minutes = interaction.options.getNumber('minute');
         var seconds = interaction.options.getNumber('second');
@@ -24,8 +26,8 @@ module.exports = {
 
         let result = new Date(total_seconds * 1000).toISOString().slice(14, 19);
 
-        if(!queue) return interaction.reply(`But there is no queue! Use /play to search for songs`);
-        else client.DisTube.seek(interaction, total_seconds);
+        
+        client.DisTube.seek(interaction, total_seconds);
         
         const skip = `skipping ${queue.songs[0].name} to \`${result} / ${queue.songs[0].formattedDuration}\``;
         return interaction.reply(skip);

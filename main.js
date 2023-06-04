@@ -105,7 +105,10 @@ client.on('interactionCreate',  interaction => {
         { body: client.slashcommands }
     );  
     
-
+    if(interaction.channel.id == '1091850338023260261')
+    {
+        return; 
+    }
    // console.log(interaction.options.values);
     try {
         command.execute(Discord, client, interaction);
@@ -158,8 +161,8 @@ async function load_data(file) {
 
 
 client.on('ready', async () => { 
-    
-  await register_slash_commands();
+
+ 
  //Distube listeners need to be initalized here, according to the documentation on DisTube.js 
  //discord bot "ready" event is only called once, but the listeners will still be activated.
  client.DisTube.on("playSong", (queue, song) => {      
@@ -252,20 +255,6 @@ async function init_commands() {
     }
 }
 
-//register the slash commandss
-async function register_slash_commands() {
-    
-      //temporarily register guild commands here until all guilds she is in are updated with the new com
-    const clientId = '817161573201608715';
-   
-    const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
-    const data = await rest.put(
-        Routes.applicationGuildCommands(clientId, "960713019753644032"),
-        { body: client. slashcommands }
-    );  
-    
-     
-  }
 
 
 async function fetchAllMessages() {

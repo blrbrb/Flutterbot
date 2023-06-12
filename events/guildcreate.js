@@ -8,5 +8,6 @@ module.exports = {
 		createGuild(guild, true);
 
 		guild.commands.set(client.slashcommands);
+		return; 
 	}
 };

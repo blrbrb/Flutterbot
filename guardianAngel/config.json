@@ -1,0 +1,32 @@
+
+{
+    "": {
+  "rate_limits": {
+    "createRole": 1000,
+    "roleUpdate": 1000,
+    "deleteChannel": 1000,
+    "guildMemberRemove": 1000,
+    "channelUpdate": 100,
+    "guildUpdate": 100
+  },
+  "alert_threshold": {
+    "green": 0,
+    "blue": 100,
+    "yellow": 1000,
+    "orange": 10000,
+    "red": 100000
+  },
+  "alert_timeout": {
+    "default": 3600000
+  },
+  "config": {
+    "warning_channel": "1032402464940511343"
+  },
+  "always_trusted": [
+    "252235505318625281",
+    "817161573201608715"
+  ]
+}
+}
+
+

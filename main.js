@@ -89,8 +89,9 @@ client.DisTube = new DisTube(client, {
 for (const file of eventFiles) {
     const filePath = path.join(eventsPath, file);
     const event = require(filePath);
-    if (event.once) client.once(event.name, (message, ...args) => event.execute(message, ...args));
-    else client.on(event.name, (message, ...args) => event.execute(message, ...args));
+    if (event.once) client.once(event.name, ( message, ...args) => event.execute(client, message, ...args));
+    else client.on(event.name, (message, ...args) => event.execute(client, message, ...args));
+   
 }
 
 client.on('interactionCreate',  interaction => {

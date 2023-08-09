@@ -7,7 +7,7 @@ const {debugging_channel }= require('../config/config.json');
 module.exports = {
 	name: Events.Error,
 	once: true,
-	execute(error) {
+	execute(client, error) {
 		console.log('My Websocket has encountered an error :(');
 		console.log(`client's WebSocket encountered a connection error: ${error}`);
 
@@ -24,5 +24,6 @@ module.exports = {
 				console.log(err);
 			}
 		});
+		return; 
 	},
 };

@@ -14,8 +14,8 @@ require('dotenv').config();
 module.exports = {
     name: Events.MessageCreate,
     once: false,
-    async execute(message) {  
-        const client = message.client;
+    async execute(client, message) {  
+       
        
 
        

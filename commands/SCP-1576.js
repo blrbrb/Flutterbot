@@ -30,7 +30,7 @@ module.exports = {
 
        // console.log(interaction.user.avatar);
         
-        const Embed = new EmbedBuilder().setTitle(`Message from afterlife entity`).setAuthor({name: interaction.user.username, iconURL: interaction.user.displayAvatarURL()}).setDescription(`\`${interaction.options.getString('message')}\``).setThumbnail('https://hub.scpslgame.com/images/2/24/SCP1576Icon.png');
+        const Embed = new EmbedBuilder().setTitle(`Message from afterlife entity`).setAuthor({name: interaction.user.username, iconURL: interaction.user.displayAvatarURL()}).setDescription(`\`${interaction.options.getString('message')}\``).setThumbnail('https://cdn.discordapp.com/attachments/368957683187056676/1135734604356128818/Screenshot_2023-07-31_030258.png');
         
          await target_channel.send({embeds:[Embed]})
         //const send = await target_channel.send(message_str);

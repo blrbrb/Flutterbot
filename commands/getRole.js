@@ -19,22 +19,39 @@ async execute(Discord, client, interaction) {
 
    
 
-    if (guildMember.roles.cache.has(role.id))
-    {
-        return interaction.reply({
-            content: `You already have this role!, I'll remove it for you`,
-            ephemeral: true
-        });
-    }
-
+   
     //ensure the target role is not privated or admin
     if(private_roles.includes(role.id) || role.permissions.has(PermissionFlagsBits.Administrator) || role.managed)
     {
         return interaction.reply({
-            content: 'You do not have permission to give yourself this role :(',
+            content: 'You do not have permission to manage this role :(',
             ephemeral: true
         });
     }
+    
+    
+    else if (guildMember.roles.cache.has(role.id))
+    {
+    	
+    	  try {
+        await guildMember.roles.remove(role);
+        return interaction.reply({
+            content: `You already have this role!, I'll remove it for you`,
+            ephemeral: true
+        });
+
+           } catch (error) {
+        console.error(error);
+        interaction.reply({
+            content: 'Failed to add role',
+            ephemeral: true
+        });
+
+                
+           }
+
+    }
+
 
 
     try {
@@ -47,5 +64,9 @@ async execute(Discord, client, interaction) {
             ephemeral: true
         });
     }
+    
+    
+    
+    
 },
 };

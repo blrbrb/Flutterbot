@@ -67,6 +67,7 @@ let lang = require(`./lang/en.js`);
 //init commands before the client is online
 
 init_commands();
+
 // you need to stop doing this every time the bot starts up
 // we should create a separate file to run for this purpose whenever the bot has a new update
 

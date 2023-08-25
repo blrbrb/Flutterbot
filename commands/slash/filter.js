@@ -106,7 +106,7 @@ module.exports = {
             description: 'Manually specify a FFMPEG filter to apply directly to the stream'
         }
     ],
-    async execute(Discord, client, interaction) {
+    async execute(client, interaction) {
 
         const selection = ((interaction.options.getString('filter')) ? interaction.options.getString('filter') : interaction.options.getString('ffmpeg'))
         const queue = await client.DisTube.getQueue(interaction);

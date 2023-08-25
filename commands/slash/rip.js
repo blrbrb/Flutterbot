@@ -13,7 +13,7 @@ module.exports = {
             required: true
         }
     ],
-    async execute(Discord, client, interaction) {
+    async execute(client, interaction) {
         const Member = interaction.options.getUser('user');
 
         const Embed = new EmbedBuilder()

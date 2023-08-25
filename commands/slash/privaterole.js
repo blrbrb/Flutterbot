@@ -12,7 +12,7 @@ module.exports = {
       required: true,
     },
   ],
-  async execute(Discord, client,interaction) {
+  async execute(client, interaction) {
 
 
     // Check if user is an administrator

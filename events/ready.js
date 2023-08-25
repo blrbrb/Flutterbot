@@ -5,6 +5,5 @@ module.exports = {
 	once: true,
 	execute() {
 		console.log('Fluttershy is Awake Yay! :3');
-		
 	}
 };

@@ -2,7 +2,7 @@ const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require('discord.js');
 const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
 
-const { channel } = require('../lang/en');
+const { channel } = require('../../lang/en');
 
 module.exports = {
 	name: 'play',
@@ -16,7 +16,7 @@ module.exports = {
 			required: true
 		}
 	],
-	async execute(Discord, client, interaction) {
+	async execute(client, interaction) {
 		
 		const queue = await client.DisTube.getQueue(interaction);
 		const query = interaction.options.getString('query');

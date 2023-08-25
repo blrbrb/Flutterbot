@@ -11,7 +11,7 @@ module.exports = {
         required: true
     }
     ],
-   async execute(Discord, client, interaction)
+   async execute(client, interaction)
    {
         const target_channel = client.channels.cache.get('1091850338023260261');
         const message_str = `Message from afterlife entity:  ${interaction.user.username} \n \`${interaction.options.getString('message')}\``;   

@@ -3,8 +3,8 @@ const gm = require('gm').subClass({
     imageMagick: true
 });
 
-const findImage = require('../utils/findimage.js');
-const { frange } = require('../utils/numbers.js');
+const findImage = require('../../utils/findimage.js');
+const { frange } = require('../../utils/numbers.js');
 
 module.exports = {
     name: 'destroy',
@@ -18,7 +18,7 @@ module.exports = {
             required: true
         }
     ],
-    async execute(Discord, client, interaction) {
+    async execute(client, interaction) {
         imageUrl = await interaction.options.getAttachment('image').url;
         const extension = findImage.extensionFinder(imageUrl);
         if (imageUrl !== undefined) {

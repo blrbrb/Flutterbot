@@ -4,7 +4,7 @@ module.exports = {
     name: 'playing',
     description: 'get the currently playing song',
     helpText: `View the currently playing track  \n Use: **/resume**`,
-    async execute(Discord, client, interaction) {
+    async execute(client, interaction) {
         const queue = await client.DisTube.getQueue(interaction);
 
         let track = queue.songs[0];

@@ -6,7 +6,7 @@ module.exports = {
     category: "Image",
     description: "Sends A Tweet",
     usage: "[username] <text>",
-    async execute(bot, message, args) {
+    async execute(client, message, args) {
         let user = args[0];
         let text = args.slice(1).join(" ");
         let m = await message.channel.send("**Please wait...**");

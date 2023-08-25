@@ -22,7 +22,7 @@ module.exports = {
 			description: "scale factor of the mosaic"
 		}
 	],
-	async execute(Discord, client, interaction) {
+	async execute(client, interaction) {
 
 		var scale = 5;
 

@@ -1,4 +1,4 @@
-﻿const { within } = require('../utils/numbers.js');
+﻿const { within } = require('../../utils/numbers.js');
 module.exports = {
     name: 'volume',
     description: 'increase or decrease the volume of the queue',
@@ -10,7 +10,7 @@ module.exports = {
             required: true
         }
     ],
-    async execute(Discord, client, interaction) {
+    async execute(client, interaction) {
         const queue = await client.DisTube.getQueue(interaction);
         if(!queue) return interaction.reply(`But there is no queue! Use /play to search for songs`);
         var set_volume = interaction.options.getNumber('volume');

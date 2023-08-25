@@ -3,7 +3,7 @@ const gm = require('gm').subClass({
 	imageMagick: true
 });
 
-const findImage = require('../utils/findimage.js');
+const findImage = require('../../utils/findimage.js');
 
 module.exports = {
 	name: 'circle',
@@ -22,7 +22,7 @@ module.exports = {
 			description: "increase or decrease the IOR of the UV sphere 1 to 10"
 		}
 	],
-	async execute(Discord, client, interaction) { // eslint-disable-line no-unused-vars
+	async execute(client, interaction) { // eslint-disable-line no-unused-vars
 
 		var IOR = 10;
 

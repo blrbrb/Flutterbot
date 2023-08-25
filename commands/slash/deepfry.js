@@ -3,7 +3,7 @@ const gm = require('gm').subClass({
     imageMagick: true
 });
 
-const findImage = require('../utils/findimage.js');
+const findImage = require('../../utils/findimage.js');
 
 module.exports = {
     name: 'deepfry',
@@ -17,7 +17,7 @@ module.exports = {
             required: true
         }
     ],
-    async execute(Discord, client, interaction) {
+    async execute(client, interaction) {
 
         imageUrl = await interaction.options.getAttachment('image').url;
 

@@ -4,7 +4,7 @@ var request = require('request');
 module.exports = {
 name: 'newpony',
 description: 'Get an entierly Unique Pony from thisponydoesnotexist!',
-    async execute(Discord, client, interacion,debug)
+    async execute(client, interacion, debug)
     {
         var options = {
             url: "https://ifunny.co/tags/" + args,

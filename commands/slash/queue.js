@@ -1,10 +1,10 @@
-﻿const { formatTime } = require('../utils/utilities.js')
+﻿const { formatTime } = require('../../utils/utilities.js')
 
 module.exports = {
     name: 'queue',
     description: 'display the queue of currently playing songs',
     helpText: `View all of the currently queued songs and videos \n Use: **/queue**`,
-    async execute(Discord, client, interaction) {
+    async execute(client, interaction) {
 
         let queue = await client.DisTube.getQueue(interaction);
 

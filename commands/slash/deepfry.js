@@ -17,7 +17,7 @@ module.exports = {
             required: true
         }
     ],
-    async execute(client, interaction) {
+    async execute(interaction, client) {
 
         imageUrl = await interaction.options.getAttachment('image').url;
 

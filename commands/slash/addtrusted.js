@@ -1,3 +1,4 @@
+const { ApplicationCommandOptionType } = require('discord.js');
 const fs = require('fs');
 
 module.exports = {
@@ -8,12 +9,11 @@ module.exports = {
         {
             name: "trusted",
             description: "add someone to the trusted list",
+            type: ApplicationCommandOptionType.User,
             required: true,
-            type: 6
         }
-
     ],
-    async execute(client, interaction) {
+    async execute(interaction, client) {
         console.log('working');
         let user = interaction.options.getUser('trusted');
         let data;

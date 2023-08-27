@@ -12,7 +12,7 @@ module.exports = {
             required: true
         }
     ],
-    async execute(client, interaction) {
+    async execute(interaction, client) {
         var options = {
             url: "https://artsandculture.google.com/color?col=" + interaction.options.getString('colour').toUpperCase(),
             method: "GET",

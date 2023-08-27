@@ -1,13 +1,9 @@
-const { REST, Routes, Client, Partials, Collection, GatewayIntentBits } = require('discord.js');
+require('dotenv').config();
+const { Client, Partials, GatewayIntentBits } = require('discord.js');
 const { DisTube } = require('distube');
 const filters = require('./assets/filters.json');
-const path = require('path');
-const util = require('util');
-const os = require("os");
-const fs = require('fs');
 const { prefixcommands, slashcommands } = require('./findAllCommands.js');
 
-const { debugging_channel } = require('./config/config.json');
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -41,16 +37,8 @@ const client = new Client({
     }
 });
 
-require('dotenv').config();
-
 client.prefixcommands = prefixcommands;
 client.slashcommands = slashcommands;
-
-// test change
-// init command source (stored in seperate js modules)
-
-// Global Variables
-let lang = require(`./lang/en.js`);
 
 client.DisTube = new DisTube(client, {
     leaveOnStop: false,
@@ -64,15 +52,12 @@ client.DisTube = new DisTube(client, {
     customFilters: filters
 });
 
-
 // main events
-const eventFiles = require('./utils/findFiles')(__dirname, './events');
-console.log(eventFiles);
+const eventFiles = require('./utils/findFiles')(__dirname, './events', '.js');
 for (const file of eventFiles) {
     const event = require(`./events/${file}`);
     if (event.once) client.once(event.name, (...args) => event.execute(client, ...args));
     else client.on(event.name, (...args) => event.execute(client, ...args));
-
 }
 
 client.on('interactionCreate', interaction => {
@@ -83,7 +68,7 @@ client.on('interactionCreate', interaction => {
     if (interaction.channel.id == '1091850338023260261') return;
     try {
         // we should check if a command isnt found but was registered in discord
-        slashcommands.get(interaction.commandName)?.execute(client, interaction);
+        slashcommands.get(interaction.commandName)?.execute(interaction, client);
     } catch (error) {
         console.error(error);
         interaction.reply({
@@ -164,36 +149,6 @@ client.on("guildMemberSpeaking", function (member, speaking) {
 });
 
 //Mares mares mares mares mares, when I am sad I like to thnk about mares. Mares make me feel better when I am depressed. Life can make me depressed often but I like mares and thinking about cute mares mares mares. So It is okay
-
-async function fetchAllMessages() {
-    console.log('fetching messages...');
-    const channel = client.channels.cache.get("960713019753644035");
-    let messages = [];
-
-    // Create message pointer
-    let message = await channel.messages
-        .fetch({ limit: 1 })
-        .then(messagePage => (messagePage.size === 1 ? messagePage.at(0) : null));
-
-    while (message) {
-        await channel.messages
-            .fetch({ limit: 100, before: message.id })
-            .then(messagePage => {
-                messagePage.forEach(msg => messages.push(msg));
-                console.log(message);
-                // Update our message pointer to be last message in page of messages
-                message = 0 < messagePage.size ? messagePage.at(messagePage.size - 1) : null;
-            })
-    }
-    console.log('fucking your mother');
-    console.log(messages);
-    save_data(messages, "messages.json");  // Print all messages
-}
-
-//Debuggery and shenanigans
-/* process.on('uncaughtException', async function (error) {
-
-}); */
 
 function removeEveryoneMentions(text) {
     // Define regex pattern to match @everyone mentions

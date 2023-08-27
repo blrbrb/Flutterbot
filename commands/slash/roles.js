@@ -5,7 +5,7 @@ const { private_roles } = require('../../config/private_roles.json')
 module.exports = {
   name: 'roles',
   description: 'list all available roles',
-  async execute(client, interaction) { 
+  async execute(interaction, client) { 
     console.log('working');
     const roles = interaction.guild.roles.cache.filter(role => role.name !== '@everyone' && !role.permissions.has(PermissionFlagsBits.Administrator) && !role.managed && !private_roles.includes(role.id)); // Get all roles except @everyone, administrator roles, and roles that have been registered as private roles 
     const roleNames = roles.map(role => role.name); // Get an array of role names

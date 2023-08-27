@@ -5,8 +5,7 @@ module.exports = {
     name: 'quote',
     description: 'Fetch randomly generated quotes from inspirobot',
     helpText: `grab a randomly generated quote from inspirobot \n Use: **/quote**`,
-    async execute(client, interaction) {
-        let interact = interaction;
+    async execute(interaction, client) {
         let options = {
             url: "https://inspirobot.me/api?generate=true",
             method: "GET",

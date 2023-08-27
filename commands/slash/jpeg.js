@@ -23,7 +23,7 @@ module.exports = {
             description: "increase or decrese the quality of the JPEG from 1 to 10"
         }
     ],
-    async execute(client, interaction) {
+    async execute(interaction, client) {
 
         var quality = 1;
 

@@ -1,3 +1,4 @@
+const { ApplicationCommandOptionType } = require('discord.js')
 const request = require('request');
 const gm = require('gm').subClass({
 	imageMagick: true
@@ -11,18 +12,18 @@ module.exports = {
 	helpText: `turn an image into a sequence of tiles \n Use: **/mosaic** <jpeg, png, gif, webm embed>`,
 	options: [
 		{
-			type: 11,
+			type: ApplicationCommandOptionType.Attachment,
 			name: "image",
 			description: "Image for Fluttershy to turn into a mosaic",
 			required: true
 		},
 		{
-			type: 10,
+			type: ApplicationCommandOptionType.Number,
 			name: "scale",
 			description: "scale factor of the mosaic"
 		}
 	],
-	async execute(client, interaction) {
+	async execute(interaction, client) {
 
 		var scale = 5;
 
@@ -35,23 +36,29 @@ module.exports = {
 
 		const extension = findImage.extensionFinder(imageUrl);
 
-		console.log(extension);
+		console.log(interaction.options.get('image'));
 		if (imageUrl !== undefined) {
 			interaction.channel.sendTyping();
-			gm(request(imageUrl)).filesize((error, format) => {
-				gm(request(imageUrl)).command("-mosaic").out("-duplicate").tile(`${scale}x${scale}`).geometry("+0+0").stream((error, stdout) => {
-					if (error) throw new Error(error);
-					gm(stdout).resize(800, 800).stream((error, stdoutFinal) => {
-						if (error) throw new Error(error);
-						interaction.reply({
-							files: [{
-								attachment: stdoutFinal,
-								name: "mosaic.png"
-							}]
+			gm(request(imageUrl))
+				.filesize((error, format) => {
+					gm(request(imageUrl))
+						.command("-mosaic")
+						.out("-duplicate")
+						.tile(`${scale}x${scale}`)
+						.geometry("+0+0")
+						.stream((error, stdout) => {
+							if (error) throw new Error(error);
+							gm(stdout).resize(800, 800).stream((error, stdoutFinal) => {
+								if (error) throw new Error(error);
+								interaction.reply({
+									files: [{
+										attachment: stdoutFinal,
+										name: "mosaic.png"
+									}]
+								});
+							});
 						});
-					});
 				});
-			});
 		}
 	}
 }

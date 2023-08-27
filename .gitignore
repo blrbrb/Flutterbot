@@ -7,6 +7,7 @@ error_log.txt
 **/date 
 **/error_log.txt 
 **/.DS_Store 
+test.js
 
 assets/counter.json
 assets/counter.txt

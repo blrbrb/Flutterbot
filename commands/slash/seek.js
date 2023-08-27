@@ -15,7 +15,7 @@ module.exports = {
             required: true
         }
     ],
-    async execute(client, interaction) {
+    async execute(interaction, client) {
         const queue = await client.DisTube.getQueue(interaction);
         if(!queue) return interaction.reply(`But there is no queue! Use /play to search for songs`);
 

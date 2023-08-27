@@ -10,7 +10,7 @@ module.exports = {
             type: 6
         }
     ],
-    async execute(client, interaction) {
+    async execute(interaction, client) {
         //if (args[0]==null || args[0]=="") return message.channel.send('uhhhhm. please sepecify an argument for booping'); 
 
         // author = interaction.member.nickname || interaction.member.user.username;

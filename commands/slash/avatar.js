@@ -12,7 +12,7 @@ module.exports = {
             required: true
         }
     ],
-    async execute(client, interaction) {
+    async execute(interaction, client) {
         interaction.reply(`this command doesnt work currently sorry :(`);
         return;
         let taggedUser = message.mentions.members.first();

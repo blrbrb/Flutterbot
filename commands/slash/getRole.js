@@ -12,7 +12,7 @@ module.exports = {
             required: true,
         },
     ],
-    async execute(client, interaction) {
+    async execute(interaction, client) {
         const role = interaction.options.getRole('role');
         const guildMember = interaction.member;
 

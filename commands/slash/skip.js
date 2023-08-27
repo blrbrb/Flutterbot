@@ -8,7 +8,7 @@ module.exports = {
             description: "Queued song to skip e.g '2' will skip the second song in queue"
         }
     ],
-    async execute(client, interaction) {
+    async execute(interaction, client) {
         const queue = await client.DisTube.getQueue(interaction);
         if(!queue) return interaction.reply(`But there is no queue! Use /play to search for songs`);
         const q = queue.songs.map((song, i) => `skipping ${song.name} - \`${song.formattedDuration}\``).join('\n');

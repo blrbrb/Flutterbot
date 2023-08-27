@@ -24,7 +24,6 @@ module.exports = {
             case 'fart': {
                 message.channel.send('poo poo among us sus');
             } break;
-
             case 'uwu': {
                 message.channel.send('I am fluttershy and Owo Uwu');
             } break;
@@ -37,12 +36,8 @@ module.exports = {
                     else
                         message.channel.send('debugging mode enabled on Fluttershy Build:' + ' ' + process.env.VERSION);
                     debug = true;
-                    return; //dangerous
                 }
             } break;
         }
-        return;
-
-    },
-
+    }
 };

@@ -1,3 +1,4 @@
+const { ApplicationCommandOptionType } = require('discord.js');
 const fs = require('fs');
 
 module.exports = {
@@ -6,13 +7,13 @@ module.exports = {
     default_member_permissions: "0",
     options: [
         {
-            type: 7,
             name: "channel",
             description: "--MARKED FOR CHANGE",
+            type: ApplicationCommandOptionType.Channel,
             required: true
         }
     ],
-    async execute(client, interaction) {
+    async execute(interaction, client) {
         console.log('working');
         let channel = interaction.options.getChannel('channel');
         let data;

@@ -16,7 +16,7 @@ module.exports = {
 			required: true
 		}
 	],
-	async execute(client, interaction) {
+	async execute(interaction, client) {
 		
 		const queue = await client.DisTube.getQueue(interaction);
 		const query = interaction.options.getString('query');

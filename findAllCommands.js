@@ -1,6 +1,6 @@
 const { Collection } = require("discord.js");
-let prefixFiles = require('./utils/findFiles')(__dirname, './commands/prefix');
-let slashFiles = require('./utils/findFiles')(__dirname, './commands/slash');
+let prefixFiles = require('./utils/findFiles')(__dirname, './commands/prefix', '.js');
+let slashFiles = require('./utils/findFiles')(__dirname, './commands/slash', '.js');
 
 let prefixcommands = new Collection();
 let slashcommands = new Collection();

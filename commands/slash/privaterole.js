@@ -12,7 +12,7 @@ module.exports = {
       required: true,
     },
   ],
-  async execute(client, interaction) {
+  async execute(interaction, client) {
 
 
     // Check if user is an administrator

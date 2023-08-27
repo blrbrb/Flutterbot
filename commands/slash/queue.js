@@ -4,7 +4,7 @@ module.exports = {
     name: 'queue',
     description: 'display the queue of currently playing songs',
     helpText: `View all of the currently queued songs and videos \n Use: **/queue**`,
-    async execute(client, interaction) {
+    async execute(interaction, client) {
 
         let queue = await client.DisTube.getQueue(interaction);
 

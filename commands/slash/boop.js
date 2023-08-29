@@ -1,3 +1,5 @@
+const { ApplicationCommandOptionType } = require("discord.js");
+
 module.exports = {
     name: "boop",
     description: "boop somepony!",
@@ -6,8 +8,8 @@ module.exports = {
         {
             name: "pony",
             description: "Somepony to boop",
-            required: true,
-            type: 6
+            type: ApplicationCommandOptionType.User,
+            required: true
         }
     ],
     async execute(interaction, client) {

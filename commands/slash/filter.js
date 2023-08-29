@@ -1,12 +1,14 @@
+const { ApplicationCommandOptionType } = require("discord.js");
+
 module.exports = {
     name: 'filter',
     description: 'Apply a filter to playing music',
     helpText: `Manipulate the quality, and add effects to playing music  \n Use: **/filter** <an filter to apply> \n Note: To Remove an activated Filter, simply run the same command twice`,
     options: [
         {
-            type: 3,
             name: 'filter',
             description: 'what filter to apply',
+            type: ApplicationCommandOptionType.String,
             choices: [
                 {
                     name: 'Basboost',
@@ -101,9 +103,9 @@ module.exports = {
             required: true
         },
         {
-            type: 3,
             name: 'ffmpeg',
-            description: 'Manually specify a FFMPEG filter to apply directly to the stream'
+            description: 'Manually specify a FFMPEG filter to apply directly to the stream',
+            type: ApplicationCommandOptionType.String
         }
     ],
     async execute(interaction, client) {
@@ -111,7 +113,7 @@ module.exports = {
         const selection = ((interaction.options.getString('filter')) ? interaction.options.getString('filter') : interaction.options.getString('ffmpeg'))
         const queue = await client.DisTube.getQueue(interaction);
 
-        if(!queue) return interaction.reply(`But there's no music playing! Use /play to search for songs`);
+        if (!queue) return interaction.reply(`But there's no music playing! Use /play to search for songs`);
 
         let string = `the ${selection} filter~!`;
 

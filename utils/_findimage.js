@@ -1,4 +1,4 @@
-module.exports.imageFinder = function findImage(message) {
+module.exports.findImage = function findImage(message) {
     return new Promise(async (resolve, reject) => {
         try {
             // if (message.attachments.size > 0) {

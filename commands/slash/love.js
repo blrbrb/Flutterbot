@@ -29,7 +29,10 @@ module.exports = {
         if (lover1.id == lover2.id && lover1.id == interaction.user.id)
             return interaction.reply('self love response');
 
-        let lovePercent = Math.floor(Math.random() * 100 + 1);
+        // let lovePercent = Math.floor(Math.random() * 100 + 1);
+        let x = lover1.username.split('').reduce((a, e) => a + e.charCodeAt(), 0);
+        let y = lover2.username.split('').reduce((a, e) => a + e.charCodeAt(), 0);
+        let lovePercent = (x + y) % 100;
         let lovePerTen = Math.floor(lovePercent / 10);
         let percentBar = `${'🟥'.repeat(lovePerTen)}${'⬜'.repeat(10 - lovePerTen)}`;
         // let percentMessage = lang.lovemeter_messages[lovePerTen];

@@ -1,15 +1,13 @@
-const Color = "RANDOM";
-const Discord = require('discord.js');
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, ApplicationCommandOptionType } = require('discord.js');
 
 module.exports = {
     name: "rip",
     description: "RIP",
     options: [
         {
-            type: 6,
             name: "user",
             description: "who got sunsetted ",
+            type: ApplicationCommandOptionType.User,
             required: true
         }
     ],

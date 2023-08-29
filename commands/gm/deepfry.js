@@ -3,7 +3,8 @@ const gm = require('gm').subClass({
     imageMagick: true
 });
 
-const findImage = require('../../utils/findimage.js');
+const { findImage } = require('../../utils/findimage.js');
+const { ApplicationCommandOptionType } = require('discord.js');
 
 module.exports = {
     name: 'deepfry',
@@ -11,9 +12,9 @@ module.exports = {
     helpText: `deepfry an image \n Use: **/deepfry** <jpeg, png, gif, webm embed>`,
     options: [
         {
-            type: 11,
             name: "image",
             description: "The image For Fluttershy to deepfry",
+            type: ApplicationCommandOptionType.Attachment,
             required: true
         }
     ],

@@ -1,14 +1,14 @@
 const { private_roles } = require('../../config/private_roles.json');
-const { PermissionFlagsBits } = require('discord.js');
+const { PermissionFlagsBits, ApplicationCommandOptionType } = require('discord.js');
 
 module.exports = {
     name: "getrole",
     description: "assign yourself one of the availble roles in a server",
     options: [
         {
-            type: 8,
             name: "role",
             description: "The name of the role to assign yourself",
+            type: ApplicationCommandOptionType.Role,
             required: true,
         },
     ],

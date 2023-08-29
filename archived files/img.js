@@ -1,6 +1,5 @@
 const request = require('request');
-const Discord = require('discord.js');
-const { MessageEmbed } = Discord;
+const { MessageEmbed, MessageCollector } = require('discord.js');
 require('dotenv').config();
 
 module.exports = {
@@ -67,7 +66,7 @@ module.exports = {
                 let randResult = data.items[ranNum];
                 const embed = new MessageEmbed().setTitle(randResult.title).setImage(randResult.link).setColor(0xfbfb2b)
                 message.channel.send(embed);
-                const collector = new Discord.MessageCollector(
+                const collector = new MessageCollector(
                     message.channel,
                     m => m.author.id === message.author.id,
                     { time: 100000000 }

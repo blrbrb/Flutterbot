@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, ApplicationCommandOptionType } = require('discord.js');
 
 module.exports = {
     name: 'avatar',
@@ -6,9 +6,9 @@ module.exports = {
     helpText: `Pull up somepony's avatar \n Use: **/avatar** <mention someone>`,
     options: [
         {
-            type: 6,
             name: "somepony",
             description: "choose somepony to check their avatar",
+            type: ApplicationCommandOptionType.User,
             required: true
         }
     ],

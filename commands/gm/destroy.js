@@ -3,8 +3,8 @@ const gm = require('gm').subClass({
     imageMagick: true
 });
 
-const findImage = require('../../utils/findimage.js');
 const { frange } = require('../../utils/numbers.js');
+const { ApplicationCommandOptionType } = require('discord.js');
 
 module.exports = {
     name: 'destroy',
@@ -12,15 +12,14 @@ module.exports = {
     helpText: `blow somepony up \n Use: **/destroy** <jpeg, png, gif, webm embed>`,
     options: [
         {
-            type: 11,
             name: "image",
             description: "the image for fluttershy to destroy",
+            type: ApplicationCommandOptionType.Attachment,
             required: true
         }
     ],
     async execute(interaction, client) {
         imageUrl = await interaction.options.getAttachment('image').url;
-        const extension = findImage.extensionFinder(imageUrl);
         if (imageUrl !== undefined) {
             interaction.channel.sendTyping();
             await gm(request(imageUrl)).size((error, size) => {

@@ -3,7 +3,6 @@ const { PermissionFlagsBits } = require('discord.js');
 const { royalguard } = require('../guardianAngel/evaluate.js');
 const { AuditLogEvent } = require('discord.js');
 const { always_trusted, config } = require('../guardianAngel/config.json');
-const fs = require('fs');
 const { Events } = require('discord.js');
 
 module.exports = {

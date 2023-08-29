@@ -1,3 +1,4 @@
+const { ApplicationCommandOptionType } = require('discord.js');
 const request = require('request');
 const gm = require('gm').subClass({
     imageMagick: true
@@ -5,14 +6,20 @@ const gm = require('gm').subClass({
 
 const fs = require('fs');
 
-const findImage = require('../../utils/findimage.js');
+const { findImage } = require('../../utils/findimage.js');
 
 module.exports = {
     name: 'goofy',
     description: 'Goofy Aaah',
-    async execute(client, message, args) {
-        imageUrl = await findImage(message);
-        message.channel.sendTyping();
+    options: [
+        {
+            name: "image",
+            description: "image for goofying",
+            type: ApplicationCommandOptionType.Attachment,
+            required: true
+        }
+    ],
+    async execute(interaction, client) {
         const goofy = fs.readFileSync('assets/images/goofynerd.png');
         await gm(request(imageUrl)).size((error, size) => {
             if (size.height > 1200 || size.width > 1200) {

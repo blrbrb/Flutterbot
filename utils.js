@@ -76,9 +76,9 @@ function ID() {
 
 const log = new Log(true);
 
-function displayList(array) {
+function displayList(array, header) {
     if (!array.length) return log("bright green", "\nEmpty\n");
-    let headers = Object.keys(array[0]);
+    let headers = header && Object.keys(header) || Object.keys(array[0]);
     let table = new Array(array.length + 2).fill().map(() => new Array(headers.length));
     for (let i = 0; i < headers.length; i++) {
         let h_fixed = headers[i].split("_").filter(x => x).map(x => x[0].toUpperCase() + x.slice(1).toLowerCase()).join(' ');

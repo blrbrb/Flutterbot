@@ -31,12 +31,20 @@ module.exports = {
         let randResult = episode_data.mlp[seasonrand][episoderand][numrand];
         //configure the embed with the details parsed from the data  
         if (randResult.song === 'true') {
-            const embed = new MessageEmbed().setTitle(randResult.speaker).setDescription('*' + randResult.text + '*').setColor(0xfbfb2b).setThumbnail(speaker_images.get(randResult.speaker.toString()));
+            const embed = new EmbedBuilder()
+                .setTitle(randResult.speaker)
+                .setDescription('*' + randResult.text + '*')
+                .setColor(0xfbfb2b)
+                .setThumbnail(speaker_images.get(randResult.speaker.toString()));
         }
 
         //console.log(randResult.speaker); 
 
-        const embed = new EmbedBuilder().setTitle(randResult.speaker.toString(), null).setDescription(randResult.text.toString()).setColor(0xfbfb2b).setThumbnail(speaker_images.get(randResult.speaker.toString()));
+        const embed = new EmbedBuilder()
+            .setTitle(randResult.speaker.toString(), null)
+            .setDescription(randResult.text.toString())
+            .setColor(0xfbfb2b)
+            .setThumbnail(speaker_images.get(randResult.speaker.toString()));
 
         interaction.reply({ embeds: [embed] });
     }

@@ -1,14 +1,15 @@
 var request = require('request');
 var cheerio = require('cheerio');
+const { ApplicationCommandOptionType } = require('discord.js');
 
 module.exports = {
     name: 'showme',
     description: 'Show Me Some Art',
     options: [
         {
-            type: 3,
-            description: "a colour",
             name: "colour",
+            description: "a colour",
+            type: ApplicationCommandOptionType.String,
             required: true
         }
     ],

@@ -3,16 +3,22 @@ const gm = require('gm').subClass({
     imageMagick: true
 });
 const fs = require('fs');
-const findImage = require('../../utils/findimage.js');
+const { ApplicationCommandOptionType } = require('discord.js');
 
 module.exports = {
     name: 'curse',
     description: 'curse an image',
-    async execute(client, message, args) {
-        imageUrl = await findImage(message);
-        message.channel.startTyping();
-        const tartarus = fs.readFileSync('assets/images/cursed.png');
-        await gm(request(imageUrl)).size((error, size) => {
+    options: [
+        {
+            name: "image",
+            description: "an image attachment to manipulate",
+            type: ApplicationCommandOptionType.Attachment,
+            required: true
+        }
+    ],
+    execute(interaction, client) {
+        const tartarus = fs.readFileSync('../../assets/images/cursed.png');
+        gm(request(imageUrl)).size((error, size) => {
             if (size.height > 1200 || size.width > 1200) {
                 return message.channel.send(`t-that's way too big of an image for me!🖌️🐇`);
             }

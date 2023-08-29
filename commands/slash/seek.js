@@ -1,23 +1,25 @@
+const { ApplicationCommandOptionType } = require("discord.js");
+
 module.exports = {
     name: 'seek',
     description: 'jump to a specific time ',
     options: [
         {
-            type: 10,
             name: "minute",
             description: "the minute to skip to",
+            type: ApplicationCommandOptionType.Number,
             required: true
         },
         {
-            type: 10,
             name: "second",
             description: "the second to skip to",
+            type: ApplicationCommandOptionType.Number,
             required: true
         }
     ],
     async execute(interaction, client) {
         const queue = await client.DisTube.getQueue(interaction);
-        if(!queue) return interaction.reply(`But there is no queue! Use /play to search for songs`);
+        if (!queue) return interaction.reply(`But there is no queue! Use /play to search for songs`);
 
         const song_time = queue.songs[0].formattedDuration;
         var minutes = interaction.options.getNumber('minute');
@@ -26,9 +28,9 @@ module.exports = {
 
         let result = new Date(total_seconds * 1000).toISOString().slice(14, 19);
 
-        
+
         client.DisTube.seek(interaction, total_seconds);
-        
+
         const skip = `skipping ${queue.songs[0].name} to \`${result} / ${queue.songs[0].formattedDuration}\``;
         return interaction.reply(skip);
     }

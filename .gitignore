@@ -13,9 +13,7 @@ assets/counter.txt
 assets/conversation.json
 assets/scores.json
 notes.txt
-_*.js
-_*.json
-_*.txt
+_*.*
 
 #image asset files that might be generated while using the image Magik pipeline
 **/.jpg

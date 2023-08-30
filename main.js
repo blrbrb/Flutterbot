@@ -1,5 +1,5 @@
 require('dotenv').config();
-const {SimpleDatabase} = require('./utils')
+const { SimpleDatabase } = require('./utils')
 const { Client, Partials, GatewayIntentBits } = require('discord.js');
 const { DisTube } = require('distube');
 const filters = require('./assets/filters.json');
@@ -40,7 +40,7 @@ const client = new Client({
 
 client.prefixcommands = prefixcommands;
 client.slashcommands = slashcommands;
-client.db = new SimpleDatabase('assets/db.json')
+client.db = new SimpleDatabase.SimpleDatabase   ('assets/db.json')
 
 client.DisTube = new DisTube(client, {
     leaveOnStop: false,

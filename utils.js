@@ -308,4 +308,4 @@ class SimpleDatabase {
 }
 
 
-module.exports = { displayList, log, Log, ID };
+module.exports = { displayList, log, Log, ID, SimpleDatabase};

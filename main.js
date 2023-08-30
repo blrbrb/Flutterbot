@@ -1,5 +1,5 @@
 require('dotenv').config();
-const {db} = require('./utils')
+const {SimpleDatabase} = require('./utils')
 const { Client, Partials, GatewayIntentBits } = require('discord.js');
 const { DisTube } = require('distube');
 const filters = require('./assets/filters.json');

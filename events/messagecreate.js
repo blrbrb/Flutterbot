@@ -1,7 +1,8 @@
 const { Events } = require('discord.js');
 const { prefix } = require('../config/config.json');
-///April fools expirement,
-
+const fs = require('fs');
+const {REST} = require('@discordjs/rest')
+const {Routes} = require('discord-api-types/v9');
 require('dotenv').config();
 
 module.exports = {
@@ -11,8 +12,9 @@ module.exports = {
         if (!message.content.startsWith(prefix) || message.author.bot) return;
 
         let args = message.content.slice(prefix.length).trim().split(/ +/g);
-        const command = args.shift();
-        //  let pC = client.prefixcommands.get('fs');
+        const command = args.shift(); 
+    
+        //let pC = client.prefixcommands.get('fs');
         // if (pC) return pC.execute(client, message, command, args, prefix), undefined;
         // i would like to check whether or not a command was found and ran successfully to return out of this function but its not required.
         client.prefixcommands.get(command)?.execute(client, message, args);

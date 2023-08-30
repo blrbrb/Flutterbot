@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const colors = {
     "": "\x1b[0m",
     reset: "\x1b[0m",
@@ -153,7 +155,7 @@ class SimpleDatabase {
     let current = this.data;
     //We're accessing a nested value. Split at '.'
     if (key.includes('.')){
-     keys = key.split('.')
+     let keys = key.split('.')
      keys.forEach((key, index) => {
       if (!current[key]) {
         if (index === keys.length - 1) {
@@ -185,7 +187,7 @@ class SimpleDatabase {
     let current = this.data;
     //We're accessing a nested value. Split at '.'
     if (key.includes('.')){
-        keys = key.split('.')
+        let keys = key.split('.')
         keys.forEach((key, index) => {
          if (!current[key]) {
            if (index === keys.length - 1) {
@@ -247,30 +249,41 @@ class SimpleDatabase {
    * "People": {"Fuckers": ["Clarkson"] }
    */
   append(key, newItem) {
-
     let current = this.data;
-    if(key.includes('.')){
-    //We're accessing a nested value. Split at '.'
-    for (const key of key) {
-      if (current[key] === undefined) {
-        return; // None of the keys can be found at root, do nothing
-      }
-      if (!Array.isArray(this.data[key])) {
-        this.data[key] = [];
+  
+    if (key.includes('.')) {
+      let keys = key.split('.');
+      
+      // We're accessing a nested value. Split at '.'
+      for (const k of keys) {
+        // Check if the current property is an obj
+        if (typeof(current[k]) =='object') {
+          current = current[k]; // Move to the nested obj
+        }
+        else if(Array.isArray(current[k]))
+        {
+          
+          current = current[k]; 
+          push(newItem);
+          this.data = current 
+          this.saveData()
+        }
+        else {
+          current = current[k] // Property is not an array, do nothing
+        }
       }
       
+      // Push the new item to the nested array
+      
+    } else {
+      // The key string is one key. Modify a root property
+      if (Array.isArray(current[key])) {
+        current[key].push(newItem);
+      }
     }
-
-    }
-    else 
-    //the key string is one key. Modify a root property (careful! Easy to overwrite entire branches)
-     if (!Array.isArray(this.data[key])) {
-        this.data[key] = [];
-       }
-       this.data[key].push(newItem);
-       this.saveData();
-}
   
+    this.saveData();
+  }
   /**
    * get any value in the database
    * @param {any} key
@@ -278,23 +291,30 @@ class SimpleDatabase {
    */
   getValue(key) {
     let current = this.data;
-    if (key.includes('.')){
-        keys = key.split('.')
-        keys.forEach((key, index) => {
-         if (!current[key]) {
-            //do nothing, the value does not exist 
-            return 
-         }
+    
+    if (key.includes('.')) {
+     
+      let keys = key.split('.');
+      
+      for (let i = 0; i < keys.length; i++) {
+        const k = keys[i];
         
-    
-        });
-        return current[key];
+        if (current[k]) {
+          current = current[k];
+        } else {
+          
+          return undefined; // Return undefined if any key is not found
+        }
+      }
+      
+      
+      return current;
+    } else {
+     
+      return this.data[key];
     }
-    
-    else 
-    //the key is a root value, grab it. 
-     return this.data[key]
   }
+  
 
   /**
    * Grab the entire database as one object

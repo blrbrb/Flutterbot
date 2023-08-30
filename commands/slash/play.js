@@ -22,6 +22,9 @@ module.exports = {
 		const query = interaction.options.getString('query');
 		
 		if(!queue) console.log('the queue does not exist, and will be created now'); 
+
+		//we need to make sure the member is actually connected to a voice channel, otherwise she'll crash
+		if(interaction.member.voice.channel == null) return interaction.reply('You need to be in a voice channel first!');
 		
 		client.DisTube.play(interaction.member.voice.channel, query, {
 			member: interaction.member,

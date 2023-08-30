@@ -3,7 +3,7 @@ const request = require('request');
 
 module.exports = {
     name: 'quote',
-    description: 'Fetch randomly generated quotes from inspirobot',
+    description: 'fetch randomly generated quotes from inspirobot',
     helpText: `grab a randomly generated quote from inspirobot \n Use: **/quote**`,
     async execute(interaction, client) {
         let options = {

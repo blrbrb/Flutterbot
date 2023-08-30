@@ -33,16 +33,24 @@ module.exports = {
         //initalize the guild quotes object with an empty array if they don't already have data
         //This needs to be done, in order to ensure that if someone has not been registered before 
         //a new server_quotes object for their guild gets created with the correct datatype, in this case an array []
-        console.log(client.db.getValue(`${interaction.guild.id}.server_quotes`))
-        if (client.db.getValue(`${interaction.guild.id}.server_quotes`) == undefined){
-         client.db.addEntry(`${interaction.guild.id}.server_quotes`,[data])
-         client.db.append(`${interaction.guild.id}.server_quotes`,data)}
-        else 
+        //console.log(client.db.getValue(`${interaction.guild.id}.server_quotes`))
+        //if (client.db.getValue(`${interaction.guild.id}`) == undefined){
+         //client.db.addEntry(`${interaction.guild.id}.server_quotes`,[data])
+         //client.db.append(`${interaction.guild.id}.server_quotes`,data)
+
+
+        //else 
          
 
          //SimpleDatabase.Append() not working 
          //client.db.append(`${interaction.guild.id}.server_quotes`,data)
-        var temp = client.db.getAllData() 
+         var temp = client.db.getAllData() 
+        if(!temp.hasOwnProperty(`${interaction.guild.id}`))
+        {
+            client.db.addEntry(`${interaction.guild.id}.server_quotes`, [])
+            temp = client.db.getAllData()
+        }
+        
         temp_arr = temp[`${interaction.guild.id}`][`server_quotes`]
         temp_arr.push(data)
         client.db.addEntry(`${interaction.guild.id}.server_quotes`, temp_arr)

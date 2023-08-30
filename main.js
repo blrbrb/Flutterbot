@@ -40,7 +40,7 @@ const client = new Client({
 
 client.prefixcommands = prefixcommands;
 client.slashcommands = slashcommands;
-client.db = new SimpleDatabase.SimpleDatabase   ('assets/db.json')
+client.db = new SimpleDatabase('assets/db.json')
 
 client.DisTube = new DisTube(client, {
     leaveOnStop: false,

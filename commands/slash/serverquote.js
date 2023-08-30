@@ -30,7 +30,7 @@ module.exports = {
         let data = {"name": speaker.username, "date":`${year}\`${month}\`${day}`, "quote": quoted_text}
 
         client.db.addEntry(`${interaction.guild.id}.server_quotes`,data)
-        client.db.
+        
         let embed = new EmbedBuilder()
             .setTitle(`${speaker.username}`)
             .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 256 }))

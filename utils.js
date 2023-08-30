@@ -109,4 +109,203 @@ function displayList(array) {
     return;
 }
 
+class SimpleDatabase {
+  /**
+   *  The lazy low iq solution to a hosted database 
+   *  certified Eli™ crackhead ducktape  
+   * @param {string} filePath
+   * @returns {void}
+   */
+  constructor(filePath) {
+    this.filePath = filePath;
+    this.data = this.loadData();
+  }
+
+  /**
+   * Private Class Method. Called by the database when modifying adding or removing propereties 
+   * in order to keep the database up to date and clean.
+   * @returns {any}
+   */
+  loadData() {
+    try {
+      const data = fs.readFileSync(this.filePath, 'utf-8');
+      return JSON.parse(data);
+    } catch (error) {
+      console.error('Error loading data:', error);
+      return {};
+    }
+  }
+
+  
+  saveData() {
+    /**
+   * Private Class Method. Called by the database each time a property is changed, added, or deleted
+   * @returns {any}
+   */
+    fs.writeFile(this.filePath, JSON.stringify(this.data, null, 2), 'utf-8', (error) => {
+      if (error) {
+        console.error('Error saving data:', error);
+      }
+    });
+  }
+
+  addEntry(key, value) {
+    let current = this.data;
+    //We're accessing a nested value. Split at '.'
+    if (key.includes('.')){
+     keys = key.split('.')
+     keys.forEach((key, index) => {
+      if (!current[key]) {
+        if (index === keys.length - 1) {
+          current[key] = value;
+          this.saveData();
+        } else {
+          current[key] = {};
+          this.saveData();
+        }
+      }
+      current = current[key];
+    });}
+    else
+    //if the key string does not have ".". It's a flat property. Just add it to the root 
+    this.data[key] = value;
+    this.saveData();
+  }
+
+  /**
+   * Delete a property from the database
+   * @param {string} key
+   * @returns {void}
+   * @example 
+   * client.db.deleteEntry("poopoo.peepee.balls") 
+   * //removes the "balls" property from "peepee", rooted at "poopoo" 
+   */
+  deleteEntry(key) {
+
+    let current = this.data;
+    //We're accessing a nested value. Split at '.'
+    if (key.includes('.')){
+        keys = key.split('.')
+        keys.forEach((key, index) => {
+         if (!current[key]) {
+           if (index === keys.length - 1) {
+             current[key] = value;
+             this.saveData();
+           } else {
+             current[key] = {};
+             this.saveData();
+           }
+         }
+         current = current[key];
+       });}
+    else 
+    //the key string is one key. There are no nested values, or we just want to delete a root property.
+    delete this.data[key];
+    this.saveData();
+  }
+
+  /**
+   * Update or change any value in the database
+   * @param {string} key 
+   * @param {any} newValue
+   * @returns {void}
+   * @example
+   * //Changes the "in_production" property on "factory" to "Toyota Sienna" 
+   * client.db.modifyEntry(factory.cars.in_production, Toyota Sienna)
+   * 
+   */
+  modifyEntry(key, newValue) {
+    
+    let current = this.data;
+    if(key.includes('.')){
+    //We're accessing a nested value. Split at '.'
+    for (const key of key) {
+      if (current[key] === undefined) {
+        return; // None of the keys can be found at root, do nothing
+      }
+      current = current[key];
+    }
+    current = newValue;
+    this.saveData();
+    }
+    else 
+     //the key string is one key. Modify a root property (careful! Easy to overwrite entire branches)
+    current[key] = newValue;
+    this.saveData();
+  }
+
+  /**
+   * append a new value to a property that is an array. 
+   * @param {string} key
+   * @param {any} newItem
+   * @returns {void}
+   * @example 
+   * client.db.append("People.Fuckers", "Clarkson")
+   * 
+   * // in db.json  "People" will now appear as 
+   * 
+   * "People": {"Fuckers": ["Clarkson"] }
+   */
+  append(key, newItem) {
+
+    let current = this.data;
+    if(key.includes('.')){
+    //We're accessing a nested value. Split at '.'
+    for (const key of key) {
+      if (current[key] === undefined) {
+        return; // None of the keys can be found at root, do nothing
+      }
+      if (!Array.isArray(this.data[key])) {
+        this.data[key] = [];
+      }
+      
+    }
+
+    }
+    else 
+    //the key string is one key. Modify a root property (careful! Easy to overwrite entire branches)
+     if (!Array.isArray(this.data[key])) {
+        this.data[key] = [];
+       }
+       this.data[key].push(newItem);
+       this.saveData();
+}
+  
+  /**
+   * get any value in the database
+   * @param {any} key
+   * @returns {any}
+   */
+  getValue(key) {
+    let current = this.data;
+    if (key.includes('.')){
+        keys = key.split('.')
+        keys.forEach((key, index) => {
+         if (!current[key]) {
+            //do nothing, the value does not exist 
+            return 
+         }
+        
+    
+        });
+        return current[key];
+    }
+    
+    else 
+    //the key is a root value, grab it. 
+     return this.data[key]
+  }
+
+  /**
+   * Grab the entire database as one object
+   * @returns {Object}
+   */
+  getAllData() {
+
+    
+    return this.data;
+  }
+}
+
+
 module.exports = { displayList, log, Log, ID };

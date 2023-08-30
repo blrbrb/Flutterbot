@@ -1,4 +1,5 @@
 require('dotenv').config();
+const {db} = require('./utils')
 const { Client, Partials, GatewayIntentBits } = require('discord.js');
 const { DisTube } = require('distube');
 const filters = require('./assets/filters.json');
@@ -39,6 +40,7 @@ const client = new Client({
 
 client.prefixcommands = prefixcommands;
 client.slashcommands = slashcommands;
+client.db = new db('assets/db.json')
 
 client.DisTube = new DisTube(client, {
     leaveOnStop: false,
@@ -82,7 +84,9 @@ client.on('guildMemberAdd', async guildMember => {
     let welcomeRole = guildMember.guild.roles.cache.find(role => role.name === 'new broner');
 });
  */
-client.on('guildCreate', (guild) => { });
+
+//When fluttershy has joined a new guild
+client.on('guildCreate', (guild) => {});
 
 client.login(process.env.DISCORD_TOKEN);
 /* 
@@ -149,6 +153,9 @@ client.on("guildMemberSpeaking", function (member, speaking) {
 });
 
 //Mares mares mares mares mares, when I am sad I like to thnk about mares. Mares make me feel better when I am depressed. Life can make me depressed often but I like mares and thinking about cute mares mares mares. So It is okay
+
+
+
 
 function removeEveryoneMentions(text) {
     // Define regex pattern to match @everyone mentions

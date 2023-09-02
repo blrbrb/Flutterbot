@@ -39,3 +39,4 @@ CLEARSIZE
 assets/scores.json
 assets/scores.json
 events/messagedelete.js
+**.vscode/

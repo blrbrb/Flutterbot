@@ -1,4 +1,6 @@
 const fs = require('fs');
+const chrono = require('chrono-node');
+const { strict } = require('assert');
 
 const colors = {
     "": "\x1b[0m",
@@ -76,6 +78,7 @@ function ID() {
     }
 }
 
+
 const log = new Log(true);
 
 function displayList(array) {
@@ -138,12 +141,12 @@ class SimpleDatabase {
     }
   }
 
-  
-  saveData() {
-    /**
+   /**
    * Private Class Method. Called by the database each time a property is changed, added, or deleted
-   * @returns {any}
+   * @returns {undefined}
    */
+  saveData() {
+   
     fs.writeFile(this.filePath, JSON.stringify(this.data, null, 2), 'utf-8', (error) => {
       if (error) {
         console.error('Error saving data:', error);
@@ -151,9 +154,15 @@ class SimpleDatabase {
     });
   }
 
+  /**
+   * Access a value in the database
+   * @param {String} key 
+   * @param {any} value 
+   * @returns {any} Data associated with key.
+   * @returns {undefined} if key does not exist. (will also auto-initalize the key that isn't found)
+   */
   addEntry(key, value) {
-    let current = this.data;
-    //We're accessing a nested value. Split at '.'
+    let current = this.data; 
     if (key.includes('.')){
      let keys = key.split('.')
      keys.forEach((key, index) => {
@@ -162,6 +171,9 @@ class SimpleDatabase {
           current[key] = value;
           this.saveData();
         } else {
+          //at this point, we've looped over all of the keys 
+          //if there really isn't a key this far down in the json tree
+          //it's safe to initalize the new key as an empty object
           current[key] = {};
           this.saveData();
         }
@@ -310,22 +322,135 @@ class SimpleDatabase {
       
       return current;
     } else {
-     
-      return this.data[key];
+      //check to make sure the root key (the guild) actually exists/
+      //first key will always be guild the guild id. If we have reached
+      //this else block there are no '.' in the key string. The key is flat. like your mom.  
+      //so check to make sure the data actually exists. Just like how the doctor checks my penis.
+
+      if(this.guildExists([key]))
+      {
+        return this.data[key];
+      }
+      //if the guild does not exist in the database, go ahead and do your negative IQ ass self a 
+      //massive favor, and just initalize a new empty object at that key. That way no crashes are possible at 
+      //any point further in the application where fluttershy might need to read, or create keys on that guild.
+      //
+      // Still return undefined, so your ass doesn't FORGET. Also save the db file 
+      else 
+      {
+        this.data[key] = key; 
+        this.saveData(); 
+        return undefined;
+      }
     }
   }
   
+  /**
+   * Check to see if a guild already has data in the db file. 
+   * important to make sure the app doesn't crash accessing data 
+   * that doesn't yet exist. IMPORTANT. Different from keyExists in the sense that 
+   * keyExists() will search the ENTIRE db tree for matches, not just the root of the json tree.
+   * They aren't intercompatible because guild id's may appear elsewhere in the db file farther down 
+   * and conflate the results.
+   * @param {Discord.Snowflake} guildID {@link Discord.Snowflake}
+   * @returns {any}
+   */
+  guildExists(guildID)
+  {
+    //would it be better to use .hasOwnProperty or nah? Quieres¿¿
+    return guildID in this.data 
+  }
+
+  /**
+   * Check to see if a key exists at any point on the json structure.
+   * @param {string} key
+   * @returns {boolean} true if found, false otherwise 
+   * @example  
+   * 
+   * //check the guild's data in the database for a key called "amongus"
+   * if(client.db.keyExists(`${interaction.guild.id}.amongus`))
+   * 
+   * //this will most likely return false. No promises. 
+   */
+  keyExists(key) {
+    // Base case: if the current object is null or undefined, the key does not exist
+    //yes i know. It's silly bc the db is created by the constructor. And it will always exist.
+    //im baby proofing myself. There's a reason why hydroelectric damns have like, 2 million redundancies. 
+    if (key.includes('.')) 
+    {
+      
+
+    }
+    if (this.data === null || this.data === undefined) {
+      return false;
+    }
+  
+    // Check if the target key exists in the current object
+    if (this.data.hasOwnProperty(key)) {
+      return true;
+    }
+  
+    // If the current object is an array, recursively check each element
+    // This should always return false on the first loop, because the root is an object. 
+    //this only here bc we calling functions inside of functions now. 
+    if (Array.isArray(this.data[key])) {
+      for (const item of obj) {
+        //We calling functions inside of cunctions now 
+        if (keyExists(item, key)) {
+          return true;
+        }
+      }
+    }
+  
+    // If the current object is an object, recursively check its properties
+    if (typeof obj === 'object') {
+      for (const key in obj) {
+        if (keyExists(obj[key], targetKey)) {
+          return true;
+        }
+      }
+    }
+  
+    // If the key is not found in the current object or its descendants, return false
+    return false;
+  }
 
   /**
    * Grab the entire database as one object
-   * @returns {Object}
+   * @returns {Object.JSON}
    */
   getAllData() {
-
-    
     return this.data;
   }
 }
 
+function validateDate(RawDateString) {
 
-module.exports = { displayList, log, Log, ID, SimpleDatabase};
+  const results = chrono.parse(RawDateString);
+
+  console.log('fucking');
+  if (results.length === 0) { 
+    console.log('unable to parse')
+    console.log(results)
+    return false; // Couldn't parse a date
+  }
+
+  const parsedDate = results[0].start.date();
+  const currentDate = new Date();
+
+  // Check if the parsed date is in the past
+  if (parsedDate < currentDate) {
+    console.log('this date has already passed')
+    return false; // Date has already passed
+  }
+
+  return parsedDate;
+  //Discord's event manager API can take just straight up Date() 
+  // Convert the valid date to a Unix timestamp
+  //const unixTimestamp = parsedDate.getTime() / 1000;
+
+ // return unixTimestamp;
+}
+
+
+module.exports = { displayList, log, Log, ID, SimpleDatabase, validateDate};

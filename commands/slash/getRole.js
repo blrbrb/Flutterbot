@@ -41,7 +41,7 @@ module.exports = {
         }
         try {
             await guildMember.roles.add(role);
-            interaction.reply(`Role '${role.name}' added to you`);
+            interaction.reply({content:`Role '${role.name}' added to you`, ephemeral: true});
         } catch (error) {
             console.error(error);
             interaction.reply({

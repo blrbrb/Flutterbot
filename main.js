@@ -3,7 +3,7 @@ const { SimpleDatabase } = require('./utils')
 const { Client, Partials, GatewayIntentBits } = require('discord.js');
 const { DisTube } = require('distube');
 const filters = require('./assets/filters.json');
-const { prefixcommands, slashcommands } = require('./findAllCommands.js');
+const { prefixcommands, slashcommands, current_maintenance } = require('./findAllCommands.js');
 
 const client = new Client({
     intents: [
@@ -50,7 +50,6 @@ client.DisTube = new DisTube(client, {
     emitAddSongWhenCreatingQueue: false,
     emitAddListWhenCreatingQueue: false,
     youtubeCookie: process.env.FART,
-    youtubeIdentityToken: process.env.ID_TOKEN,
     customFilters: filters
 });
 
@@ -67,6 +66,22 @@ client.on('interactionCreate', interaction => {
     // and instead we should give an empty response to discord with an acknowledgement but without a response
     // otherwise the channel where the interaction was created in will react as if the bot is offline
     // possibly prompting people to think the bot had crashed
+    // (oh dip for real?) ~ E.
+
+
+
+    //defer the reply, to avoid the whole 'the application did not respond'
+    //nvm. That just makes it so every interaction throws"already awknowledged" or "unknown interaction"
+    ///interaction.deferReply({ ephemeral: true }).catch(console.error);
+
+
+    //set current_maintenance to true in config/config.json if you wanna test her
+    if(current_maintenance && !developers.includes(interaction.user.id))
+    {
+        return 
+    }
+    
+    
     if (interaction.channel.id == '1091850338023260261') return;
     try {
         // we should check if a command isnt found but was registered in discord
@@ -78,6 +93,8 @@ client.on('interactionCreate', interaction => {
             ephemeral: true,
         });
     }
+
+    
 });
 /* 
 client.on('guildMemberAdd', async guildMember => {

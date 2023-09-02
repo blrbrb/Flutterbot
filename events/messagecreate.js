@@ -1,9 +1,6 @@
-const { Events } = require('discord.js');
-const { prefix } = require('../config/config.json');
+const { Events,AttachmentBuilder } = require('discord.js');
+const { prefix, current_maintenance } = require('../config/config.json');
 const fs = require('fs');
-const {REST} = require('@discordjs/rest')
-const {Routes} = require('discord-api-types/v9');
-require('dotenv').config();
 
 module.exports = {
     name: Events.MessageCreate,
@@ -13,12 +10,18 @@ module.exports = {
 
         let args = message.content.slice(prefix.length).trim().split(/ +/g);
         const command = args.shift(); 
+
+        if(current_maintenance)
+        {
+            const attachment = new AttachmentBuilder('https://i.imgur.com/Sfgu2QH.jpg', 'No Commands?');
+            return message.channel.send({content: 'sorry, someone is working on me right now',files:[attachment]})
+        }
     
         //let pC = client.prefixcommands.get('fs');
         // if (pC) return pC.execute(client, message, command, args, prefix), undefined;
         // i would like to check whether or not a command was found and ran successfully to return out of this function but its not required.
         client.prefixcommands.get(command)?.execute(client, message, args);
-
+        
         switch (command) {
             case 'angel': {
                 message.channel.send('angel bunny');

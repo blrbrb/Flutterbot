@@ -3,8 +3,8 @@ const { description } = require("./maintenance");
 const {validateDate} = require("../../utils.js")
 
 module.exports = {
-    name: "test",
-    description: "a test command",
+    name: "event",
+    description: "create a new event",
     options: [
      {
         name: "name",

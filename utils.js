@@ -116,6 +116,30 @@ function displayList(array) {
     return;
 }
 
+function removeEveryoneMentions(text) {
+  // Define regex pattern to match @everyone mentions
+  const pattern = /@everyone/g;
+
+  // Use String.replace() to replace all matches of the pattern with an empty string
+  const updatedText = text.replace(pattern, "");
+
+  // Return the updated text
+  return updatedText;
+}
+
+function format(template, replacements) {
+  return template.replace(/\${(.*?)}/g, (match, key) => {
+    // Check if the key exists in replacements, otherwise, return the original match
+    return replacements.hasOwnProperty(key) ? replacements[key] : match;
+  });
+}
+
+function langRand(langArray)
+{
+  const randomIndex = Math.floor(Math.random() * langArray.length);
+  const randomElement = langArray[randomIndex];
+  return randomElement;
+}
 class SimpleDatabase {
   /**
    *  The lazy low iq solution to a hosted database 
@@ -548,4 +572,4 @@ class FluttershyLockBox
 }
 
 
-module.exports = { displayList, log, Log, ID, SimpleDatabase, validateDate, FluttershyLockBox};
+module.exports = { displayList, log, Log, ID, SimpleDatabase, validateDate, FluttershyLockBox, removeEveryoneMentions, format, langRand};

@@ -2,7 +2,7 @@ const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require('discord.js');
 const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
 
-const { channel } = require('../../lang/en');
+
 
 module.exports = {
 	name: 'play',
@@ -29,7 +29,7 @@ module.exports = {
 		client.DisTube.play(interaction.member.voice.channel, query, {
 			member: interaction.member,
 			textChannel: interaction.channel,
-		}).then(interaction.reply(`ok! I'll put this into the queues`));
+		}).then(interaction.reply({content:`Searching for relevant results...`, ephemeral:true}));
 		
 		return; 
 

@@ -1,10 +1,9 @@
 require('dotenv').config();
-const { SimpleDatabase } = require('./utils')
+const { SimpleDatabase, Log, FluttershyLockBox } = require('./utils')
 const { Client, Partials, GatewayIntentBits } = require('discord.js');
 const { DisTube } = require('distube');
 const filters = require('./assets/filters.json');
 const { prefixcommands, slashcommands, current_maintenance } = require('./findAllCommands.js');
-
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -38,6 +37,7 @@ const client = new Client({
     }
 });
 
+client.LockBox = new FluttershyLockBox();
 client.prefixcommands = prefixcommands;
 client.slashcommands = slashcommands;
 client.db = new SimpleDatabase('assets/db.json')
@@ -61,27 +61,17 @@ for (const file of eventFiles) {
     else client.on(event.name, (...args) => event.execute(client, ...args));
 }
 
-client.on('interactionCreate', interaction => {
+client.on('interactionCreate',interaction => {
     // we shouldnt just ignore an interaction
     // and instead we should give an empty response to discord with an acknowledgement but without a response
     // otherwise the channel where the interaction was created in will react as if the bot is offline
     // possibly prompting people to think the bot had crashed
     // (oh dip for real?) ~ E.
 
-
-
     //defer the reply, to avoid the whole 'the application did not respond'
     //nvm. That just makes it so every interaction throws"already awknowledged" or "unknown interaction"
     ///interaction.deferReply({ ephemeral: true }).catch(console.error);
 
-
-    //set current_maintenance to true in config/config.json if you wanna test her
-    if(current_maintenance && !developers.includes(interaction.user.id))
-    {
-        return 
-    }
-    
-    
     if (interaction.channel.id == '1091850338023260261') return;
     try {
         // we should check if a command isnt found but was registered in discord
@@ -94,7 +84,6 @@ client.on('interactionCreate', interaction => {
         });
     }
 
-    
 });
 /* 
 client.on('guildMemberAdd', async guildMember => {
@@ -106,52 +95,7 @@ client.on('guildMemberAdd', async guildMember => {
 client.on('guildCreate', (guild) => {});
 
 client.login(process.env.DISCORD_TOKEN);
-/* 
-async function voice(message, args) {
-    message.channel.send(await ai(args));
-}
 
-async function save_data(values, file) {
-    let json = JSON.stringify(values);
-    fs.writeFile(file, json, function (err, result) {
-        if (err) console.log('JSON file writing error in main.js lin 431 caught', err);
-    });
-}
-
-async function load_data(file) {
-    let values;
-    //var values = JSON.parse(file); 
-    fs.readFile(file, 'utf-8', function (err, result) {
-        if (err) console.log('txt file reading error in main.js lin 450 caught', err);
-        values = result;
-    });
-    return values;
-}
- */
-client.on('ready', async () => {
-    //Distube listeners need to be initalized here, according to the documentation on DisTube.js 
-    // discord bot "ready" event is only called once, but the listeners will still be activated.
-    client.DisTube.on("playSong", (queue, song) => {
-        queue.textChannel.send(removeEveryoneMentions(`🎶 Now playing **${song.name}** / ${song.formattedDuration} / requested by ${song.user}`));
-
-
-        client.DisTube.on("error", (channel, e) => {
-            // console.log(e.stack);
-            console.log(Object.getOwnPropertyNames(e));
-            console.log(Object.keys(e));
-            console.log(e.message);
-            console.log(e.name);
-            client.DisTube.deleteQueue();
-            channel.send(`I'm sorry, My songbirds are having trouble playing this song because...\n\`${e.message}\``);
-            //console.log(e);
-        });
-
-
-        client.DisTube.on("empty", (queue) => { queue.textChannel.send("Oh has everyone gone home? I'll stop playing the music"); });
-
-    });
-
-});
 
 //client debugging events 
 client.on("reconnecting", function () {

@@ -20,6 +20,7 @@
         "canvass": "^0.1.0",
         "cheerio": "^1.0.0-rc.12",
         "chrono-node": "^2.6.5",
+        "crypto": "^1.0.1",
         "discord.js": "^14.13.0",
         "distube": "^4.0.4",
         "dotenv": "^16.0.1",

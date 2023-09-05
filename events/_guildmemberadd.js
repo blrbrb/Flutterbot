@@ -1,11 +1,11 @@
 const { Events } = require('discord.js');
-
+const {validateAge} = require('../utils.js'); 
 module.exports = {
 	name: Events.GuildMemberAdd,
 	once: true,
-	execute() {
-		guildMember.roles.add(welcomeRole);
-		guildMember.guild.channels.cache.get('960713019753644035').send(` <@${guildMember.user.id}> HI NEW FRIEND!!`);
-		return; 
+	execute(client, GuildMember) {
+	
+		
+	
 	}
 };

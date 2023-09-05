@@ -1,6 +1,10 @@
+require('dotenv').config();
 const fs = require('fs');
 const chrono = require('chrono-node');
 const { strict } = require('assert');
+//eew
+const crypto = require('crypto');
+
 
 const colors = {
     "": "\x1b[0m",
@@ -232,8 +236,10 @@ class SimpleDatabase {
     
     let current = this.data;
     if(key.includes('.')){
-    //We're accessing a nested value. Split at '.'
-    for (const key of key) {
+    //We're accessing a nested value. Split at '.' 
+    let keys = key.split('.'); 
+
+    for (const key of keys) {
       if (current[key] === undefined) {
         return; // None of the keys can be found at root, do nothing
       }
@@ -452,5 +458,85 @@ function validateDate(RawDateString) {
  // return unixTimestamp;
 }
 
+class FluttershyLockBox 
+{
+   
+   constructor() {
+    //if there is an existing key, everything has already been encrypted with it.
+    //it is not necessary to create a new one yet, as all of the old data will become unreadable.
+    this.Key = process.env.ENCRYPTION_KEY;
+    if(this.Key === undefined)
+    {
+     //only update if it is the first time creating a key
+     this.updateEnv()
+    }
+  
+    
+  }
 
-module.exports = { displayList, log, Log, ID, SimpleDatabase, validateDate};
+  /**
+   * @summary Encrypt secure keys, passwords, secrets, tokens, strings etc
+   * @param {any} str
+   * @returns {any}
+   */
+  encrypt(str) {
+    const cipher = crypto.createCipher('aes-256-cbc', this.Key);
+    let encryptedToken = cipher.update(str, 'utf8', 'hex');
+    encryptedToken += cipher.final('hex');
+    return encryptedToken;
+  }
+  
+  
+  /**
+   * @summary Decrypt secure keys, passwords, secrets, tokens, strings etc
+   * @param {string} token_str
+   * @returns {string}
+   */
+  decrypt(token_str) {
+    const decipher = crypto.createDecipher('aes-256-cbc', this.Key);
+    let decryptedToken = decipher.update(token_str, 'hex', 'utf8');
+    decryptedToken += decipher.final('utf8');
+    return decryptedToken;
+  }
+/** 
+* 
+* @summary Private Class Method: generate a new 32bit hex key to seed encryption ciphers
+* @return {string} key representing random bytes 
+*/
+  generateKey() {
+    Key = crypto.randomBytes(32).toString('hex');
+    return Key;
+  }
+
+  /**
+   * @summary Private Class Method: called to update the .env file after a new key is made
+   * @returns {undefined}
+   */
+  updateEnv() {
+
+    // Generate a new encryption key
+    const Key = this.generateKey();
+  
+    const envKey = `
+      ENCRYPTION_KEY=${Key}
+    `;
+  
+    fs.writeFileSync('.env', envKey, { flag: 'a' }); //'a' 'append'. Dont erase important stuff already in .env
+    Log('created new key and updated .env file'); 
+
+  }
+
+  /**
+   * @summary Private Class Accessor method. Check if key already exists in enviornment
+   * @returns {boolean}
+   */
+  FirstTimeKey() {
+    // Check if 'ENCRYPTION_KEY' exists in the environment variables
+    return process.env.ENCRYPTION_KEY == undefined;
+  }
+  
+
+
+}
+
+module.exports = { displayList, log, Log, ID, SimpleDatabase, validateDate, FluttershyLockBox};

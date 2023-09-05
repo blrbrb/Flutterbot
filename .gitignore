@@ -30,6 +30,8 @@ notes.txt
 **/.wav
 **/.flac
 **/.ogg
+#we can't upload the db now, it includes tokens from last.fm signins.
+**/.json 
 netscape_cookies.txt 
 package.json
 package-lock.json

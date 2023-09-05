@@ -1,9 +1,12 @@
 require('dotenv').config();
-const { SimpleDatabase } = require('./utils')
+const { SimpleDatabase, FluttershyLockBox } = require('./utils')
 const { Client, Partials, GatewayIntentBits } = require('discord.js');
 const { DisTube } = require('distube');
 const filters = require('./assets/filters.json');
 const { prefixcommands, slashcommands, current_maintenance } = require('./findAllCommands.js');
+const LastfmApi = require('lastfmapi'); 
+const http = require('http');
+const url = require('url');
 
 const client = new Client({
     intents: [
@@ -38,10 +41,16 @@ const client = new Client({
     }
 });
 
+client.lastfm = new LastfmApi({
+	'api_key' : process.env.FM_KEY,
+	'secret' : process.env.FM_SECRET
+}); 
+
 client.prefixcommands = prefixcommands;
 client.slashcommands = slashcommands;
-client.db = new SimpleDatabase('assets/db.json')
-
+client.LockBox = new FluttershyLockBox(); 
+client.db = new SimpleDatabase('assets/db.json');
+client.fmAuthUrl = client.lastfm.getAuthenticationUrl({ 'cb' : "https://e7e1-97-83-17-173.ngrok-free.app"});
 client.DisTube = new DisTube(client, {
     leaveOnStop: false,
     leaveOnFinish: true,
@@ -53,7 +62,57 @@ client.DisTube = new DisTube(client, {
     customFilters: filters
 });
 
-// main events
+var key = ''; 
+
+///We need to find a way to move this to another file or something??? Or have these listeners, clients, etc in a more organized structure
+http.createServer(function (req, res) {
+    var pathname = url.parse(req.url).pathname;
+
+    if (pathname === '/') {
+        
+        console.log('pathname = /')
+        res.writeHead(200, { 'Content-Type' : 'text/html' });
+        res.end('<a href="' + client.fmAuthUrl + '">Authenticate</a>');
+        client.db.addEntry(`last_fmSessions.${session.username}`, session.key); 
+        return;
+    }
+
+    if (pathname === '/auth') {
+        console.log('pathname = /auth')
+        var token = url.parse(req.url, true).query.token;
+
+        client.lastfm.authenticate(token, function (err, session) {
+            if (err) {
+                console.log(err);
+                res.writeHead(401, { 'Content-Type' : 'text/plain' });
+                res.end('Unauthorized');
+
+            } else {
+                console.log('success!!');
+                res.writeHead(200, { 'Content-Type' : 'text/html' });
+                res.write('<p>Authentication successful. You can now make authenticated method calls.</p>');
+                res.write('<pre>' + JSON.stringify(session, null, '    ') + '</pre>');
+                res.write('<p>Store this data for future authentication.</p>');
+                res.write('<p>Use <code>client.lastfm.setSessionCredentials(\'' + session.username + '\', \'' + session.key + '\');</code> for automatic authentication in the future.</p>');
+                res.end('<pre>:)</pre>'); 
+                
+                //encrypt the new user's secure key before storing it in the database. 
+                //client.db.addEntry(`last_fmSessions.${session.username}`, session.key); 
+                
+                 
+            }
+
+        });
+
+        return;
+    }
+
+    res.writeHead(404, { 'Content-Type' : 'text/plain' });
+    res.end('Not found');
+
+
+}).listen(8080);
+
 const eventFiles = require('./utils/findFiles')(__dirname, './events', '.js');
 for (const file of eventFiles) {
     const event = require(`./events/${file}`);
@@ -61,26 +120,19 @@ for (const file of eventFiles) {
     else client.on(event.name, (...args) => event.execute(client, ...args));
 }
 
+
+
+
+
+
+
 client.on('interactionCreate', interaction => {
-    // we shouldnt just ignore an interaction
-    // and instead we should give an empty response to discord with an acknowledgement but without a response
-    // otherwise the channel where the interaction was created in will react as if the bot is offline
-    // possibly prompting people to think the bot had crashed
-    // (oh dip for real?) ~ E.
-
-
-
-    //defer the reply, to avoid the whole 'the application did not respond'
-    //nvm. That just makes it so every interaction throws"already awknowledged" or "unknown interaction"
-    ///interaction.deferReply({ ephemeral: true }).catch(console.error);
-
-
-    //set current_maintenance to true in config/config.json if you wanna test her
+    
+    
     if(current_maintenance && !developers.includes(interaction.user.id))
     {
         return 
     }
-    
     
     if (interaction.channel.id == '1091850338023260261') return;
     try {
@@ -170,9 +222,6 @@ client.on("guildMemberSpeaking", function (member, speaking) {
 });
 
 //Mares mares mares mares mares, when I am sad I like to thnk about mares. Mares make me feel better when I am depressed. Life can make me depressed often but I like mares and thinking about cute mares mares mares. So It is okay
-
-
-
 
 function removeEveryoneMentions(text) {
     // Define regex pattern to match @everyone mentions

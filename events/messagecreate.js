@@ -11,11 +11,6 @@ module.exports = {
         let args = message.content.slice(prefix.length).trim().split(/ +/g);
         const command = args.shift(); 
 
-        if(current_maintenance)
-        {
-            const attachment = new AttachmentBuilder('https://i.imgur.com/Sfgu2QH.jpg', 'No Commands?');
-            return message.channel.send({content: 'sorry, someone is working on me right now',files:[attachment]})
-        }
     
         //let pC = client.prefixcommands.get('fs');
         // if (pC) return pC.execute(client, message, command, args, prefix), undefined;

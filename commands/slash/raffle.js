@@ -4,7 +4,7 @@ module.exports = {
  
     name: 'raffle',
     description: 'Selects a random user in the guild.',
-    async execute(interaction, client) {
+    async execute(interaction, Flutterbot) {
 
     // Check if user has admin role
     if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {

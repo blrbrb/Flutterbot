@@ -7,7 +7,7 @@ module.exports = {
 		console.log(`Client joined guild ${guild.name} with ID ${guild.id}`);
 		createGuild(guild, true);
 
-		guild.commands.set(client.slashcommands);
+		guild.commands.set(Flutterbot.clientslashcommands);
 		return; 
 	}
 };

@@ -17,7 +17,7 @@ module.exports = {
             required: true
         }
     ],
-    async execute(interaction, client) { // eslint-disable-line no-unused-vars
+    async execute(interaction,Flutterbot)  { // eslint-disable-line no-unused-vars
         imageUrl = await findImage(message);
         console.log(imageUrl);
         if (imageUrl !== undefined) {

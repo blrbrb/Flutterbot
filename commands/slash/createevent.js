@@ -45,7 +45,7 @@ module.exports = {
     },
    
     ],
-    async execute(interaction, client) {
+    async execute(interaction, Flutterbot) {
 
       const guild_id = interaction.guild.id;
       const raw = interaction.options.getString('start'); 

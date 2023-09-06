@@ -10,7 +10,7 @@ module.exports = {
             type: 6
         }
     ],
-    async execute(interaction, client) {
+    async execute(interaction, Flutterbot) {
         //if (args[0]==null || args[0]=="") return message.channel.send('uhhhhm. please sepecify an argument for booping'); 
 
         // author = interaction.member.nickname || interaction.member.user.username;

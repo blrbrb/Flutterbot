@@ -18,7 +18,7 @@ module.exports = {
 
             //check if the person creating the role is on the list of permanently trusted users
             if (!always_trusted.includes(action.executor.id)) {
-                client.channels.cache.get(config.warning_channel)?.send(`\`${action.executor.username}\` has created a new role with administrator level access.\``);
+                Flutterbot.clientchannels.cache.get(config.warning_channel)?.send(`\`${action.executor.username}\` has created a new role with administrator level access.\``);
             }
         }
     }

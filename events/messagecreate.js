@@ -17,10 +17,10 @@ module.exports = {
             return message.channel.send({content: 'sorry, someone is working on me right now',files:[attachment]})
         }
     
-        //let pC = client.prefixcommands.get('fs');
+        //let pC = Flutterbot.clientprefixcommands.get('fs');
         // if (pC) return pC.execute(client, message, command, args, prefix), undefined;
         // i would like to check whether or not a command was found and ran successfully to return out of this function but its not required.
-        client.prefixcommands.get(command)?.execute(client, message, args);
+        Flutterbot.clientprefixcommands.get(command)?.execute(client, message, args);
         
         switch (command) {
             case 'angel': {

@@ -19,7 +19,7 @@ module.exports = {
 				message.channel.send('you are beautiful 10/10');
 				return;
 			}
-			if (message.mentions.members.first().user.id == client.user.id) {
+			if (message.mentions.members.first().user.id == Flutterbot.clientuser.id) {
 				message.channel.send('Oh... Im not really sure. Im not capable of self-critical thought yet');
 				return;
 			}

@@ -16,7 +16,7 @@ module.exports = {
             required: true
         }
     ],
-    async execute(interaction, client)
+    async execute(interaction, Flutterbot)
     {
         //im retarded. actual string is stored in ".value"
         let quoted_text = interaction.options.get('quote').value;
@@ -33,27 +33,27 @@ module.exports = {
         //initalize the guild quotes object with an empty array if they don't already have data
         //This needs to be done, in order to ensure that if someone has not been registered before 
         //a new server_quotes object for their guild gets created with the correct datatype, in this case an array []
-        //console.log(client.db.getValue(`${interaction.guild.id}.server_quotes`))
-        //if (client.db.getValue(`${interaction.guild.id}`) == undefined){
-         //client.db.addEntry(`${interaction.guild.id}.server_quotes`,[data])
-         //client.db.append(`${interaction.guild.id}.server_quotes`,data)
+        //console.log(Flutterbot.db.getValue(`${interaction.guild.id}.server_quotes`))
+        //if (Flutterbot.db.getValue(`${interaction.guild.id}`) == undefined){
+         //Flutterbot.db.addEntry(`${interaction.guild.id}.server_quotes`,[data])
+         //Flutterbot.db.append(`${interaction.guild.id}.server_quotes`,data)
 
 
         //else 
          
 
          //SimpleDatabase.Append() not working 
-         //client.db.append(`${interaction.guild.id}.server_quotes`,data)
-         var temp = client.db.getAllData() 
+         //Flutterbot.db.append(`${interaction.guild.id}.server_quotes`,data)
+         var temp = Flutterbot.db.getAllData() 
         if(!temp.hasOwnProperty(`${interaction.guild.id}`))
         {
-            client.db.addEntry(`${interaction.guild.id}.server_quotes`, [])
-            temp = client.db.getAllData()
+            Flutterbot.db.addEntry(`${interaction.guild.id}.server_quotes`, [])
+            temp = Flutterbot.db.getAllData()
         }
         
         temp_arr = temp[`${interaction.guild.id}`][`server_quotes`]
         temp_arr.push(data)
-        client.db.addEntry(`${interaction.guild.id}.server_quotes`, temp_arr)
+        Flutterbot.db.addEntry(`${interaction.guild.id}.server_quotes`, temp_arr)
 
         let embed = new EmbedBuilder()
             .setTitle(`${speaker.username} on ${month}\\${day}\\${year} `)

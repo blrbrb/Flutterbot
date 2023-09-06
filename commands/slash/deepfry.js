@@ -17,7 +17,7 @@ module.exports = {
             required: true
         }
     ],
-    async execute(interaction, client) {
+    async execute(interaction, Flutterbot) {
 
         imageUrl = await interaction.options.getAttachment('image').url;
 

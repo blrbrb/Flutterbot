@@ -15,8 +15,8 @@ module.exports = {
             required: true
         }
     ],
-    async execute(interaction, client) {
-        const queue = await client.DisTube.getQueue(interaction);
+    async execute(interaction, Flutterbot) {
+        const queue = await Flutterbot.DisTube.getQueue(interaction);
         if(!queue) return interaction.reply(`But there is no queue! Use /play to search for songs`);
 
         const song_time = queue.songs[0].formattedDuration;
@@ -27,7 +27,7 @@ module.exports = {
         let result = new Date(total_seconds * 1000).toISOString().slice(14, 19);
 
         
-        client.DisTube.seek(interaction, total_seconds);
+        Flutterbot.DisTube.seek(interaction, total_seconds);
         
         const skip = `skipping ${queue.songs[0].name} to \`${result} / ${queue.songs[0].formattedDuration}\``;
         return interaction.reply(skip);

@@ -12,7 +12,7 @@ module.exports = {
             required: true,
         },
     ],
-    async execute(interaction, client) {
+    async execute(interaction, Flutterbot) {
         const role = interaction.options.getRole('role');
         const guildMember = interaction.member;
 

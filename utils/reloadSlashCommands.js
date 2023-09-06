@@ -20,7 +20,7 @@
 module.exports = async (client, guild, guildInfo) => {
     let lang = require(`../lang/${guildInfo.lang}.js`);
     let applicationCommands = [];
-    for (command of client.commands.values()) {
+    for (command of Flutterbot.clientcommands.values()) {
         if (command.name == 'leaderboard') continue;
         if (command.admin || !guildInfo.modules.find((c) => c.name == command.name).enabled) continue;
         let cmdtxt = lang.commands.find((c) => c.name == command.name);

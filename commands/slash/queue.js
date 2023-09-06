@@ -4,9 +4,9 @@ module.exports = {
     name: 'queue',
     description: 'display the queue of currently playing songs',
     helpText: `View all of the currently queued songs and videos \n Use: **/queue**`,
-    async execute(interaction, client) {
+    async execute(interaction, Flutterbot) {
 
-        let queue = await client.DisTube.getQueue(interaction);
+        let queue = await Flutterbot.DisTube.getQueue(interaction);
 
         if(!queue) return interaction.reply(`But there is no queue! Use /play to search for songs`);
         

@@ -3,8 +3,8 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Events } = require('discor
 module.exports = {
     name: 'roles',
     description: 'Get a list of server roles, add or remove roles (unstable)',
-    async execute(interaction, client) {
-        ///const current_guild = client.guilds.cache.get(interaction.member.guild.id) 
+    async execute(interaction,Flutterbot)  {
+        ///const current_guild = Flutterbot.guilds.cache.get(interaction.member.guild.id) 
         ///const example_role = interaction.message.guild.roles.cache.find(r => r.name === 'Mauds') 
         ///console.log(example_role)
         ///const roles = current_guild.roles.cache.map(role=> role.name)

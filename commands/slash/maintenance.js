@@ -18,7 +18,7 @@ module.exports = {
             required: false
         }
     ],
-async execute(interaction, client){
+async execute(interaction, Flutterbot){
 const start = interaction.options.getString('start');
 const end = interaction.options.getString('end');
 
@@ -41,7 +41,7 @@ if (end) {
 //just for the lols 
 message+= ` During this time, I will not be able to respond to any of your commands because somepony is [*bZzZZtzzzzzzzzz-`
 // Iterate through guilds the bot is in and send the announcement, if the guild has a root channel for announcements/webhooks/bots
-client.guilds.cache.forEach((guild) => {
+Flutterbot.clientguilds.cache.forEach((guild) => {
   const announcementChannel = guild.systemChannel;
 
   if (announcementChannel) {

@@ -12,7 +12,7 @@ module.exports = {
             required: true
         }
     ],
-    async execute(interaction, client)
+    async execute(interaction, Flutterbot)
     {
     
        
@@ -24,17 +24,17 @@ module.exports = {
         .setTitle(`${speaker.username}`)
         .setThumbnail(speaker.displayAvatarURL({ dynamic: true, size: 256 }))
         //fetches an array of json objects. A list of all quotes from that person, that have been saved in the guild.
-        //let fetched_quotes = client.db.getValue(`${interaction.guild.id}.server_quotes`)
+        //let fetched_quotes = Flutterbot.db.getValue(`${interaction.guild.id}.server_quotes`)
         
         //getValue wont work with Arrays rn tried
-        let temp = client.db.getAllData()
+        let temp = Flutterbot.db.getAllData()
         
         let fetched_quotes = temp[`${interaction.guild.id}`][`server_quotes`]
         
         if(!fetched_quotes)
         {
             embed.setDescription(`${username} hasn't been quoted yet in this guild...`); 
-            client.db.addEntry(`${interaction.guild.id}.server_quotes`, []);
+            Flutterbot.db.addEntry(`${interaction.guild.id}.server_quotes`, []);
             return interaction.reply(langRand(errorMessage.quotesfromError.noQuotesForGuild));
         }
         

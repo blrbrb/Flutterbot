@@ -16,9 +16,9 @@ module.exports = {
 			required: true
 		}
 	],
-	async execute(interaction, client) {
+	async execute(interaction, Flutterbot) {
 		
-		const queue = await client.DisTube.getQueue(interaction);
+		const queue = await Flutterbot.DisTube.getQueue(interaction);
 		const query = interaction.options.getString('query');
 		
 		if(!queue) console.log('the queue does not exist, and will be created now'); 
@@ -26,7 +26,7 @@ module.exports = {
 		//we need to make sure the member is actually connected to a voice channel, otherwise she'll crash
 		if(interaction.member.voice.channel == null) return interaction.reply('You need to be in a voice channel first!');
 		
-		client.DisTube.play(interaction.member.voice.channel, query, {
+		Flutterbot.DisTube.play(interaction.member.voice.channel, query, {
 			member: interaction.member,
 			textChannel: interaction.channel,
 		}).then(interaction.reply({content:`Searching for relevant results...`, ephemeral:true}));
@@ -36,7 +36,7 @@ module.exports = {
 	},
 	async queue_video(interaction, client, query, queue, nsfw) 
 	{
-		client.DisTube.play(interaction.member.voice.channel, firstResult.url, {
+		Flutterbot.DisTube.play(interaction.member.voice.channel, firstResult.url, {
 		member: interaction.member,
 		textChannel: interaction.channel,
 		interaction
@@ -47,7 +47,7 @@ module.exports = {
 	},
 	async results_selection(interaction, client, query) {
 		try {
-			const result = await client.DisTube.search(query);
+			const result = await Flutterbot.DisTube.search(query);
 
 			let select_embeds = [];
 			const row = new ActionRowBuilder();

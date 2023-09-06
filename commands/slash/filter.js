@@ -106,10 +106,10 @@ module.exports = {
             description: 'Manually specify a FFMPEG filter to apply directly to the stream'
         }
     ],
-    async execute(interaction, client) {
+    async execute(interaction, Flutterbot) {
 
         const selection = ((interaction.options.getString('filter')) ? interaction.options.getString('filter') : interaction.options.getString('ffmpeg'))
-        const queue = await client.DisTube.getQueue(interaction);
+        const queue = await Flutterbot.DisTube.getQueue(interaction);
 
         if(!queue) return interaction.reply(`But there's no music playing! Use /play to search for songs`);
 

@@ -24,7 +24,7 @@ module.exports = {
             const time_rate = actual_rate / 1000;
 
             if (actual_rate < rate_limits.createRole) {
-                const channel = client.channels.cache.get(config.warning_channel);
+                const channel = Flutterbot.clientchannels.cache.get(config.warning_channel);
 
                 if (channel) {
                     const message = 'An error occurred:\n```js\n%s\n```' + `Instance: ${os.hostname} \n Server: ${guild_name}`;

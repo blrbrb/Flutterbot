@@ -18,7 +18,7 @@ module.exports = {
             required: false
         }
     ],
-    execute(interaction, client) {
+    execute(interaction, Flutterbot) {
         let lover1 = interaction.options.get('somepony').user;
         let lover2 = interaction.options.get('somepony2')?.user;
         if (!lover2) {

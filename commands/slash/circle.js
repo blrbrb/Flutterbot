@@ -22,7 +22,7 @@ module.exports = {
 			description: "increase or decrease the IOR of the UV sphere 1 to 10"
 		}
 	],
-	async execute(interaction, client) { // eslint-disable-line no-unused-vars
+	async execute(interaction, Flutterbot) { // eslint-disable-line no-unused-vars
 
 		var IOR = 10;
 

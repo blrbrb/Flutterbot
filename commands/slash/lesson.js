@@ -5,7 +5,7 @@ module.exports = {
     name: 'lesson',
     description: 'get a randomly fetched quote from the FIM TV series!',
     helpText: `I'll pull up a random snippet of dialouge from any of the nine seasons of FIM \n Use: **/lesson**`,
-    async execute(interaction, client) {
+    async execute(interaction, Flutterbot) {
         //TO DO: Find a way to fetch corresponding images for each pony speaking. 
 
         let rawdata = fs.readFileSync('assets/season1.json');

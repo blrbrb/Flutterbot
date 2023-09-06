@@ -13,7 +13,7 @@ module.exports = {
             required: true,
         }
     ],
-    async execute(interaction, client) {
+    async execute(interaction,Flutterbot)  {
         console.log('working');
         let user = interaction.options.getUser('trusted');
         let data;

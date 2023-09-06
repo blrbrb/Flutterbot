@@ -23,7 +23,7 @@ module.exports = {
             description: "increase or decrese the quality of the JPEG from 1 to 10"
         }
     ],
-    async execute(interaction, client) {
+    async execute(interaction, Flutterbot) {
 
         var quality = 1;
 

@@ -12,7 +12,7 @@ module.exports = {
       required: true,
     },
   ],
-  async execute(interaction, client) {
+  async execute(interaction, Flutterbot) {
 
 
     // Check if user is an administrator

@@ -15,20 +15,20 @@ module.exports = {
     ],
    async execute(interaction, Flutterbot)
    {
-        const target_channel = Flutterbot.client.channels.cache.get('1032402464940511343');
+        const target_channel = Flutterbot.client.channels.cache.get('1091850338023260261');
         const message_str = removeEveryoneMentions((langRand(commandResponses.scpMessage))); 
         const sacrificed_role = '1109587525720342548'; 
         
 
 
-        //first of all, check if the user is alive. 
+       // first of all, check if the user is alive. 
        
-       // if(!interaction.member.roles.cache.has(sacrificed_role)) 
-        //{
+        if(!interaction.member.roles.cache.has(sacrificed_role)) 
+        {
 
-         //  return interaction.reply('but you are still alive... check #survivor');
-       // }
-       // else{
+           return interaction.reply('but you are still alive... check #survivor');
+        }
+        else{
          
         const Embed = new EmbedBuilder().setTitle(`Message from afterlife entity`)
         .setAuthor({name: interaction.user.username, iconURL: interaction.user.displayAvatarURL()})

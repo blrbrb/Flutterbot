@@ -20,7 +20,6 @@ module.exports = {
         console.log(Object.keys(e));
         console.log(e.message);
         console.log(e.name);
-        Flutterbot.DisTube.deleteQueue();
         channel.send(`I'm sorry, My songbirds are having trouble playing this song because...\n\`${e.message}\``);
     });
 

@@ -1,22 +1,178 @@
 {
-  "960713019753644032": {
-    "server_quotes": [
-      {
-        "name": "ellypony",
-        "date": "2023 08 30",
-        "quote": "piss",
-        "id": "252235505318625281",
-        "guild": "960713019753644032"
-      }
-    ]
-  },
-  "368957683187056672": {
-    "config": {
-      "annoucement_channel": "368957683187056676",
-      "private_roles": [
-        "900937347586228245"
-      ]
+    "960713019753644032": {
+      "server_quotes": [
+        {
+            "name": "ellypony",
+            "date": "2023 07 26",
+            "quote": "I kill people.",
+            "id": "252235505318625281",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "ellypony",
+            "date": "2023 06 21",
+            "quote": "Orchids? That bitch is Chineese",
+            "id": "252235505318625281",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "ellypony",
+            "date": "2023 06 23",
+            "quote": "Blew up a Walmart with a gun.",
+            "id": "252235505318625281",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "lokloy",
+            "date": "2023 09 05",
+            "quote": "Man I'm gay",
+            "id": "256199142118785024",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "lokloy",
+            "date": "2023 06 21",
+            "quote": "Are you golfing right now?!",
+            "id": "256199142118785024",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "lokloy",
+            "date": "2023 09 05",
+            "quote": "Men are Ken men bruh men",
+            "id": "256199142118785024",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "lokloy",
+            "date": "2023 08 31",
+            "quote": "I wanna ride Celestia",
+            "id": "256199142118785024",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "lokloy",
+            "date": "2023 08 07",
+            "quote": "That's Orchids",
+            "id": "256199142118785024",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "lokloy",
+            "date": "2023 06 29",
+            "quote": "what is the michigan lake or whatever",
+            "id": "256199142118785024",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "lokloy",
+            "date": "2023 05 08",
+            "quote": "You should go inside of the burning building, it's cool",
+            "id": "256199142118785024",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "smushyreal",
+            "date": "2023 08 31",
+            "quote": "Me",
+            "id": "4330560002541486818",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "smushyreal",
+            "date": "2023 06 18",
+            "quote": "Get married before the government forces you too",
+            "id": "4330560002541486818",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "smushyreal",
+            "date": "2023 06 16",
+            "quote": "I like women, but without bones",
+            "id": "4330560002541486818",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "smushyreal",
+            "date": "2023 07 23",
+            "quote": "I have a raging alcoholic and I am a serious boner",
+            "id": "4330560002541486818",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "nordicgoat",
+            "date": "2023 09 05",
+            "quote": "men",
+            "id": "464258181858852884",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "nordicgoat",
+            "date": "2023 08 31",
+            "quote": "I love you all",
+            "id": "464258181858852884",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "ebony.rose",
+            "date": "2023 09 05",
+            "quote": "It's just people having cute conversations, complimenting eachother, and having general talking, ugh",
+            "id": "75607797198229504",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "ebony.rose",
+            "date": "2023 07 25",
+            "quote": "I like to mess around with myself",
+            "id": "75607797198229504",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "nonhappy",
+            "date": "2023 09 05",
+            "quote": "hiq",
+            "id": "742063022335459459",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "nonhappy",
+            "date": "2023 06 19",
+            "quote": "Self referential humor isn't funny",
+            "id": "742063022335459459",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "smg065",
+            "date": "2023 08 31",
+            "quote": "something something, 'because unicorns are white' something something",
+            "id": "84273833573351424",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "smg065",
+            "date": "2023 07 26",
+            "quote": "Lokloy is forgettable",
+            "id": "84273833573351424",
+            "guild": "960713019753644032"
+        },
+        {
+            "name": "theblackqueen",
+            "date": "2023 08 31",
+            "quote": "picking cock",
+            "id": "314221445645467649",
+            "guild": "960713019753644032"
+        }
+      ], 
+      "config":{},
+      "annoucement_channel": "0",
+      "private_roles": []
     },
-    "server_quotes": []
+    "368957683187056672": {
+      "config": {
+        "annoucement_channel": "368957683187056676",
+        "private_roles": [
+          "900937347586228245"
+        ]
+      }
+    }
   }
-}

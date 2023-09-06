@@ -30,7 +30,13 @@ notes.txt
 **/.wav
 **/.flac
 **/.ogg
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> bc8239e0b788401276eb945e8a3de083b2c0224e
 assets/db.json
+=======
+>>>>>>> parent of c65d421 (omitt assets/db.json)
 netscape_cookies.txt 
 package.json
 package-lock.json

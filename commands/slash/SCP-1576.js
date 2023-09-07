@@ -38,12 +38,12 @@ module.exports = {
         
          
         //send dialog before embed idk, it'd be funny
-        //await target_channel.send(message_str);
-        //await target_channel.send({embeds:[Embed]})
-        //const send = await target_channel.send(message_str);
+        await target_channel.send(message_str);
+        await target_channel.send({embeds:[Embed]})
+        const send = await target_channel.send(message_str);
         
 
-        return interaction.reply('test'); 
+        return interaction.reply('message has been passed on to the living'); 
         
        }
    }

@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { SimpleDatabase, Log, FluttershyLockBox } = require('./utils')
-const { Client, Partials, GatewayIntentBits } = require('discord.js');
+const { Client, Partials, GatewayIntentBits, Collection} = require('discord.js');
 const { DisTube } = require('distube');
 const filters = require('./assets/filters.json');
 const { prefixcommands, slashcommands, current_maintenance } = require('./findAllCommands.js');
@@ -18,6 +18,7 @@ class Flutterbot {
        this.initLockBox()
        this.slashcommands = slashcommands; 
        this.prefixcommands = prefixcommands; 
+       this.cooldowns = new Collection();
     }
   
 

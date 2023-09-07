@@ -23,7 +23,8 @@
       "978092788623237231",
       "1041439504499736706"
     ], 
-    "always_trusted":["204255221017214977"],
+    "always_trusted":["204255221017214977","252235505318625281", "340948459983077379"],
     "developers":["252235505318625281", "340948459983077379"],
-    "current_maintenance": true
+    "current_maintenance": false, 
+    "default_cooldown": 2
   }

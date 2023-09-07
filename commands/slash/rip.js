@@ -13,7 +13,7 @@ module.exports = {
             required: true
         }
     ],
-    async execute(interaction, client) {
+    async execute(interaction, Flutterbot) {
         const Member = interaction.options.getUser('user');
 
         const Embed = new EmbedBuilder()

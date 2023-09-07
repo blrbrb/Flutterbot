@@ -1,3 +1,5 @@
+const {ApplicationCommandOptionType, SlashCommandAssertions, IntegrationApplication} = require('discord.js');
+const fs = require('fs');
 module.exports = {
     name: "config",
     description: "change how I behave in this server",
@@ -28,6 +30,20 @@ module.exports = {
           }
         ]
         },
+        {
+          type: 1,
+          name: "set_cooldown",
+          description: "Change the amount of time that must pass inbetween commands being used in this server. this is an owner/developer only command and will affect all guilds",
+          options: [
+            {
+              type: ApplicationCommandOptionType.Integer,
+              name: "seconds",
+              description: "(integer) seconds that the default cooldown will last",
+              required: true
+            }
+          ]
+          },
+
        // {
        //  type: 1,
        //  name: "enable_guard",
@@ -37,7 +53,7 @@ module.exports = {
     async execute(interaction,Flutterbot)
     {
         const subcommand = interaction.options.getSubcommand();
-        Flutterbot.db.guildExists(interaction.guild.id)
+        Flutterbot.db.guildExists(interaction.guild.id);
         
         switch (subcommand) {
             case 'announcement_channel':
@@ -72,6 +88,25 @@ module.exports = {
               await interaction.reply(`Okay! I've added: ${role} to the list of private guild roles!`);
               break; 
           
+            case 'set_cooldown': 
+             
+            const newCooldowntime = interaction.options.getNumber('seconds'); 
+
+            const rawConfig = fs.readFileSync('../../config/config.json', 'utf-8');     
+            const config = JSON.parse(rawConfig);
+
+            if(!config.always_trusted.includes(interaction.user.id))
+            {
+              return interaction.reply('you do **not** have permission to run this command.')
+            }  
+
+            config.default_cooldown = newCooldowntime; 
+
+            //update and save the modified config shit.
+            const updatedConfig = JSON.stringify(config, null, 2); //2 for pretty printing (0)x(0)
+            fs.writeFileSync(configFilePath, updatedConfig);
+
+            return interaction.reply(`the default cooldown length for all commands is now set to ${interaction.options.getNumber('seconds')} seconds`)
             default:
               await interaction.reply('Unknown subcommand.');
           }

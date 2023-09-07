@@ -3,6 +3,7 @@ const {removeEveryoneMentions,format, langRand } = require('../../utils.js');
 const {commandResponses} = require('../../lang/en.js')
 
 module.exports = {
+    cooldown: 86400,
     name: 'scp-1576',
     description: 'send a message from beyond the afterlife',
     options: [  
@@ -18,10 +19,10 @@ module.exports = {
         const target_channel = Flutterbot.client.channels.cache.get('1091850338023260261');
         const message_str = removeEveryoneMentions((langRand(commandResponses.scpMessage))); 
         const sacrificed_role = '1109587525720342548'; 
-        
 
 
-       // first of all, check if the user is alive. 
+
+        // first of all, check if the user is alive. 
        
         if(!interaction.member.roles.cache.has(sacrificed_role)) 
         {
@@ -37,12 +38,12 @@ module.exports = {
         
          
         //send dialog before embed idk, it'd be funny
-        await target_channel.send(message_str);
-        await target_channel.send({embeds:[Embed]})
+        //await target_channel.send(message_str);
+        //await target_channel.send({embeds:[Embed]})
         //const send = await target_channel.send(message_str);
         
 
-        return interaction.reply('your message has been passed on to the living'); 
+        return interaction.reply('test'); 
         
        }
    }

@@ -44,6 +44,6 @@ module.exports = {
 
         return interaction.reply('your message has been passed on to the living'); 
         
-       // }
+       }
    }
 }

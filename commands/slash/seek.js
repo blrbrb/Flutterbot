@@ -1,15 +1,17 @@
+const { EmbedBuilder,  ApplicationCommandOptionType } = require('discord.js');
+
 module.exports = {
     name: 'seek',
-    description: 'jump to a specific time ',
+    description: 'jump to a specific time',
     options: [
         {
-            type: 10,
+            type: ApplicationCommandOptionType.Integer,
             name: "minute",
             description: "the minute to skip to",
             required: true
         },
         {
-            type: 10,
+            type: ApplicationCommandOptionType.Integer,
             name: "second",
             description: "the second to skip to",
             required: true

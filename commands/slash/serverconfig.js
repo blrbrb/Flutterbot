@@ -33,7 +33,7 @@ module.exports = {
         {
           type: 1,
           name: "set_cooldown",
-          description: "Change the amount of time that must pass inbetween commands being used in this server. this is an owner/developer only command and will affect all guilds",
+          description: "this is an owner/developer only command and will affect all guilds",
           options: [
             {
               type: ApplicationCommandOptionType.Integer,

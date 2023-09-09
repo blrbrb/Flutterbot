@@ -9,7 +9,9 @@ const findImage = require('../../utils/findimage.js').imageFinder;
 module.exports = {
     name: 'aaaaah',
     description: 'aaaaah',
+    cooldown: 1,
     options: [
+        
         {
             name: "image",
             description: "image for aaaaahing",

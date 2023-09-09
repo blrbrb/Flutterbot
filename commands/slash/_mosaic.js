@@ -10,6 +10,7 @@ module.exports = {
 	name: 'mosaic',
 	description: 'Fluttershy Will Turn an image into a mosaic',
 	helpText: `turn an image into a sequence of tiles \n Use: **/mosaic** <jpeg, png, gif, webm embed>`,
+	cooldown: 1,
 	options: [
 		{
 			type: ApplicationCommandOptionType.Attachment,

@@ -22,14 +22,22 @@ module.exports = {
             command = Flutterbot.commands.get(interaction.commandName);
         }
 
+        let cooldowns = Flutterbot.GuildCoolDowns.get(interaction.guild.id);
+        
+        if (!cooldowns) {
+            cooldowns = new Collection();
+            Flutterbot.GuildCoolDowns.set(interaction.guild.id, cooldowns);
+        }
+
         //if the called application command does not already have a cooldown set,  
         //save and apply a default cooldown
-        if (!Flutterbot.cooldowns.has(command.name)) {
-            Flutterbot.cooldowns.set(command.name, new Collection());
+        if (!cooldowns.has(command.name)) {
+            cooldowns.set(command.name, new Collection());
         }
 
         const now = Date.now();
-        const timestamps = Flutterbot.cooldowns.get(command.name);
+        const timestamps = cooldowns.get(command.name);
+       
         
         const cooldownAmount = (command.cooldown ?? default_cooldown) * 1000;
 

@@ -3,7 +3,7 @@ var cheerio = require('cheerio');
 
 module.exports = {
     name: 'showme',
-    description: 'Show Me Some Art',
+    description: 'show me some art in a particular color',
     options: [
         {
             type: 3,
@@ -12,7 +12,7 @@ module.exports = {
             required: true
         }
     ],
-    async execute(interaction, client) {
+    async execute(interaction, Flutterbot) {
         var options = {
             url: "https://artsandculture.google.com/color?col=" + interaction.options.getString('colour').toUpperCase(),
             method: "GET",

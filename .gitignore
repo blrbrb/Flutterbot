@@ -46,3 +46,4 @@ CLEARSIZE
 assets/
 events/messagedelete.js
 **.vscode/
+commands/slash/lastfmaccount.js

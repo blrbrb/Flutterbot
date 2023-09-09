@@ -5,6 +5,7 @@ module.exports = {
     name: "addtrusted",
     description: "add someone to angel's list of trusted ponies",
     default_member_permissions: "0",
+    cooldown: 1,
     options: [
         {
             name: "trusted",

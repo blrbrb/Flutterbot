@@ -1,15 +1,15 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder,  ApplicationCommandOptionType } = require('discord.js');
 const {removeEveryoneMentions,format, langRand } = require('../../utils.js');
 const {commandResponses} = require('../../lang/en.js')
 
 module.exports = {
-    cooldown: 86400,
-    name: 'scp-1576',
-    description: 'send a message from beyond the afterlife',
+    name: "scp-1576",
+    description: "send a message from beyond the afterlife",
+    cooldown: "86400",
     options: [  
     {
-        type: 3,
-        description: "your message...",
+        type: ApplicationCommandOptionType.String,
+        description: "your message",
         name: "message",
         required: true
     }
@@ -42,9 +42,8 @@ module.exports = {
         await target_channel.send({embeds:[Embed]})
         
         
-
         return interaction.reply('message has been passed on to the living'); 
         
        }
    }
-}
+};

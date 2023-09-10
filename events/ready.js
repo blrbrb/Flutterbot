@@ -1,11 +1,13 @@
 const { Events } = require('discord.js');
-const {removeEveryoneMentions,format, langRand } = require('../utils.js');
+const {removeEveryoneMentions,format, langRand, Log } = require('../utils.js');
 const {defaultValues} = require('../lang/en.js');
 module.exports = {
 	name: Events.ClientReady,
 	once: true,
-	execute(Flutterbot) {
-		console.log('Fluttershy is Awake Yay! :3');
+	async execute(Flutterbot) {
+        console.log(`Fluttershy is awake!`);
+       
+		//console.log('Fluttershy is Awake Yay! :3');
 		//Distube listeners need to be initalized here, according to the documentation on DisTube.js 
     // discord bot "ready" event is only called once, but the listeners will still be activated.
 

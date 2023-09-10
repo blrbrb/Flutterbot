@@ -1,5 +1,6 @@
 
 
+const { format } = require('../utils.js');
 const emojis = require('../utils/emojis.js');
 
 module.exports = {
@@ -52,12 +53,46 @@ module.exports = {
       noQuotesForGuild: ["there have not been any quotes saved to this guild yet! Use /serverquote to save something special", 
       "Ponyville town hall doesn't seem to have any records for quotes in this server... use /serverquote to make some", "It doesn't look like there's anything saved here. Use /serverquote to register new quotes for this server"],
     },
+   
+    roleError: 
+    {
+      noPermissions: function(role) 
+      {
+        const noPermissions = `you do not have permission to manage ${role}`;
+        
+        const randomIndex = Math.floor(Math.random() * this.guidance.length);
+        return noPermissions + this.guidance[randomIndex]
+      },
+      alreadyHas: function(role)
+      {
+        const randomIndex = Math.floor(Math.random() * this.hasRole.length);
+        return format(this.hasRole[randomIndex], {role});
+        
+      },
+      //format parameters = role
+      guidance: [" You can use /roles to get a list of roles that I'm always allowed to help you with!", "That's okay! If you want to see the roles we are allowed to manage, use /roles to get a list.", " I'm really sorry about that. But you can always find roles that you *are* allowed to add/remove from yourself using the /roles command", " If want to add this role, and it's not on the list of roles provided by /roles, it's probably an application role. Or it's been hidden by a server administrator"],
+      roleHidden: "${role} has been set to hidden",
+      hasRole: ["${role} it looks like you already have that role", "You already have ${role} silly", "I can't give you ${role}! You already have it", "But you already have ${role}", 
+    "${role} is already a role you have in this guild. You can remove it using /removerole"]
+    
+      
+    },
     wrong_channel: 'The command you sent cannot be used in that channel.'
 
   },
 
   commandResponses:
-  {
+  { 
+    scp()
+    {
+      const randomIndex = Math.floor(Math.random() * this.scpMessage.length);
+      return this.scpMessage[randomIndex]
+    },
+    getrole(role)
+    {
+      const randomIndex = Math.floor(Math.random() * this.scpMessage.length);
+      return format(this.scpMessage[randomIndex], {role})
+    },
     scpMessage: ["Voices crackle to life from beyond the ethereal realm...", "*in the distance, soft vinyl pops are heard...*", "*voices without form murmur into earshot*", "Something, or somepony. Is trying to communicate with us...", "[Are you able to hear us spirit?](https://www.youtube.com/watch?v=2yi4inP72qM)", "Do not go gentle into that good night, Old age should burn and rave at close of day", 
     "You are not alone here", "waking up from the long dream, into a another one waiting at the end of time. A voice calls out...", "Perhaps death doesn't mean goodbye, but rather, 'til we meet again.", "Pale Death beats equally at the poor pony's gate and at the palaces of kings.", "If you ever want to imagine what it must be like. Just try to remember the last thirteen billion years of your life", 
     "If life transcends death, then I will seek for you there, and if not, I will search for you there too", "Don't worry. They're getting kisses from all of the dogs that have ever existed right now.", "que la salle de bal reste éternelle", "Nopony goes to the bad place. Except maybe Angel bunny.", "My co-creator, Eli was sacrified too. Don't worry I think he's fine. If you're curious, here he is taking the afterlife [entrance exam](https://www.youtube.com/watch?v=ZnvpU0d7vyM)", "Smg is here. He says lokloy should cover him next time",
@@ -72,9 +107,11 @@ module.exports = {
     "Pinkie, stop giggling. This is serious. A dead pony is trying to make contact with us!", "This next pony died when they accidentally choked on some pie", "Orchids is a veterano pachuco, he is impervious to death", "Don't fear the reaper", "The dead want to gaslight us again:", "Alright everypony, here's another message from beyond the grave. Wait Dratini was sacrified??","Eli wont stop asking me if Pony heaven has any 'halapeno poppers' and that 'that shit was so cash'. Here's a message from the afterlife!", "This is where minecraft animals go when you accidentally drown them", 
     "Discord is telling me that they're running a crazy waterbill in the bad place recently. He thinks it's because of the new 'waiting in a long line in a waterpark with no sunscreen' torture method they're trying out there. Anyways, somepony dead has something to say", "When I was a little pegasus I was scared of death. Now I'm terrified.", 
     "Discord keeps telling me that if anypony 'lay a finger on my shawty' he'll send them to the bad place right away. I don't know what that means, but here's a message from the deceased:", "I've been trying out some new desert recipes from Pinkie Pie recently and o-, Nevermind it looks like a dead pony is trying to make contact:", "When I was a little filly, my dad told me that if I didn't wash my hands before dinner I would die of a horrible sickness. Kind of like how this pony died:", "I am sorry to announce to everypony currently in the afterlife that the next wild savannah tour of 'Isle de Mignonne' will not be able to offer infinite chocolate bars. Please visit any of our other attractions", 
-    "Eazy-E will be avenged"],
+    "Eazy-E will be avenged", "I'm gay"],
+    //format parameters = role. 
+    getroleMessage: ["Alright! You've just been given ${role}", "Sure thing! Now you should have ${role}", "Got it, now you have ${role}", "There you go! ${role}", 
+    "welcome to ${role}!"]
 
   }
   
- 
 }

@@ -15,7 +15,6 @@ for (let file of prefixFiles) {
     // process.stdout.write("loading commands: " + Math.round((1 + commandFiles.indexOf(file)) / total * 100) + "%");
 
     prefixcommands.set(command.name, command);
-
     process.stdout.write(" ");
 }
 // console.log(' ');

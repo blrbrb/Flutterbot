@@ -170,17 +170,27 @@
         "guild": "960713019753644032"
       }
     ],
-    "config": {},
-    "annoucement_channel": "0",
-    "private_roles": []
+    "config": {
+      "annoucement_channel": "0",
+      "private_roles": []
+    },
+    "sacrified": [
+      "1141627350140858411"
+    ]
   },
   "368957683187056672": {
     "config": {
       "annoucement_channel": "368957683187056676",
       "private_roles": [
-        "900937347586228245"
+        "954157065654386720",
+        "900937347586228245",
+        "1098004877868814420",
+        "1116288830727790682"
       ]
-    }
+    },
+    "sacrified": [
+      "1141627350140858411"
+    ]
   },
   "last_fmSessions": {
     "ellypony": "5ac01765136ebb2d8615efa0671f491c57c67439f122567133eef99deb301ddaad8c9d98a5eb1b693e822da8fa710993",

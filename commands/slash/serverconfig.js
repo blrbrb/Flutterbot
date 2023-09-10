@@ -59,12 +59,7 @@ module.exports = {
             case 'announcement_channel':
               const channel = interaction.options.getChannel('channel');
 
-              //if the guild already has an announcement's channel saved in the database 
-              if(Flutterbot.db.keyExists(`${interaction.guild.id}.config.annoucement_channel`))
-              {
-                Flutterbot.db.modifyEntry(`${interaction.guild.id}.config.annoucement_channel`, channel)
-              }
-              else 
+              
               Flutterbot.db.addEntry(`${interaction.guild.id}.config.annoucement_channel`, channel.id) 
 
               await interaction.reply({content:`Alright! I've set the announcement channel in ${interaction.guild.name} to: ${channel}`});
@@ -74,18 +69,25 @@ module.exports = {
               const role = interaction.options.getRole('role');
 
               //if the guild already has a list of private roles
-              if(Flutterbot.db.keyExists(`${interaction.guild.id}.config.private_roles`))
+              if(Flutterbot.db.getValue(`${interaction.guild.id}.config.private_roles`))
               {
                 temp = Flutterbot.db.getValue(`${interaction.guild.id}.config.private_roles`)
-                console.log(typeof(temp))
+                //if the guild already has the role registered as private 
+                 if(temp.includes(role.id))
+                 {
+                  return await interaction.reply(`${role} is already a private member role in this server. ${role} cannot be indexed with /roles, /getRole, and /removerole.`);
+                 }
+                 else
                 temp.push(role.id)
                 Flutterbot.db.addEntry(`${interaction.guild.id}.config.private_roles`, temp)
+                await interaction.reply(`Okay! I've added: ${role} to the list of private guild roles!`);
+                break; 
               }
               else 
               //if the guild has no list of private roles, create a new one and initalize it with 
               //the role provided
               Flutterbot.db.addEntry(`${interaction.guild.id}.config.private_roles`, [role.id])
-              await interaction.reply(`Okay! I've added: ${role} to the list of private guild roles!`);
+              await interaction.reply(`key not found`);
               break; 
           
             case 'set_cooldown': 

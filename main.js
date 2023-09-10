@@ -22,9 +22,9 @@ class Flutterbot {
        this.slashcommands = slashcommands; 
        this.prefixcommands = prefixcommands; 
        this.cooldowns = new Collection();
-       this.GuildCoolDowns = new Map(); 
-      
-       this.lastfm =  new LastfmApi({
+       this.GuildCoolDowns = new Map();     
+        
+       this.lastfm =  new LastfmApi({   
         'api_key' : process.env.FM_KEY,
         'secret' : process.env.FM_SECRET
     }); 
@@ -96,44 +96,63 @@ class Flutterbot {
        
 
     }
+    //update the database on an hourly basis to ensure the perseverance of data between leaving / joining
+    //and client restarts 
+    async updateSurvivors()
+    {
+        //get the bc guild 
+        const guild = await this.client.guilds.fetch(process.env.GUILD_ID);
+
+        // Fetch all members of the guild
+        const members = await guild.members.fetch();
+        let sacrificed = []; 
+        console.log('updating sacrified roles...');
+        members.forEach(member => {
+
+            if(member.roles.cache.has('1109587525720342548'))
+            {
+                sacrificed.push(member.id);
+            } 
+            this.db.addEntry(`${process.env.GUILD_ID}.sacrified`, sacrificed); 
+        });
+        
+        
+    }
     getServerCooldown(serverId) {
         
         return null;
       }
-    update()
+   async update()
     {
         const eventFiles = require('./utils/findFiles')(__dirname, './events', '.js');
         for (const file of eventFiles) {
             const event = require(`./events/${file}`);
          if (event.once) this.client.once(event.name, (...args) => event.execute(this, ...args));
          else this.client.on(event.name, (...args) => event.execute(this, ...args));
+               
     }
-    this.updateLastFMServer(); 
+    const intervalInMs = 60 * 60 * 1000;
+    const intervalId = setInterval(async () => {
+        await this.updateSurvivors();
+      }, intervalInMs);
+      
+    //await this.updateSurvivors();
     }
 
     
     // Method to start the bot
-    start() {
-      this.client.login(process.env.DISCORD_TOKEN);
-      this.update(); 
+    async start() {
+      await this.client.login(process.env.DISCORD_TOKEN);
+      //cannot access the on ready event in update(). Important to do it here. 
+      this.client.on('ready', async (client) =>
+      {
+        await this.update();
+      });
     }
   }
 
 
-
-
-
-
-/* 
-client.on('guildMemberAdd', async guildMember => {
-    let welcomeRole = guildMember.guild.roles.cache.find(role => role.name === 'new broner');
-});
- */
-
-
-
 const entry = new Flutterbot(); 
-
 entry.start(); 
 
 

@@ -26,7 +26,7 @@ module.exports = {
     // Check if the roles JSON file exists
     let data;
     try {
-      data = JSON.parse(fs.readFileSync('config/private_roles.json'));
+      data = Flutterbot.db.getValue(`${interaction.guild.id}.config`); 
          
       // Check if the role is already in the list
       if (data.private_roles.includes(role.id)) {
@@ -37,17 +37,20 @@ module.exports = {
       data.private_roles.push(role.id);
 
       // Write the updated list to the JSON file
-      fs.writeFileSync('config/private_roles.json', JSON.stringify(data, null, 2));
+      Flutterbot.db.addEntry(`${interaction.guild.id}`, data);
 
     } catch (error) {
-      // If the file doesn't exist, initialize it with an empty roles array
-      data = { private_roles: [] };
-      fs.writeFileSync('config/private_roles.json', JSON.stringify(data, null, 2));
+      // If the data doesn't exist, initialize it with an empty roles array
+      data = [];
+      Flutterbot.db.modifyEntry(`${interaction.guild.id}.config.private_roles`, data);
+    
     }
 
     
     // Reply with a confirmation message
-    return interaction.reply(`Added role "${role.name}" with ID "${role.id}" to the list of private roles! (restart required to take affect)`);
+    return interaction.reply(`Added role "${role.name}" with ID "${role.id}" to the list of private roles! 
+    ${role} will no longer be accessible with /getRole, modifyable with /removerole, nor will it appear on the list of assignable roles with /roles.
+    `);
 
   },
     

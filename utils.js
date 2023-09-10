@@ -258,8 +258,9 @@ class SimpleDatabase {
     
     let current = this.data;
     if(key.includes('.')){
+      let keys = key.split('.');
     //We're accessing a nested value. Split at '.'
-    for (const key of key) {
+    for (const key of keys) {
       if (current[key] === undefined) {
         return; // None of the keys can be found at root, do nothing
       }
@@ -567,7 +568,7 @@ class FluttershyLockBox
     return process.env.ENCRYPTION_KEY == undefined;
   }
   
-
+ 
 
 }
 

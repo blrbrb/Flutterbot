@@ -80,7 +80,13 @@ function ID() {
     }
 }
 
-
+function formatTime(seconds) {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  const formattedMinutes = String(minutes).padStart(2, '0');
+  const formattedSeconds = String(remainingSeconds).padStart(2, '0');
+  return `${formattedMinutes}:${formattedSeconds}`;
+}
 const log = new Log(true);
 
 function displayList(array) {
@@ -116,6 +122,20 @@ function displayList(array) {
     return;
 }
 
+function ProgressBar(current, whole)
+{
+  //This is NOT my code. 
+  //All emily. Just making it so that I can use it elsewhere also 
+  if(current > whole)
+  {
+    return "cant calculate percentage to display";
+  }
+
+  let Percent = (current / whole) * 100;
+  let PerTen = Math.floor(Percent / 10);
+  let percentBar = `${'🟥'.repeat(PerTen)}${'⬜'.repeat(10 - PerTen)}`;
+  return percentBar; 
+}
 function removeEveryoneMentions(text) {
   // Define regex pattern to match @everyone mentions
   const pattern = /@everyone/g;
@@ -573,4 +593,4 @@ class FluttershyLockBox
 }
 
 
-module.exports = { displayList, log, Log, ID, SimpleDatabase, validateDate, FluttershyLockBox, removeEveryoneMentions, format, langRand};
+module.exports = { displayList, log, Log, ID, SimpleDatabase, validateDate, FluttershyLockBox, formatTime, removeEveryoneMentions, ProgressBar, format, langRand};

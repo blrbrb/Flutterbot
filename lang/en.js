@@ -1,6 +1,6 @@
 
 
-const { format } = require('../utils.js');
+const { format, formatTime } = require('../utils.js');
 const emojis = require('../utils/emojis.js');
 
 module.exports = {
@@ -40,10 +40,31 @@ module.exports = {
   {
     Distube:
     {
-      noQueue:["But there isn't a queue! Use /play to search for songs!", "There isn't any music playing silly try using /play :query: first", "I can't do that! There's not any music playing right now try /play :query"],
-      ageRestricted:["I'm sorry, it looks like this video is age restricted."],
-      unavailable:["I'm sorry, this video isn't avalible in your region... I can't get to it", "Youtube is telling me to buzz off right now. I can't get any details about this video", "There's something wrong on Youtube's end. Is this video copyrighted, Age Restricted, or unavalible?"]
-      
+      QueueEmpty()
+      {
+        const randomIndex = Math.floor(Math.random() * this.noQueue.length);
+        return this.noQueue[randomIndex];
+      },
+      Restricted()
+      {
+        const randomIndex = Math.floor(Math.random() * this.ageRestricted.length);
+        return this.ageRestricted[randomIndex];
+      },
+      Unavailable()
+      {
+        const randomIndex = Math.floor(Math.random() * this.unavailable.length);
+        return this.unavailable[randomIndex];
+      },
+      AlreadyPaused()
+      {
+        const randomIndex = Math.floor(Math.random() * this.alreadyPaused.length);
+        return this.alreadyPaused[randomIndex];
+      },
+      noQueue:["But there isn't a queue! Use /play to search for songs!", "There isn't any music playing silly try using /play :query: first", "I can't do that! There's not any music playing right now try /play :query", "Hmmm. It doesn't look like there's anything playing here. Have you tried to queue anything with /play :query ?", 
+    "Nopony's given Vinyl anything to play yet."],
+      ageRestricted:["I'm sorry, it looks like this video is age restricted.", "I can't play this video, it's age restricted", "This video is age restricted. You'll have to sign in to your own youtube account to watch it"],
+      unavailable:["I'm sorry, this video isn't avalible in your region... I can't get to it", "Youtube is telling me to buzz off right now. I can't get any details about this video", "There's something wrong on Youtube's end. Is this video copyrighted, Age Restricted, or unavalible?"],
+      alreadyPaused:['the queue is already paused! Use /resume to continue playback of the current track', "I can't do that, the queue is already paused!", "Vinyl Scratch has already paused the music. If you want to continue playback use /resume", "The queue is already paused! Use /resume if you want to continue the current song"],
     },
     quotesfromError:
     {
@@ -91,7 +112,30 @@ module.exports = {
     getrole(role)
     {
       const randomIndex = Math.floor(Math.random() * this.scpMessage.length);
-      return format(this.scpMessage[randomIndex], {role})
+      return format(this.scpMessage[randomIndex], {role});
+    }, 
+    resume(queue)
+    {
+      const song = queue.songs[0]; 
+      const current_time = formatTime(Math.floor(queue.currentTime)); 
+      const duration = song.formattedDuration; 
+      const songname = song.name;
+      const randomIndex = Math.floor(Math.random() * this.resumeMessage.length);
+      return format(this.resumeMessage[randomIndex], {song: songname, time:current_time, duration:duration});
+    }, 
+    pause(queue)
+    {
+      const song = queue.songs[0]; 
+      const current_time = formatTime(Math.floor(queue.currentTime)); 
+      const duration = song.formattedDuration; 
+      const songname = song.name;
+      const randomIndex = Math.floor(Math.random() * this.pauseMessage.length);
+      return format(this.pauseMessage[randomIndex], {song: songname, time: current_time, duration: duration});
+    },
+    filter(filter)
+    {
+      const randomIndex = Math.floor(Math.random() * this.filterMessage.length);
+      return format(this.filterMessage[randomIndex], {filter: filter});
     },
     scpMessage: ["Voices crackle to life from beyond the ethereal realm...", "*in the distance, soft vinyl pops are heard...*", "*voices without form murmur into earshot*", "Something, or somepony. Is trying to communicate with us...", "[Are you able to hear us spirit?](https://www.youtube.com/watch?v=2yi4inP72qM)", "Do not go gentle into that good night, Old age should burn and rave at close of day", 
     "You are not alone here", "waking up from the long dream, into a another one waiting at the end of time. A voice calls out...", "Perhaps death doesn't mean goodbye, but rather, 'til we meet again.", "Pale Death beats equally at the poor pony's gate and at the palaces of kings.", "If you ever want to imagine what it must be like. Just try to remember the last thirteen billion years of your life", 
@@ -110,8 +154,12 @@ module.exports = {
     "Eazy-E will be avenged", "I'm gay"],
     //format parameters = role. 
     getroleMessage: ["Alright! You've just been given ${role}", "Sure thing! Now you should have ${role}", "Got it, now you have ${role}", "There you go! ${role}", 
-    "welcome to ${role}!"]
-
+    "welcome to ${role}!"],
+  
+    resumeMessage:["Resuming!`\` ${song} : ${time} / ${duration} `\`", "I'll resume`\`${song}`\` from `\` ${time} `\` now!", "Starting `\` ${song} `\` back from `\` ${time} `\`", "Resuming `\` ${song} `\`", "starting base cannons back up... `\` ${song} : ${time} / ${duration} `\` "],
+    pauseMessage:["Pausing!`\` ${song} : ${time} / ${duration} `\`", "I told Viny Scratch and Octavia to pause. `\` ${song} : ${time} / ${duration}  `\`", "Paused: `\`${song}: ${time} / ${duration}`\`"],
+    filterMessage:["Ok, I'm going to throw Octavia's record player into the river now. Applying the ${filter} filter", "Adding the ${filter} filter to the queue. Use the /filter command with the same filter name again to remove it!", "I put the ${filter} effect over the queue! If you change your mind use /filter :${filter} to remove it!",
+    "I hope this doesn't wake angel up... I'm adding the ${filter} filter to the queue now! (this might take a minute if the video is long, and the ffmpeg buffer needs to catch up.)", "Alright! I'm going to add the ${filter} effect to the queue. Sit tight, it might take a minute for the sound to start again.",  "Adding the ${filter} effect. If the queue seems to pause for a minute, don't worry! We'll be right back."]
   }
   
 }

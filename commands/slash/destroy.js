@@ -20,23 +20,28 @@ module.exports = {
     ],
     async execute(interaction, Flutterbot) {
         imageUrl = await interaction.options.getAttachment('image').url;
-        const extension = findImage.extensionFinder(imageUrl);
-        if (imageUrl !== undefined) {
-            interaction.channel.sendTyping();
-            await gm(request(imageUrl)).size((error, size) => {
-                if (size.height > 1200 || size.width > 1200) {
-                    return interaction.reply(`t-that's way too big of an image for me!🖌️🐇`);
-                }
-                gm(request(imageUrl)).implode([frange(-50, 0)]).strip().stream((error, stdout) => {
-                    if (error) throw new Error(error);
-                    interaction.reply({
-                        files: [{
-                            attachment: stdout,
-                            name: "destroy.png"
-                        }]
-                    });
+        gm(request(imageUrl)).size(async (error, size) => {
+            if(error){
+                console.log(error)
+               // return interaction.reply(error);
+            }
+            if (size.height > 1200 || size.width > 1200) {
+                return interaction.reply(`t-that's way too big of an image for me!🖌️🐇`);
+            }
+             gm(request(imageUrl)).implode([frange(-50, 0)]).strip().stream((error, stdout) => {
+                if (error) throw new Error(error);
+                interaction.reply({
+                    files: [{
+                        attachment: stdout,
+                        name: "destroy.png"
+                    }]
                 });
             });
-        }
+        });
+        const extension = findImage.extensionFinder(imageUrl);
+        
+            interaction.channel.sendTyping();
+            
+        
     }
 }

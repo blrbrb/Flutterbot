@@ -1,6 +1,6 @@
 const {commandResponses, errorMessage} = require('../../lang/en.js'); 
 const { formatTime } = require('../../utils.js');
-const fs = require('fs');
+
 module.exports = {
     name: 'pause',
     description: 'pause the currently playing song',

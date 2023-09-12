@@ -38,27 +38,45 @@ module.exports = {
   },
   errorMessage:
   {
+    Permissions:
+    {
+      adminCommand()
+      {
+        const randomIndex = Math.floor(Math.random() * this.adminMessage.length);
+        return {content: this.adminMessage[randomIndex], ephemeral:true} 
+      },
+      noeventPermission()
+      {
+        const randomIndex = Math.floor(Math.random() * this.eventMessage.length);
+        return {content: this.eventMessage[randomIndex], ephemeral:true} 
+      },
+      eventMessage:["I can't create an event for you if you don't have permission...", "I'm sorry, it doesn't look like you have permission to create events in this guild...", "If you'd like to create an event, ask the owner for permissions first!", "I can't create an event if you don't have server permissions to start an event! Ask the owner or an admin for some help"],
+      adminMessage: ["I'm sorry. But I can't let you do that", "I don't think it's a very good idea to change these settings...", "I'm sorry I can't do that for you, but I would love to help you with anything else!", "I can't let you do that. I'm sorry",
+      "I'm sorry I don't have permission to let you do that.", "I can't let you use that command!"], 
+      nsfwMessage: ["we can't look at naughty things in this channel!!! Think of the foals!", "There could be little fillies here! Ask an admin or an owner for the lewd role...", "P-put those away a-anon! We're in public! You can't share nsfw stuff here!", "A-anon.. I don't think we should be getting too lewd here"],
+      
+    },
     Distube:
     {
       QueueEmpty()
       {
         const randomIndex = Math.floor(Math.random() * this.noQueue.length);
-        return this.noQueue[randomIndex];
+        return {content: this.noQueue[randomIndex], ephemeral:true} 
       },
       Restricted()
       {
         const randomIndex = Math.floor(Math.random() * this.ageRestricted.length);
-        return this.ageRestricted[randomIndex];
+        return  {content: this.ageRestricted[randomIndex], ephemeral:true} 
       },
       Unavailable()
       {
         const randomIndex = Math.floor(Math.random() * this.unavailable.length);
-        return this.unavailable[randomIndex];
+        return  {content: this.unavailable[randomIndex], ephemeral:true} 
       },
       AlreadyPaused()
       {
         const randomIndex = Math.floor(Math.random() * this.alreadyPaused.length);
-        return this.alreadyPaused[randomIndex];
+        return {content: this.alreadyPaused[randomIndex], ephemeral:true} 
       },
       noQueue:["But there isn't a queue! Use /play to search for songs!", "There isn't any music playing silly try using /play :query: first", "I can't do that! There's not any music playing right now try /play :query", "Hmmm. It doesn't look like there's anything playing here. Have you tried to queue anything with /play :query ?", 
     "Nopony's given Vinyl anything to play yet."],
@@ -98,8 +116,8 @@ module.exports = {
     
       
     },
-    wrong_channel: 'The command you sent cannot be used in that channel.'
-
+    wrong_channel: 'The command you sent cannot be used in that channel.',
+   
   },
 
   commandResponses:
@@ -111,8 +129,8 @@ module.exports = {
     },
     getrole(role)
     {
-      const randomIndex = Math.floor(Math.random() * this.scpMessage.length);
-      return format(this.scpMessage[randomIndex], {role});
+      const randomIndex = Math.floor(Math.random() * this.getroleMessage.length);
+      return {content: format(this.getroleMessage[randomIndex], {role}), ephemeral:false};
     }, 
     resume(queue)
     {
@@ -121,7 +139,7 @@ module.exports = {
       const duration = song.formattedDuration; 
       const songname = song.name;
       const randomIndex = Math.floor(Math.random() * this.resumeMessage.length);
-      return format(this.resumeMessage[randomIndex], {song: songname, time:current_time, duration:duration});
+      return {content: format(this.resumeMessage[randomIndex], {song: songname, time:current_time, duration:duration}), ephemeral:false};
     }, 
     pause(queue)
     {
@@ -130,12 +148,12 @@ module.exports = {
       const duration = song.formattedDuration; 
       const songname = song.name;
       const randomIndex = Math.floor(Math.random() * this.pauseMessage.length);
-      return format(this.pauseMessage[randomIndex], {song: songname, time: current_time, duration: duration});
+      return {content:format(this.pauseMessage[randomIndex], {song: songname, time: current_time, duration: duration}), ephemeral:false};
     },
     filter(filter)
     {
       const randomIndex = Math.floor(Math.random() * this.filterMessage.length);
-      return format(this.filterMessage[randomIndex], {filter: filter});
+      return  {content: format(this.filterMessage[randomIndex], {filter: filter}), ephemeral:false};
     },
     scpMessage: ["Voices crackle to life from beyond the ethereal realm...", "*in the distance, soft vinyl pops are heard...*", "*voices without form murmur into earshot*", "Something, or somepony. Is trying to communicate with us...", "[Are you able to hear us spirit?](https://www.youtube.com/watch?v=2yi4inP72qM)", "Do not go gentle into that good night, Old age should burn and rave at close of day", 
     "You are not alone here", "waking up from the long dream, into a another one waiting at the end of time. A voice calls out...", "Perhaps death doesn't mean goodbye, but rather, 'til we meet again.", "Pale Death beats equally at the poor pony's gate and at the palaces of kings.", "If you ever want to imagine what it must be like. Just try to remember the last thirteen billion years of your life", 

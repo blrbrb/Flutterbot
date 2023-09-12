@@ -1,7 +1,10 @@
 const fs = require('fs');
+const Discord = require('discord.js');
 const chrono = require('chrono-node');
 const { strict } = require('assert');
 const crypto = require('crypto');
+const { assert } = require('console');
+const { config } = require('dotenv');
 
 
 const colors = {
@@ -74,6 +77,15 @@ function Log(logAll = true) {
     }
 }
 
+function isValidHexColor(color) {
+   
+   const hexColorPattern = /^#?([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/;
+
+  
+   return hexColorPattern.test(color);
+  
+}
+
 function ID() {
     this.generate = function () {
         return new Date().valueOf();
@@ -121,6 +133,39 @@ function displayList(array) {
     log("");
     return;
 }
+
+
+/**
+ * Resolve (fetch) a guild id from any discord.js type that might have it. 
+ * Can be used to check if an object is resolveable by guild id. 
+ * @param {any} object
+ * @returns {Discord.Snowflake} Guild ID on success
+ * @returns {false} on failure 
+ */
+function resolveGuildID(object) 
+{
+  let guildID = 0;
+ 
+  if (object instanceof Discord.Guild) {
+   
+    guildID = object.id; 
+    console.log(guildID);
+    return guildID;
+  } else if (object.guild && object.guild instanceof Discord.Guild) {
+   
+    guildID = object.guild.id;
+   
+    return guildID;
+  }
+ else {
+    // If the object doesn't contain a Guild object or a 'guild' property with 'id', return false
+    return false;
+  }
+}
+
+
+
+
 
 function ProgressBar(current, whole)
 {
@@ -295,6 +340,157 @@ class SimpleDatabase {
     this.saveData();
   }
 
+  setGuildCoolDown(guildResolveable, cooldowntime)
+  {
+    try{
+    let guildID = resolveGuildID(guildResolveable); 
+    console.log(guildID);
+    console.log(this.guildExists(guildID));
+    if(guildID && this.guildExists(guildID))
+    {
+      let current = this.data[guildID]; 
+      if(current.hasOwnProperty('config'))
+      { 
+       
+        current.config.default_cooldown = cooldowntime;
+        this.data[guildID] = current; 
+        this.saveData();
+      // this.data[guildID]['config']['default_cooldown'] = cooldowntime;
+      }
+      else
+      {
+        current.config = {}; 
+        current.config.default_cooldown = cooldowntime;
+        this.data[guildID] = current; 
+        this.saveData();
+      }
+    }
+    else
+    {
+      //initalize a new object for the guild that does not exist 
+      this.data[guildID] = {};
+      this.data[guildID]['config'] = {};
+      this.data[guildID]['config']['default_cooldown'] = cooldowntime; 
+    }
+    }
+    catch(error)
+    {
+      console.log(error);
+      return
+    }
+  }
+
+  setGuildConfig(guildResolveable, configKey, value)
+  {
+    try{
+    let guildID = resolveGuildID(guildResolveable); 
+    
+    if(guildID && this.guildExists(guildID))
+    {
+      
+      let current = this.data[guildID]; 
+      if(current.hasOwnProperty('config'))
+      { 
+       
+        current.config[`${configKey}`] = value;
+        this.data[guildID] = current; 
+        this.saveData();
+        return;
+      }
+      else
+      {
+        current.config = {}; 
+        current.config[`${configKey}`] = value;
+        this.data[guildID] = current; 
+        this.saveData();
+        return;
+      }
+    }
+    else
+    {
+      //initalize a new object for a guild that does not exist 
+      this.data[guildID] = {};
+      this.data[guildID]['config'] = {};
+      this.data[guildID]['config'][`${configKey}`] = value; 
+      this.saveData(); 
+      return;
+    }
+    }
+    catch(error)
+    {
+      console.log(error);
+      return; 
+    }
+  }
+
+  getGuildConfig(guildResolveable, configKey)
+  {
+  
+    try{
+    let guildID = resolveGuildID(guildResolveable); 
+    
+    if(guildID && this.guildExists(guildID))
+    {
+      
+      let current = this.data[guildID]; 
+      if(current.hasOwnProperty('config'))
+      { 
+        
+        if(current.config.hasOwnProperty(configKey))
+        {
+          return current.config[configKey]; 
+        }
+        else
+        {
+          return false; 
+        }
+      
+      }
+      else
+      return false; 
+    }
+    else 
+    return false; 
+    }
+    catch(error)
+    {
+      console.log(error);
+      return; 
+    }
+  }
+
+  setGuildEmbedColor(guildResolveable, color)
+  {
+    try{
+      let guildID = resolveGuildID(guildResolveable); 
+      if(guildID && this.guildExists(guildID))
+      {
+        current = this.data[guildID];
+        if(current.hasOwnProperty('config'))
+        {
+
+        }
+        //this.data[guildID]['config']['default_cooldown'] = cooldowntime; 
+      }
+      else
+      {
+        //initalize a new object for the guild that does not exist 
+        this.data[guildID] = {};
+        this.data[guildID]['config'] = {};
+        this.data[guildID]['config']['default_cooldown'] = cooldowntime; 
+      }
+      }
+      catch(error)
+      {
+        console.log(error);
+        return
+      }
+
+  }
+
+  //  this.data[`${guild}`]['config']['default_cooldown'] = time; 
+    
+  
   /**
    * append a new value to a property that is an array. 
    * @param {string} key
@@ -408,6 +604,35 @@ class SimpleDatabase {
     return guildID in this.data 
   }
 
+
+  update(key, value) {
+    if(key.includes('.')){
+    const keys = key.split('.');
+    
+    let current = this.data;
+  
+    for (let i = 0; i < keys.length - 1; i++) {
+      const key = keys[i];
+  
+      if (current[key] === undefined) {
+        // If a key along the path doesn't exist, create an empty object for it
+        current[key] = {};
+      }
+  
+      current = current[key];
+    }
+  
+    // Set the new value for the last key in the path
+    const lastKey = keys[keys.length - 1];
+    current[lastKey] = value;
+    }
+
+    else 
+    this.data[key] = value; 
+    this.saveData();
+    ///return json;
+  }
+
   /**
    * Check to see if a key exists at any point on the json structure.
    * @param {string} key
@@ -498,7 +723,7 @@ function validateDate(RawDateString) {
 
  // return unixTimestamp;
 }
-class FluttershyLockBox 
+class LockBox 
 {
    
    constructor() {
@@ -593,4 +818,5 @@ class FluttershyLockBox
 }
 
 
-module.exports = { displayList, log, Log, ID, SimpleDatabase, validateDate, FluttershyLockBox, formatTime, removeEveryoneMentions, ProgressBar, format, langRand};
+
+module.exports = { displayList, log, Log, ID, SimpleDatabase, validateDate, LockBox, formatTime, removeEveryoneMentions, resolveGuildID, ProgressBar, isValidHexColor, format, langRand};

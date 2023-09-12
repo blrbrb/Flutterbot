@@ -1,5 +1,9 @@
-const {ApplicationCommandOptionType, SlashCommandAssertions, IntegrationApplication} = require('discord.js');
+const {ApplicationCommandOptionType, SlashCommandAssertions, EmbedBuilder, PermissionFlagsBits, IntegrationApplication, Collection, Embed} = require('discord.js');
 const fs = require('fs');
+const config = require('../../config/config.json');
+const {errorMessage } = require('../../lang/en.js');
+const {isValidHexColor} = require('../../utils.js');
+
 module.exports = {
     name: "config",
     description: "change how I behave in this server",
@@ -36,13 +40,38 @@ module.exports = {
           description: "this is an owner/developer only command and will affect all guilds",
           options: [
             {
-              type: ApplicationCommandOptionType.Integer,
+              type: ApplicationCommandOptionType.Number,
               name: "seconds",
               description: "(integer) seconds that the default cooldown will last",
               required: true
             }
           ]
-          },
+          },  {
+            type: 1,
+            name: "set_joinage",
+            description: "days a member must have existed to not be quarantined",
+            options: [
+              {
+                type: ApplicationCommandOptionType.Number,
+                name: "days",
+                description: "minimum number of days for an account to have existed",
+                required: true
+              }
+            ]
+            },
+            {
+            type: 1,
+            name: "set_embedcolor",
+            description: "new default color for embedded messages",
+            options: [
+              {
+                type: ApplicationCommandOptionType.String,
+                name: "color",
+                description: "a valid hexidecimal color value",
+                required: true
+              }
+            ]
+            },
 
        // {
        //  type: 1,
@@ -54,7 +83,9 @@ module.exports = {
     {
         const subcommand = interaction.options.getSubcommand();
         Flutterbot.db.guildExists(interaction.guild.id);
-        
+
+        if(!interaction.member.permissions.has(PermissionFlagsBits.Administrator) && !config.always_trusted.includes(interaction.user.id)) return interaction.reply(errorMessage.Permissions.adminCommand());
+
         switch (subcommand) {
             case 'announcement_channel':
               const channel = interaction.options.getChannel('channel');
@@ -94,21 +125,37 @@ module.exports = {
              
             const newCooldowntime = interaction.options.getNumber('seconds'); 
 
-            const rawConfig = fs.readFileSync('../../config/config.json', 'utf-8');     
-            const config = JSON.parse(rawConfig);
+            Flutterbot.db.setGuildConfig(interaction, "default_cooldown", newCooldowntime);
 
-            if(!config.always_trusted.includes(interaction.user.id))
+            let guildCooldowntime = Flutterbot.db.getValue(`${interaction.guild.id}.config.default_cooldown`); 
+            
+            //update and replace the modified cooldown times.
+                      
+            return interaction.reply({content:`the default cooldown length for all commands is now set to ${interaction.options.getNumber('seconds')} seconds`,  ephemeral:true});
+            
+            case 'set_joinage':
+              
+              const newJoinAge = interaction.options.getNumber('days'); 
+              
+              Flutterbot.db.setGuildConfig(interaction, "newMemberMinimumAge", newJoinAge);
+
+              return interaction.reply(`New members in ${interaction.guild} must now have been on discord for a minimum of ${newJoinAge} days to be released from quarantine`);
+
+            case 'set_embedcolor': 
+
+            const newColor = interaction.options.getString('color'); 
+
+            if(!isValidHexColor(newColor))
             {
-              return interaction.reply('you do **not** have permission to run this command.')
-            }  
+              return interaction.reply({content: `That's not a valid hexidecimal color value!`,  ephemeral:true});
+            }
+            
+            Flutterbot.db.setGuildConfig(interaction, "embed_color", parseInt(newColor.slice(1), 16)); 
 
-            config.default_cooldown = newCooldowntime; 
+            const demoembed = new EmbedBuilder()
+            .setTitle('Demo Embed!').setDescription('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...').setColor(parseInt(newColor.slice(1), 16));
+            interaction.reply({content: `Embeds in *${interaction.guild}* will now look like this...`,  ephemeral:true, embeds: [demoembed]});
 
-            //update and save the modified config shit.
-            const updatedConfig = JSON.stringify(config, null, 2); //2 for pretty printing (0)x(0)
-            fs.writeFileSync(configFilePath, updatedConfig);
-
-            return interaction.reply(`the default cooldown length for all commands is now set to ${interaction.options.getNumber('seconds')} seconds`)
             default:
               await interaction.reply('Unknown subcommand.');
           }

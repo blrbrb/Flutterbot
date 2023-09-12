@@ -37,9 +37,9 @@ module.exports = {
 
         const now = Date.now();
         const timestamps = cooldowns.get(command.name);
-       
         
-        const cooldownAmount = (command.cooldown ?? default_cooldown) * 1000;
+        
+        const cooldownAmount = (command.cooldown ?? Flutterbot.getDefaultCoolDown(interaction.guild.id)) * 1000;
 
         ///Usercheck to ensure that cooldown information isn't lost upon a user leaving, and then re-joining a guild 
         if (timestamps.has(interaction.user.id)) {

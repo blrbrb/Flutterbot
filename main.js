@@ -1,6 +1,7 @@
 require('dotenv').config();
-const { SimpleDatabase, Log, FluttershyLockBox } = require('./utils')
-const { Client, Partials, GatewayIntentBits, Collection} = require('discord.js');
+const { SimpleDatabase, Log, LockBox } = require('./utils')
+const Evaluator = require('./guardianAngel/evaluate.js');
+const { Client, Partials, GatewayIntentBits, Collection, SnowflakeUtil} = require('discord.js');
 const { DisTube } = require('distube');
 const filters = require('./assets/filters.json');
 const { prefixcommands, slashcommands, current_maintenance } = require('./findAllCommands.js');
@@ -16,9 +17,10 @@ const url = require('url');
 class Flutterbot {
     constructor() {
        this.initClient();
-       this.initDistube(); 
+       this.initDistube();
        this.initdb('assets/db.json');
-       this.initLockBox()
+       this.initEvaluator(); 
+       this.initLockBox();
        this.slashcommands = slashcommands; 
        this.prefixcommands = prefixcommands; 
        this.cooldowns = new Collection();
@@ -89,11 +91,16 @@ class Flutterbot {
     }
     initLockBox()
     {
-        this.LockBox = new FluttershyLockBox();
+        this.LockBox = new LockBox();
+    }
+    //must be called AFTER this.initdb();
+    initEvaluator() 
+    {
+        this.Evaluator = new Evaluator(this.db, this.LockBox, this.client); 
     }
     updateLastFMServer()
     {
-       
+    
 
     }
     //update the database on an hourly basis to ensure the perseverance of data between leaving / joining
@@ -118,10 +125,14 @@ class Flutterbot {
         
         
     }
-    getServerCooldown(serverId) {
+    getDefaultCoolDown(serverId) {
         
-        return null;
-      }
+       let default_cooldown = this.db.getValue(`${serverId}.config.default_cooldown`);
+       if(!default_cooldown)
+        return 2; 
+       else 
+       return default_cooldown;
+    }
    async update()
     {
         const eventFiles = require('./utils/findFiles')(__dirname, './events', '.js');
@@ -131,10 +142,7 @@ class Flutterbot {
          else this.client.on(event.name, (...args) => event.execute(this, ...args));
                
     }
-    const intervalInMs = 60 * 60 * 1000;
-    const intervalId = setInterval(async () => {
-        await this.updateSurvivors();
-      }, intervalInMs);
+   
       
     //await this.updateSurvivors();
     }

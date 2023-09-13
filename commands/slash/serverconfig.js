@@ -33,8 +33,8 @@ module.exports = {
             required: true
           }
         ]
-        },
-        {
+      },
+      {
           type: 1,
           name: "set_cooldown",
           description: "this is an owner/developer only command and will affect all guilds",
@@ -46,38 +46,33 @@ module.exports = {
               required: true
             }
           ]
-          },  {
-            type: 1,
-            name: "set_joinage",
-            description: "days a member must have existed to not be quarantined",
-            options: [
-              {
-                type: ApplicationCommandOptionType.Number,
-                name: "days",
-                description: "minimum number of days for an account to have existed",
-                required: true
-              }
-            ]
-            },
+      },  
+      {
+          type: 1,
+          name: "set_joinage",
+          description: "days a member must have existed to not be quarantined",
+          options: [
             {
-            type: 1,
-            name: "set_embedcolor",
-            description: "new default color for embedded messages",
-            options: [
-              {
-                type: ApplicationCommandOptionType.String,
-                name: "color",
-                description: "a valid hexidecimal color value",
-                required: true
-              }
+              type: ApplicationCommandOptionType.Number,
+              name: "days",
+              description: "minimum number of days for an account to have existed",
+              required: true
+            }
             ]
-            },
-
-       // {
-       //  type: 1,
-       //  name: "enable_guard",
-       // description: "poop"
-       //}
+      },
+      {
+        type: 1,
+        name: "set_embedcolor",
+        description: "new default color for embedded messages",
+        options: [
+          {
+            type: ApplicationCommandOptionType.String,
+            name: "color",
+            description: "a valid hexidecimal color value",
+            required: true
+          }
+            ]
+      },
     ], 
     async execute(interaction,Flutterbot)
     {
@@ -142,7 +137,8 @@ module.exports = {
               return interaction.reply(`New members in ${interaction.guild} must now have been on discord for a minimum of ${newJoinAge} days to be released from quarantine`);
 
             case 'set_embedcolor': 
-
+            //this process can take longer than ten seconds, so defer the reply 
+            
             const newColor = interaction.options.getString('color'); 
 
             if(!isValidHexColor(newColor))
@@ -154,10 +150,10 @@ module.exports = {
 
             const demoembed = new EmbedBuilder()
             .setTitle('Demo Embed!').setDescription('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...').setColor(parseInt(newColor.slice(1), 16));
-            interaction.reply({content: `Embeds in *${interaction.guild}* will now look like this...`,  ephemeral:true, embeds: [demoembed]});
+            return interaction.reply({content: `Embeds in *${interaction.guild}* will now look like this...`,  ephemeral:true, embeds: [demoembed]});
 
-            default:
-              await interaction.reply('Unknown subcommand.');
+          default:
+             return interaction.reply('Unknown subcommand.');
           }
 
     }

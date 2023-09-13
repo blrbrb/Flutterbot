@@ -114,13 +114,15 @@ class Flutterbot {
         let sacrificed = []; 
         console.log('updating sacrified roles...');
         members.forEach(member => {
-
+            
             if(member.roles.cache.has('1109587525720342548'))
             {
                 sacrificed.push(member.id);
+                console.log('person has the sacrified role');
             } 
-            this.db.addEntry(`${process.env.GUILD_ID}.sacrified`, sacrificed); 
-        });
+           
+        })
+        this.db.addEntry(`${process.env.GUILD_ID}.sacrificed`, sacrificed);
         
         
     }
@@ -156,7 +158,7 @@ class Flutterbot {
       
    
       });
-      const repeater = 60 * 60 * 1000; //hourly update
+      const repeater = 60* 60 * 1000; //hourly update
       setInterval(async() =>{await this.updateSurvivors()}, repeater);
      
     }

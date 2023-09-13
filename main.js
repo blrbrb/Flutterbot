@@ -24,7 +24,6 @@ class Flutterbot {
        this.prefixcommands = prefixcommands; 
        this.cooldowns = new Collection();
        this.GuildCoolDowns = new Map();     
-       this.app = express();  
        this.lastfm =  new LastfmApi({   
         'api_key' : process.env.FM_KEY,
         'secret' : process.env.FM_SECRET

@@ -142,8 +142,7 @@ class Flutterbot {
                
     }
    
-   
-    await this.updateSurvivors();
+    
     }
 
     
@@ -153,8 +152,13 @@ class Flutterbot {
       //cannot access the on ready event in update(). Important to do it here. 
       this.client.on('ready', async (client) =>
       {
-        await this.update();
+       await this.update();
+      
+   
       });
+      const repeater = 60 * 60 * 1000; //hourly update
+      setInterval(async() =>{await this.updateSurvivors()}, repeater);
+     
     }
   }
 

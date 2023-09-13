@@ -134,7 +134,7 @@ class Flutterbot {
        else 
        return default_cooldown;
     }
-   async update()
+   async updateEvents()
     {
         const eventFiles = require('./utils/findFiles')(__dirname, './events', '.js');
         for (const file of eventFiles) {
@@ -151,16 +151,7 @@ class Flutterbot {
     // Method to start the bot
     async start() {
       await this.client.login(process.env.DISCORD_TOKEN);
-      //cannot access the on ready event in update(). Important to do it here. 
-      this.client.on('ready', async (client) =>
-      {
-       await this.update();
-      
-   
-      });
-      const repeater = 60* 60 * 1000; //hourly update
-      setInterval(async() =>{await this.updateSurvivors()}, repeater);
-     
+      await this.updateEvents(); 
     }
   }
 

@@ -1,4 +1,4 @@
-const { private_roles } = require('../../config/private_roles.json');
+
 const { PermissionFlagsBits } = require('discord.js');
 const { errorMessage } = require('../../lang/en');
 

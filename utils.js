@@ -199,12 +199,7 @@ function format(template, replacements) {
   });
 }
 
-function langRand(langArray)
-{
-  const randomIndex = Math.floor(Math.random() * langArray.length);
-  const randomElement = langArray[randomIndex];
-  return randomElement;
-}
+
 class SimpleDatabase {
   /**
    *  The lazy low iq solution to a hosted database 
@@ -817,5 +812,15 @@ class LockBox
 
 }
 
+
+
+function langRand(langArray)
+{
+    const randomIndex = Math.floor(Math.random() * langArray.length);
+    const randomElement = langArray[randomIndex]; 
+    //OH FUCK yeah. I feel kinda clever for this one. SHIT IS COCAINE. 
+    const rendered_message = removeEveryoneMentions(randomElement); 
+    return randomElement;
+}
 
 module.exports = { displayList, log, Log, ID, SimpleDatabase, validateDate, LockBox, formatTime, removeEveryoneMentions, resolveGuildID, ProgressBar, isValidHexColor, format, langRand};

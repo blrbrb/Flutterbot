@@ -1,6 +1,7 @@
 
 
-const { format, formatTime } = require('../utils.js');
+const {format, formatTime, langRand} = require('../utils.js');
+const discord = require('discord.js');
 const emojis = require('../utils/emojis.js');
 
 module.exports = {
@@ -13,28 +14,56 @@ module.exports = {
   channel: 'Channel',
   prefixcommands: 'Prefix Commands:',
   slashcommands: 'Slash commands:',
-
+  
   // DO NOT TRANSLATE COMMAND NAMES
- 
+  
   defaultValues: {
-    boost: {
-      message: '**{user} just boosted the server!**',
-      title: 'Thank you for boosting the server!',
-      description: `${emojis.boost} Enjoy your exclusive role! ${emojis.boost}`
+    /**
+       * 
+       * @description response message when a video has been popped to the top of the queue and 
+       * started playing.
+       *  
+       * @returns a new {@link discord.InteractionResponse}
+       */
+    onPlaying(song)
+    {
+      const duration = song.formattedDuration; 
+      const name = song.name; 
+      return {content: format(langRand(this.nowPlayingMessage), {song_name:name, duration:duration})};
     },
-    welcome: {
-      message: 'Welcome to **{guild}**! {user}'
+     /**
+       * 
+       * @description response message when a video has been found by Distube, and inserted
+       * into the queue following a query.
+       * 
+       * @returns a new {@link discord.InteractionResponse} 
+       */
+    onAddSong(song)
+    {
+      const name = song.name; 
+      return {content:format(langRand(this.addSongMessage), {song_name: name})};
     },
-    goodbye: {
-      message: 'Goodbye, **{user}**. Hope we can see you again soon.',
-      banMessage: '**{user}** was banned from the server.'
-    }, 
+    /**
+       * 
+       * @description response message when the queue has finished playing all of 
+       * the queued videos, right before she leaves the voice channel
+       * 
+       * @returns a new {@link discord.InteractionResponse} 
+       */
+    onQueueFinish()
+    {
+      
+      return {content: langRand(this.queueFinishMessage)};
+    },
     //format parameters = s{song_name, song_duraion, song_user}
-    nowPlaying: ["🎶 Now playing **${song_name}** / ${song_duration} / requested by ${song_user}", "Playing 🎵 ${song_name} / ${song_duration} / for ${song_user} 🎤", "We're listening to ${song_name} / ${song_duration} requested by ${song_user} 🎤"],
-    addSong: ["Alright! I'll add ${song_name} to the queue", "No problem. Let me add ${song_name} to the playlist!", "Adding ${song_name} to our queue", "sure thing, we'll add ${song_name} to the queue", "I'll ask Vinyl to add ${song_name} to the tracklist for us", 
-              "Got it. Adding ${song_name} to our playlist.", "${song_name}? Consider it done. Adding it to the queue", "Added ${song_name} to the turntable", "I accidentally killed an old woman once! Anyways, added ${song_name} to the queue!", "Here you go, ${song_name} has been queued!",
-            "Nice choice! putting ${song_name} onto the queue", "Don't go anywhere, I added ${song_name} to the playlist", "Get ready for ${song_name} because we're gonna be listening to it soon", "Angel has slaughtered countless innocents! Adding ${song_name} to the playlist!", 
-           "I like the sound of this one!, adding ${song_name} to the playlist!"]
+    nowPlayingMessage: ["🎶 Now playing **${song_name}** / ${duration}", "Playing 🎵 **${song_name}** / ${duration} 🎤", "We're listening to **${song_name}** / ${duration}🎤","*metalic pegasus noises* Now playing **${song_name}** / ${duration}", "Here's **${song_name}**, it'll be playing for around ${duration}", "Now Playing **${song_name}** for the next ${duration}", "*shy robotic pegasus noises* Now Playing **${song_name}** / ${duration}", "*electronic stuttering* Please don't look inside the shed. Now Playing **${song_name}** /${duration}",
+                      "Remember that time I sung for the PonyTones? It was tramuatic!! Now Playing **${song_name}** / ${duration}", "*in robotic Flutterguy voice* And now, a top track from [INSERT ARTIST]. [INSERT DJ COMMENTARY] **${song_name}** / ${duration} ", "*shy robot voice* N-Now Playing **${song_name}** / ${duration}", "*shy electronic squeaks* E-eep! I- I'm going to sing **${song_name}** / ${duration} now...", "I cannot associate emotions with music in this robotic husk. Now Playing **${song_name}** / ${song_duration}", "I can't beleive they actually convinced me to sing on stage all those years ago. Now Playing **${song_name}** / ${duration}"],
+    addSongMessage: ["Alright! I'll add **${song_name}** to the queue", "No problem. Let me add **${song_name}** to the playlist!", "Adding **${song_name}** to our queue", "sure thing, we'll add **${song_name}** to the queue", "I'll ask Vinyl to add **${song_name}** to the tracklist for us", 
+              "Got it. Adding **${song_name}** to our playlist.", "**${song_name}**? Consider it done. Adding it to the queue", "Added **${song_name}** to the turntable", "I accidentally killed an old woman once! Anyways, added **${song_name}** to the queue!", "Here you go, **${song_name}** has been queued!",
+            "Nice choice! putting **${song_name}** onto the queue", "Don't go anywhere, I added **${song_name}** to the playlist", "Get ready for **${song_name}** because we're gonna be listening to it soon", "Angel has slaughtered countless innocents! Adding **${song_name} to the playlist!",
+           "adding **${song_name}** to the playlist!", "*Robotic Fluttershy Whimpering* I-Added **${song_name}** to the q-queue *BZZZZrrrt*", "Don't worry, I'm not shy anymore. They took away my ability to have feelings when they put me in this oubillete of transistors and metal. Adding $[song_name] to the queue!", "*robotic pegasus sounds* **${song_name}** has been queued!",
+          "I am yellow shy. **${song_name}** added to queue","*metalic wing fluffing sounds* OH, sorry I'll add **${song_name}** to the queue for you", "DEATH PROTOCOL ACT- I-I mean... Uhm. **${song_name}** has been added to the queue", "Sounds good. Putting **${song_name}** on the queue", "*shy metalic clinking* **${song_name}** is on the queue!"],
+    queueFinishMessage:["I'm going back to my cottage now :3", "see ya later", "I've gotta go help Vinyl Scratch pack up her records", "See you next time", "Bye bye!", ":bedtime:"]
   },
   errorMessage:
   {
@@ -58,21 +87,58 @@ module.exports = {
     },
     Distube:
     {
+      /**
+       * 
+       * @description returns an error message in the 
+       * scenario that someone is trying to skip a video on an empty queue, 
+       * trying to call /queue for a list of queued videos on an empty queue etc
+       * 
+       * @returns a new {@link discord.InteractionResponse} ephermeral
+       * (so people don't get embarrased or smth when a command doesn't work) 
+       * 
+       */
       QueueEmpty()
       {
-        const randomIndex = Math.floor(Math.random() * this.noQueue.length);
-        return {content: this.noQueue[randomIndex], ephemeral:true} 
+        return {content: langRand(this.noQueue), ephemeral:true} 
       },
+      /**
+       * 
+       * @description returns an error message in the 
+       * scenario that someone has queued a video which is age restricted.
+       * (and will crash the bot)
+       * 
+       * @returns a new {@link discord.InteractionResponse} ephermeral
+       * (so people don't get embarrased or smth when a command doesn't work) 
+       * 
+       */
       Restricted()
       {
         const randomIndex = Math.floor(Math.random() * this.ageRestricted.length);
         return  {content: this.ageRestricted[randomIndex], ephemeral:true} 
       },
+      /**
+       * 
+       * @description returns an error message in the 
+       * scenario that someone has queued a video which has been 
+       * set to unavailable by youtube
+       * 
+       * @returns a new {@link discord.InteractionResponse} ephermeral
+       * (so people don't get embarrased or smth when a command doesn't work) 
+       * 
+       */
       Unavailable()
       {
         const randomIndex = Math.floor(Math.random() * this.unavailable.length);
         return  {content: this.unavailable[randomIndex], ephemeral:true} 
       },
+       /**
+       * 
+       * @description returns an error message in the 
+       * scenario that someone is attempting to pause an already paused queue
+       * @returns a new {@link discord.InteractionResponse} ephermeral
+       * (so people don't get embarrased or smth when a command doesn't work) 
+       * 
+       */
       AlreadyPaused()
       {
         const randomIndex = Math.floor(Math.random() * this.alreadyPaused.length);
@@ -86,52 +152,224 @@ module.exports = {
     },
     quotesfromError:
     {
-      //format parameters = name
+      /**
+       * 
+       * @description returns an error message in the 
+       * scenario that there haven't been any quotes for the 
+       * guild created in the database. In this case it's neccessary to 
+       * initalize a new array 
+       * 
+       * @param {discord.Guild} guild 
+       * @returns a new {@link discord.InteractionResponse} ephermeral
+       * (so people don't get embarrased or smth when a command doesn't work) 
+       * 
+       */
+      noGuildQuotes(guild)
+      {
+        const guildname = guild.name; 
+        return {content: format(langRand(this.noQuotesForGuild), {guildname}), ephemeral:  true};
+      },
+      /**
+       * 
+       * @description returns an error message in the 
+       * scenario that there haven't been any quotes for a particular member in a guild.
+       * 
+       * @param {discord.member} member 
+       * @returns a new {@link discord.InteractionResponse} ephermeral
+       * (so people don't get embarrased or smth when a command doesn't work) 
+       * 
+       */
+      noMemberQuotes(member)
+      {
+        const name = member.username; 
+        return {content: format(langRand(this.noQuotesForMember), {name}), ephemeral:true};
+      }, 
       noQuotesForMember: ["${name} hasn't said anything quotable in this server yet", "no quotes for ${name} here :(", "*chirp chirp* ${name} hasn't been quoted in this server before"],
       //format parameters = none 
-      noQuotesForGuild: ["there have not been any quotes saved to this guild yet! Use /serverquote to save something special", 
-      "Ponyville town hall doesn't seem to have any records for quotes in this server... use /serverquote to make some", "It doesn't look like there's anything saved here. Use /serverquote to register new quotes for this server"],
+      noQuotesForGuild: ["there have not been any quotes saved to ${guildname} yet! Use /serverquote to save something special", 
+      "Ponyville town hall doesn't seem to have any records for quotes in ${guildname}... use /serverquote to make some", 
+      "It doesn't look like there's anything saved here. Use /serverquote to register new quotes for ${guildname}"],
     },
-   
-    roleError: 
+   //in discord.js v16 a raw role object sent as the content of message, 
+   //or interaction response will automatically become an embedded role mention (without ping)
+    PermissionError: 
     {
-      noPermissions: function(role) 
+      /**
+       * 
+       * @description returns an error message in the 
+       * scenario that someone is attempting to remove a role 
+       * that they already have (this will result in a missing permissions error)
+       * 
+       * @param {discord.Role} role
+       * @returns a new {@link discord.InteractionResponse} ephermeral
+       * (so people don't get embarrased or smth when a command doesn't work) 
+       * 
+       */
+
+      OnRoleSelfAssign(role)
       {
-        const noPermissions = `you do not have permission to manage ${role}`;
-        
-        const randomIndex = Math.floor(Math.random() * this.guidance.length);
-        return noPermissions + this.guidance[randomIndex]
+       return {content: format(langRand(this.noPermissionsMessage.onRoleSelfAssign), {role}), ephemeral:true};
       },
-      alreadyHas: function(role)
+       /**
+       * 
+       * @description returns an error message in the 
+       * scenario that someone is attempting to remove a role 
+       * equal too, or less than their default permissons. 
+       * 
+       * @param {discord.Role} role
+       * @returns a new {@link discord.InteractionResponse} ephermeral
+       * (so people don't get embarrased or smth when a command doesn't work) 
+       * 
+       */
+      OnRoleSelfRemove(role)
       {
-        const randomIndex = Math.floor(Math.random() * this.hasRole.length);
-        return format(this.hasRole[randomIndex], {role});
-        
+        return {content: format(langRand(this.noPermissionsMessage.onRoleSelfRemove), {role}), ephemeral:true};
       },
-      //format parameters = role
-      guidance: [" You can use /roles to get a list of roles that I'm always allowed to help you with!", "That's okay! If you want to see the roles we are allowed to manage, use /roles to get a list.", " I'm really sorry about that. But you can always find roles that you *are* allowed to add/remove from yourself using the /roles command", " If want to add this role, and it's not on the list of roles provided by /roles, it's probably an application role. Or it's been hidden by a server administrator"],
-      roleHidden: "${role} has been set to hidden",
-      hasRole: ["${role} it looks like you already have that role", "You already have ${role} silly", "I can't give you ${role}! You already have it", "But you already have ${role}", 
-    "${role} is already a role you have in this guild. You can remove it using /removerole"]
+       /**
+       * 
+       * @description returns an error message in the 
+       * scenario that someone is missing the required 
+       * permissions to preform an action
+       * 
+       * @param {discord.Role} role
+       * @returns a new {@link discord.InteractionResponse} ephermeral
+       * (so people don't get embarrased or smth when a command doesn't work) 
+       * 
+       */
+      missing()
+      {
+        return {content: format(langRand(this.noPermissionsMessage.generic)), ephemeral:true};
+      },
+      noPermissionsMessage:
+      {
+        missing: ["It doesn't look like you have permission to do that!", "I'm sorry, you don't have permission to do that!", "I can't let you do that. You don't have the required permissions", "I don't think you have permission to do that"],
+        onRoleSelfAssign: ["it doesn't look like you have permission to give yourself ${role}", "I'm sorry. But I don't think you're allowed to give yourself ${role}", 
+                      "I can't do that. Somepony might get upset at me if I gave you ${role}", "You don't have permission to give yourself ${role} in this server!",
+                      "*Pssst*, you don't have permission to give yourself ${role}!"], 
+        onRoleSelfRemove: ["I can't remove ${role} from you silly! I don't have permission.", "${role}? I don't think I can remove that from you. Is this role a role with admin permissions? Or a role that dosen't appear with /roles?",
+      "I can't remove ${role} from you. I can't see it! It looks like I don't have permission to modify it", "I'm sorry, I can't help you remove ${role}"], 
+      },
+     
+      
+      roleHiddenMessage: "${role} has been set to hidden",
+     
     
       
     },
-    wrong_channel: 'The command you sent cannot be used in that channel.',
+    RoleError:
+    {
+      /**
+       * 
+       * @description returns an error message in the 
+       * scenario that someone has attemped to assign 
+       * themselves a role they already have.
+       * 
+       * 
+       * @param {discord.Role} role 
+       * @returns a new {@link discord.InteractionResponse} ephermeral
+       * (so people don't get embarrased or smth when a command doesn't work) 
+       * 
+       */
+      alreadyHas: function(role)
+      {
+        return {content: format(langRand(this.RoleMessage.alreadyHas), {role}), ephemeral: true};
+      },
+      /**
+       * 
+       * @description returns an error message in the 
+       * scenario that someone has attempted to assign 
+       * themselves a role which has been saved as a private 
+       * member role
+       * 
+       * 
+       * @param {discord.Role} role
+       * @returns a new {@link discord.InteractionResponse} ephermeral
+       * (so people don't get embarrased or smth when a command doesn't work) 
+       */
+      private: function(role)
+      {
+        return {content: format(langRand(this.RoleMessage.private) + langRand(this.RoleMessage.guidanceMessage), {role}), ephemeral: true};
+      },
+      /**
+       * 
+       * @description returns an error message in the 
+       * scenario that someone has attemped to assign 
+       * themselves a role that belongs to an application, or is 
+       * managed by the bot or another bot
+       *
+       * @param {discord.Role} role 
+       * @returns a new {@link discord.InteractionResponse} ephermeral
+       * (so people don't get embarrased or smth when a command doesn't work) 
+       * 
+       */
+      managed: function(role)
+      {
+        return {content: format(langRand(this.RoleMessage.managed) + langRand(this.RoleMessage.guidanceMessage), {role}), ephemeral: true};
+      },
+       /**
+       * 
+       * @description returns an error message in the 
+       * scenario that someone has attemped to assign 
+       * themselves an administrator role.
+       * 
+       * 
+       * @param {discord.Role} role 
+       * @returns a new {@link discord.InteractionResponse} ephermeral
+       * (so people don't get embarrased or smth when a command doesn't work) 
+       * 
+       */
+      admin: function(role)
+      {
+        return {content: format(langRand(this.RoleMessage.admin) + langRand(this.RoleMessage.guidanceMessage), {role}), ephemeral: true};
+      },
+      RoleMessage:
+      {
+        alreadyHas: ["${role} it looks like you already have that role", "You already have ${role} silly", "I can't give you ${role}! You already have it", "But you already have ${role}", "${role} is already a role you have in this guild. You can remove it using /removerole"],
+        private: ["${role} has been set by a server admin as a private role, I'm sorry but I can't give it to you", "I can't assign you ${role} because that role isn't avalible for self-assignment in this guild", "I'm sorry but ${role} has been marked as a private member role"],
+        guidanceMessage: [" You can use /roles to get a list of roles that I can help you with!", " That's okay! If you want to see the roles we are allowed to manage, use /roles to get a list.", " I'm really sorry about that. But you can always find roles that you *are* allowed to add/remove from yourself using the /roles command", " If want to add this role, and it's not on the list of roles provided by /roles, it's probably an application role. Or it's been hidden by a server administrator"],
+        managed: ["${role} is another application's managed role, I can't give it to you silly!", "${role}? That looks like an application role that belongs to somepony else. I can't give it to you!", "It seems like ${role} is an application role! I couldn't give it to you if I tried!"],
+        admin: ["Oh no, that looks like a very important role I absolutley cannot change it in even the smallest little way", "${role} Oh no no no, I'm sorry. But that's not something I can do", "I can't help you with that ${role} is an admin role", "${role} is a server owner or admin role silly! I couldn't give it to you if I tried", "I can't touch the ${role} it's either a server owner, or admin role."]
+
+      },
+   
+    }
    
   },
 
   commandResponses:
   { 
+     /**
+       * 
+       * @description response message to be sent into the survivor channel after the scp command 
+       * has been used
+       * 
+       * @returns a new {@link discord.InteractionResponse}  
+       * 
+       */
     scp()
     {
       const randomIndex = Math.floor(Math.random() * this.scpMessage.length);
       return this.scpMessage[randomIndex]
     },
+     /**
+       * 
+       * @description response message to be sent after successful execution of /getrole
+       * 
+       * @returns a new {@link discord.InteractionResponse}  
+       * 
+       */
     getrole(role)
     {
       const randomIndex = Math.floor(Math.random() * this.getroleMessage.length);
       return {content: format(this.getroleMessage[randomIndex], {role}), ephemeral:false};
     }, 
+    /**
+       * 
+       * @description response message to be sent after successful execution of /resume
+       * 
+       * @returns a new {@link discord.InteractionResponse}  
+       * 
+       */
     resume(queue)
     {
       const song = queue.songs[0]; 
@@ -141,6 +379,13 @@ module.exports = {
       const randomIndex = Math.floor(Math.random() * this.resumeMessage.length);
       return {content: format(this.resumeMessage[randomIndex], {song: songname, time:current_time, duration:duration}), ephemeral:false};
     }, 
+     /**
+       * 
+       * @description response message to be sent after successful execution of /pause
+       * 
+       * @returns a new {@link discord.InteractionResponse}  
+       * 
+       */
     pause(queue)
     {
       const song = queue.songs[0]; 
@@ -150,6 +395,13 @@ module.exports = {
       const randomIndex = Math.floor(Math.random() * this.pauseMessage.length);
       return {content:format(this.pauseMessage[randomIndex], {song: songname, time: current_time, duration: duration}), ephemeral:false};
     },
+     /**
+       * 
+       * @description response message to be sent after successful execution of /filter
+       * 
+       * @returns a new {@link discord.InteractionResponse}  
+       * 
+       */
     filter(filter)
     {
       const randomIndex = Math.floor(Math.random() * this.filterMessage.length);

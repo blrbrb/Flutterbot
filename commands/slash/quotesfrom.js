@@ -1,6 +1,5 @@
 const { EmbedBuilder, ApplicationCommandOptionType } = require('discord.js');
 const {errorMessage} = require('../../lang/en.js');
-const {format, langRand} = require('../../utils.js');
 module.exports = {
     name: 'quotesfrom',
     description: "get a list of someones greatest hits",
@@ -33,9 +32,9 @@ module.exports = {
         
         if(!fetched_quotes)
         {
-            embed.setDescription(`${username} hasn't been quoted yet in this guild...`); 
+            embed.setDescription(errorMessage.quotesfromError.noGuildQuotes(interaction.guild)); 
             Flutterbot.db.addEntry(`${interaction.guild.id}.server_quotes`, []);
-            return interaction.reply(langRand(errorMessage.quotesfromError.noQuotesForGuild));
+            return interaction.reply(errorMessage.quotesfromError.noMemberQuotes(speaker));
         }
         
         let filtered_quotes = fetched_quotes.filter(fetched_quotes => fetched_quotes.id === speaker.id && fetched_quotes.guild === interaction.guild.id)
@@ -43,7 +42,7 @@ module.exports = {
         if(filtered_quotes.length === 0)
         {
 
-            embed.setDescription(format(langRand(errorMessage.quotesfromError.noQuotesForMember), { name:username }));
+            embed.setDescription(errorMessage.quotesfromError.noMemberQuotes(speaker));
         }
        
         

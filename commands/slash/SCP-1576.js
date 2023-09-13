@@ -1,5 +1,5 @@
 const { EmbedBuilder,  ApplicationCommandOptionType, embedLength } = require('discord.js');
-const {removeEveryoneMentions,format, langRand } = require('../../utils.js');
+const {removeEveryoneMentions,format} = require('../../utils.js');
 const {commandResponses} = require('../../lang/en.js')
 
 module.exports = {
@@ -17,7 +17,7 @@ module.exports = {
    async execute(interaction, Flutterbot)
    {
         const target_channel = Flutterbot.client.channels.cache.get('1091850338023260261');
-        const message_str = removeEveryoneMentions((langRand(commandResponses.scpMessage))); 
+        const message_str = removeEveryoneMentions(commandResponses.scp()); 
         const sacrificed_role = '1109587525720342548'; 
 
          //fetch guild embed color, if the guild has set an embed color 

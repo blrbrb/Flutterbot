@@ -1,5 +1,4 @@
 require('dotenv').config();
-const express = require('express');
 const { SimpleDatabase, Log, LockBox } = require('./utils')
 const Evaluator = require('./guardianAngel/evaluate.js');
 const { Client, Partials, GatewayIntentBits, Collection, SnowflakeUtil} = require('discord.js');

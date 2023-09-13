@@ -1,4 +1,4 @@
-const { EmbedBuilder,  ApplicationCommandOptionType } = require('discord.js');
+const { EmbedBuilder,  ApplicationCommandOptionType, embedLength } = require('discord.js');
 const {removeEveryoneMentions,format, langRand } = require('../../utils.js');
 const {commandResponses} = require('../../lang/en.js')
 
@@ -20,10 +20,11 @@ module.exports = {
         const message_str = removeEveryoneMentions((langRand(commandResponses.scpMessage))); 
         const sacrificed_role = '1109587525720342548'; 
 
+         //fetch guild embed color, if the guild has set an embed color 
+         let color = Flutterbot.db.getGuildConfig(interaction, 'embed_color'); 
 
 
         // first of all, check if the user is alive. 
-       
         if(!interaction.member.roles.cache.has(sacrificed_role)) 
         {
 
@@ -36,6 +37,10 @@ module.exports = {
         .setDescription(`\`${interaction.options.getString('message')}\``)
         .setThumbnail('https://cdn.discordapp.com/attachments/368957683187056676/1135734604356128818/Screenshot_2023-07-31_030258.png'); 
         
+        if(color)
+        {
+            embed.setColor(color); 
+        }
          
         //send dialog before embed idk, it'd be funny
         await target_channel.send(message_str);

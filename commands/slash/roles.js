@@ -13,13 +13,19 @@ module.exports = {
    
     const roleNames = roles.map(role => role.name); // Get an array of role names
     
+    //fetch guild embed color, if the guild has set an embed color 
+    let color = Flutterbot.db.getGuildConfig(interaction, 'embed_color'); 
     
     // Create an embed to display the available roles
     const embed = new EmbedBuilder()
       .setColor('#0099ff')
       .setTitle('Available Roles')
-      .setDescription(roleNames.join('\n'));
-
+      .setDescription(roleNames.join('\n')); 
+    
+    if(color)
+    {
+      embed.setColor(color);
+    }
    interaction.reply({ embeds: [embed] });
   },
 };

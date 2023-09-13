@@ -1,4 +1,5 @@
 require('dotenv').config();
+const express = require('express');
 const { SimpleDatabase, Log, LockBox } = require('./utils')
 const Evaluator = require('./guardianAngel/evaluate.js');
 const { Client, Partials, GatewayIntentBits, Collection, SnowflakeUtil} = require('discord.js');
@@ -6,10 +7,9 @@ const { DisTube } = require('distube');
 const filters = require('./assets/filters.json');
 const { prefixcommands, slashcommands, current_maintenance } = require('./findAllCommands.js');
 const LastfmApi = require('lastfmapi'); 
-const http = require('http');
-const url = require('url');
 
 
+const PORT = process.env.PORT || 3000;
 //I will force this to be c++ 
 //I LOVE C++ I LOVE OBJECTS
 //I LOVE OVER THE TOP ORGANIZATION 
@@ -20,17 +20,17 @@ class Flutterbot {
        this.initDistube();
        this.initdb('assets/db.json');
        this.initEvaluator(); 
-       this.initLockBox();
+       this.initLockBox(); 
        this.slashcommands = slashcommands; 
        this.prefixcommands = prefixcommands; 
        this.cooldowns = new Collection();
        this.GuildCoolDowns = new Map();     
-        
+       this.app = express();  
        this.lastfm =  new LastfmApi({   
         'api_key' : process.env.FM_KEY,
         'secret' : process.env.FM_SECRET
     }); 
-    this.fmAuthUrl = this.lastfm.getAuthenticationUrl({ 'cb' : "https://1b16-97-83-17-173.ngrok-free.app"});
+
     }
      
 
@@ -83,7 +83,7 @@ class Flutterbot {
             emitAddListWhenCreatingQueue: false,
             youtubeCookie: process.env.FART,
             customFilters: filters
-        });
+        });   
     }
     initdb(file)
     {
@@ -100,7 +100,8 @@ class Flutterbot {
     }
     updateLastFMServer()
     {
-    
+        
+         
 
     }
     //update the database on an hourly basis to ensure the perseverance of data between leaving / joining
@@ -143,8 +144,8 @@ class Flutterbot {
                
     }
    
-      
-    //await this.updateSurvivors();
+   
+    await this.updateSurvivors();
     }
 
     
@@ -164,45 +165,4 @@ const entry = new Flutterbot();
 entry.start(); 
 
 
-var key = ''; 
-http.createServer(function (req, res) {
-    var pathname = url.parse(req.url).pathname;
-
-        var token = url.parse(req.url, true).query.token;
-
-        entry.lastfm.authenticate(token, function (err, session) {
-            if (err) {
-                console.log(err);
-                res.writeHead(401, { 'Content-Type' : 'text/plain' });
-                res.end('Unauthorized');
-
-            } else {
-                console.log('success!!');
-                res.writeHead(200, { 'Content-Type' : 'text/html' });
-                res.write('<p>Authentication successful. You can now make authenticated method calls.</p>');
-                res.write('<pre>' + JSON.stringify(session, null, '    ') + '</pre>');
-                res.write('<p>Store this data for future authentication.</p>');
-                res.write('<p>Use <code>client.lastfm.setSessionCredentials(\'' + session.username + '\', \'' + session.key + '\');</code> for automatic authentication in the future.</p>');
-                res.end('<pre>:)</pre>'); 
-                entry.db.addEntry(`last_fmSessions.${entry.LockBox.encrypt(session.username)}`, entry.LockBox.encrypt(session.key)); 
-                //encrypt the new user's secure key before storing it in the database. 
-                
-                
-                 
-            }
-
-        });
-
-       
-
-    //res.writeHead(404, { 'Content-Type' : 'text/plain' });
-    //res.end('Not found');
-
-
-}).listen(80);
-
 //Mares mares mares mares mares, when I am sad I like to thnk about mares. Mares make me feel better when I am depressed. Life can make me depressed often but I like mares and thinking about cute mares mares mares. So It is okay
-
-
-
-

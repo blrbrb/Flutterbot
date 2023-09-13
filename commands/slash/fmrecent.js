@@ -25,6 +25,9 @@ module.exports = {
       }
       const mostRecent = response.data.recenttracks.track[0];
       const tracks = response.data.recenttracks.track; 
+      
+      //fetch the guild's default embed color, if the guild has one defined 
+      let color = Flutterbot.db.getGuildConfig(interaction, 'embed_color');
 
       const embed = new EmbedBuilder()
       .setTitle(`${mostRecent.name}`) 
@@ -39,6 +42,10 @@ module.exports = {
       if(mostRecent.hasOwnProperty('date'))
       {
         embed.setTimestamp(parseInt(mostRecent.date.utsc));
+      }
+      if(color)
+      {
+        embed.setColor(color); 
       }
 
       embed.setDescription(`**${mostRecent.artist['#text']}** - *${mostRecent.name}* \n other recently played tracks include...`)

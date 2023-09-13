@@ -818,5 +818,4 @@ class LockBox
 }
 
 
-
 module.exports = { displayList, log, Log, ID, SimpleDatabase, validateDate, LockBox, formatTime, removeEveryoneMentions, resolveGuildID, ProgressBar, isValidHexColor, format, langRand};

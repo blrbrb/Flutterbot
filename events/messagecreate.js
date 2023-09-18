@@ -1,16 +1,30 @@
-const { Events,AttachmentBuilder } = require('discord.js');
+const { Events,AttachmentBuilder, ChannelType } = require('discord.js');
 const { prefix, current_maintenance } = require('../config/config.json');
 const fs = require('fs');
-
+const {socialHelp} = require('../lang/en.js');
 module.exports = {
     name: Events.MessageCreate,
     once: false,
     async execute(Flutterbot, message) {
+
+        if(Flutterbot.collectors.get(message.author.id) && !message.author.bot)
+        {
+            const instance = Flutterbot.collectors.get(message.author.id); 
+          
+
+                //instance.channel.send('I can see the messages you are sending me');
+
+               socialHelp.handleUserInput(instance);
+
+            return;
+        }
+
         if (!message.content.startsWith(prefix) || message.author.bot) return;
 
         let args = message.content.slice(prefix.length).trim().split(/ +/g);
         const command = args.shift(); 
 
+       
     
         //let pC = Flutterbot.clientprefixcommands.get('fs');
         // if (pC) return pC.execute(client, message, command, args, prefix), undefined;

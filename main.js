@@ -19,11 +19,13 @@ class Flutterbot {
        this.initDistube();
        this.initdb('assets/db.json');
        this.initEvaluator(); 
+     
        this.initLockBox(); 
        this.slashcommands = slashcommands; 
        this.prefixcommands = prefixcommands; 
        this.cooldowns = new Collection();
-       this.GuildCoolDowns = new Map();     
+       this.GuildCoolDowns = new Map();
+       this.collectors = new Collection();  
        this.lastfm =  new LastfmApi({   
         'api_key' : process.env.FM_KEY,
         'secret' : process.env.FM_SECRET

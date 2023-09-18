@@ -1,7 +1,7 @@
 const fs = require('fs');
 const fetch = require('node-fetch');
 require('dotenv').config();
-
+const {commandResponses} = require('../../lang/en.js');
 let conversation = { past_user_inputs: [], generated_responses: [] };
 let response_temp = ' ';
 const command_prefix = 'fs';
@@ -43,10 +43,14 @@ module.exports = {
 
             if (response.hasOwnProperty("error")) {
 
-                message.channel.send(response.error);
+                //message.channel.send(response.error);
                 console.log(response.error);
 
-                if (response.error.hasOwnProperty('estimated_time')) { }
+                if (response.error.hasOwnProperty('estimated_time'))
+                { 
+                    message.channel.send(commandResponses.Fluttershy.loadingModel(response.error.estimated_time));
+                }
+
             } else if (response.hasOwnProperty("generated_text")) {
 
                 response_temp = response.generated_text;

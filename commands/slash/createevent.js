@@ -1,6 +1,6 @@
 const { GuildScheduledEventManager,ApplicationCommandOptionType, PermissionFlagsBits, SlashCommandBuilder, GuildScheduledEventPrivacyLevel, GuildScheduledEventEntityType, ChannelType } = require("discord.js");
 const { description } = require("./maintenance");
-const {validateDate} = require("../../utils.js")
+const {stringToDate} = require("../../utils.js")
 
 module.exports = {
     name: "event",
@@ -49,7 +49,7 @@ module.exports = {
 
       const guild_id = interaction.guild.id;
       const raw = interaction.options.getString('start'); 
-      const date = validateDate(raw);
+      const date = stringToDate(raw);
       const event_name = interaction.options.getString('name');
       const channel = interaction.options.getChannel('channel');
       const description = interaction.options.getString('description');

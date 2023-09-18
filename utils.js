@@ -339,8 +339,7 @@ class SimpleDatabase {
   {
     try{
     let guildID = resolveGuildID(guildResolveable); 
-    console.log(guildID);
-    console.log(this.guildExists(guildID));
+  
     if(guildID && this.guildExists(guildID))
     {
       let current = this.data[guildID]; 
@@ -691,33 +690,104 @@ class SimpleDatabase {
   }
 }
 
-function validateDate(RawDateString) {
+function convertToTimezone(date, targetTimezone) {
+  const options = {
+    timeZone: targetTimezone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false, // Use 24-hour format
+  };
+
+  const formatter = new Intl.DateTimeFormat('en-US', options);
+  return formatter.format(date);
+ 
+}
+
+function stringToDate(RawDateString) {
 
   const results = chrono.parse(RawDateString);
-
-  console.log('fucking');
+  const cleaned = consolidateTimeObjects(results[0].start.impliedValues, results[0].start.knownValues);
+ 
   if (results.length === 0) { 
-    console.log('unable to parse')
+    console.log('unable to parse date')
     console.log(results)
     return false; // Couldn't parse a date
   }
+  let parsed = new Date(); 
+  parseDate(cleaned, parsed);
 
-  const parsedDate = results[0].start.date();
+  
+ //parsedDate.setUTCFullYear(parsed.year);
+ // parsedDate.setUTCHours(parsed.hour, parsed.minutes, parsed.second, parsed.millisecond);
+  
+  
+ 
+  //convert the parsed values into a date object
+  //parsedDate.setFullYear(parsed.year);
+  //parsedDate.setHours(parsed.hour);
   const currentDate = new Date();
-
+  //console.log(parsedDate);
   // Check if the parsed date is in the past
-  if (parsedDate < currentDate) {
-    console.log('this date has already passed')
+  if (parsed < currentDate) {
     return false; // Date has already passed
   }
-
-  return parsedDate;
-  //Discord's event manager API can take just straight up Date() 
-  // Convert the valid date to a Unix timestamp
-  //const unixTimestamp = parsedDate.getTime() / 1000;
-
- // return unixTimestamp;
+  
+  return parsed;
 }
+
+function parseDate(results, Date)
+{
+
+  Date.setUTCFullYear(results.year, results.month - 1, results.day); 
+  Date.setUTCHours(results.hour, results.minute, results.second);
+ 
+}
+  
+function consolidateTimeObjects(impliedValues, knownValues) {
+  // Define an object with all possible time components
+  const universalObject = {
+    year: 0,
+    month: 0,
+    day: 0,
+    hour: 0,
+    minute: 0,
+    second: 0,
+    millisecond: 0,
+  };
+
+  // Iterate over the keys in the impliedValues object and add them to the universalObject
+  for (const key in impliedValues) {
+    if (universalObject.hasOwnProperty(key)) {
+      universalObject[key] = impliedValues[key];
+    }
+  }
+
+  // Iterate over the keys in the knownValues object and add them to the universalObject
+  for (const key in knownValues) {
+    if (universalObject.hasOwnProperty(key)) {
+      universalObject[key] = knownValues[key];
+    }
+  }
+
+  return universalObject;
+}
+
+// Example usage:
+const impliedValues = {
+  year: 1,
+  millisecond: 500,
+};
+
+const knownValues = {
+  month: 3,
+  day: 15,
+  hour: 12,
+};
+
 class LockBox 
 {
    
@@ -823,4 +893,4 @@ function langRand(langArray)
     return randomElement;
 }
 
-module.exports = { displayList, log, Log, ID, SimpleDatabase, validateDate, LockBox, formatTime, removeEveryoneMentions, resolveGuildID, ProgressBar, isValidHexColor, format, langRand};
+module.exports = { displayList, log, Log, ID, SimpleDatabase, stringToDate,convertToTimezone,  LockBox, formatTime, removeEveryoneMentions, resolveGuildID, ProgressBar, isValidHexColor, format, langRand};

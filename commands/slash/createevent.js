@@ -1,7 +1,7 @@
 const { GuildScheduledEventManager,ApplicationCommandOptionType, PermissionFlagsBits, SlashCommandBuilder, GuildScheduledEventPrivacyLevel, GuildScheduledEventEntityType, ChannelType } = require("discord.js");
 const { description } = require("./maintenance");
 const {stringToDate} = require("../../utils.js")
-
+const {errorMessage, commandResponses} = require('../../lang/en.js');
 module.exports = {
     name: "event",
     description: "create a new event",
@@ -59,7 +59,7 @@ module.exports = {
       //cannot execute command without event management perms. 
       if (!interaction.member || !interaction.member.permissions.has(PermissionFlagsBits.ManageEvents)) 
       {
-        return interaction.reply({content:`I'm sorry, it dosen't look like you have permission to manage roles in this guild`, ephemeral:true})
+        return interaction.reply(errorMessage.PermissionError.missing());
       }
 
       //date is required. Only an if statement here to ensure that validateDate() returns true 

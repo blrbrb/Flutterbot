@@ -168,6 +168,41 @@
         "quote": "picking cock",
         "id": "314221445645467649",
         "guild": "960713019753644032"
+      },
+      {
+        "name": "84127f52369d8523b8ea2135bb842ee4",
+        "date": "2023 09 15",
+        "quote": "You know that dog from The Wizzard of Oz? They paved over its grave to make a highway. I've been driving over that dead dog for years, like every day. I've probably ran over that dog thousands of times",
+        "id": "314221445645467649",
+        "guild": "960713019753644032"
+      },
+      {
+        "name": "f7c2e1a76894c3832c7a44bd3abfc4cf",
+        "date": "2023 09 16",
+        "quote": "I need my friends to fall in a pit RIGHT NOW",
+        "id": "256199142118785024",
+        "guild": "960713019753644032"
+      },
+      {
+        "name": "df0fbe11b1a9ba30b5fad66fb1e79276",
+        "date": "2023 09 16",
+        "quote": "I need my friends to hate me",
+        "id": "99665355319824384",
+        "guild": "960713019753644032"
+      },
+      {
+        "name": "7ae0d999a224e07a71f0ac44ab0f49bd",
+        "date": "2023 09 16",
+        "quote": "i might just fart on your balls",
+        "id": "252235505318625281",
+        "guild": "960713019753644032"
+      },
+      {
+        "name": "8c8d70d471fa93992a9c52290666bcdf",
+        "date": "2023 09 17",
+        "quote": "I want this twink Obliterated",
+        "id": "253697024652869634",
+        "guild": "960713019753644032"
       }
     ],
     "config": {
@@ -182,11 +217,12 @@
         "961375365010423839",
         "1135367400913649686"
       ],
-      "embed_color": 16774656,
+      "embed_color": 16758465,
       "quarantined": [
         "1150789184748015626"
       ],
-      "quaratine_role": "1151205228394324010"
+      "quaratine_role": "1151205228394324010",
+      "newMemberMinimumAge": 30
     },
     "sacrificed": [
       "120417731815145472",
@@ -500,20 +536,24 @@
         "900937347586228245",
         "1098004877868814420",
         "1116288830727790682"
-      ]
+      ],
+      "embed_color": 16773121
     },
     "sacrified": [
       "1141627350140858411"
     ],
-    "berceuse": [
-      "252235505318625281"
+    "server_quotes": [
+      {
+        "name": "7ae0d999a224e07a71f0ac44ab0f49bd",
+        "date": "2023 09 18",
+        "quote": "fuck",
+        "id": "252235505318625281",
+        "guild": "368957683187056672"
+      }
     ]
   },
   "last_fmSessions": {
     "ellypony": "5ac01765136ebb2d8615efa0671f491c57c67439f122567133eef99deb301ddaad8c9d98a5eb1b693e822da8fa710993",
     "7ae0d999a224e07a71f0ac44ab0f49bd": "e7d7a13a9d803f282a5fb3cd87232e4dfddc2d24e03b8bf4a004e12c5d3e1152ef9cce9c819922d13307f947cc421811"
-  },
-  "1138965190298308628": "1138965190298308628"
-
-  
+  }
 }

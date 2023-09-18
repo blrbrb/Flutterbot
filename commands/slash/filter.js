@@ -1,6 +1,8 @@
 const {commandResponses, errorMessage} = require('../../lang/en.js'); 
 const { formatTime } = require('../../utils.js');
 
+
+
 module.exports = {
     name: 'filter',
     description: 'Apply a filter to playing music',
@@ -114,7 +116,7 @@ module.exports = {
         const selection = ((interaction.options.getString('filter')) ? interaction.options.getString('filter') : interaction.options.getString('ffmpeg'))
         const queue = await Flutterbot.DisTube.getQueue(interaction);
 
-        if(!queue) return interaction.reply({content:errorMessage.Distube.noQueue(), ephemeral: true});
+        if(!queue) return interaction.reply(errorMessage.Distube.QueueEmpty());
 
         
         if (!queue.filters.has(selection)) {
@@ -123,7 +125,7 @@ module.exports = {
         }
         else if (queue.filters.has(selection)) {
             queue.filters.remove(selection);
-
+            
            return interaction.reply(`removing the ${selection} filter!~`);
         }
         return interaction.reply('fuck');

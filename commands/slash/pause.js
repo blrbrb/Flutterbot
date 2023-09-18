@@ -7,18 +7,20 @@ module.exports = {
     helpText: `Pause the currently playing music or video \n Use: **/pause**`,
     async execute(interaction, Flutterbot) {
         const queue = await Flutterbot.DisTube.getQueue(interaction);
-        const song = queue.songs[0];
-        const current_time = formatTime(Math.floor(queue.currentTime)); 
+       
         
-        if(!queue) return interaction.reply({content:errorMessage.Distube.noQueue(), ephemeral: true});
+        if(!queue) return interaction.reply(errorMessage.Distube.QueueEmpty());
        
         if(queue.paused)
         {
-            return interaction.reply({content:errorMessage.Distube.AlreadyPaused(),  ephemeral: true})
-        }
+            return interaction.reply(errorMessage.Distube.AlreadyPaused())
+        } 
+
+        const song = queue.songs[0];
+        const current_time = formatTime(Math.floor(queue.currentTime)); 
 
         queue.pause(interaction); 
 
-        return interaction.reply({content:commandResponses.pause(queue),  ephemeral: false});
+        return interaction.reply(commandResponses.pause(queue));
     }
 }

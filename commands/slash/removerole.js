@@ -18,7 +18,7 @@ module.exports = {
       const role = interaction.options.getRole('role');
 
         if (!interaction.member.permissions.has(PermissionFlagsBits.ManageRoles)) {
-            await interaction.reply({content: 'You do not have permission to manage roles.',ephemeral: true});
+            await interaction.reply(errorMessage.PermissionError.missing());
             return;
           }
       
@@ -29,14 +29,14 @@ module.exports = {
           if (role && role.permissions.has(PermissionFlagsBits.Administrator)) {
            
                 //:`${role} has been set to hidden, However, to get a list of roles that I'd be happy to assign you use /roles!` }`
-            await interaction.reply({content:errorMessage.roleError.noPermissions(role),ephemeral: true});
+            await interaction.reply(errorMessage.RoleError.noPermissions(role));
             return;
           } 
 
           //check if the role is on the list of private roles for the guild 
           if(privateroles.includes(role.id))
           {
-            await interaction.reply({content:errorMessage.roleError.noPermissions(role), ephemeral: true})
+            await interaction.reply(errorMessage.RoleError.noPermissions(role))
           }
       
           // Remove the role from the user

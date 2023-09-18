@@ -1,5 +1,7 @@
 ﻿const { formatTime } = require('../../utils/utilities.js')
-const {EmbedBuilder} = require('discord.js'); 
+const {EmbedBuilder} = require('discord.js');  
+const {errorMessage, commandResponses} = require('../../lang/en.js');
+const { error } = require('console');
 module.exports = {
     name: 'queue',
     description: 'display the queue of currently playing songs',
@@ -11,12 +13,15 @@ module.exports = {
 
         let queue = await Flutterbot.DisTube.getQueue(interaction);
 
+       
+
+        if(!queue) return interaction.reply(errorMessage.Distube.QueueEmpty());
+        console.log(queue.songs[0]); 
+       
+        //only begin to set the embed properties if the queue exists
         embed.setAuthor({'name': 'Current Queue'}); 
         embed.setThumbnail(queue.songs[0].thumbnail); 
 
-        if(!queue) return interaction.reply(`But there is no queue! Use /play to search for songs`);
-        console.log(queue.songs[0]); 
-       
         queue.songs.forEach((song, i) => {
 
         if(!i===0){

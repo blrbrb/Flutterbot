@@ -127,10 +127,10 @@ echo details written to "$FILE"
 
  
 
-echo Restarting Fluttershy in 15 Seconds... 
+echo Restarting Fluttershy in 1 Seconds... 
 
 
-sleep 15
+sleep 1
 
 echo  'Clearing Cache: 0%)\r'  
  

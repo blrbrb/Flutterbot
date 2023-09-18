@@ -44,7 +44,7 @@ module.exports = {
 
          //SimpleDatabase.Append() not working 
          //Flutterbot.db.append(`${interaction.guild.id}.server_quotes`,data)
-         var temp = Flutterbot.db.getAllData() 
+        let temp = Flutterbot.db.getAllData() 
         if(!temp.hasOwnProperty(`${interaction.guild.id}`))
         {
             
@@ -52,7 +52,8 @@ module.exports = {
             temp = Flutterbot.db.getAllData()
         }
         
-        temp_arr = temp[`${interaction.guild.id}`][`server_quotes`]
+        temp_arr = temp[`${interaction.guild.id}`][`server_quotes`];
+        console.log(temp_arr); 
         temp_arr.push(data)
         Flutterbot.db.addEntry(`${interaction.guild.id}.server_quotes`, temp_arr)
 

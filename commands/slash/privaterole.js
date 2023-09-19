@@ -37,16 +37,14 @@ module.exports = {
       data.private_roles.push(role.id);
 
       // Write the updated list to the JSON file
-      Flutterbot.db.addEntry(`${interaction.guild.id}`, data);
-
+      Flutterbot.db.setGuildConfig(interaction.guild.id, "private_roles", data); 
     } catch (error) {
       // If the data doesn't exist, initialize it with an empty roles array
-      data = [];
-      Flutterbot.db.modifyEntry(`${interaction.guild.id}.config.private_roles`, data);
+      Flutterbot.db.setGuildConfig(interaction.guild.id, "private_roles", []);
     
     }
 
-    
+      
     // Reply with a confirmation message
     return interaction.reply(`Added role "${role.name}" with ID "${role.id}" to the list of private roles! 
     ${role} will no longer be accessible with /getRole, modifyable with /removerole, nor will it appear on the list of assignable roles with /roles.

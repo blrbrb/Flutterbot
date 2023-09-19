@@ -6,6 +6,14 @@ const crypto = require('crypto');
 const { assert } = require('console');
 const { config } = require('dotenv');
 
+const DataTypes = {
+  Undefined: 0,
+  Number: 1,
+  String: 2,
+  Boolean: 3,
+  Object: 4,
+  Function: 6,
+};
 
 const colors = {
     "": "\x1b[0m",
@@ -46,7 +54,7 @@ const colors = {
  * false disables log calls that doesn't enable the forced parameter
  * NOTE: the forced param will not work if modifierList isnt provided
  */
-function Log(logAll = true) {
+function Log(logAll = true, tofile = true) {
     !logAll && console.log(`${colors.bright}${colors.red}TAKE CARE TO NOTE LOGALL IS DISABLED${colors.reset}`);
     /**
      * @param {string} modifierList
@@ -70,12 +78,22 @@ function Log(logAll = true) {
             message = modifierList;
             modifierList = "";
         }
+       
         let pirate = modifierList.toLowerCase().split(" ");
         let combine = "";
         pirate.forEach(c => colors[c] ? combine += colors[c] : null);
-        console.log(`${combine}${message}${colors.reset}`);
+        console.log(`${combine}${message}${colors.reset}`);  
+
+        if (tofile){
+          fs.appendFile('Flutterbot.log', message + '\n', (err) => {
+            if (err) {
+              console.error('Error writing to log file:', err);
+            }
+          });
+        }
     }
 }
+const log = new Log(true);
 
 function isValidHexColor(color) {
    
@@ -99,7 +117,7 @@ function formatTime(seconds) {
   const formattedSeconds = String(remainingSeconds).padStart(2, '0');
   return `${formattedMinutes}:${formattedSeconds}`;
 }
-const log = new Log(true);
+
 
 function displayList(array) {
     if (!array.length) return log("bright green", "\nEmpty\n");
@@ -163,6 +181,35 @@ function resolveGuildID(object)
   }
 }
 
+function resolveUserID(object)
+{
+  let UserID = 0;
+  console.log('checking properties');
+  if (object instanceof Discord.User) {
+   
+    UserID = object.id; 
+    console.log(UserID);
+    return UserID;
+  } else if (object.user && object.user instanceof Discord.User) {
+    console.log('has user property');
+    return object.user.id; 
+  }
+  else if (object.member && object.member instanceof Discord.User)
+  {
+    console.log('has member property');
+     return object.member.id;
+  }
+  else if (object.author && object.author instanceof Discord.User)
+  {
+    console.log('has author property'); 
+    return object.author.id;
+  }
+ else {
+    // If the object doesn't contain a Guild object or a 'guild' property with 'id', return false
+    return false;
+  }
+
+}
 
 
 
@@ -210,7 +257,9 @@ class SimpleDatabase {
   constructor(filePath) {
     this.filePath = filePath;
     this.data = this.loadData();
+    
   }
+  
 
   /**
    * Private Class Method. Called by the database when modifying adding or removing propereties 
@@ -247,29 +296,232 @@ class SimpleDatabase {
    * @returns {any} Data associated with key.
    * @returns {undefined} if key does not exist. (will also auto-initalize the key that isn't found)
    */
-  addEntry(key, value) {
-    let current = this.data; 
-    if (key.includes('.')){
-     let keys = key.split('.')
-     keys.forEach((key, index) => {
-      if (!current[key]) {
-        if (index === keys.length - 1) {
-          current[key] = value;
-          this.saveData();
-        } else {
-          //at this point, we've looped over all of the keys 
-          //if there really isn't a key this far down in the json tree
-          //it's safe to initalize the new key as an empty object
-          current[key] = {};
-          this.saveData();
-        }
+  set(IDResolveable, Key, value)
+  {
+    
+   let ID  = resolveGuildID(IDResolveable) ? resolveGuildID(IDResolveable) : resolveUserID(IDResolveable);
+
+    if(ID && this.Exists(ID)) //the guild already exists in the database.
+    {
+      let current = this.data[ID]; 
+
+      if(Key === ID)
+      {
+        //log("red underscore",`Warn: SimpleDatabase:set() cannot assign a property as ${ID}, the parent object is already ${ID}!`);
+        current = this.data; 
+        //return;
       }
-      current = current[key];
-    });}
-    else
-    //if the key string does not have ".". It's a flat property. Just add it to the root 
-    this.data[key] = value;
-    this.saveData();
+
+    
+
+      if(current.hasOwnProperty(Key)) //the property key already exists 
+      { 
+        if(Array.isArray(current[Key])) // the existing property is an array. 
+        {
+          if(Array.isArray(value)) //the new value is also an array. Merge.
+          {
+            try
+            { 
+             
+              const appended = this.mergeArrays(current[`${Key}`], value); 
+              current[`${Key}`] = appended; 
+            }
+            catch(error)
+            {
+              console.log(error);
+            }
+          }   
+          else //the existing property is an array, but the new value is not.
+          {
+            console.log(this.getArrayType(current[`${Key}`]));
+            const arrayType = this.getArrayType(current[`${Key}`]).type; 
+            switch(arrayType) //make sure it's the correct datatype before pushing.
+            {
+              case DataTypes.Boolean:
+                if(typeof value === 'boolean'){
+                  current[Key].push(value);
+                  this.data[ID] = current; 
+                  this.saveData(); 
+                  return; 
+                  }
+                else  
+                  console.log(`incorrect data type, expected boolean but got ${typeof value} instead`);
+              case DataTypes.String: 
+                if (typeof value === 'string'){
+                  current[Key].push(value);
+                   this.data[ID] = current; 
+                   this.saveData(); 
+                   return;
+                }
+                else
+                  console.log(`incorrect data type, expected string but got ${typeof value} instead`);
+              case DataTypes.Number: 
+                if(typeof value === 'number'){
+                 current[Key].push(value);
+                 this.data[ID] = current; 
+                 this.saveData(); 
+                 break;
+                }
+                else 
+                console.log(`incorrect data type, expected num but got ${typeof value} instead`);
+              case DataTypes.Object: 
+                if(typeof value === 'object'){
+                  current[Key].push(value);
+                  this.data[ID] = current; 
+                  this.saveData(); 
+                  return;
+                  
+                }
+                else 
+                  console.log(`incorrect data type, expected obj but got ${typeof value} instead`);
+              case DataTypes.Function: 
+                if(typeof value === 'function'){
+                   current[Key].push(value);
+                   this.data[ID] = current; 
+                   this.saveData(); 
+                   return;
+                  }
+                else 
+                   console.log(`incorrect data type, expected function but got ${typeof value} instead`);
+              case DataTypes.Undefined: 
+                  if(typeof value === 'undefined') 
+                  {
+                     console.log(`the value is undefined, cannot append`) 
+                     break;
+                  }
+                  else 
+                    console.log(`something is very wrong lol`);
+                  break;
+              default: 
+                  console.log(`something is fucked`, typeof value);
+            } 
+            //Make sure the new value is the correct DataType
+          }
+
+        }
+        else if (typeof current[Key] === 'object')
+        {
+          if(typeof value === 'object')
+          {
+              
+            let updateValue = this.updateObject(current[Key], value); 
+            console.log('updated object:',updateValue);
+           
+          
+            current = updateValue; 
+            this.data[ID] = current; 
+            this.saveData(); 
+            return;
+          } 
+          
+        }
+        
+        
+      }
+      else { //the property key is not an array, or object, safe it add it.
+        current[Key] = {}; 
+        
+        current[Key] = value;
+        this.data[ID] = current; 
+        this.saveData();
+        return;}
+    }
+
+    else if(ID && !this.Exists(ID)) //the guild does not exist in the database, initalize it
+    {
+       console.log('guild not found in db'); 
+       let current = {}; 
+       //if the value being set on the new object is also an object, we don't want two of them nested
+       //inside of one another with the same name
+
+       if(typeof value === 'object')
+       {
+         current = value;   
+       }
+       else
+       {
+        current[Key] = value; 
+       }
+       this.data[ID] = current; 
+       console.log('successfully appended new object to database...');
+       this.saveData();
+       return;
+    }
+
+    else if(!ID)
+    {
+      console.log(ID);
+      console.log('unable to resolve guild id. SimpleDatabase set()');
+    }
+
+    
+  }
+
+  mergeArrays(arr1, arr2) {
+    // Check if both arrays have the same data type (numeric or string)
+    if (
+      (Array.isArray(arr1) && Array.isArray(arr2)) &&
+      (arr1.length > 0 && typeof arr1[0] === typeof arr2[0])
+    ) {
+      // Merge the arrays
+      return arr1.concat(arr2);
+    } else {
+      // Arrays are of different data types, handle the error or return an empty array
+      throw `Incompatible array types received ${typeof arr1[0]} and ${typeof arr2[0]}`
+     
+    }
+  }
+
+
+  /**
+   * replace old keys on an object with new values. Must 
+   * be identical objects sharing the same property names, and count
+   * @param {Object} OldObject the object with old values
+   * @param {Object} NewObject object with new values
+   * @returns {Object}
+   */
+  updateObject(OldObject, NewObject)
+  {
+    let keys = Object.keys(NewObject)
+
+    keys.map(x=>{
+      OldObject[x] =  NewObject[x]
+    });
+    return NewObject; 
+  }
+
+  /**
+   * Get the datatype (string) of an array in the database
+   * @param {Array} arr
+   * @returns {String} the type of data in the array e.g ("object", "string") etc. 
+   */
+ getArrayType(arr) {
+    if (Array.isArray(arr) && arr.length > 0) {
+      const firstElementType = typeof arr[0];
+      
+      switch (firstElementType) {
+        case "number":
+          return { type: DataTypes.Number, typeName: "Number" };
+        case "string":
+          return { type: DataTypes.String, typeName: "String" };
+        case "boolean":
+          return { type: DataTypes.Boolean, typeName: "Boolean" };
+        case "object":
+          if (Array.isArray(arr[0])) {
+            return { type: DataTypes.Array, typeName: "Array" };
+          } else if (arr[0] === null) {
+            return { type: DataTypes.Object, typeName: "Object" };
+          } else {
+            return { type: DataTypes.Object, typeName: "Object" };
+          }
+        case "function":
+          return { type: DataTypes.Function, typeName: "Function" };
+        default:
+          return { type: DataTypes.Unknown, typeName: "Unknown" };
+      }
+    } else {
+      return { type: DataTypes.Unknown, typeName: "Unknown" };
+    }
   }
 
   /**
@@ -340,7 +592,7 @@ class SimpleDatabase {
     try{
     let guildID = resolveGuildID(guildResolveable); 
   
-    if(guildID && this.guildExists(guildID))
+    if(guildID && this.Exists(guildID))
     {
       let current = this.data[guildID]; 
       if(current.hasOwnProperty('config'))
@@ -379,7 +631,7 @@ class SimpleDatabase {
     try{
     let guildID = resolveGuildID(guildResolveable); 
     
-    if(guildID && this.guildExists(guildID))
+    if(guildID && this.Exists(guildID))
     {
       
       let current = this.data[guildID]; 
@@ -423,7 +675,7 @@ class SimpleDatabase {
     try{
     let guildID = resolveGuildID(guildResolveable); 
     
-    if(guildID && this.guildExists(guildID))
+    if(guildID && this.Exists(guildID))
     {
       
       let current = this.data[guildID]; 
@@ -457,7 +709,7 @@ class SimpleDatabase {
   {
     try{
       let guildID = resolveGuildID(guildResolveable); 
-      if(guildID && this.guildExists(guildID))
+      if(guildID && this.Exists(guildID))
       {
         current = this.data[guildID];
         if(current.hasOwnProperty('config'))
@@ -564,7 +816,7 @@ class SimpleDatabase {
       //this else block there are no '.' in the key string. The key is flat. like your mom.  
       //so check to make sure the data actually exists. Just like how the doctor checks my penis.
 
-      if(this.guildExists([key]))
+      if(this.Exists(key))
       {
         return this.data[key];
       }
@@ -575,8 +827,6 @@ class SimpleDatabase {
       // Still return undefined, so your ass doesn't FORGET. Also save the db file 
       else 
       {
-        this.data[key] = key; 
-        this.saveData(); 
         return undefined;
       }
     }
@@ -589,16 +839,17 @@ class SimpleDatabase {
    * keyExists() will search the ENTIRE db tree for matches, not just the root of the json tree.
    * They aren't intercompatible because guild id's may appear elsewhere in the db file farther down 
    * and conflate the results.
-   * @param {Discord.Snowflake} guildID {@link Discord.Snowflake}
-   * @returns {any}
+   * @param {Discord.Snowflake} ID {@link Discord.Snowflake}
+   * @returns {true} if the object has been stored in the database before, false if not.
    */
-  guildExists(guildID)
+  Exists(ID)
   {
     //would it be better to use .hasOwnProperty or nah? Quieres¿¿
-    return guildID in this.data 
+    return this.data.hasOwnProperty(ID);
+    
   }
 
-
+ 
   update(key, value) {
     if(key.includes('.')){
     const keys = key.split('.');
@@ -865,7 +1116,7 @@ class LockBox
     `;
   
     fs.writeFileSync('.env', envKey, { flag: 'a' }); //'a' 'append'. Dont erase important stuff already in .env
-    Log('created new key and updated .env file'); 
+    log('created new key and updated .env file'); 
 
   }
 
@@ -882,7 +1133,84 @@ class LockBox
 
 }
 
+function calculateexp(currentLevel) {
+  
+  const baseExperience = 100;
+  
+  const experienceMultiplier = 1.2;
+  
+  const experienceRequired = Math.round(baseExperience * Math.pow(experienceMultiplier, currentLevel - 1));
+  
+  return experienceRequired;
+}
 
+function expOnMessage(message) {
+  // Base experience points for a message
+  let experience = 10;
+
+
+  const messageLength = message.content.length;
+  experience += Math.min(messageLength, 100); // Limit extra points for long messages
+
+  
+  if (/\bhttps?:\/\/\S+\b/.test(message.content)) {
+    experience += 20;
+  }
+
+  
+  if (message.content.includes('\n')) {
+    experience += 30 * (message.content.split('\n').length - 1); 
+  }
+
+  return experience;
+}
+
+function updateexp(message,Flutterbot)
+{
+ 
+  let authorExp = Flutterbot.db.getValue(`${message.author.id}`); 
+  
+  if(authorExp == undefined)
+  {  
+    console.log('creating new exp object');
+    initexp(message, Flutterbot);
+    return;
+  }
+
+  authorExp['exp'] += expOnMessage(message);
+  authorExp['msg'] += 1;
+  
+
+  if(authorExp['exp'] >= authorExp['required'])
+  {
+      authorExp['level'] += 1; 
+      authorExp['exp'] = 0; 
+      authorExp['required'] = calculateexp(authorExp['level']);
+      Flutterbot.db.set(message.author, message.author.id, authorExp);
+      return;
+  }
+  Flutterbot.db.set(message.author, message.author.id, authorExp);
+return;
+}
+function initexp(message, Flutterbot)
+{
+  let authorExp = Flutterbot.db.getValue(`${message.author.id}`); 
+  if(!authorExp)
+  {   
+      console.log('fuckery');
+      authorExp = 
+      {
+       'level': 0, 
+       'required': 0,
+       'exp': 0, 
+       'msg':1
+      }; 
+      authorExp['required'] = calculateexp(authorExp['level']);
+      Flutterbot.db.set(message.author, message.author.id, authorExp);
+      return; 
+  }
+  return;
+}
 
 function langRand(langArray)
 {
@@ -893,4 +1221,4 @@ function langRand(langArray)
     return randomElement;
 }
 
-module.exports = { displayList, log, Log, ID, SimpleDatabase, stringToDate,convertToTimezone,  LockBox, formatTime, removeEveryoneMentions, resolveGuildID, ProgressBar, isValidHexColor, format, langRand};
+module.exports = { displayList, log, Log, ID, SimpleDatabase, updateexp, stringToDate,convertToTimezone,  LockBox, formatTime, removeEveryoneMentions, resolveGuildID, ProgressBar, isValidHexColor, format, langRand};

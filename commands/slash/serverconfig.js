@@ -86,7 +86,7 @@ module.exports = {
               const channel = interaction.options.getChannel('channel');
 
               
-              Flutterbot.db.addEntry(`${interaction.guild.id}.config.annoucement_channel`, channel.id) 
+              Flutterbot.db.setGuildConfig(interaction.guild.id, "annoucement_channel", channel.id); 
 
               await interaction.reply({content:`Alright! I've set the announcement channel in ${interaction.guild.name} to: ${channel}`});
               break;
@@ -112,7 +112,7 @@ module.exports = {
               else 
               //if the guild has no list of private roles, create a new one and initalize it with 
               //the role provided
-              Flutterbot.db.addEntry(`${interaction.guild.id}.config.private_roles`, [role.id])
+              Flutterbot.db.setGuildConfig(interaction.guild.id,"private_roles", role.id);
               await interaction.reply(`key not found`);
               break; 
           

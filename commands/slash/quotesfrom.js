@@ -33,16 +33,16 @@ module.exports = {
         if(!fetched_quotes)
         {
             embed.setDescription(errorMessage.quotesfromError.noGuildQuotes(interaction.guild)); 
-            Flutterbot.db.addEntry(`${interaction.guild.id}.server_quotes`, []);
+            Flutterbot.db.set(interaction.guild.id, "server_quotes", []);
             return interaction.reply(errorMessage.quotesfromError.noMemberQuotes(speaker));
         }
         
-        let filtered_quotes = fetched_quotes.filter(fetched_quotes => fetched_quotes.id === speaker.id && fetched_quotes.guild === interaction.guild.id)
+        let filtered_quotes = fetched_quotes.filter(fetched_quotes => fetched_quotes.id === speaker.id && fetched_quotes.guild === interaction.guild.id);
         
         if(filtered_quotes.length === 0)
         {
 
-            embed.setDescription(errorMessage.quotesfromError.noMemberQuotes(speaker));
+            embed.setDescription(errorMessage.quotesfromError.noMemberQuotes(speaker).content);
         }
        
         

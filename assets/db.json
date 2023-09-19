@@ -549,11 +549,65 @@
         "quote": "fuck",
         "id": "252235505318625281",
         "guild": "368957683187056672"
+      },
+      {
+        "name": "ellypony",
+        "date": "2023 09 18",
+        "quote": "asdasd",
+        "id": "252235505318625281",
+        "guild": "368957683187056672"
+      },
+      {
+        "name": "flutterbot",
+        "date": "2023 09 18",
+        "quote": "asdasd",
+        "id": "817161573201608715",
+        "guild": "368957683187056672"
+      },
+      {
+        "name": "ellypony",
+        "date": "2023 09 18",
+        "quote": "asdasdsad",
+        "id": "252235505318625281",
+        "guild": "368957683187056672"
+      },
+      {
+        "name": "flutterbot",
+        "date": "2023 09 18",
+        "quote": "qweqweqweqwe",
+        "id": "817161573201608715",
+        "guild": "368957683187056672"
+      },
+      {
+        "name": "ellypony",
+        "date": "2023 09 18",
+        "quote": "rank anus",
+        "id": "252235505318625281",
+        "guild": "368957683187056672"
+      },
+      {
+        "name": "ellypony",
+        "date": "2023 09 18",
+        "quote": "niggas",
+        "id": "252235505318625281",
+        "guild": "368957683187056672"
       }
     ]
   },
   "last_fmSessions": {
     "ellypony": "5ac01765136ebb2d8615efa0671f491c57c67439f122567133eef99deb301ddaad8c9d98a5eb1b693e822da8fa710993",
     "7ae0d999a224e07a71f0ac44ab0f49bd": "e7d7a13a9d803f282a5fb3cd87232e4dfddc2d24e03b8bf4a004e12c5d3e1152ef9cce9c819922d13307f947cc421811"
+  },
+  "252235505318625281": {
+    "level": 2,
+    "required": 120,
+    "exp": 0,
+    "msg": 17
+  },
+  "1138965190298308628": {
+    "level": 0,
+    "required": 83,
+    "exp": 10,
+    "msg": 1
   }
 }

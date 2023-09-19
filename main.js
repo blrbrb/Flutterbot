@@ -124,7 +124,7 @@ class Flutterbot {
             } 
            
         })
-        this.db.addEntry(`${process.env.GUILD_ID}.sacrificed`, sacrificed);
+        this.db.set(process.env.GUILD_ID, "sacrificed", sacrificed);
         
         
     }

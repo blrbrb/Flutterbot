@@ -101,7 +101,7 @@ module.exports = {
       {
         console.log(response);
         //save the event to the db, so we can display the event info later in an embed announcement
-        client.db.addEntry(`${guild.id}.events`, response);
+        client.db.set(guild.id, "events", response); 
         return interaction.reply(`okay!, I'll tell everypony to meetup <t:${parseInt(date.getTime() / 1000)}:R> in ${channel}!`); 
       })
      

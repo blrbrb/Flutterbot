@@ -47,3 +47,4 @@ assets/
 events/messagedelete.js
 **.vscode/
 commands/slash/lastfmaccount.js
+assets/db.json

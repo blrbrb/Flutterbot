@@ -52,9 +52,10 @@ module.exports = {
 
                 const string = `https:${urls[Math.floor(Math.random() * urls.length)]}`;
 
-                interaction.reply(string);
-                return;
+                return interaction.reply(string);
+                
             }
+            return;
         });
     }
 }

@@ -1,8 +1,12 @@
 require('dotenv').config();
-const { SimpleDatabase, Log, LockBox } = require('./utils')
+const { SimpleDatabase } = require('./utils/SimpleDatabase');
+const {LockBox} = require('./utils/LockBox.js'); 
 const Evaluator = require('./guardianAngel/evaluate.js');
+const {Log} = require('./utils/utilities.js');
 const { Client, Partials, GatewayIntentBits, Collection, SnowflakeUtil} = require('discord.js');
 const { DisTube } = require('distube');
+const { SoundCloudPlugin } = require("@distube/soundcloud");
+
 const filters = require('./assets/filters.json');
 const { prefixcommands, slashcommands, current_maintenance } = require('./findAllCommands.js');
 const LastfmApi = require('lastfmapi'); 
@@ -15,26 +19,47 @@ const PORT = process.env.PORT || 3000;
 //every single component is ON WORKING MEMORY AT ALL TIMES WOOOOOO BABY THATS WHAT IM TALKING ABOUT 
 class Flutterbot {
     constructor() {
-       this.initClient();
-       this.initDistube();
+       this.initClient(); //organized by call heirachy. Shit on top is needed for shit on the bottom. 
+       //this.initDistube();
        this.initdb('assets/db.json');
        this.initEvaluator(); 
-     
+       this.initLogger(); 
        this.initLockBox(); 
-       this.slashcommands = slashcommands; 
-       this.prefixcommands = prefixcommands; 
-       this.cooldowns = new Collection();
-       this.GuildCoolDowns = new Map();
-       this.collectors = new Collection();  
-       this.lastfm =  new LastfmApi({   
-        'api_key' : process.env.FM_KEY,
-        'secret' : process.env.FM_SECRET
-    }); 
-
+       this.initLastFMAPI(); 
+       this.initCooldowns(); 
+       this.initCommands(); 
+       this.initCollectors(); 
     }
      
 
     //initalizers 
+    initCooldowns()
+    {
+        this.cooldowns = new Collection();
+        this.GuildCoolDowns = new Map();
+        
+    }
+    initCommands()
+    {
+        this.slashcommands = slashcommands; 
+        this.prefixcommands = prefixcommands; 
+    }
+    initLastFMAPI()
+    {
+        this.lastfm =  new LastfmApi({   
+            'api_key' : process.env.FM_KEY,
+            'secret' : process.env.FM_SECRET
+        }); 
+    }
+    initLogger()
+    {
+        
+        this.log = Log()
+    }
+    initCollectors()
+    {
+        this.collectors = new Collection();
+    }
     initClient()
     {
         this.client = new Client({
@@ -72,18 +97,21 @@ class Flutterbot {
         
     }
 
-    initDistube()
+    async initDistube()
     {
         this.DisTube = new DisTube(this.client, {
-            leaveOnStop: false,
+            leaveOnStop: true,
             leaveOnFinish: true,
             leaveOnEmpty: true,
             emptyCooldown: 5,
             emitAddSongWhenCreatingQueue: false,
             emitAddListWhenCreatingQueue: false,
             youtubeCookie: process.env.FART,
-            customFilters: filters
+            customFilters: filters,
+            plugins:[new SoundCloudPlugin({clientId: process.env.SOUNDCLOUD_CLIENT,  oauthToken: process.env.SOUNDCLOUD_TOKEN})]
         });   
+
+       
     }
     initdb(file)
     {
@@ -100,9 +128,6 @@ class Flutterbot {
     }
     updateLastFMServer()
     {
-        
-         
-
     }
     //update the database on an hourly basis to ensure the perseverance of data between leaving / joining
     //and client restarts 
@@ -114,7 +139,7 @@ class Flutterbot {
         // Fetch all members of the guild
         const members = await guild.members.fetch();
         let sacrificed = []; 
-        console.log('updating sacrified roles...');
+        this.log('updating sacrified roles...');
         members.forEach(member => {
             
             if(member.roles.cache.has('1109587525720342548'))
@@ -153,7 +178,9 @@ class Flutterbot {
     // Method to start the bot
     async start() {
       await this.client.login(process.env.DISCORD_TOKEN);
+      await this.initDistube();
       await this.updateEvents(); 
+
     }
   }
 

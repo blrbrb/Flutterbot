@@ -1,5 +1,5 @@
 const {EmbedBuilder, Embed} = require(`discord.js`);
-const {stringToDate,convertToTimezone} = require('../../utils.js'); 
+const {stringToDate,convertToTimezone} = require('../../utils/utilities.js'); 
 const chrono = require('chrono-node'); 
 
 

@@ -1,5 +1,5 @@
 
-const {format} = require('../../utils.js');
+const {format} = require('../../utils/utilities.js');
 const { PermissionFlagsBits } = require('discord.js');
 const {commandResponses, errorMessage} = require('../../lang/en.js');
 module.exports = {

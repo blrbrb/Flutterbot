@@ -1,9 +1,7 @@
-const { Events,AttachmentBuilder, ChannelType } = require('discord.js');
-const { prefix, current_maintenance } = require('../config/config.json');
-const Discord = require('discord.js');
-const fs = require('fs');
-const {socialHelp, author} = require('../lang/en.js');
-const {updateexp} = require('../utils');
+const { Events } = require('discord.js');
+const { prefix} = require('../config/config.json');
+const {socialHelp} = require('../lang/en.js');
+const {updateexp} = require('../utils/exp.js');
 
 module.exports = {
     name: Events.MessageCreate,

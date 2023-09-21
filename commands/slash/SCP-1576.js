@@ -1,5 +1,5 @@
 const { EmbedBuilder,  ApplicationCommandOptionType, embedLength } = require('discord.js');
-const {removeEveryoneMentions,format} = require('../../utils.js');
+const {removeEveryoneMentions,format} = require('../../utils/utilities.js');
 const {commandResponses} = require('../../lang/en.js')
 
 module.exports = {

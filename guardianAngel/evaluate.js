@@ -1,4 +1,4 @@
-const {resolveGuildID} = require('../utils.js');
+const {resolveGuildID} = require('../utils/utilities.js');
 class Evaluator
 {
    constructor(Database, locker, client) {
@@ -6,7 +6,7 @@ class Evaluator
     this.locker = locker
     this.client = client;
 
-      }
+   }
    
    validateAge(member)
    {

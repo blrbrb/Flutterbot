@@ -1,6 +1,6 @@
 require("dotenv").config();
 const { REST, Routes } = require("discord.js");
-const { displayList } = require('./utils.js');
+const { displayList } = require('./utils/utilities.js');
 
 const commands = require("./findAllCommands").slashcommands;
 const clientId = process.env.CLIENT_ID;

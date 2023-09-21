@@ -1,6 +1,6 @@
 const { GuildScheduledEventManager,ApplicationCommandOptionType, PermissionFlagsBits, SlashCommandBuilder, GuildScheduledEventPrivacyLevel, GuildScheduledEventEntityType, ChannelType } = require("discord.js");
 const { description } = require("./maintenance");
-const {stringToDate} = require("../../utils.js")
+const {stringToDate} = require("../../utils/utilities.js")
 const {errorMessage, commandResponses} = require('../../lang/en.js');
 module.exports = {
     name: "event",

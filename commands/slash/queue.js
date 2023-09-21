@@ -16,18 +16,19 @@ module.exports = {
        
 
         if(!queue) return interaction.reply(errorMessage.Distube.QueueEmpty());
-        console.log(queue.songs[0]); 
+       
        
         //only begin to set the embed properties if the queue exists
-        embed.setAuthor({'name': 'Current Queue'}); 
+       
         embed.setThumbnail(queue.songs[0].thumbnail); 
-
+        embed.setAuthor({name:'Flutterbot.music | Current Queue',iconURL: Flutterbot.client.user.displayAvatarURL()})
         queue.songs.forEach((song, i) => {
 
-        if(!i===0){
-            embed.addFields({'name':'**Currently Playing**', 'value': `[${song.name}](${song.url}) - \`${formatTime(Math.floor(queue.currentTime))}\` \ \`${song.formattedDuration}\``, inline:false});
+        if(i===0){
+            embed.addFields({'name':'**Playing**', 'value': `[${song.name}](${song.url}) - \`${formatTime(Math.floor(queue.currentTime))}\` \ \`${song.formattedDuration}\``});
+            i++;
         }
-        embed.addFields({'name': `\`${i}:\``, 'value': `[${song.name}](${song.url}) - \`00:00 \` \ \`${song.formattedDuration}\``, inline: false})
+        embed.addFields({'name': `\`${i++}:\``, 'value': `[${song.name}](${song.url}) - \`00:00 \` \ \`${song.formattedDuration}\``})
 
         }); 
 
@@ -38,6 +39,6 @@ module.exports = {
        
         //let q = queue.songs.map((song, i) => `${i === 0 ? 'Currently Playing:' : `${i}.`} ${song.name} - \`${formatTime(Math.floor(queue.currentTime))}\` \ \`${song.formattedDuration}\``).join('\n');
 
-        interaction.reply({embeds:[embed]});
+        interaction.reply({embeds:[embed], ephemeral: true});
     }
 }

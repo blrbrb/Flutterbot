@@ -2,7 +2,7 @@ const {ApplicationCommandOptionType, SlashCommandAssertions, EmbedBuilder, Permi
 const fs = require('fs');
 const config = require('../../config/config.json');
 const {errorMessage } = require('../../lang/en.js');
-const {isValidHexColor} = require('../../utils.js');
+const {isValidHexColor} = require('../../utils/utilities.js');
 
 module.exports = {
     name: "config",
@@ -105,7 +105,7 @@ module.exports = {
                  }
                  else
                 temp.push(role.id)
-                Flutterbot.db.addEntry(`${interaction.guild.id}.config.private_roles`, temp)
+                Flutterbot.db.setGuildConfig(interaction.guild.id,"private_roles", temp);
                 await interaction.reply(`Okay! I've added: ${role} to the list of private guild roles!`);
                 break; 
               }

@@ -1,7 +1,7 @@
 
 
-const {format, formatTime, langRand} = require('../utils.js');
-const {discord, EmbedBuilder, Embed} = require('discord.js');
+const {format, formatTime, langRand} = require('../utils/utilities.js');
+const {discord, EmbedBuilder, Embed, escapeMarkdown} = require('discord.js');
 const emojis = require('../utils/emojis.js');
 const user = require('lastfmapi/lib/user.js');
 
@@ -177,6 +177,10 @@ module.exports = {
       {
         return {content: format(langRand(this.noPermissionsMessage.onRoleSelfRemove), {role}), ephemeral:true};
       },
+      OnClientVoiceConnectFail(channel)
+      {
+        return {content: format(langRand(this.noPermissionsClientMessage.onClientVoiceConnect), {channel}), ephemeral:true};
+      },
        /**
        * 
        * @description returns an error message in the 
@@ -200,8 +204,13 @@ module.exports = {
                       "*Pssst*, you don't have permission to give yourself ${role}!"], 
         onRoleSelfRemove: ["I can't remove ${role} from you silly! I don't have permission.", "${role}? I don't think I can remove that from you. Is this role a role with admin permissions? Or a role that dosen't appear with /roles?",
       "I can't remove ${role} from you. I can't see it! It looks like I don't have permission to modify it", "I'm sorry, I can't help you remove ${role}"], 
-      },
      
+      },
+      noPermissionsClientMessage:
+      {
+        onClientVoiceConnect: ["I'm sorry, I don't think I have permission to join ${channel}", "I don't have permission to join ${channel}!", "I'm sorry. I can't do that. I don't have the permissions needed to join ${channel}"
+                              ]
+      },
       
       roleHiddenMessage: "${role} has been set to hidden",
      
@@ -298,23 +307,47 @@ module.exports = {
        *  
        * @returns a new {@link discord.InteractionResponse}
        */
-     onPlaying(song)
-     {
-       const duration = song.formattedDuration; 
+     onPlaying(queue,Flutterbot)
+     { 
+       const song = queue.songs[0];
+      
+       let color = Flutterbot.db.getGuildConfig(queue.textChannel, 'embed_color'); 
+       const playing = new EmbedBuilder(); 
+       if(color) playing.setColor(color);
        const name = song.name; 
-       return {content: format(langRand(this.nowPlayingMessage), {song_name:name, duration:duration})};
+       playing.setAuthor({name:'Flutterbot.music',iconURL: Flutterbot.client.user.displayAvatarURL()})
+       //.setThumbnail(song.turl) 
+       .setDescription(format(langRand(this.nowPlayingMessage), {song_name:song.name, song_url: song.url, duration:song.formattedDuration}))
+       return {embeds:[playing]};
      },
       /**
         * 
         * @description response message when a video has been found by Distube, and inserted
         * into the queue following a query.
-        * 
+        * @param queue {@link Distube.queue}
         * @returns a new {@link discord.InteractionResponse} 
         */
-     onAddSong(song)
+     onAddSong(queue, Flutterbot)
      {
-       const name = song.name; 
-       return {content:format(langRand(this.addSongMessage), {song_name: name})};
+       const first = queue.songs[0];
+      
+       const songAdded = new EmbedBuilder();
+       let color = Flutterbot.db.getGuildConfig(queue.textChannel, 'embed_color'); 
+       if(color) songAdded.setColor(color);
+       songAdded.setAuthor({name: 'Flutterbot.music',iconURL: Flutterbot.client.user.displayAvatarURL()})
+       .setDescription(format(langRand(this.addSongMessage), {song_name: first.name, song_duration: `${first.formattedDuration}`, song_url: first.url}))
+       let x = 0; 
+
+       queue.songs.forEach(song => {
+        if(x === 0){
+          songAdded.addFields({name:`Currently Playing: ${song.name}`, value: `[${song.name}](${song.url}) \`${song.currentTime} / ${song.formattedDuration}\``})
+          x++; 
+        }
+        else{
+        songAdded.addFields({name:`${x++}: ${song.name}`, value: `[${song.name}](${song.url}) \`00:00 / ${song.formattedDuration}\``})
+        }
+      });
+       return songAdded; 
      },
      /**
         * 
@@ -378,13 +411,13 @@ module.exports = {
        return  {content: format(this.filterMessage[randomIndex], {filter: filter}), ephemeral:false};
      },
      //format parameters = s{song_name, song_duraion, song_user}
-     nowPlayingMessage: ["🎶 Now playing **${song_name}** / ${duration}", "Playing 🎵 **${song_name}** / ${duration} 🎤", "We're listening to **${song_name}** / ${duration}🎤","*metalic pegasus noises* Now playing **${song_name}** / ${duration}", "Here's **${song_name}**, it'll be playing for around ${duration}", "Now Playing **${song_name}** for the next ${duration}", "*shy robotic pegasus noises* Now Playing **${song_name}** / ${duration}", "*electronic stuttering* Please don't look inside the shed. Now Playing **${song_name}** /${duration}",
-                       "Remember that time I sung for the PonyTones? It was tramuatic!! Now Playing **${song_name}** / ${duration}", "*in robotic Flutterguy voice* And now, a top track from [INSERT ARTIST]. [INSERT DJ COMMENTARY] **${song_name}** / ${duration} ", "*shy robot voice* N-Now Playing **${song_name}** / ${duration}", "*shy electronic squeaks* E-eep! I- I'm going to sing **${song_name}** / ${duration} now...", "I cannot associate emotions with music in this robotic husk. Now Playing **${song_name}** / ${song_duration}", "I can't beleive they actually convinced me to sing on stage all those years ago. Now Playing **${song_name}** / ${duration}"],
-     addSongMessage: ["Alright! I'll add **${song_name}** to the queue", "No problem. Let me add **${song_name}** to the playlist!", "Adding **${song_name}** to our queue", "sure thing, we'll add **${song_name}** to the queue", "I'll ask Vinyl to add **${song_name}** to the tracklist for us", 
-               "Got it. Adding **${song_name}** to our playlist.", "**${song_name}**? Consider it done. Adding it to the queue", "Added **${song_name}** to the turntable", "added **${song_name}** to the queue!", "Here you go, **${song_name}** has been queued!",
-             "Nice choice! putting **${song_name}** onto the queue", "Don't go anywhere, I added **${song_name}** to the playlist", "Get ready for **${song_name}** because we're gonna be listening to it soon", "Angel has slaughtered countless innocents! Adding **${song_name}** to the playlist!",
-            "adding **${song_name}** to the playlist!", "*Robotic Fluttershy Whimpering* I-Added **${song_name}** to the q-queue *BZZZZrrrt*", "Don't worry, I'm not shy anymore. They took away my ability to have feelings when they put me in this oubillete of transistors and metal. Adding $[song_name] to the queue!", "*robotic pegasus sounds* **${song_name}** has been queued!",
-           "I am yellow shy. **${song_name}** added to queue","*metalic wing fluffing sounds* OH, sorry I'll add **${song_name}** to the queue for you", "DEATH PROTOCOL ACT- I-I mean... Uhm. **${song_name}** has been added to the queue", "Sounds good. Putting **${song_name}** on the queue", "*shy metalic clinking* **${song_name}** is on the queue!"],
+     nowPlayingMessage: ["🎶 Now playing **[${song_name}](${song_url})** / ${duration}", "Playing 🎵 **[${song_name}](${song_url})** / ${duration} 🎤", "We're listening to **[${song_name}](${song_url})** / ${duration}🎤","*metalic pegasus noises* Now playing **[${song_name}](${song_url})** / ${duration}", "Here's **[${song_name}](${song_url})**, it'll be playing for around ${duration}", "Now Playing **[${song_name}](${song_url})** for the next ${duration}", "*shy robotic pegasus noises* Now Playing **[${song_name}](${song_url})** / ${duration}", "*electronic stuttering* Please don't look inside the shed. Now Playing **[${song_name}](${song_url})** /${duration}",
+                       "Remember that time I sung for the PonyTones? It was tramuatic!! Now Playing **[${song_name}](${song_url})** / ${duration}", "*in robotic Flutterguy voice* And now, a top track from [INSERT ARTIST]. [INSERT DJ COMMENTARY] **[${song_name}](${song_url})** / ${duration} ", "*shy robot voice* N-Now Playing **[${song_name}](${song_url})** / ${duration}", "*shy electronic squeaks* E-eep! I- I'm going to sing **[${song_name}](${song_url})** / ${duration} now...", "I cannot associate emotions with music in this robotic husk. Now Playing **[${song_name}](${song_url})** / ${song_duration}", "I can't beleive they actually convinced me to sing on stage all those years ago. Now Playing **[${song_name}](${song_url})** / ${duration}"],
+     addSongMessage: ["Alright! I'll add **[${song_name}](${song_url})** to the queue", "No problem. Let me add **[${song_name}](${song_url})** to the playlist!", "Adding **[${song_name}](${song_url})** to our queue", "sure thing, we'll add **[${song_name}](${song_url})** to the queue", "I'll ask Vinyl to add **[${song_name}](${song_url})** to the tracklist for us", 
+               "Got it. Adding **[${song_name}](${song_url})** to our playlist.", "**[${song_name}](${song_url})**? Consider it done. Adding it to the queue", "Added **[${song_name}](${song_url})** to the turntable", "added **[${song_name}](${song_url})** to the queue!", "Here you go, **[${song_name}](${song_url})** has been queued!",
+             "Nice choice! putting **[${song_name}](${song_url})** onto the queue", "Don't go anywhere, I added **[${song_name}](${song_url})** to the playlist", "Get ready for **[${song_name}](${song_url})** because we're gonna be listening to it soon", "Angel has slaughtered countless innocents! Adding **[${song_name}](${song_url})** to the playlist!",
+            "adding **[${song_name}](${song_url})** to the playlist!", "*Robotic Fluttershy Whimpering* I-Added **[${song_name}](${song_url})** to the q-queue *BZZZZrrrt*", "Don't worry, I'm not shy anymore. They took away my ability to have feelings when they put me in this oubillete of transistors and metal. Adding $[song_name] to the queue!", "*robotic pegasus sounds* **[${song_name}](${song_url})** has been queued!",
+           "I am yellow shy. **[${song_name}](${song_url})** added to queue","*metalic wing fluffing sounds* OH, sorry I'll add **[${song_name}](${song_url})** to the queue for you", "DEATH PROTOCOL ACT- I-I mean... Uhm. **[${song_name}](${song_url})** has been added to the queue", "Sounds good. Putting **[${song_name}](${song_url})** on the queue", "*shy metalic clinking* **[${song_name}](${song_url})** is on the queue!"],
      queueFinishMessage:["I'm going back to my cottage now :3", "see ya later", "I've gotta go help Vinyl Scratch pack up her records", "See you next time", "Bye bye!", ":bedtime:"], 
      queryMessage: ["searching youtube for relevant results...", "querying youtube...", "gathering video results from youtube...", "requesting videos from youtube..."],
      
@@ -485,7 +518,7 @@ module.exports = {
         else{
          const userContent = userMessage.content.toLowerCase();
         
-        console.log(userContent);
+       
         console.log("User response no.: ", this.globalConfig.usr_str);
             let command = this.parseCommand(this.branchSelectors, userContent); 
             

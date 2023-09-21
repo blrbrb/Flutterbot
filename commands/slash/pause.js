@@ -1,5 +1,6 @@
 const {commandResponses, errorMessage} = require('../../lang/en.js'); 
-const { formatTime } = require('../../utils.js');
+const { formatTime } = require('../../utils/utilities.js');
+const {EmbedBuilder} = require('discord.js');
 
 module.exports = {
     name: 'pause',
@@ -7,20 +8,19 @@ module.exports = {
     helpText: `Pause the currently playing music or video \n Use: **/pause**`,
     async execute(interaction, Flutterbot) {
         const queue = await Flutterbot.DisTube.getQueue(interaction);
-       
-        
+        const embed = new EmbedBuilder(); 
+        embed.setAuthor({name:'Flutterbot.music',iconURL: Flutterbot.client.user.displayAvatarURL()})
+
         if(!queue) return interaction.reply(errorMessage.Distube.QueueEmpty());
-       
+        
         if(queue.paused)
         {
             return interaction.reply(errorMessage.Distube.AlreadyPaused())
         } 
-
-        const song = queue.songs[0];
-        const current_time = formatTime(Math.floor(queue.currentTime)); 
-
+      
         queue.pause(interaction); 
-
-        return interaction.reply(commandResponses.pause(queue));
+        embed.setDescription(commandResponses.pause(queue).content)
+        
+        return interaction.reply({embeds:[embed], ephemeral:true});
     }
 }

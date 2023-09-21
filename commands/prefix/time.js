@@ -1,6 +1,6 @@
 
 const {EmbedBuilder, Embed} = require(`discord.js`);
-const {stringToDate,convertToTimezone} = require('../../utils.js'); 
+const {stringToDate,convertToTimezone} = require('../../utils/utilities.js'); 
 const chrono = require('chrono-node');
 module.exports = {
 	name: 'time',
@@ -33,7 +33,7 @@ module.exports = {
                          {'name': 'Hong Kong', 'value': `${convertToTimezone(utcDate, 'Asia/Hong_Kong')}`},
   
               )
-              message.reply({embeds: [embed], ephermeal: true}); 
+              message.reply({embeds: [embed], ephemeral: true}); 
             return; 
         }
         else {
@@ -82,7 +82,7 @@ module.exports = {
                        {'name': 'Hong Kong', 'value': `${convertToTimezone(utcDate, 'Asia/Hong_Kong')}`},
 
             )
-            message.reply({embeds: [embed], ephermeal: true}); 
+            message.reply({embeds: [embed], ephemeral: true}); 
           
             return;
         }

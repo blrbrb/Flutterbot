@@ -1,5 +1,5 @@
-const { Events,AttachmentBuilder, Collection } = require('discord.js');
-const { prefix, current_maintenance, default_cooldown} = require('../config/config.json');
+const { Events, Collection } = require('discord.js');
+const {handledistubeSelection} = require('../commands/slash/play.js');
 
 const fs = require('fs');
 
@@ -7,7 +7,22 @@ module.exports = {
     name: Events.InteractionCreate,
     once: false,
     async execute(Flutterbot, interaction){
-
+    
+        if(interaction.isMessageComponent())
+        {
+            //if this interaction "${interaction.user.id}" is for selecting distube search results
+           
+            if(Flutterbot.collectors.has(`distube_results${interaction.user.id}`))
+            { 
+              
+               // console.log(Flutterbot.collectors);
+                response = Flutterbot.collectors.get(`distube_results${interaction.user.id}`); 
+                //console.log(response);
+                handledistubeSelection(response, Flutterbot, interaction); 
+              
+            }
+            return; 
+        }
         let command; 
 
         //if the command is an application command 
@@ -52,6 +67,10 @@ module.exports = {
         }
         timestamps.set(interaction.user.id, now);
 	    setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
+
+       
+
+
     try {
         // we should check if a command isnt found but was registered in discord
         Flutterbot.slashcommands.get(interaction.commandName)?.execute(interaction, Flutterbot);

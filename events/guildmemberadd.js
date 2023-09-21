@@ -1,5 +1,5 @@
 const { Events } = require('discord.js');
-const {validateAge} = require('../utils.js'); 
+const {validateAge} = require('../utils/utilities.js'); 
 const interactioncreate = require('./interactioncreate.js');
 module.exports = {
 	name: Events.GuildMemberAdd,

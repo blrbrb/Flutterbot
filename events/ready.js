@@ -1,12 +1,12 @@
 const { Events } = require('discord.js');
-const {removeEveryoneMentions,format,Log } = require('../utils.js');
+const {format} = require('../utils/utilities.js');
 const {commandResponses, errorMessage} = require('../lang/en.js');
 const { de } = require('chrono-node');
 module.exports = {
 	name: Events.ClientReady,
 	once: true,
 	async execute(Flutterbot) {
-        console.log(`Fluttershy is awake!`);
+        Flutterbot.log([{text:`Fluttershy is awake! \n`, modifiers:["green"]}]);
 
         const repeater = 60* 60 * 1000; //hourly update
       setInterval(async() =>{await Flutterbot.updateSurvivors()}, repeater);
@@ -18,7 +18,7 @@ module.exports = {
     //this was litterally doing nothing lol, it has to be set to client ONCE. not client ON.
     Flutterbot.DisTube.on("playSong", (queue, song) => {
         console.log(song.name);
-        queue.textChannel.send(commandResponses.Distube.onPlaying(song));
+        queue.textChannel.send(commandResponses.Distube.onPlaying(queue, Flutterbot));
     });
 
     Flutterbot.DisTube.on("error", (channel, e) => {
@@ -33,9 +33,12 @@ module.exports = {
 	
     Flutterbot.DisTube.on("addSong", (queue, song) => {
         
-        queue.textChannel.send(commandResponses.Distube.onAddSong(song));
+        queue.textChannel.send({embeds:[commandResponses.Distube.onAddSong(queue, Flutterbot)]});
     });
 
+        // DisTubeOptions.searchSongs > 0
+   
+    
 }
 
     

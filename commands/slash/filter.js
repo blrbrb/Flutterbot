@@ -1,5 +1,5 @@
 const {commandResponses, errorMessage} = require('../../lang/en.js'); 
-const { formatTime } = require('../../utils.js');
+const {EmbedBuilder} = require('discord.js'); 
 
 
 
@@ -121,7 +121,7 @@ module.exports = {
         
         if (!queue.filters.has(selection)) {
             queue.filters.add(selection);
-           return interaction.reply(commandResponses.filter(selection));
+           return interaction.reply(commandResponses.Distube.filter(selection));
         }
         else if (queue.filters.has(selection)) {
             queue.filters.remove(selection);

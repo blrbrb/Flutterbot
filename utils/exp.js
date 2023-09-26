@@ -90,7 +90,7 @@ expOnReact(reaction, user, Flutterbot)
          'exp': 0, 
          'msg':1
         }; 
-        authorExp['required'] = calculateexp(authorExp['level']);
+        authorExp['required'] = module.exports.calculateexp(authorExp['level']);
         Flutterbot.db.set(message.author, message.author.id, authorExp);
         return; 
     }

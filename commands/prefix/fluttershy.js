@@ -14,6 +14,12 @@ module.exports = {
     async execute(Flutterbot, message, args) {
         message.channel.sendTyping();
         console.log(message.content);
+      
+        
+         const data = fs.readFileSync("assets/conversation.json");
+       
+        past = JSON.parse(data); 
+        
         let input = {
             message: message.content.slice(("-").length + command_prefix.length).trim(),
             question: false
@@ -26,7 +32,7 @@ module.exports = {
 
         query({
             "inputs": {
-                "past_user_inputs": conversation.past_user_input,
+                "past_user_inputs": past.past_user_input,
                 "generated_responses": conversation.generated_responses,
                 "text": input.message
             }
@@ -62,7 +68,7 @@ module.exports = {
         });
 
         const json = JSON.stringify(conversation);
-
+        
         fs.writeFile("assets/conversation.json", json, function (err, result) {
             if (err) console.log('JSON file writing error in FlutterShy.js caught', err);
         });

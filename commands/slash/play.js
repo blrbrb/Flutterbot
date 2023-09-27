@@ -26,7 +26,7 @@ module.exports = {
 		
 	
 		//check to determine wether or not she has permission to join the voice channel 
-		if (!hasVoiceChannelPermissions(interaction, Flutterbot)) return interaction.reply(errorMessage.PermissionError.OnClientVoiceConnectFail(interaction.member.voice.channel));
+		//if (!hasVoiceChannelPermissions(interaction, Flutterbot)) return interaction.reply(errorMessage.PermissionError.OnClientVoiceConnectFail(interaction.member.voice.channel));
 
 		//determine if the query is a raw link, or a search term 
 		switch(MusicMediaUrl(query))

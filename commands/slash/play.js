@@ -1,6 +1,6 @@
 const { ActionRowBuilder, ButtonBuilder, EmbedBuilder, ComponentType, PermissionFlagsBits, Embed} = require('discord.js');
 const ytdl = require('ytdl-core');
-const {MusicMediaUrl, hasVoiceChannelPermissions, nsfwChannel} = require('../../utils/utilities.js');
+const {MusicMediaUrl, hasVoiceChannelPermissions, nsfwChannel, formatYtLink} = require('../../utils/utilities.js');
 const {errorMessage} = require('../../lang/en.js');
 
 
@@ -33,7 +33,7 @@ module.exports = {
 		{
 			case 'yt':
 			
-				Flutterbot.DisTube.play(interaction.member.voice.channel, query, {
+				Flutterbot.DisTube.play(interaction.member.voice.channel, formatYtLink(query), {
 					member: interaction.member,
 					textChannel: interaction.channel,
 				}).then(interaction.reply({content:`Fetching this url from youtube.com...`, ephemeral:true}));

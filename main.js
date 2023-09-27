@@ -1,4 +1,5 @@
 require('dotenv').config();
+const express = require('express');
 const { SimpleDatabase } = require('./utils/SimpleDatabase');
 const {LockBox} = require('./utils/LockBox.js'); 
 const Evaluator = require('./guardianAngel/evaluate.js');
@@ -20,15 +21,18 @@ const PORT = process.env.PORT || 3000;
 class Flutterbot {
     constructor() {
        this.initClient(); //organized by call heirachy. Shit on top is needed for shit on the bottom. 
-       //this.initDistube();
+       this.initDistube();
+       this.initLogger(); 
        this.initdb('assets/db.json');
        this.initEvaluator(); 
-       this.initLogger(); 
+      
        this.initLockBox(); 
        this.initLastFMAPI(); 
        this.initCooldowns(); 
        this.initCommands(); 
        this.initCollectors(); 
+       this.app = express();
+       //this.sessions = []; 
     }
      
 
@@ -53,8 +57,8 @@ class Flutterbot {
     }
     initLogger()
     {
-        
-        this.log = Log()
+        this.log = new Log({clear:true}); 
+         
     }
     initCollectors()
     {
@@ -97,7 +101,7 @@ class Flutterbot {
         
     }
 
-    async initDistube()
+    initDistube()
     {
         this.DisTube = new DisTube(this.client, {
             leaveOnStop: true,
@@ -115,7 +119,7 @@ class Flutterbot {
     }
     initdb(file)
     {
-     this.db = new SimpleDatabase(file);
+     this.db = new SimpleDatabase(file, this.log);
     }
     initLockBox()
     {
@@ -126,8 +130,10 @@ class Flutterbot {
     {
         this.Evaluator = new Evaluator(this.db, this.LockBox, this.client); 
     }
-    updateLastFMServer()
+  
+    updateWeekly()
     {
+        
     }
     //update the database on an hourly basis to ensure the perseverance of data between leaving / joining
     //and client restarts 
@@ -178,9 +184,9 @@ class Flutterbot {
     // Method to start the bot
     async start() {
       await this.client.login(process.env.DISCORD_TOKEN);
-      await this.initDistube();
+    
       await this.updateEvents(); 
-
+     
     }
   }
 
@@ -189,4 +195,8 @@ const entry = new Flutterbot();
 entry.start(); 
 
 
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    // Handle the error or log it
+});
 //Mares mares mares mares mares, when I am sad I like to thnk about mares. Mares make me feel better when I am depressed. Life can make me depressed often but I like mares and thinking about cute mares mares mares. So It is okay

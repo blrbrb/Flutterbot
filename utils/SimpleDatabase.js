@@ -1,6 +1,8 @@
 const fs = require('fs');
 const Discord = require('discord.js');
-const {resolveGuildID, resolveUserID} = require('./utilities.js');
+const {resolveGuildID, resolveUserID, IsSnowflake, printCurrentFrame} = require('./utilities.js');
+
+
 
 const DataTypes = {
     Undefined: 0,
@@ -18,10 +20,20 @@ class SimpleDatabase {
      * @param {string} filePath
      * @returns {void}
      */
-    constructor(filePath) {
+    constructor(filePath, logger=undefined) {
       this.filePath = filePath;
       this.data = this.loadData();
-      
+      if(logger)
+      {
+          if(typeof !logger ==='function')
+          {
+            console.log(`SimpleDatabase constructor(filepath=${filepath}, logger=${logger.strip(25)}) "Logger" parameter must be of type "Log" \n defined in ./utils/utilities.js`)
+          }
+          else 
+          {
+            this.log = logger; 
+          }
+      }
     }
     
   
@@ -62,41 +74,49 @@ class SimpleDatabase {
      */
     set(IDResolveable, Key, value)
     {
-      
-     let ID  = resolveGuildID(IDResolveable) ? resolveGuildID(IDResolveable) : resolveUserID(IDResolveable);
-  
-      if(ID && this.Exists(ID)) //the guild already exists in the database.
+      this.log('green', 'Acessing database...');
+
+      //first, fetch the ID of the object
+      let ID = this.Exists(IDResolveable)  // this will always return true if IDresolveable is an object with a property that is a discord Snowflake
+      let current; 
+
+      if(ID) //then check if the Object exists in the database 
       {
-        let current = this.data[ID]; 
+       
+       current = this.data[ID]; 
   
         if(Key === ID)
         {
-          //log("red underscore",`Warn: SimpleDatabase:set() cannot assign a property as ${ID}, the parent object is already ${ID}!`);
+          //the Supplied guild resolveable, and the new key are the same, we are not assigning a new property deeper into the object.
+          //the parent guild and the new key are the same property. Set current to data[ID] to avoid circular refrences
           current = this.data; 
-          //return;
+         
         }
-  
-      
-  
+        this.log(`setting key ${Key}, on ${ID}`);
         if(current.hasOwnProperty(Key)) //the property key already exists 
         { 
+          this.log(`${ID} already has this property`)
           if(Array.isArray(current[Key])) // the existing property is an array. 
           {
+            this.log(`and it's an array`)
             if(Array.isArray(value)) //the new value is also an array. Merge.
             {
+              this.log('the new value is also an array...')
               try
               { 
                
                 const appended = this.mergeArrays(current[`${Key}`], value); 
-                current[`${Key}`] = appended; 
+                current[Key] = appended; 
               }
               catch(error)
               {
                 console.log(error);
               }
             }   
-            else //the existing property is an array, but the new value is not.
+            else//the existing property is an array, but the new value is not.
             {
+              console.log('appending the new value...');
+              console.log(`the new value to append to the existing array is a ${typeof value} `);
               console.log(this.getArrayType(current[`${Key}`]));
               const arrayType = this.getArrayType(current[`${Key}`]).type; 
               switch(arrayType) //make sure it's the correct datatype before pushing.
@@ -104,17 +124,17 @@ class SimpleDatabase {
                 case DataTypes.Boolean:
                   if(typeof value === 'boolean'){
                     current[Key].push(value);
-                    this.data[ID] = current; 
-                    this.saveData(); 
+                    //this.data[ID] = current; 
+                   // this.saveData(); 
                     return; 
                     }
                   else  
-                    console.log(`incorrect data type, expected boolean but got ${typeof value} instead`);
+                    this.log(`incorrect data type, expected boolean but got ${typeof value} instead`);
                 case DataTypes.String: 
                   if (typeof value === 'string'){
                     current[Key].push(value);
-                     this.data[ID] = current; 
-                     this.saveData(); 
+                    // this.data[ID] = current; 
+                    // this.saveData(); 
                      return;
                   }
                   else
@@ -122,8 +142,8 @@ class SimpleDatabase {
                 case DataTypes.Number: 
                   if(typeof value === 'number'){
                    current[Key].push(value);
-                   this.data[ID] = current; 
-                   this.saveData(); 
+                  // this.data[ID] = current; 
+                  // this.saveData(); 
                    break;
                   }
                   else 
@@ -131,8 +151,8 @@ class SimpleDatabase {
                 case DataTypes.Object: 
                   if(typeof value === 'object'){
                     current[Key].push(value);
-                    this.data[ID] = current; 
-                    this.saveData(); 
+                    //this.data[ID] = current; 
+                   // this.saveData(); 
                     return;
                     
                   }
@@ -141,8 +161,8 @@ class SimpleDatabase {
                 case DataTypes.Function: 
                   if(typeof value === 'function'){
                      current[Key].push(value);
-                     this.data[ID] = current; 
-                     this.saveData(); 
+                     //this.data[ID] = current; 
+                    // this.saveData(); 
                      return;
                     }
                   else 
@@ -159,66 +179,66 @@ class SimpleDatabase {
                 default: 
                     console.log(`something is fucked`, typeof value);
               } 
+              
               //Make sure the new value is the correct DataType
             }
   
           }
           else if (typeof current[Key] === 'object')
           {
+            console.log('and this property is an object...')
             if(typeof value === 'object')
             {
-                
+              console.log('the new value is also an object...')
               let updateValue = this.updateObject(current[Key], value); 
               console.log('updated object:',updateValue);
              
             
               current = updateValue; 
               this.data[ID] = current; 
-              this.saveData(); 
-              return;
             } 
             
           }
-          
+          else //the property key is not an array, or object, safe it add it.
+          {
+            this.log(`the new value is neither an array, nor is it a object`)
+            current[Key] = value; 
+          }
           
         }
-        else { //the property key is not an array, or object, safe it add it.
-          current[Key] = {}; 
+        else { 
+
+          this.log(`${Key} is not a property on ${ID}. Creating a new property`); 
+          //even if value is an array or object, adding it here will be safe and the correct datatype will be written
           
+          current[Key] = {}; 
           current[Key] = value;
-          this.data[ID] = current; 
-          this.saveData();
-          return;}
-      }
-  
-      else if(ID && !this.Exists(ID)) //the guild does not exist in the database, initalize it
-      {
-         console.log('guild not found in db'); 
-         let current = {}; 
-         //if the value being set on the new object is also an object, we don't want two of them nested
-         //inside of one another with the same name
-  
-         if(typeof value === 'object')
-         {
-           current = value;   
-         }
-         else
-         {
-          current[Key] = value; 
-         }
-         this.data[ID] = current; 
-         console.log('successfully appended new object to database...');
-         this.saveData();
-         return;
-      }
-  
-      else if(!ID)
-      {
-        console.log(ID);
-        console.log('unable to resolve guild id. SimpleDatabase set()');
-      }
-  
+          
+          }
+      }   
       
+      else if(!ID && this.resolveID(IDResolveable)) //the object does not exist in the database,
+      {
+         ID = this.resolveID(IDResolveable);
+         current = {}; 
+
+         this.log('yellow', `Discord API Object with SnowFlake ID ${ID} was not found in the database...`);
+         this.log('yellow, underscore', `Initalizing a new entry with ID ${ID}...`);  
+        
+         current[Key] = value;   
+      
+      }
+  
+      else if(!ID && !this.resolveID(IDResolveable)) //The object does not exist in the guild, and the resolveID is not 
+      {
+          this.log('red', `CRITIAL: non-Discord.Snowflake resolvable object, exiting database`, frame=printCurrentFrame()); 
+          return; 
+      }
+
+      this.data[ID] = current; 
+      this.saveData();
+      this.log('green', 'done');
+      return; 
     }
   
     mergeArrays(arr1, arr2) {
@@ -236,29 +256,23 @@ class SimpleDatabase {
       }
     }
   
+    
+   
+    updateObject(New, Old) {
+      // Create a new object with props. of old obj to update
+      const combined = { ...Old };
   
-    /**
-     * replace old keys on an object with new values. Must 
-     * be identical objects sharing the same property names, and count
-     * @param {Object} OldObject the object with old values
-     * @param {Object} NewObject object with new values
-     * @returns {Object}
-     */
-    updateObject(OldObject, NewObject)
-    {
-      let keys = Object.keys(NewObject)
-  
-      keys.map(x=>{
-        OldObject[x] =  NewObject[x]
-      });
-      return NewObject; 
-    }
-  
-    /**
-     * Get the datatype (string) of an array in the database
-     * @param {Array} arr
-     * @returns {String} the type of data in the array e.g ("object", "string") etc. 
-     */
+      // Iterate through props. in the new object
+      for (const prop in New) {
+          if (New.hasOwnProperty(prop)) {
+              // Assign the prop. from the new object to the combined object, if that prop exists 
+              combined[prop] = New[prop];
+          }
+      }
+      //Voici your new updated object, with all previous values intact. 
+      return combined;
+  }
+    
    getArrayType(arr) {
       if (Array.isArray(arr) && arr.length > 0) {
         const firstElementType = typeof arr[0];
@@ -288,14 +302,7 @@ class SimpleDatabase {
       }
     }
   
-    /**
-     * Delete a property from the database
-     * @param {string} key
-     * @returns {void}
-     * @example 
-     * client.db.deleteEntry("poopoo.peepee.balls") 
-     * //removes the "balls" property from "peepee", rooted at "poopoo" 
-     */
+   
     deleteEntry(key) {
   
       let current = this.data;
@@ -320,37 +327,8 @@ class SimpleDatabase {
       this.saveData();
     }
   
-    /**
-     * Update or change any value in the database
-     * @param {string} key 
-     * @param {any} newValue
-     * @returns {void}
-     * @example
-     * //Changes the "in_production" property on "factory" to "Toyota Sienna" 
-     * client.db.modifyEntry(factory.cars.in_production, Toyota Sienna)
-     * 
-     */
-    modifyEntry(key, newValue) {
-      
-      let current = this.data;
-      if(key.includes('.')){
-        let keys = key.split('.');
-      //We're accessing a nested value. Split at '.'
-      for (const key of keys) {
-        if (current[key] === undefined) {
-          return; // None of the keys can be found at root, do nothing
-        }
-        current = current[key];
-      }
-      current = newValue;
-      this.saveData();
-      }
-      else 
-       //the key string is one key. Modify a root property (careful! Easy to overwrite entire branches)
-      current[key] = newValue;
-      this.saveData();
-    }
   
+
     setGuildCoolDown(guildResolveable, cooldowntime)
     {
       try{
@@ -397,24 +375,114 @@ class SimpleDatabase {
       
       if(guildID && this.Exists(guildID))
       {
-        
-        let current = this.data[guildID]; 
-        if(current.hasOwnProperty('config'))
-        { 
-         
-          current.config[`${configKey}`] = value;
-          this.data[guildID] = current; 
-          this.saveData();
-          return;
-        }
-        else
+      
+        var current = this.data[guildID]['config'][configKey]; 
+
+        if(Array.isArray(current))
         {
-          current.config = {}; 
-          current.config[`${configKey}`] = value;
-          this.data[guildID] = current; 
-          this.saveData();
-          return;
+          if(Array.isArray(value)) //the new value is also an array. Merge.
+          {
+            console.log('the new value is also an array...')
+            try
+            { 
+              const appended = this.mergeArrays(current, value); 
+              current = appended; 
+            }
+            catch(error)
+            {
+              console.log(error);
+            }
+          }   
+          else//the existing property is an array, but the new value is not.
+            {
+              console.log(`the new value to append to the existing array is a ${typeof value} `);
+              console.log(this.getArrayType(current));
+              const arrayType = this.getArrayType(current).type; 
+             
+              switch(arrayType) //make sure it's the correct datatype before pushing.
+              {
+                case DataTypes.Boolean:
+                  if(typeof value === 'boolean'){
+                    current.push(value);
+                   
+      
+                    break; 
+                    }
+                  else  
+                    console.log(`incorrect data type, expected boolean but got ${typeof value} instead`);
+                case DataTypes.String: 
+                  if (typeof value === 'string'){
+                    current.push(value);
+                    
+                   
+                     break;
+                  }
+                  else
+                    console.log(`incorrect data type, expected string but got ${typeof value} instead`);
+                case DataTypes.Number: 
+                  if(typeof value === 'number'){
+                   current.push(value);
+                  
+                 
+                   break;
+                  }
+                  else 
+                  console.log(`incorrect data type, expected num but got ${typeof value} instead`);
+                case DataTypes.Object: 
+                  if(typeof value === 'object'){
+                    current.push(value);
+                   
+                  
+                    break;
+                    
+                  }
+                  else 
+                    console.log(`incorrect data type, expected obj but got ${typeof value} instead`);
+                case DataTypes.Function: 
+                  if(typeof value === 'function'){
+                     current.push(value);
+                    
+                     break;
+                    
+                    }
+                  else 
+                     console.log(`incorrect data type, expected function but got ${typeof value} instead`);
+                case DataTypes.Undefined: 
+                    if(typeof value === 'undefined') 
+                    {
+                       console.log(`the value is undefined, cannot append`) 
+                       break;
+                    }
+                    case DataTypes.Undefined: 
+                    if(typeof value === 'undefined') 
+                    {
+                       console.log(`the value is undefined, cannot append`) 
+                       break;
+                    }
+                    else 
+                      console.log(`something is very wrong lol`);
+                    break;
+                default: 
+                    console.log(`something is fucked`, typeof value);
+              } 
+              //Make sure the new value is the correct DataType
+            }
+    
         }
+        else if (typeof current === 'object')
+        {
+          console.log('and this property is an object...')
+          if(typeof value === 'object')
+          {
+            console.log('the new value is also an object...')
+            let updateValue = this.updateObject(current, value); 
+            console.log('updated object:',updateValue);
+            current = updateValue; 
+          } 
+
+        }
+        
+        
       }
       else
       {
@@ -425,12 +493,21 @@ class SimpleDatabase {
         this.saveData(); 
         return;
       }
+
+      this.data[guildID]['config'][configKey] = value; 
+      console.log(current);
+      console.log(this.data[guildID]['config'][configKey]);
+      this.saveData(); 
+
+      this.log('green', 'done');
       }
+      
       catch(error)
       {
         console.log(error);
         return; 
       }
+
     }
   
     getGuildConfig(guildResolveable, configKey)
@@ -498,57 +575,6 @@ class SimpleDatabase {
   
     }
   
-    //  this.data[`${guild}`]['config']['default_cooldown'] = time; 
-      
-    
-    /**
-     * append a new value to a property that is an array. 
-     * @param {string} key
-     * @param {any} newItem
-     * @returns {void}
-     * @example 
-     * client.db.append("People.Fuckers", "Clarkson")
-     * 
-     * // in db.json  "People" will now appear as 
-     * 
-     * "People": {"Fuckers": ["Clarkson"] }
-     */
-    append(key, newItem) {
-      let current = this.data;
-    
-      if (key.includes('.')) {
-        let keys = key.split('.');
-        
-        // We're accessing a nested value. Split at '.'
-        for (const k of keys) {
-          // Check if the current property is an obj
-          if (typeof(current[k]) =='object') {
-            current = current[k]; // Move to the nested obj
-          }
-          else if(Array.isArray(current[k]))
-          {
-            
-            current = current[k]; 
-            push(newItem);
-            this.data = current 
-            this.saveData()
-          }
-          else {
-            current = current[k] // Property is not an array, do nothing
-          }
-        }
-        
-        // Push the new item to the nested array
-        
-      } else {
-        // The key string is one key. Modify a root property
-        if (Array.isArray(current[key])) {
-          current[key].push(newItem);
-        }
-      }
-    
-      this.saveData();
-    }
     /**
      * get any value in the database
      * @param {any} key
@@ -572,27 +598,11 @@ class SimpleDatabase {
           }
         }
         
-        
+        console.log('returning current');
         return current;
       } else {
-        //check to make sure the root key (the guild) actually exists/
-        //first key will always be guild the guild id. If we have reached
-        //this else block there are no '.' in the key string. The key is flat. like your mom.  
-        //so check to make sure the data actually exists. Just like how the doctor checks my penis.
-  
-        if(this.Exists(key))
-        {
           return this.data[key];
-        }
-        //if the guild does not exist in the database, go ahead and do your negative IQ ass self a 
-        //massive favor, and just initalize a new empty object at that key. That way no crashes are possible at 
-        //any point further in the application where fluttershy might need to read, or create keys on that guild.
-        //
-        // Still return undefined, so your ass doesn't FORGET. Also save the db file 
-        else 
-        {
-          return undefined;
-        }
+        
       }
     }
     
@@ -603,14 +613,32 @@ class SimpleDatabase {
      * keyExists() will search the ENTIRE db tree for matches, not just the root of the json tree.
      * They aren't intercompatible because guild id's may appear elsewhere in the db file farther down 
      * and conflate the results.
-     * @param {Discord.Snowflake} ID {@link Discord.Snowflake}
+     * @param {Discord.GuildResolvable || Discord.UserResolvable} guildResolveable object that can be resolved into an {@link Discord.Snowflake}
      * @returns {true} if the object has been stored in the database before, false if not.
      */
-    Exists(ID)
+    Exists(guildResolveable)
+    {     
+     let ID = this.resolveID(guildResolveable);
+    // c//onsole.log(`Exists() ID = ${ID}`); 
+     if(IsSnowflake(ID) && ID in this.data)
+        return ID;
+     else 
+      return false; 
+    }
+
+    resolveID(guildResolveable)
     {
-      //would it be better to use .hasOwnProperty or nah? Quieres¿¿
-      return this.data.hasOwnProperty(ID);
-      
+      let ID; 
+
+      if(typeof guildResolveable !== "string" ||typeof guildResolveable !== "string") //if the ID is on an object (guild/user, etc) with an ID property
+      {
+       ID = resolveGuildID(guildResolveable) !== false ? resolveGuildID(guildResolveable) : resolveUserID(guildResolveable);
+      }
+      else if(IsSnowflake(guildResolveable)) //if the ID to resolve is just a plain string or number with the ID
+      {
+        ID = guildResolveable;
+      }
+      return ID;
     }
   
    

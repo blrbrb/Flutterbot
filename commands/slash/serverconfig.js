@@ -1,4 +1,4 @@
-const {ApplicationCommandOptionType, SlashCommandAssertions, EmbedBuilder, PermissionFlagsBits, IntegrationApplication, Collection, Embed} = require('discord.js');
+const {ApplicationCommandOptionType, EmbedBuilder, PermissionFlagsBits, Embed} = require('discord.js');
 const fs = require('fs');
 const config = require('../../config/config.json');
 const {errorMessage } = require('../../lang/en.js');
@@ -77,7 +77,7 @@ module.exports = {
     async execute(interaction,Flutterbot)
     {
         const subcommand = interaction.options.getSubcommand();
-        Flutterbot.db.guildExists(interaction.guild.id);
+        Flutterbot.db.Exists(interaction.guild.id);
 
         if(!interaction.member.permissions.has(PermissionFlagsBits.Administrator) && !config.always_trusted.includes(interaction.user.id)) return interaction.reply(errorMessage.Permissions.adminCommand());
 
@@ -120,7 +120,7 @@ module.exports = {
              
             const newCooldowntime = interaction.options.getNumber('seconds'); 
 
-            Flutterbot.db.setGuildConfig(interaction, "default_cooldown", newCooldowntime);
+            Flutterbot.db.setGuildConfig(interaction.guild, "default_cooldown", newCooldowntime);
 
             let guildCooldowntime = Flutterbot.db.getValue(`${interaction.guild.id}.config.default_cooldown`); 
             
@@ -132,9 +132,9 @@ module.exports = {
               
               const newJoinAge = interaction.options.getNumber('days'); 
               
-              Flutterbot.db.setGuildConfig(interaction, "newMemberMinimumAge", newJoinAge);
-
-              return interaction.reply(`New members in ${interaction.guild} must now have been on discord for a minimum of ${newJoinAge} days to be released from quarantine`);
+              Flutterbot.db.setGuildConfig(interaction.guild, "newMemberMinimumAge", newJoinAge);
+              const targetDate = new Date(Date.now() + newJoinAge * 24 * 60 * 60 * 1000);
+              return interaction.reply(`New members in ${interaction.guild} must now have been on discord for a minimum of ${newJoinAge} days, or <t:${Math.floor(targetDate / 1000)}:R> from today to be released from quarantine`);
 
             case 'set_embedcolor': 
             //this process can take longer than ten seconds, so defer the reply 
@@ -146,7 +146,7 @@ module.exports = {
               return interaction.reply({content: `That's not a valid hexidecimal color value!`,  ephemeral:true});
             }
             
-            Flutterbot.db.setGuildConfig(interaction, "embed_color", parseInt(newColor.slice(1), 16)); 
+            Flutterbot.db.setGuildConfig(interaction.guild, "embed_color", parseInt(newColor.slice(1), 16)); 
 
             const demoembed = new EmbedBuilder()
             .setTitle('Demo Embed!').setDescription('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...').setColor(parseInt(newColor.slice(1), 16));

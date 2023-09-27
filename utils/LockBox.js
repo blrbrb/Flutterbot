@@ -8,9 +8,8 @@ class LockBox
    constructor() {
     //if there is an existing key, everything has already been encrypted with it.
     //it is not necessary to create a new one yet, as all of the old data will become unreadable.
-    this.Key = process.env.ENCRYPTION_KEY;
-    this.iv = crypto.randomBytes(16);
-    if(this.Key === undefined)
+    this.stationaryKey = process.env.ENCRYPTION_KEY;
+    if(this.stationaryKey === undefined)
     {
      //only update if it is the first time creating a key
      this.updateEnv()
@@ -21,14 +20,21 @@ class LockBox
 
   /**
    * @summary Encrypt secure keys, passwords, secrets, tokens, strings etc
-   * @param {any} str
-   * @returns {any}
+   * @param {any} data
+   * @returns {any} time encrypted data (Cipheriv, aes-256-cbc block) whatever tf that means. 
    */
-  encrypt(str) {
-    const cipher = crypto.createCipher('aes-256-cbc', this.Key);
-    let encryptedToken = cipher.update(str, 'utf8', 'hex');
-    encryptedToken += cipher.final('hex');
-    return encryptedToken;
+  encrypt(data) {
+     // I got all of this off of google lol idk wtf crypto does 
+    let timestamp =this.newTimestamp(); 
+    const key = crypto.createHash('sha256').update(this.stationaryKey + timestamp).digest('hex');
+    const iv = crypto.randomBytes(16); // Apparently this needs to be unique, every time. whoops. Had it in the constructor 
+    const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key, 'hex'), iv);
+   
+    let encryptedData = cipher.update(data, 'utf8', 'base64');
+    encryptedData += cipher.final('base64');
+    
+    // Return the timestamp + encrypted data
+    return `${timestamp}:${iv.toString('hex')}:${encryptedData}`;
   }
   
   /**
@@ -38,22 +44,31 @@ class LockBox
    * @returns {any}
    */
   encrypt_forgetKey(message)
-  {
-    const cipher = crypto.createCipheriv('aes-256-cbc', crypto.randomBytes(32), Buffer.from(this.iv, 'hex'));
+
+  { const iv = Buffer.from(ivHex, 'hex');
+    const cipher = crypto.createCipheriv('aes-256-cbc', crypto.randomBytes(32), Buffer.from(iv, 'hex'));
     let encryptedToken = cipher.update(message, 'utf-8', 'hex');
     encryptedToken += cipher.final('hex');
     return encryptedToken;
   }
+  
   /**
    * @summary Decrypt secure keys, passwords, secrets, tokens, strings etc
    * @param {string} token_str
    * @returns {string}
    */
-  decrypt(token_str) {
-    const decipher = crypto.createDecipher('aes-256-cbc', this.Key);
-    let decryptedToken = decipher.update(token_str, 'hex', 'utf8');
-    decryptedToken += decipher.final('utf8');
-    return decryptedToken;
+  decrypt(encrData) {
+    
+  const [timestamp, ivHex, encryptedText] = encrData.split(':');
+  const key = crypto.createHash('sha256').update(this.stationaryKey + timestamp).digest('hex');
+  const iv = Buffer.from(ivHex, 'hex');
+  const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key, 'hex'), iv);
+  
+  let decryptedData = decipher.update(encryptedText, 'base64', 'utf8');
+  decryptedData += decipher.final('utf8');
+  
+  return decryptedData;
+    
   }
 /** 
 * 
@@ -61,7 +76,7 @@ class LockBox
 * @return {string} key representing random bytes 
 */
   generateKey() {
-    Key = crypto.randomBytes(32).toString('hex');
+    let Key = crypto.randomBytes(32).toString('hex');
     return Key;
   }
 
@@ -81,6 +96,11 @@ class LockBox
     fs.writeFileSync('.env', envKey, { flag: 'a' }); //'a' 'append'. Dont erase important stuff already in .env
     log('created new key and updated .env file'); 
 
+  }
+
+  newTimestamp()
+  {
+    return Date.now().toString();
   }
 
   /**

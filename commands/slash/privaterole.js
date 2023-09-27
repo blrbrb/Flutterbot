@@ -24,24 +24,23 @@ module.exports = {
     const role = interaction.options.getRole('role');
     
     // Check if the roles JSON file exists
-    let data;
+    let data = [role.id];
+    let existing =Flutterbot.db.getGuildConfig(interaction.guild, "private_roles");
+    console.log('exiting private_roles for this guild ', existing);
+    //data.push(role.id);
     try {
-      data = Flutterbot.db.getValue(`${interaction.guild.id}.config`); 
-         
-      // Check if the role is already in the list
-      if (data.private_roles.includes(role.id)) {
-        return interaction.reply({ content: `Role "${role.name}" is already in the list of private roles`, ephemeral: true });
-      }
-
-      // Add the role to the list
-      data.private_roles.push(role.id);
-
       // Write the updated list to the JSON file
-      Flutterbot.db.setGuildConfig(interaction.guild.id, "private_roles", data); 
+      if(existing.includes(role.id))
+      {
+        return interaction.reply(`${role} is already a private role in this guild!`);
+      }
+      else{
+      Flutterbot.db.setGuildConfig(interaction.guild, "private_roles", role.id); 
+      }
     } catch (error) {
-      // If the data doesn't exist, initialize it with an empty roles array
-      Flutterbot.db.setGuildConfig(interaction.guild.id, "private_roles", []);
     
+     
+      return interaction.reply(`${error}`);
     }
 
       

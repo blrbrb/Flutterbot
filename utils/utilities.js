@@ -1,7 +1,8 @@
-PermissionFlagsBits = require('discord.js');
+const {PermissionFlagsBits, SnowflakeUtil} = require('discord.js');
 
 const colors = {
     "": "\x1b[0m",
+    italic: "\x1B[3m",
     reset: "\x1b[0m",
     bright: "\x1b[1m",
     dim: "\x1b[2m",
@@ -34,7 +35,79 @@ const colors = {
 }
 const Discord = require('discord.js');
 const fs = require('fs');
+class Log
+   {
+   
+    
+     /**
+     * @param {boolean} logAll 
+     * true by default
+     * true enables all logging in the file
+     * false disables log calls that doesn't enable the forced parameter
+     * NOTE: the forced param will not work if modifierList isnt provided
+     */
+     /**
+     * @param {string} modifierList
+     * examples:
+     * log("bright red", "Error");
+     * log("bggreen blue", "Success!");
+     * 
+     * @param {any} message
+     * the body of the log
+     * 
+     * @param {boolean} forced
+     * false by default
+     * NOTE: the forced param will not work if modifierList isnt provided
+     **/
+    constructor({modifierList=[], message='',logAll=true, forced=true, tofile=true, clear=Boolean, frame=''})
+    {
+      !logAll && console.log(`${colors.bright}${colors.red}TAKE CARE TO NOTE LOGALL IS DISABLED${colors.reset}`);
+       console.log(clear);
+       if(clear) this.clearLog();
+        console.log(frame);
+         return function (modifierList, message, forced, frame) {
+             if (!logAll && !forced) return;
+             if (Array.isArray(message)) {
+                 message = message.join(" ");
+             }
+             if (message === undefined) {
+                 message = modifierList;
+                 modifierList = "";
+             }
+             if(frame){
+              console.log(`${colors.underscore}${frame}${colors.reset}`);  
+             }
+            
 
+             let pirate = modifierList.toLowerCase().split(" ");
+             let combine = "";
+             pirate.forEach(c => colors[c] ? combine += colors[c] : null);
+              console.log(`${combine}${message}${colors.reset}`);  
+             if (tofile){
+               
+               fs.appendFile('Flutterbot.log', message + '\n', (err) => {
+                 if (err) {
+                   console.error('Error writing to log file:', err);
+                 }
+               });
+             }
+            
+         }
+     }
+    
+
+    clearLog()
+    {
+      fs.writeFile('Flutterbot.log', '', (err) => {
+        if (err) {
+          console.error('Error clearing the log file:', err);
+        } else {
+          console.log('Log file cleared successfully.');
+        }
+      });
+    }
+   }
+   
 module.exports = {
     async getImage(message) {
         const the_channel = message.channel.id;
@@ -96,52 +169,7 @@ module.exports = {
         const formattedSeconds = String(remainingSeconds).padStart(2, '0');
         return `${formattedMinutes}:${formattedSeconds}`;
     },
-    /**
- * @param {boolean} logAll 
- * true by default
- * true enables all logging in the file
- * false disables log calls that doesn't enable the forced parameter
- * NOTE: the forced param will not work if modifierList isnt provided
- */
-  Log(logAll = true, tofile = true) {
-    !logAll && console.log(`${colors.bright}${colors.red}TAKE CARE TO NOTE LOGALL IS DISABLED${colors.reset}`);
-    /**
-     * @param {string} modifierList
-     * examples:
-     * log("bright red", "Error");
-     * log("bggreen blue", "Success!");
-     * 
-     * @param {any} message
-     * the body of the log
-     * 
-     * @param {boolean} forced
-     * false by default
-     * NOTE: the forced param will not work if modifierList isnt provided
-     */
-    return function (modifierList, message, forced) {
-        if (!logAll && !forced) return;
-        if (Array.isArray(message)) {
-            message = message.join(" ");
-        }
-        if (message === undefined) {
-            message = modifierList;
-            modifierList = "";
-        }
-       
-        let pirate = modifierList.toLowerCase().split(" ");
-        let combine = "";
-        pirate.forEach(c => colors[c] ? combine += colors[c] : null);
-        console.log(`${combine}${message}${colors.reset}`);  
-
-        if (tofile){
-          fs.appendFile('Flutterbot.log', message + '\n', (err) => {
-            if (err) {
-              console.error('Error writing to log file:', err);
-            }
-          });
-        }
-    }
-},
+   
 stringToDate(RawDateString) {
 
     const results = chrono.parse(RawDateString);
@@ -235,52 +263,65 @@ consolidateTimeObjects(impliedValues, knownValues) {
     },
     resolveGuildID(object) 
     {
-        let guildID = 0;
-
+        let guildID = false;
+       
+       
         if (object instanceof Discord.Guild) {
-
         guildID = object.id; 
-        console.log(guildID);
-        return guildID;
-        } else if (object.guild && object.guild instanceof Discord.Guild) {
-
-        guildID = object.guild.id;
-
-        return guildID;
+        console.log('this object is a direct guild refrence',guildID);
+       }
+         else if (object instanceof Discord.TextChannel) {
+          console.log('this object is a TextChannel refrence',guildID);
+        guildID = object.id; 
+        
         }
-        else {
-        // If the object doesn't contain a Guild object or a 'guild' property with 'id', return false
-        return false;}
+        else if (object.hasOwnProperty('guild') && object.guild instanceof Discord.Guild) {
+          console.log(object);
+          console.log('this object has a guild property',guildID);
+        guildID = object.guild.id;
+      }
+      else if(module.exports.IsSnowflake(object) && !(object instanceof Discord.User))
+      {
+        guildID = object; 
+      }
+
+      
+      
+      return guildID; 
+
     },
     resolveUserID(object)
     {
-      let UserID = 0;
-      console.log('checking properties');
-      if (object instanceof Discord.User) {
+      let UserID = false;
       
+      if (object instanceof Discord.User || Discord.GuildMember) {
+       
         UserID = object.id; 
-        console.log(UserID);
-        return UserID;
-      } else if (object.user && object.user instanceof Discord.User) {
+       
+      } else if (object.hasOwnProperty('user') && object.user instanceof Discord.User || Discord.GuildMember) {
         console.log('has user property');
-        return object.user.id; 
+        UserID = object.user.id; 
+        //return object.user.id; 
       }
-      else if (object.member && object.member instanceof Discord.User)
+      else if (object.hasOwnProperty('member') && object.member instanceof Discord.User || Discord.GuildMember)
       {
         console.log('has member property');
-        return object.member.id;
+        //return 
+        UserID = object.member.id;
       }
-      else if (object.author && object.author instanceof Discord.User)
+      else if (object.hasOwnProperty('author') && object.author instanceof Discord.User || Discord.GuildMember)
       {
         console.log('has author property'); 
-        return object.author.id;
+        UserID = object.author.id;
       }
-    else {
-        // If the object doesn't contain a Guild object or a 'guild' property with 'id', return false
-        return false;
+      else if(module.exports.IsSnowflake(object))
+      {
+        UserID = object; 
       }
-     },
     
+      return UserID;
+     },
+   
     ProgressBar(current, whole)
     {
         //This is NOT my code. 
@@ -332,39 +373,6 @@ consolidateTimeObjects(impliedValues, knownValues) {
             return new Date().valueOf();
         }
     },
-    
-      Log(logAll = true, toFile = true) {
-        !logAll && console.log(`${colors.bright}${colors.red}TAKE CARE TO NOTE LOGALL IS DISABLED${colors.reset}`);
-    
-        return function (logParts, forced) {
-          if (!logAll && !forced) return;
-    
-          let logText = '';
-          logParts.forEach(({ text, modifiers }) => {
-            if (modifiers && modifiers.length > 0) {
-              let combinedModifiers = '';
-              modifiers.forEach(modifier => {
-                if (colors[modifier]) {
-                  combinedModifiers += colors[modifier];
-                }
-              });
-              logText += `${combinedModifiers}${text}${colors.reset} `;
-            } else {
-              logText += `${text} `;
-              
-              if (toFile){
-                fs.appendFile('Flutterbot.log', message + '\n', (err) => {
-                  if (err) {
-                    console.error('Error writing to log file:', err);
-                  }
-                });
-              }
-            }
-          });
-    
-      
-        };
-      },
       format(template, replacements) {
         return template.replace(/\${(.*?)}/g, (match, key) => {
           // Check if the key exists in replacements, otherwise, return the original match
@@ -372,15 +380,48 @@ consolidateTimeObjects(impliedValues, knownValues) {
         });
       },
        isYoutubeUrl(url) {
-       // https://www.youtube.com/watch?v=9-rGy5n_uaE
-        const YTexp = RegExp(/^(https:\/\/)?(www\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])+$/);
-        console.log(YTexp.test(url));
-        if(YTexp.test(url)){
-          console.log('youtube url')
-          return 'yt';}
-        else 
-          return false; 
+       
+          // Regular expressions to match different YouTube link formats
+          const youtubeShortRegex = /youtu.be\/([^?&]+)/;
+          const youtubeRegularRegex = /youtube\.com\/(?:watch\?v=|shorts\/)([^?&]+)/;
+          const youtubeMusicRegex = /music\.youtube\.com\/watch\?v=([^?&]+)/;
+          return (
+            youtubeShortRegex.test(url) ||
+            youtubeRegularRegex.test(url) ||
+            youtubeMusicRegex.test(url)
+          );
+        },
+      formatYtLink(input) {
+       
+        const youtubeShortRegex = /youtu.be\/([^?&]+)/;
+        const youtubeRegularRegex = /youtube\.com\/(?:watch\?v=|shorts\/)([^?&]+)/;
+        const youtubeMusicRegex = /music\.youtube\.com\/watch\?v=([^?&]+)/;
+      
+        // Check if the input matches any of the regex patterns
+        if (youtubeShortRegex.test(input)) {
+          const match = input.match(youtubeShortRegex);
+          if (match && match[1]) {
+            const videoId = match[1];
+            return `https://youtube.com/watch?v=${videoId}`;
+          }
+        } else if (youtubeRegularRegex.test(input)) {
+          const match = input.match(youtubeRegularRegex);
+          if (match && match[1]) {
+            const videoId = match[1];
+            return `https://youtube.com/watch?v=${videoId}`;
+          }
+        } else if (youtubeMusicRegex.test(input)) {
+          const match = input.match(youtubeMusicRegex);
+          if (match && match[1]) {
+            const videoId = match[1];
+            return `https://youtube.com/watch?v=${videoId}`;
+          }
+        }
+      
+        // If no match is found, return the input as is
+        return input;
       },
+      
       isSpotifyUrl(url) {
         const SPexp = RegExp(/^https:\/\/open\.spotify\.com\/track\/[a-zA-Z0-9]+(\?[^\s]+)?$/);
         console.log(SPexp.test(url));
@@ -454,10 +495,21 @@ consolidateTimeObjects(impliedValues, knownValues) {
         {
           return false;
         }
-      }
-     
-      
-    
+      },
+      IsSnowflake(integer_id) {
+          try {
+            return SnowflakeUtil.deconstruct(integer_id).timestamp > SnowflakeUtil.epoch;
+          } catch {
+            return false;
+          }
+      },
+      printCurrentFrame() {
+        const stack = new Error().stack;
+        const callerLine = stack.split("\n")[2].trim();
+        return callerLine;
+      },
+    Log
 }
     
-  
+ 
+   

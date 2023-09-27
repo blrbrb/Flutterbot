@@ -310,7 +310,7 @@ module.exports = {
      onPlaying(queue,Flutterbot)
      { 
        const song = queue.songs[0];
-      
+       
        let color = Flutterbot.db.getGuildConfig(queue.textChannel, 'embed_color'); 
        const playing = new EmbedBuilder(); 
        if(color) playing.setColor(color);

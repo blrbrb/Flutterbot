@@ -25,7 +25,8 @@ module.exports = {
         
        } 
        else{ ///messages that are not commands, part of a collection, or from a bot. 
-         return updateexp(message, Flutterbot);
+         updateexp(message, Flutterbot);
+         return; 
        
        }
     }

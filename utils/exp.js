@@ -29,11 +29,12 @@ expOnMessage(message) {
   },
 updateexp(message,Flutterbot)
 {
+  console.log(message.author.id);
   let authorExp = Flutterbot.db.getValue(`${message.author.id}`); 
-  
-  if(authorExp == undefined)
+  console.log(authorExp);
+  if(authorExp === undefined)
   {  
-    console.log('creating new exp object');
+    Flutterbot.log('yellow', `WARN: exp.js updateexp() User ${message.author.username} with ID ${message.author.id} does not have an exp object.`);
     module.exports.initexp(message, Flutterbot);
     return;
   }
@@ -62,7 +63,7 @@ expOnReact(reaction, user, Flutterbot)
         //easier for scripts to fake interactions. must send msg first
        return;
     }
-    console.log('updating fucking exp from reaction');
+   
     //if the user object already has reaction exp data stored, add to it
     if(authorExp.hasOwnProperty('reacts'))
     {
@@ -77,12 +78,14 @@ expOnReact(reaction, user, Flutterbot)
     Flutterbot.db.set(user, user.id, authorExp);
     return;
 },
-  initexp: function(message, Flutterbot)
+initexp(message, Flutterbot)
   {
     let authorExp = Flutterbot.db.getValue(`${message.author.id}`); 
+    
+   
     if(!authorExp)
     {   
-        console.log('fuckery');
+        
         authorExp = 
         {
          'level': 0, 
@@ -90,8 +93,9 @@ expOnReact(reaction, user, Flutterbot)
          'exp': 0, 
          'msg':1
         }; 
-        authorExp['required'] = calculateexp(authorExp['level']);
+        authorExp['required'] = module.exports.calculateexp(authorExp['level']);
         Flutterbot.db.set(message.author, message.author.id, authorExp);
+        Flutterbot.log('yellow, italic',`created new exp object for ${message.author.username} with ID ${message.author.id}`);
         return; 
     }
     return;

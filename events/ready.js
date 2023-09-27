@@ -6,7 +6,7 @@ module.exports = {
 	name: Events.ClientReady,
 	once: true,
 	async execute(Flutterbot) {
-        Flutterbot.log([{text:`Fluttershy is awake! \n`, modifiers:["green"]}]);
+        Flutterbot.log('green',`Fluttershy is awake! \n`);
 
         const repeater = 60* 60 * 1000; //hourly update
       setInterval(async() =>{await Flutterbot.updateSurvivors()}, repeater);

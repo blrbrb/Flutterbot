@@ -13,7 +13,7 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
             body: commands
         })
         //await rest.get(Routes.userGuilds()) 
-        .then(displayList)
+        //.then(displayList)
         .catch(console.error)  
 
     } catch (error) {   

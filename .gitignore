@@ -49,3 +49,4 @@ events/messagedelete.js
 commands/slash/lastfmaccount.js
 assets/db.json
 assets/db.json
+assets/intelligence.json

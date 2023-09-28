@@ -637,6 +637,22 @@ module.exports = {
     //branchCommands: {1:["yes", "no"]},
     SecondaryResponses:["yes", "no"],
        
+  },
+
+  youShouldLitterallyNeverSeeThis:{
+
+    dearGodItsReal(client)
+    {
+      const embed = new EmbedBuilder()
+      .setAuthor({name:'Flutterbot.guardian', iconURL: client.user.displayAvatarURL()})
+      .setTitle('DANGER')
+      .setDescription(this.message)
+      .setColor('Red')
+      .addFields({'name': 'Where do I get my data?', 'value': "Here's more info on https://urlhaus.abuse.ch/"})
+      return embed; 
+
+    },
+    message: "the contents of this message have matched 100% identical to a url found on urlhaus The offending url, and message contents have been automatically deleted. \n On the astronomically, outstandingly, devilishly low odds that you are *actually reading this right now*, this is most likely __**not a mistake or programming error**__. \n Rest assured, links are very common. If not vital for the health of a social space. I've been taught the difference between normal urls, and urls that almost certianly are involved in phising scams / malware. I pinky promise. \n I may not function correctly some days, but this is something my creator takes very seriously. If you've sent that link on accident, or if you've unknowingly been sharing it around. I would advise you do research it, or send it through virustotal"
   }
   
 }

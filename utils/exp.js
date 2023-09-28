@@ -57,6 +57,23 @@ return;
 expOnReact(reaction, user, Flutterbot)
 {
     let authorExp = Flutterbot.db.getValue(`${user.id}`);
+
+    let anim_multiplier = reaction._emoji.animated ? 55 : 1  
+    //this is entierly non-objective. Extra points if the emoji's name has "fluttershy" in it. 
+    let skull_multiplier = reaction._emoji.name.includes('fluttershy') ? 15 : 1 
+    //if the emoji has a snowflake ID, it's a guild ID 
+    let guildemoji_multiplier = reaction._emoji.id ? 20 : 1 
+    //all emojis get a rand base point value from 1 to 5 
+    let base = 1 + Math.random() * 3; 
+
+     //random float just a teeeensie tiny bit bigger than 100, to add some spice
+    const seed = (Math.random() * 10) + 100;
+    console.log(seed);
+    const multiplier = Math.floor(base * (anim_multiplier + skull_multiplier + guildemoji_multiplier), seed);
+    console.log(multiplier);
+
+    
+
     if(!authorExp)
     {
         //do not initalize the exp object on message react. 
@@ -67,6 +84,7 @@ expOnReact(reaction, user, Flutterbot)
     //if the user object already has reaction exp data stored, add to it
     if(authorExp.hasOwnProperty('reacts'))
     {
+      
         authorExp['reacts'] += 1;  
     }
     else
@@ -74,8 +92,12 @@ expOnReact(reaction, user, Flutterbot)
         //if not, ensure it's created with the correct datatype. 
         authorExp['reacts'] = 1;  
     }
-    authorExp['exp'] += 1; 
+    //do some other cool shit here like a switch case for which emoji has been reacted with 
+
+    authorExp['exp'] += multiplier; 
+
     Flutterbot.db.set(user, user.id, authorExp);
+
     return;
 },
 initexp(message, Flutterbot)

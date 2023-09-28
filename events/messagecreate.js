@@ -9,6 +9,8 @@ module.exports = {
     async execute(Flutterbot, message) { 
        if(message.author.bot) return; 
        
+       Flutterbot.Evaluator.onMessage(Flutterbot.client, message);
+       
        if(Flutterbot.collectors.get(message.author.id))
        {
            const instance = Flutterbot.collectors.get(message.author.id); 

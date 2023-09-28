@@ -129,6 +129,7 @@ class Flutterbot {
     initEvaluator() 
     {
         this.Evaluator = new Evaluator(this.db, this.LockBox, this.client); 
+       
     }
   
     updateWeekly()
@@ -137,28 +138,6 @@ class Flutterbot {
     }
     //update the database on an hourly basis to ensure the perseverance of data between leaving / joining
     //and client restarts 
-    async updateSurvivors()
-    {
-        //get the bc guild 
-        const guild = await this.client.guilds.fetch(process.env.GUILD_ID);
-
-        // Fetch all members of the guild
-        const members = await guild.members.fetch();
-        let sacrificed = []; 
-        this.log('updating sacrified roles...');
-        members.forEach(member => {
-            
-            if(member.roles.cache.has('1109587525720342548'))
-            {
-                sacrificed.push(member.id);
-                console.log('person has the sacrified role');
-            } 
-           
-        })
-        this.db.set(process.env.GUILD_ID, "sacrificed", sacrificed);
-        
-        
-    }
     getDefaultCoolDown(serverId) {
         
        let default_cooldown = this.db.getValue(`${serverId}.config.default_cooldown`);
@@ -186,7 +165,7 @@ class Flutterbot {
       await this.client.login(process.env.DISCORD_TOKEN);
     
       await this.updateEvents(); 
-     
+     // await this.Evaluator.updateIntelligence(); 
     }
   }
 

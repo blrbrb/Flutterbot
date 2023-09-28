@@ -8,14 +8,7 @@ module.exports = {
 	async execute(Flutterbot) {
         Flutterbot.log('green',`Fluttershy is awake! \n`);
 
-        const repeater = 60* 60 * 1000; //hourly update
-      setInterval(async() =>{await Flutterbot.updateSurvivors()}, repeater);
-       
-		//console.log('Fluttershy is Awake Yay! :3');
-		//Distube listeners need to be initalized here, according to the documentation on DisTube.js 
-    // discord bot "ready" event is only called once, but the listeners will still be activated.
-
-    //this was litterally doing nothing lol, it has to be set to client ONCE. not client ON.
+   
     Flutterbot.DisTube.on("playSong", (queue, song) => {
         console.log(song.name);
         queue.textChannel.send(commandResponses.Distube.onPlaying(queue, Flutterbot));
@@ -35,9 +28,6 @@ module.exports = {
         
         queue.textChannel.send({embeds:[commandResponses.Distube.onAddSong(queue, Flutterbot)]});
     });
-
-        // DisTubeOptions.searchSongs > 0
-   
     
 }
 

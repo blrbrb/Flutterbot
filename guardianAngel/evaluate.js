@@ -1,11 +1,18 @@
-const {resolveGuildID} = require('../utils/utilities.js');
+const {} = require('../utils/utilities.js');
+const axios = require('axios');
+const cheerio = require('cheerio');
+const fs = require('fs');
+
+const {youShouldLitterallyNeverSeeThis} = require('../lang/en.js');
+
 class Evaluator
 {
    constructor(Database, locker, client) {
     this.db = Database; 
     this.locker = locker
     this.client = client;
-
+    this.urlRegex = /https?:\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|]/g;
+    this.intel = this.loadIntel()
    }
    
    validateAge(member)
@@ -99,7 +106,76 @@ class Evaluator
 
    }
 
+   async onMessage(client, message)
+   {
+      //check contents for urls (if not on malware list, do nothing obviously)
+       const contentUrls = message.content.match(this.urlRegex);
+       if (contentUrls) {
+         
+         console.log('Message contains URLs in content this is astronomically likely to be normal:', contentUrls);
+         
+         if(this.intel.includes(contentUrls[0]))
+         {
+            //ruh-roh raggey, we gotta racker 
+            
+            console.log('oh shit');
+            //Delete the msg, better safe than sorry with these odds
+            await message.delete()
+            .then(() => {
+               message.channel.send({embeds:[youShouldLitterallyNeverSeeThis.dearGodItsReal(client)]})
+            
+            });
+            //message.content = "@everyone. I trying to con someone with a phising scam. Please point at me and laugh."; 
 
+
+         }
+                                 
+       }
+   }
+   async updateIntelligence() {
+      try {
+        // Make an HTTP GET request to the webpage
+        const response = await axios.get('https://urlhaus.abuse.ch/downloads/text/');
+    
+        // Load the HTML content of the webpage using cheerio
+        const $ = cheerio.load(response.data);
+    
+         // Split the content into lines
+       const lines = response.data.split('\n');
+
+       // Create an empty array to store the links
+        const links = [];
+
+       // Iterate through each line and extract links
+       lines.forEach((line) => {
+    
+      // Remove leading and trailing spaces
+      const trimmedLine = line.trim();
+      
+      // Check if the line is not empty and doesn't start with '#' (comments)
+      if (trimmedLine && !trimmedLine.startsWith('#')) {
+        links.push(trimmedLine);
+      }
+    });
+        // Save the links to a JSON file
+        const jsonData = JSON.stringify(links, null, 2); 
+        //save it as a class variable for convenience
+        
+        fs.writeFileSync('assets/intelligence.json', jsonData);
+    
+        console.log('Links have been saved to links.json');
+      } catch (error) {
+        console.error('Error:', error.message);
+      }
+    }
+    loadIntel()
+    {
+      const raw = fs.readFileSync('assets/intelligence.json');
+      const data =  JSON.parse(raw);
+      return data; 
+    }
+    
+    
    
 }
 

@@ -9,7 +9,7 @@ const { Events } = require('discord.js');
 module.exports = {
     name: Events.GuildRoleUpdate,
     once: false,
-    async execute(client, role) {
+    async execute(Flutterbot, role) {
         if (role.permissions.has(PermissionFlagsBits.Administrator)) {
             const action = await role.guild.fetchAuditLogs({
                 type: AuditLogEvent.RoleCreate,

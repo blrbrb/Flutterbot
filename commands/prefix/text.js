@@ -7,6 +7,7 @@ const findImage = require('../../utils/findimage.js');
 module.exports = {
 	name: 'text',
 	description: 'Fluttershy Will add text to an image',
+	cooldown: 3, 
 	async execute(client, message, args) { // eslint-disable-line no-unused-vars
 		imageUrl = await findImage.imageFinder(message);
 		const extension = await findImage.extensionFinder(imageUrl);

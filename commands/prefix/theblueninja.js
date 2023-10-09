@@ -6,6 +6,7 @@ const chrono = require('chrono-node');
 module.exports = {
 	name: 'theblueninja',
 	description: 'info about the blueninja',
+    cooldown: 2, 
 	async execute(Flutterbot, message, args) 
     {
         const embed = new EmbedBuilder().setAuthor({'name': 'TBN'}).setTitle("Support The Blue Ninja")

@@ -16,7 +16,7 @@ module.exports = {
     async execute(interaction, Flutterbot) {
         const role = interaction.options.getRole('role');
         const guildMember = interaction.member;
-        const private_roles = Flutterbot.db.getValue(`${interaction.guild.id}.config.private_roles`);
+        const private_roles = Flutterbot.db.get(`${interaction.guild.id}.config.private_roles`);
        
         //ensure the target role is not privated or admin
         if (private_roles.includes(role.id) || role.permissions.has(PermissionFlagsBits.Administrator) || role.managed) {

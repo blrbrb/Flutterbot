@@ -7,10 +7,7 @@ const {youShouldLitterallyNeverSeeThis} = require('../lang/en.js');
 
 class Evaluator
 {
-   constructor(Database, locker, client) {
-    this.db = Database; 
-    this.locker = locker
-    this.client = client;
+   constructor(Database,client) {
     this.urlRegex = /https?:\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|]/g;
     this.intel = this.loadIntel()
    }
@@ -35,10 +32,10 @@ class Evaluator
       }
 
    }
-   async quaratine(member)
+   async quaratine(client, member)
    {
     
-      const guild = this.client.guilds.cache.get(member.guild.id);
+      const guild = client.guilds.cache.get(member.guild.id);
 
       let qRoleID = this.db.getGuildConfig(member.guild, 'quaratine_role'); 
       let quarantinedUsers =this.db.getGuildConfig(member.guild, 'quaratined');
@@ -74,10 +71,10 @@ class Evaluator
       
    }
 
-   async createQuaratineRole(member)
+   async createQuaratineRole(client, member)
    {
     
-      const guild = this.client.guilds.cache.get(member.guild.id);
+      const guild = client.guilds.cache.get(member.guild.id);
 
        // Define the role's properties
          const roleData = {
@@ -108,29 +105,10 @@ class Evaluator
 
    async onMessage(client, message)
    {
-      //check contents for urls (if not on malware list, do nothing obviously)
-       const contentUrls = message.content.match(this.urlRegex);
-       if (contentUrls) {
-         
-         console.log('Message contains URLs in content this is astronomically likely to be normal:', contentUrls);
-         
-         if(this.intel.includes(contentUrls[0]))
-         {
-            //ruh-roh raggey, we gotta racker 
-            
-            console.log('oh shit');
-            //Delete the msg, better safe than sorry with these odds
-            await message.delete()
-            .then(() => {
-               message.channel.send({embeds:[youShouldLitterallyNeverSeeThis.dearGodItsReal(client)]})
-            
-            });
-            //message.content = "@everyone. I trying to con someone with a phising scam. Please point at me and laugh."; 
-
-
-         }
-                                 
-       }
+      if(this.positiveURL(client, message).match)
+      {
+         client.log(`This shit is for realsies bro. ${message.content}`)
+      }
    }
    async updateIntelligence() {
       try {
@@ -175,7 +153,37 @@ class Evaluator
       return data; 
     }
     
-    
+   async positiveURL(client, message)
+    {
+      const contentUrls = message.content.match(this.urlRegex);
+       if (contentUrls) {
+         
+         console.log('Message contains URLs in content this is astronomically likely to be normal:', contentUrls);
+         
+         if(this.intel.includes(contentUrls[0]))
+         {
+            //ruh-roh raggey, we gotta racker 
+            
+            console.log('oh shit');
+            //Delete the msg, better safe than sorry with these odds
+            await message.delete()
+            .then(() => {
+               message.channel.send({embeds:[youShouldLitterallyNeverSeeThis.dearGodItsReal(client)]});
+            
+            });
+            return {match: true, urls: contentUrls}; 
+
+
+         }
+         else
+            return {match:false, urls: undefined};
+         
+                                 
+       }
+       else 
+         return {match:false, urls: undefined};
+
+    }
    
 }
 

@@ -11,6 +11,7 @@ const API_URL = 'https://api-inference.huggingface.co/models/EllyPony/flutterbot
 module.exports = {
     name: "fs",
     description: "talk with FlutterShy",
+    cooldown: 0, 
     async execute(Flutterbot, message, args) {
         message.channel.sendTyping();
         console.log(message.content);

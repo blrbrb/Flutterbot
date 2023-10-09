@@ -3,6 +3,7 @@ const { EmbedBuilder } = require("discord.js");
 module.exports = {
 	name: 'reverb',
 	description: 'Send A Nice Reverb Fart',
+	cooldown: 2,
 	execute(client, message, args) {
 		// configure the fart sound effect embed
 		const newEmbed = new EmbedBuilder()

@@ -4,6 +4,7 @@ const {socialHelp} = require('../../lang/en.js');
 module.exports = {
 	name: "imlonely",
 	description: "",
+    cooldown: 2, 
 	async execute(Flutterbot, message, args)
     {
         //for now

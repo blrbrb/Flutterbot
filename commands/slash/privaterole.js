@@ -25,8 +25,8 @@ module.exports = {
     
     // Check if the roles JSON file exists
     let data = [role.id];
-    let existing =Flutterbot.db.getGuildConfig(interaction.guild, "private_roles");
-    console.log('exiting private_roles for this guild ', existing);
+    let existing = Flutterbot.db.getGuildConfig(interaction.guild, "private_roles");
+   
     //data.push(role.id);
     try {
       // Write the updated list to the JSON file

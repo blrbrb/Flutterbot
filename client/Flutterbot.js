@@ -1,23 +1,17 @@
 require('dotenv').config();
 const express = require('express');
-const { SimpleDatabase } = require('./utils/SimpleDatabase');
-const {LockBox} = require('./utils/LockBox.js'); 
-const Evaluator = require('./guardianAngel/evaluate.js');
-const {Log} = require('./utils/utilities.js');
+const { SimpleDatabase } = require('../utils/SimpleDatabase');
+const {LockBox} = require('../utils/LockBox.js'); 
+const Evaluator = require('../guardianAngel/evaluate.js');
+const {Log} = require('../utils/utilities.js');
 const { Client, Partials, GatewayIntentBits, Collection, SnowflakeUtil} = require('discord.js');
 const { DisTube } = require('distube');
 const { SoundCloudPlugin } = require("@distube/soundcloud");
-
-const filters = require('./assets/filters.json');
-const { prefixcommands, slashcommands, current_maintenance } = require('./findAllCommands.js');
+const {expHandler} = require('../utils/exp');
+const filters = require('../assets/filters.json');
+const { prefixcommands, slashcommands, current_maintenance } = require('../findAllCommands.js');
 const LastfmApi = require('lastfmapi'); 
 
-
-const PORT = process.env.PORT || 3000;
-//I will force this to be c++ 
-//I LOVE C++ I LOVE OBJECTS
-//I LOVE OVER THE TOP ORGANIZATION 
-//every single component is ON WORKING MEMORY AT ALL TIMES WOOOOOO BABY THATS WHAT IM TALKING ABOUT 
 class Flutterbot {
     constructor() {
        this.initClient(); //organized by call heirachy. Shit on top is needed for shit on the bottom. 
@@ -25,12 +19,13 @@ class Flutterbot {
        this.initLogger(); 
        this.initdb('assets/db.json');
        this.initEvaluator(); 
-      
        this.initLockBox(); 
        this.initLastFMAPI(); 
        this.initCooldowns(); 
        this.initCommands(); 
        this.initCollectors(); 
+       this.initexp(); 
+       this.PORT = process.env.PORT || 3000;
        this.app = express();
        //this.sessions = []; 
     }
@@ -62,7 +57,8 @@ class Flutterbot {
     }
     initCollectors()
     {
-        this.collectors = new Collection();
+        this.collectors = new Map();
+       
     }
     initClient()
     {
@@ -119,11 +115,16 @@ class Flutterbot {
     }
     initdb(file)
     {
-     this.db = new SimpleDatabase(file, this.log);
+    this.db = new SimpleDatabase(file, this.log);
     }
     initLockBox()
     {
         this.LockBox = new LockBox();
+    }
+    initexp()
+    {
+        this.exp = new expHandler(this.db); 
+        this.exp.writeAll();
     }
     //must be called AFTER this.initdb();
     initEvaluator() 
@@ -131,16 +132,12 @@ class Flutterbot {
         this.Evaluator = new Evaluator(this.db, this.LockBox, this.client); 
        
     }
-  
-    updateWeekly()
-    {
-        
-    }
+
     //update the database on an hourly basis to ensure the perseverance of data between leaving / joining
     //and client restarts 
     getDefaultCoolDown(serverId) {
         
-       let default_cooldown = this.db.getValue(`${serverId}.config.default_cooldown`);
+       let default_cooldown = this.db.get(`${serverId}.config.default_cooldown`);
        if(!default_cooldown)
         return 2; 
        else 
@@ -148,34 +145,30 @@ class Flutterbot {
     }
    async updateEvents()
     {
-        const eventFiles = require('./utils/findFiles')(__dirname, './events', '.js');
+        const eventFiles = require('../utils/findFiles')(__dirname, '../events', '.js');
         for (const file of eventFiles) {
-            const event = require(`./events/${file}`);
-         if (event.once) this.client.once(event.name, (...args) => event.execute(this, ...args));
-         else this.client.on(event.name, (...args) => event.execute(this, ...args));
-               
+            const event = require(`../events/${file}`);
+           
+         if (event.once) this.client.once(event.name, (...args) => event.execute(this, ...args), (...args) => this.exp.update(...args));
+         else this.client.on(event.name, (...args) => event.execute(this, ...args), (...args) => this.exp.update(...args));
+
     }
-   
-    
     }
 
     
     // Method to start the bot
     async start() {
       await this.client.login(process.env.DISCORD_TOKEN);
-    
       await this.updateEvents(); 
+      
      // await this.Evaluator.updateIntelligence(); 
     }
   }
 
 
-const entry = new Flutterbot(); 
-entry.start(); 
+
+module.exports = {Flutterbot}; 
+//const entry = new Flutterbot(); 
+//entry.start(); 
 
 
-process.on('unhandledRejection', (reason, promise) => {
-    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-    // Handle the error or log it
-});
-//Mares mares mares mares mares, when I am sad I like to thnk about mares. Mares make me feel better when I am depressed. Life can make me depressed often but I like mares and thinking about cute mares mares mares. So It is okay

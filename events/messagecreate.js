@@ -1,12 +1,13 @@
 const { Events } = require('discord.js');
 const { prefix} = require('../config/config.json');
 const {socialHelp} = require('../lang/en.js');
-const {updateexp} = require('../utils/exp.js');
+
 
 module.exports = {
     name: Events.MessageCreate,
     once: false,
     async execute(Flutterbot, message) { 
+    
        if(message.author.bot) return; 
        
        Flutterbot.Evaluator.onMessage(Flutterbot.client, message);
@@ -27,7 +28,7 @@ module.exports = {
         
        } 
        else{ ///messages that are not commands, part of a collection, or from a bot. 
-         updateexp(message, Flutterbot);
+        Flutterbot.exp.update(message);
          return; 
        
        }

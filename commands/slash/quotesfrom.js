@@ -23,9 +23,9 @@ module.exports = {
         .setTitle(`${speaker.username}`)
         .setThumbnail(speaker.displayAvatarURL({ dynamic: true, size: 256 }))
         //fetches an array of json objects. A list of all quotes from that person, that have been saved in the guild.
-        //let fetched_quotes = Flutterbot.db.getValue(`${interaction.guild.id}.server_quotes`)
+        //let fetched_quotes = Flutterbot.db.get(`${interaction.guild.id}.server_quotes`)
         
-        //getValue wont work with Arrays rn tried
+        //get wont work with Arrays rn tried
         let temp = Flutterbot.db.getAllData()
         
         let fetched_quotes = temp[`${interaction.guild.id}`][`server_quotes`]

@@ -77,7 +77,7 @@ module.exports = {
     async execute(interaction,Flutterbot)
     {
         const subcommand = interaction.options.getSubcommand();
-        Flutterbot.db.Exists(interaction.guild.id);
+        Flutterbot.db.hasGuild(interaction.guild.id);
 
         if(!interaction.member.permissions.has(PermissionFlagsBits.Administrator) && !config.always_trusted.includes(interaction.user.id)) return interaction.reply(errorMessage.Permissions.adminCommand());
 
@@ -95,9 +95,9 @@ module.exports = {
               const role = interaction.options.getRole('role');
 
               //if the guild already has a list of private roles
-              if(Flutterbot.db.getValue(`${interaction.guild.id}.config.private_roles`))
+              if(Flutterbot.db.get(`${interaction.guild.id}.config.private_roles`))
               {
-                temp = Flutterbot.db.getValue(`${interaction.guild.id}.config.private_roles`)
+                temp = Flutterbot.db.get(`${interaction.guild.id}.config.private_roles`)
                 //if the guild already has the role registered as private 
                  if(temp.includes(role.id))
                  {
@@ -122,7 +122,7 @@ module.exports = {
 
             Flutterbot.db.setGuildConfig(interaction.guild, "default_cooldown", newCooldowntime);
 
-            let guildCooldowntime = Flutterbot.db.getValue(`${interaction.guild.id}.config.default_cooldown`); 
+            let guildCooldowntime = Flutterbot.db.get(`${interaction.guild.id}.config.default_cooldown`); 
             
             //update and replace the modified cooldown times.
                       

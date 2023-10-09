@@ -6,8 +6,6 @@ module.exports = {
     once:false,
     async execute(Flutterbot, reaction, user)
     {
-        console.log('message reaction added');
-        console.log(reaction); 
-        expOnReact(reaction, user, Flutterbot);
+      Flutterbot.exp.update(reaction, user); 
     }
 }

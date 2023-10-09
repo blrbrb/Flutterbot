@@ -1,28 +1,19 @@
 const fs = require('fs');
 const crypto = require('crypto');
 
-
 class LockBox 
 {
    
    constructor() {
-    //if there is an existing key, everything has already been encrypted with it.
-    //it is not necessary to create a new one yet, as all of the old data will become unreadable.
+   
     this.stationaryKey = process.env.ENCRYPTION_KEY;
     if(this.stationaryKey === undefined)
     {
-     //only update if it is the first time creating a key
      this.updateEnv()
     }
   
     
   }
-
-  /**
-   * @summary Encrypt secure keys, passwords, secrets, tokens, strings etc
-   * @param {any} data
-   * @returns {any} time encrypted data (Cipheriv, aes-256-cbc block) whatever tf that means. 
-   */
   encrypt(data) {
      // I got all of this off of google lol idk wtf crypto does 
     let timestamp =this.newTimestamp(); 

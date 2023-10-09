@@ -111,7 +111,7 @@ module.exports = {
 	async can_play_nsfw(url) {
 		const video_info = ytdl.getInfo(url);
 
-		console.log(video_info);
+		
 		if (video_info.age_restricted && !this.in_nsfw_channel)
 			return false;
 		else if (video_info.age_restricted && this.in_nsfw_channel)
@@ -122,7 +122,8 @@ module.exports = {
 	async is_nsfw(url) {
 		try {
 			const video_info = await ytdl.getInfo(url);
-			console.log(video_info);
+			
+			
 
 			if (video_is.age_restricted) {
 				return true;

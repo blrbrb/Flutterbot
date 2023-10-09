@@ -8,7 +8,8 @@ const findImage = require('../../utils/findimage.js');
 module.exports = {
 	name: 'circle',
 	description: 'Fluttershy Will Circularize an image',
-	async execute(client, message, args) { // eslint-disable-line no-unused-vars
+	cooldown: 3, 
+	async execute(Flutterbot, message, args) { // eslint-disable-line no-unused-vars
 
 		var IOR = 10;
 		

@@ -22,7 +22,7 @@ module.exports = {
             }
         };
 
-        console.log(options.url);
+     
 
         request(options, async function (error, response, responseBody) {
 
@@ -32,13 +32,13 @@ module.exports = {
 
             var links = $(".DuHQbc.pdfEnd a");
 
-            console.log(links[0]);
+          
 
             var urls = new Array(links.length).fill(0).map((v, i) => links.eq(i).attr("data-bgsrc"));
 
             //message.channel.send(links[1]);
 
-            console.log(urls[0]);
+          
 
             if (!urls.length) {
                 interaction.reply('something went wrong');

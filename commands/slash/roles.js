@@ -7,7 +7,7 @@ module.exports = {
   description: 'list all available roles',
   async execute(interaction, Flutterbot) { 
    
-    const private_roles = Flutterbot.db.getValue(`${interaction.guild.id}.config.private_roles`); 
+    const private_roles = Flutterbot.db.get(`${interaction.guild.id}.config.private_roles`); 
    
     const roles = interaction.guild.roles.cache.filter(role => role.name !== '@everyone' && !role.permissions.has(PermissionFlagsBits.Administrator) && !role.managed && !private_roles.includes(role.id)); // Get all roles except @everyone, administrator roles, and roles that have been registered as private roles 
    

@@ -22,7 +22,7 @@ module.exports = {
         //im retarded. actual string is stored in ".value"
         let quoted_text = interaction.options.get('quote').value;
         // "-" to appear like a "quote"
-        let speaker = interaction.options.get('from').user
+        let speaker = interaction.options.get('from').user;
 
         const currentDate = new Date();
         const year = currentDate.getFullYear();
@@ -33,7 +33,7 @@ module.exports = {
         let data = {"name": speaker.username, "date":`${year}\ ${month}\ ${day}`, "quote": quoted_text, "id":speaker.id, "guild": interaction.guild.id}
  
         //make sure to send interaction.guild, and not anything else so that the db resolves to guild.id.
-        Flutterbot.db.set(interaction.guild, "server_quotes", [data]); 
+        Flutterbot.db.set(speaker.id, "server_quotes", [data]); 
        
         let embed = new EmbedBuilder()
             .setTitle(`${speaker.username} on ${month}\\${day}\\${year} `)

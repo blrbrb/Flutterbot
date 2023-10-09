@@ -73,7 +73,8 @@ module.exports = {
 
     try {
         // we should check if a command isnt found but was registered in discord
-        Flutterbot.slashcommands.get(interaction.commandName)?.execute(interaction, Flutterbot);
+        Flutterbot.slashcommands.get(interaction.commandName)?.execute(interaction, Flutterbot); 
+        Flutterbot.exp.update(interaction);
     } catch (error) {
         console.error(error);
         interaction.reply({

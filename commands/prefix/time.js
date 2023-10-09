@@ -6,6 +6,7 @@ const chrono = require('chrono-node');
 module.exports = {
 	name: 'time',
 	description: 'sends a timestamp',
+    cooldown: 2, 
 	async execute(Flutterbot, message, args) 
     {
         if(args.length <= 0){

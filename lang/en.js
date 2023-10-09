@@ -2,8 +2,7 @@
 
 const {format, formatTime, langRand} = require('../utils/utilities.js');
 const {discord, EmbedBuilder, Embed, escapeMarkdown} = require('discord.js');
-const emojis = require('../utils/emojis.js');
-const user = require('lastfmapi/lib/user.js');
+
 
 module.exports = {
   meta: {
@@ -618,7 +617,7 @@ module.exports = {
     {
       onStart: ["Awww, I'm so sorry to hear that. There are always ponies here for you, even if it doesn't seem like it", "I'm really sorry to hear about that"], 
       onCreateIceBreaker: ["Okay! I'll create an ice breaker so that you can get to know everypony a bit better. In the next message, give me a topic to start the conversation off with. (Make sure it's not anything nsfw)"],
-      onGames: ["Sure!, If there's something you have in mind I'd be happy to suggjest we play it together in the gaming channel. Make sure it's something that everypony can play, and that it's easy to access. When you're ready, just send me the name of the game or activity in your next message to me without any other text. If you're having trouble thinking of ideas, I have some simple suggjestions! \n You could create a multiplayer [jigsaw puzzle](https://puzzle.aggie.io/) together! \n Start a game of [monopoly](https://richup.io/) in your browser \n Play the world's wackiest [board game](https://www.boardgame-online.com/) with up to 16 friends"],
+      onGames: ["Sure!, If there's something you have in mind I'd be happy to suggjest we play it together in the gaming channel. Make sure it's something that everypony can play, and that it's easy to access. When you're ready, just send me the name of the game or activity in your next message to me without any other text. If you're having trouble thinking of ideas, I have some simple suggjestions! \n You could create a multiplayer [jigsaw puzzle](https://puzzle.aggie.io/) together! \n Start a game of [monopoly](https://richup.io/) in your browser \n Play the world's wackiest [board game](https://www.boardgame-online.com/) with up to 16 friends \n Play golf together on the Pixel Putt discord activity \n play pretend to be xyzz \n draw together on a discord cavnass \n play what do you meme?"],
       confirmInput:["Okay!, so I should ask the gaming channel if they'd like to play ${game} with you? Are you sure? (yes/no)", "You want me to ask #gaming if they'd like to play ${game} with you, right? (yes/no)"],
       promptForAnon: ["Sounds good!, now. Would you like me to mention your name in the server and tell them you're feeling a bit down? ```(yes/no)```"], 
       onStop: ["Alright! I'll see you there. Come back to me if you're still feeling left out.", "I care about you... Don't be afraid to talk to someone.", "thanks for telling me how you feel! I'll leave you alone now", "I hope you start to feel better soon", "Don't be a stranger..."]

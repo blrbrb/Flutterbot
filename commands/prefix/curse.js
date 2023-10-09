@@ -8,7 +8,8 @@ const findImage = require('../../utils/findimage.js');
 module.exports = {
     name: 'curse',
     description: 'curse an image',
-    async execute(client, message, args) {
+    cooldown: 3, 
+    async execute(Flutterbot, message, args) {
         imageUrl = await findImage(message);
         message.channel.startTyping();
         const tartarus = fs.readFileSync('assets/images/cursed.png');

@@ -10,7 +10,8 @@ const findImage = require('../../utils/findimage.js');
 module.exports = {
     name: 'goofy',
     description: 'Goofy Aaah',
-    async execute(client, message, args) {
+    cooldown: 3, 
+    async execute(Flutterbot, message, args) {
         imageUrl = await findImage(message);
         message.channel.sendTyping();
         const goofy = fs.readFileSync('assets/images/goofynerd.png');

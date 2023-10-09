@@ -6,7 +6,7 @@ module.exports = {
 	once: true,
 	async execute(Flutterbot, GuildMember) {
 	
-		const sacrified = Flutterbot.db.getValue(`${process.env.GUILD_ID}.sacrified`);
+		const sacrified = Flutterbot.db.get(`${process.env.GUILD_ID}.sacrified`);
 		let quaratineRole = Flutterbot.db.getGuildConfig(GuildMember, 'quaratine_role');  
 		let quarantinedMembers = Flutterbot.db.getGuildConfig(GuildMember, 'quarantined');
 		

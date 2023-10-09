@@ -8,7 +8,8 @@ const findImage = require('../../utils/findimage.js');
 module.exports = {
 	name: 'swirl',
 	description: 'Fluttershy Will Swirl an image',
-	async execute(client, message, args) { // eslint-disable-line no-unused-vars
+	cooldown: 3, 
+	async execute(Flutterbot, message, args) { // eslint-disable-line no-unused-vars
 		imageUrl = await findImage.imageFinder(message);
 		const extension = findImage.extensionFinder(imageUrl);
 

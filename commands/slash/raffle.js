@@ -13,7 +13,7 @@ module.exports = {
         ephemeral: true,
       });
     }
-    console.log('working');
+   
     const guild = interaction.guild;
     const members = await guild.members.fetch();
 

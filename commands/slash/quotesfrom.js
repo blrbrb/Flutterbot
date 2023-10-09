@@ -26,18 +26,18 @@ module.exports = {
         //let fetched_quotes = Flutterbot.db.get(`${interaction.guild.id}.server_quotes`)
         
         //get wont work with Arrays rn tried
-        let temp = Flutterbot.db.getAllData()
+        let fetched_quotes = Flutterbot.db.get(`${interaction.user.id}.server_quotes`);
+        let filtered_quotes = fetched_quotes.filter(fetched_quotes => fetched_quotes.id === speaker.id && fetched_quotes.guild === interaction.guild.id);
+        console.log(fetched_quotes);
         
-        let fetched_quotes = temp[`${interaction.guild.id}`][`server_quotes`]
-        
-        if(!fetched_quotes)
+        if(!filtered_quotes)
         {
             embed.setDescription(errorMessage.quotesfromError.noGuildQuotes(interaction.guild)); 
-            Flutterbot.db.set(interaction.guild.id, "server_quotes", []);
+            Flutterbot.db.set(interaction.user.id, "server_quotes", []);
             return interaction.reply(errorMessage.quotesfromError.noMemberQuotes(speaker));
         }
         
-        let filtered_quotes = fetched_quotes.filter(fetched_quotes => fetched_quotes.id === speaker.id && fetched_quotes.guild === interaction.guild.id);
+      
         
         if(filtered_quotes.length === 0)
         {

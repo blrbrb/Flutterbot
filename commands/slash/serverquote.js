@@ -33,7 +33,7 @@ module.exports = {
         let data = {"name": speaker.username, "date":`${year}\ ${month}\ ${day}`, "quote": quoted_text, "id":speaker.id, "guild": interaction.guild.id}
  
         //make sure to send interaction.guild, and not anything else so that the db resolves to guild.id.
-        Flutterbot.db.set(speaker.id, "server_quotes", [data]); 
+        Flutterbot.db.set(speaker.id, "server_quotes", Array(data)); 
        
         let embed = new EmbedBuilder()
             .setTitle(`${speaker.username} on ${month}\\${day}\\${year} `)

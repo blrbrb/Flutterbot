@@ -1,5 +1,6 @@
 
 const { EmbedBuilder, ApplicationCommandOptionType } = require('discord.js');
+const {errorMessage, commandResponses}  = require('../../lang/en.js')
 module.exports = {
     name: 'serverquote',
     description: "forever enshrine someponys words in the hall of fame",
@@ -28,12 +29,15 @@ module.exports = {
         const year = currentDate.getFullYear();
         const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
         const day = String(currentDate.getDate()).padStart(2, '0');
-      
+        const userdat = Flutterbot.db.get(`${speaker.id}`);
     
         let data = {"name": speaker.username, "date":`${year}\ ${month}\ ${day}`, "quote": quoted_text, "id":speaker.id, "guild": interaction.guild.id}
- 
+
         //make sure to send interaction.guild, and not anything else so that the db resolves to guild.id.
-        Flutterbot.db.set(speaker.id, "server_quotes", Array(data)); 
+        if(!userdat.hasOwnProperty('server_quotes'))
+         Flutterbot.db.set(speaker.id, "server_quotes", [data]);
+        else 
+        Flutterbot.db.set(speaker.id, "server_quotes", data);
        
         let embed = new EmbedBuilder()
             .setTitle(`${speaker.username} on ${month}\\${day}\\${year} `)

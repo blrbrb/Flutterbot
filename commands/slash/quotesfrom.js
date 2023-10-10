@@ -17,8 +17,9 @@ module.exports = {
        
           
         
-        let speaker = interaction.options.get('from').user
+        const speaker = interaction.options.get('from').user;
         let username = speaker.username; 
+        const userdat = Flutterbot.db.get(`${speaker.id}`);
         let embed = new EmbedBuilder()
         .setTitle(`${speaker.username}`)
         .setThumbnail(speaker.displayAvatarURL({ dynamic: true, size: 256 }))
@@ -26,20 +27,28 @@ module.exports = {
         //let fetched_quotes = Flutterbot.db.get(`${interaction.guild.id}.server_quotes`)
         
         //get wont work with Arrays rn tried
-        let fetched_quotes = Flutterbot.db.get(`${interaction.user.id}.server_quotes`);
-        let filtered_quotes = fetched_quotes.filter(fetched_quotes => fetched_quotes.id === speaker.id && fetched_quotes.guild === interaction.guild.id);
+        if(!userdat)
+            return interaction.reply(errorMessage.quotesfromError.noMemberQuotes(speaker));
+       
+        
+        if(!userdat.hasOwnProperty('server_quotes')){Flutterbot.db.set(speaker.id, "server_quotes", []); return interaction.reply(errorMessage.quotesfromError.noMemberQuotes(speaker)); }
+
+        let fetched_quotes = userdat.server_quotes; 
         console.log(fetched_quotes);
+        console.log(userdat);
+        let filtered_quotes = fetched_quotes.filter(fetched_quotes => fetched_quotes.id === speaker.id && fetched_quotes.guild === interaction.guild.id);
+       
         
         if(!filtered_quotes)
         {
             embed.setDescription(errorMessage.quotesfromError.noGuildQuotes(interaction.guild)); 
-            Flutterbot.db.set(interaction.user.id, "server_quotes", []);
+            Flutterbot.db.set(speaker.id, "server_quotes", []);
             return interaction.reply(errorMessage.quotesfromError.noMemberQuotes(speaker));
         }
         
       
         
-        if(filtered_quotes.length === 0)
+        if(!filtered_quotes.length)
         {
 
             embed.setDescription(errorMessage.quotesfromError.noMemberQuotes(speaker).content);

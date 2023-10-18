@@ -33,6 +33,10 @@ module.exports = {
         {
             embed.addFields({name: `*commands*`, value:`${stats.cmds}`})
         }
+        if(stats.hasOwnProperty('amongus'))
+        {
+            embed.addFields({name: `*amongus*`, value:`${stats.amongus}`})
+        }
         if(stats.hasOwnProperty('total_exp'))
         {
             embed.addFields({name: `*Total Exp*`, value:`${stats.total_exp}`})

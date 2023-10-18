@@ -9,7 +9,7 @@ module.exports = {
     async execute(interaction, Flutterbot) {
         const queue = await Flutterbot.DisTube.getQueue(interaction);
         const embed = new EmbedBuilder(); 
-        embed.setAuthor({name:'Flutterbot.music',iconURL: Flutterbot.client.user.displayAvatarURL()})
+        embed.setAuthor({name:'Flutterbot.music',iconURL: Flutterbot.user.displayAvatarURL()})
 
         if(!queue) return interaction.reply(errorMessage.Distube.QueueEmpty());
         

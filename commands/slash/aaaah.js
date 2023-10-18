@@ -4,7 +4,7 @@ const gm = require('gm').subClass({
     imageMagick: true
 });
 
-const findImage = require('../../utils/findimage.js').imageFinder;
+const {findImage} = require('../../utils/utilities.js');
 
 module.exports = {
     name: 'aaaaah',

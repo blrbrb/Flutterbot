@@ -6,6 +6,6 @@ module.exports = {
     once:false,
     async execute(Flutterbot, reaction, user)
     {
-      Flutterbot.exp.update(reaction, user); 
+      Flutterbot.Exp.update(reaction, user); 
     }
 }

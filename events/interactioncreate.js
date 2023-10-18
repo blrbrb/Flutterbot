@@ -1,4 +1,4 @@
-const { Events, Collection } = require('discord.js');
+const { Events, Collection, ChannelType} = require('discord.js');
 const {handledistubeSelection} = require('../commands/slash/play.js');
 
 const fs = require('fs');
@@ -6,8 +6,10 @@ const fs = require('fs');
 module.exports = {
     name: Events.InteractionCreate,
     once: false,
-    async execute(Flutterbot, interaction){
-    
+    async execute(Flutterbot, interaction){ 
+
+        if(interaction.channel.type === ChannelType.DM)
+            return; 
         if(interaction.isMessageComponent())
         {
             //if this interaction "${interaction.user.id}" is for selecting distube search results
@@ -15,20 +17,20 @@ module.exports = {
             if(Flutterbot.collectors.has(`distube_results${interaction.user.id}`))
             { 
               
-               // console.log(Flutterbot.collectors);
+             
                 response = Flutterbot.collectors.get(`distube_results${interaction.user.id}`); 
-                //console.log(response);
+                
                 handledistubeSelection(response, Flutterbot, interaction); 
               
             }
             return; 
         }
         let command; 
-
+        
         //if the command is an application command 
         if (interaction.isChatInputCommand()) {
-            
-			command = Flutterbot.slashcommands.get(interaction.commandName);
+            console.log(Flutterbot.SlashCommands);
+			command = Flutterbot.SlashCommands.get(interaction.commandName);
         }
         //if the command is a prefix command 
         //this must be else/if, or the command will default equal undefined. That not good
@@ -37,11 +39,11 @@ module.exports = {
             command = Flutterbot.commands.get(interaction.commandName);
         }
 
-        let cooldowns = Flutterbot.GuildCoolDowns.get(interaction.guild.id);
+        let cooldowns = Flutterbot.GuildCooldowns.get(interaction.guild.id);
         
         if (!cooldowns) {
             cooldowns = new Collection();
-            Flutterbot.GuildCoolDowns.set(interaction.guild.id, cooldowns);
+            Flutterbot.GuildCooldowns.set(interaction.guild.id, cooldowns);
         }
 
         //if the called application command does not already have a cooldown set,  
@@ -73,8 +75,8 @@ module.exports = {
 
     try {
         // we should check if a command isnt found but was registered in discord
-        Flutterbot.slashcommands.get(interaction.commandName)?.execute(interaction, Flutterbot); 
-        Flutterbot.exp.update(interaction);
+        Flutterbot.SlashCommands.get(interaction.commandName)?.execute(interaction, Flutterbot); 
+        Flutterbot.Exp.update(interaction);
     } catch (error) {
         console.error(error);
         interaction.reply({

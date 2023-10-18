@@ -77,7 +77,7 @@ module.exports = {
     async execute(interaction,Flutterbot)
     {
         const subcommand = interaction.options.getSubcommand();
-        Flutterbot.db.hasGuild(interaction.guild.id);
+        Flutterbot.DB.hasGuild(interaction.guild.id);
 
         if(!interaction.member.permissions.has(PermissionFlagsBits.Administrator) && !config.always_trusted.includes(interaction.user.id)) return interaction.reply(errorMessage.Permissions.adminCommand());
 
@@ -86,7 +86,7 @@ module.exports = {
               const channel = interaction.options.getChannel('channel');
 
               
-              Flutterbot.db.setGuildConfig(interaction.guild.id, "annoucement_channel", channel.id); 
+              Flutterbot.DB.setGuildConfig(interaction.guild.id, "annoucement_channel", channel.id); 
 
               await interaction.reply({content:`Alright! I've set the announcement channel in ${interaction.guild.name} to: ${channel}`});
               break;
@@ -95,9 +95,9 @@ module.exports = {
               const role = interaction.options.getRole('role');
 
               //if the guild already has a list of private roles
-              if(Flutterbot.db.get(`${interaction.guild.id}.config.private_roles`))
+              if(Flutterbot.DB.get(`${interaction.guild.id}.config.private_roles`))
               {
-                temp = Flutterbot.db.get(`${interaction.guild.id}.config.private_roles`)
+                temp = Flutterbot.DB.get(`${interaction.guild.id}.config.private_roles`)
                 //if the guild already has the role registered as private 
                  if(temp.includes(role.id))
                  {
@@ -105,14 +105,14 @@ module.exports = {
                  }
                  else
                 temp.push(role.id)
-                Flutterbot.db.setGuildConfig(interaction.guild.id,"private_roles", temp);
+                Flutterbot.DB.setGuildConfig(interaction.guild.id,"private_roles", temp);
                 await interaction.reply(`Okay! I've added: ${role} to the list of private guild roles!`);
                 break; 
               }
               else 
               //if the guild has no list of private roles, create a new one and initalize it with 
               //the role provided
-              Flutterbot.db.setGuildConfig(interaction.guild.id,"private_roles", role.id);
+              Flutterbot.DB.setGuildConfig(interaction.guild.id,"private_roles", role.id);
               await interaction.reply(`key not found`);
               break; 
           
@@ -120,9 +120,9 @@ module.exports = {
              
             const newCooldowntime = interaction.options.getNumber('seconds'); 
 
-            Flutterbot.db.setGuildConfig(interaction.guild, "default_cooldown", newCooldowntime);
+            Flutterbot.DB.setGuildConfig(interaction.guild, "default_cooldown", newCooldowntime);
 
-            let guildCooldowntime = Flutterbot.db.get(`${interaction.guild.id}.config.default_cooldown`); 
+            let guildCooldowntime = Flutterbot.DB.get(`${interaction.guild.id}.config.default_cooldown`); 
             
             //update and replace the modified cooldown times.
                       
@@ -132,7 +132,7 @@ module.exports = {
               
               const newJoinAge = interaction.options.getNumber('days'); 
               
-              Flutterbot.db.setGuildConfig(interaction.guild, "newMemberMinimumAge", newJoinAge);
+              Flutterbot.DB.setGuildConfig(interaction.guild, "newMemberMinimumAge", newJoinAge);
               const targetDate = new Date(Date.now() + newJoinAge * 24 * 60 * 60 * 1000);
               return interaction.reply(`New members in ${interaction.guild} must now have been on discord for a minimum of ${newJoinAge} days, or <t:${Math.floor(targetDate / 1000)}:R> from today to be released from quarantine`);
 
@@ -146,7 +146,7 @@ module.exports = {
               return interaction.reply({content: `That's not a valid hexidecimal color value!`,  ephemeral:true});
             }
             
-            Flutterbot.db.setGuildConfig(interaction.guild, "embed_color", parseInt(newColor.slice(1), 16)); 
+            Flutterbot.DB.setGuildConfig(interaction.guild, "embed_color", parseInt(newColor.slice(1), 16)); 
 
             const demoembed = new EmbedBuilder()
             .setTitle('Demo Embed!').setDescription('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...').setColor(parseInt(newColor.slice(1), 16));

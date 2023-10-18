@@ -28,13 +28,13 @@ module.exports = {
 
         let result = new Date(total_seconds * 1000).toISOString().slice(14, 19);
         const embed = new EmbedBuilder();
-        let color = Flutterbot.db.getGuildConfig(interaction.guild,"embed_color");
+        let color = Flutterbot.DB.getGuildConfig(interaction.guild,"embed_color");
         if(color)
         {
             embed.setColor(color);
         }
        
-        embed.setAuthor({name:'Flutterbot.music | **Seekting To...**',iconURL: Flutterbot.client.user.displayAvatarURL()})
+        embed.setAuthor({name:'Flutterbot.music | **Seekting To...**',iconURL: Flutterbot.user.displayAvatarURL()})
         .setDescription(`*__[${song.name}](${song.url})__* \`${result} / ${song.formattedDuration}\``)
         Flutterbot.DisTube.seek(interaction, total_seconds);
         

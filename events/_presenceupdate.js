@@ -7,7 +7,7 @@ module.exports = {
     async execute(Flutterbot, oldPresence, newPresence)
     {
        
-        const user = await Flutterbot.client.users.fetch(newPresence.userId); 
+        const user = await Flutterbot.users.fetch(newPresence.userId); 
         
         if(user.bot)
             return;  

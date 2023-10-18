@@ -10,8 +10,8 @@ module.exports = {
     description: 'this is just for fun.',
     async execute(interaction, Flutterbot)
     {
-        let stats = Flutterbot.db.get(`${interaction.user.id}.exp`); 
-        let color = Flutterbot.db.getGuildConfig(interaction, 'embed_color');
+        let stats = Flutterbot.DB.get(`${interaction.user.id}.PonyExp`); 
+        let color = Flutterbot.DB.getGuildConfig(interaction, 'embed_color');
 
         if(!stats)
         {

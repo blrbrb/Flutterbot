@@ -41,7 +41,7 @@ if (end) {
 //just for the lols 
 message+= ` During this time, I will not be able to respond to any of your commands because somepony is [*bZzZZtzzzzzzzzz-`
 // Iterate through guilds the bot is in and send the announcement, if the guild has a root channel for announcements/webhooks/bots
-Flutterbot.clientguilds.cache.forEach((guild) => {
+Flutterbotguilds.cache.forEach((guild) => {
   const announcementChannel = guild.systemChannel;
 
   if (announcementChannel) {

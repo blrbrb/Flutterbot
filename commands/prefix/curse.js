@@ -3,7 +3,7 @@ const gm = require('gm').subClass({
     imageMagick: true
 });
 const fs = require('fs');
-const findImage = require('../../utils/findimage.js');
+const {findImage} = require('../../utils/utilities.js');
 
 module.exports = {
     name: 'curse',

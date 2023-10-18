@@ -1,4 +1,4 @@
-﻿const { within } = require('../../utils/numbers.js');
+﻿const { within } = require('../../utils/utilities.js');
 const {errorMessage, commandResponses} = require('../../lang/en.js');
 module.exports = {
     name: 'volume',

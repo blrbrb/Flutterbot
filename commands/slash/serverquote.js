@@ -1,6 +1,8 @@
 
 const { EmbedBuilder, ApplicationCommandOptionType } = require('discord.js');
-const {errorMessage, commandResponses}  = require('../../lang/en.js')
+const {errorMessage, commandResponses}  = require('../../lang/en.js'); 
+const {fsMemberQuote } = require('../../utils/types.js');
+
 module.exports = {
     name: 'serverquote',
     description: "forever enshrine someponys words in the hall of fame",
@@ -19,7 +21,8 @@ module.exports = {
         }
     ],
     async execute(interaction, Flutterbot)
-    {
+    { 
+        
         //im retarded. actual string is stored in ".value"
         let quoted_text = interaction.options.get('quote').value;
         // "-" to appear like a "quote"
@@ -29,15 +32,15 @@ module.exports = {
         const year = currentDate.getFullYear();
         const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
         const day = String(currentDate.getDate()).padStart(2, '0');
-        const userdat = Flutterbot.db.get(`${speaker.id}`);
+        const userdat = Flutterbot.DB.get(`${speaker.id}`);
     
-        let data = {"name": speaker.username, "date":`${year}\ ${month}\ ${day}`, "quote": quoted_text, "id":speaker.id, "guild": interaction.guild.id}
+        let data = new fsMemberQuote(interaction.user.username,`${year}\ ${month}\ ${day}`,interaction.user.id, interaction.guild.id,quoted_text);
 
         //make sure to send interaction.guild, and not anything else so that the db resolves to guild.id.
-        if(!userdat.hasOwnProperty('server_quotes'))
-         Flutterbot.db.set(speaker.id, "server_quotes", [data]);
-        else 
-        Flutterbot.db.set(speaker.id, "server_quotes", data);
+        if(!userdat.hasOwnProperty('server_quotes')){
+         Flutterbot.DB.set(speaker.id, "server_quotes", [data]);}
+        else {
+        Flutterbot.DB.set(speaker.id, "server_quotes", data);}
        
         let embed = new EmbedBuilder()
             .setTitle(`${speaker.username} on ${month}\\${day}\\${year} `)

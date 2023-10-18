@@ -20,7 +20,7 @@ module.exports = {
 	async execute(interaction, Flutterbot) {
 		
 		const query = interaction.options.getString('query');
-		const self = interaction.guild.members.cache.get(Flutterbot.client.user.id);
+		const self = interaction.guild.members.cache.get(Flutterbot.user.id);
 		//we need to make sure the member is actually connected to a voice channel, otherwise she'll crash
 		if(interaction.member.voice.channel == null) return interaction.reply({content:'You need to be in a voice channel first!',ephermeal:true });
 		
@@ -72,9 +72,10 @@ module.exports = {
 			const result = await Flutterbot.DisTube.search(query);
 
 			let select_embed = new EmbedBuilder(); 
-			let color = Flutterbot.db.getGuildConfig('embed_color'); 
+		
+			let color = Flutterbot.DB.getGuildConfig(interaction,'embed_color'); 
 			select_embed.setColor('fdf6af').setTitle(`Results From Youtube.com`).
-			setAuthor({name:'Flutterbot.music', iconURL: Flutterbot.client.user.displayAvatarURL()})
+			setAuthor({name:'Flutterbot.music', iconURL: Flutterbot.user.displayAvatarURL()})
 
 			if(color)
 			{
@@ -157,9 +158,9 @@ module.exports = {
 	 if(outer_interaction.member.voice.channel == null) return i.reply({content:'You need to be in a voice channel first!',ephermeal:true });
 	 
 	 //init reply embed
-	 let color = Flutterbot.db.getGuildConfig(outer_interaction, 'embed_color'); 
+	 let color = Flutterbot.DB.getGuildConfig(outer_interaction, 'embed_color'); 
 	 const replyembed = new EmbedBuilder(); 
-	 replyembed.setAuthor({iconURL: Flutterbot.client.user.displayAvatarURL(), name:'Flutterbot.music'})
+	 replyembed.setAuthor({iconURL: Flutterbot.user.displayAvatarURL(), name:'Flutterbot.music'})
 
 	 if(color) replyembed.setColor(color)	
 	

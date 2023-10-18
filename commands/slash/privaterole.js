@@ -25,7 +25,7 @@ module.exports = {
     
     // Check if the roles JSON file exists
     let data = [role.id];
-    let existing = Flutterbot.db.getGuildConfig(interaction.guild, "private_roles");
+    let existing = Flutterbot.DB.getGuildConfig(interaction.guild, "private_roles");
    
     //data.push(role.id);
     try {
@@ -35,7 +35,7 @@ module.exports = {
         return interaction.reply(`${role} is already a private role in this guild!`);
       }
       else{
-      Flutterbot.db.setGuildConfig(interaction.guild, "private_roles", role.id); 
+      Flutterbot.DB.setGuildConfig(interaction.guild, "private_roles", role.id); 
       }
     } catch (error) {
     

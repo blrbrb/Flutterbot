@@ -9,7 +9,7 @@ module.exports = {
     async execute(interaction, Flutterbot) {
         const embed = new EmbedBuilder(); 
 
-        let color = Flutterbot.db.getGuildConfig(interaction, 'embed_color'); 
+        let color = Flutterbot.DB.getGuildConfig(interaction, 'embed_color'); 
 
         let queue = await Flutterbot.DisTube.getQueue(interaction);
 
@@ -21,7 +21,7 @@ module.exports = {
         //only begin to set the embed properties if the queue exists
        
         embed.setThumbnail(queue.songs[0].thumbnail); 
-        embed.setAuthor({name:'Flutterbot.music | Current Queue',iconURL: Flutterbot.client.user.displayAvatarURL()})
+        embed.setAuthor({name:'Flutterbot.music | Current Queue',iconURL: Flutterbot.user.displayAvatarURL()})
         queue.songs.forEach((song, i) => {
 
         if(i===0){

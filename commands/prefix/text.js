@@ -2,7 +2,7 @@ const request = require('request');
 const gm = require('gm').subClass({
 	imageMagick: true
 });
-const findImage = require('../../utils/findimage.js');
+const {findImage} = require('../../utils/utilities.js');
 
 module.exports = {
 	name: 'text',

@@ -1,16 +1,17 @@
-const { Events } = require('discord.js');
+const { Events, ChannelType } = require('discord.js');
 const { prefix} = require('../config/config.json');
 const {socialHelp} = require('../lang/en.js');
+const { SimpleDatabase } = require('../utils/SimpleDatabase');
 
 
 module.exports = {
     name: Events.MessageCreate,
     once: false,
     async execute(Flutterbot, message) { 
-    
+       
        if(message.author.bot) return; 
        
-       Flutterbot.Evaluator.onMessage(Flutterbot.client, message);
+       Flutterbot.Evaluator.onMessage(message);
        
        if(Flutterbot.collectors.get(message.author.id))
        {
@@ -21,14 +22,17 @@ module.exports = {
        }
        else if (message.content.startsWith(prefix))
        {
+        if(command === 'qtest')
+        {
+          Flutterbot.Evaluator.quarantine(message.author);
+        }
         let args = message.content.slice(prefix.length).trim().split(/ +/g);
         const command = args.shift(); 
-        
-         return Flutterbot.prefixcommands.get(command)?.execute(Flutterbot, message, args);
+         return Flutterbot.PrefixCommands.get(command)?.execute(Flutterbot, message, args);
         
        } 
        else{ ///messages that are not commands, part of a collection, or from a bot. 
-        Flutterbot.exp.update(message);
+        Flutterbot.Exp.update(message);
          return; 
        
        }

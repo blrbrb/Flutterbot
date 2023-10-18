@@ -1,9 +1,10 @@
-const {} = require('../utils/utilities.js');
+
 const axios = require('axios');
 const cheerio = require('cheerio');
 const fs = require('fs');
 
 const {youShouldLitterallyNeverSeeThis} = require('../lang/en.js');
+const { Log } = require('../utils/utilities.js');
 
 class Evaluator
 {
@@ -18,7 +19,7 @@ class Evaluator
     
       if(!MinAge)
       {
-         console.log('evaluage.js validateAge() no default new member age set in server config, using default of one month');
+         Log('yellow','evaluage.js validateAge() no default new member age set in server config, using default of one month',tofile=false);
          const oneMonthAgo = new Date();
          oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
          

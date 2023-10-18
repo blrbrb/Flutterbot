@@ -19,19 +19,19 @@ module.exports = {
         
         const speaker = interaction.options.get('from').user;
         let username = speaker.username; 
-        const userdat = Flutterbot.db.get(`${speaker.id}`);
+        const userdat = Flutterbot.DB.get(`${speaker.id}`);
         let embed = new EmbedBuilder()
         .setTitle(`${speaker.username}`)
         .setThumbnail(speaker.displayAvatarURL({ dynamic: true, size: 256 }))
         //fetches an array of json objects. A list of all quotes from that person, that have been saved in the guild.
-        //let fetched_quotes = Flutterbot.db.get(`${interaction.guild.id}.server_quotes`)
+        //let fetched_quotes = Flutterbot.DB.get(`${interaction.guild.id}.server_quotes`)
         
         //get wont work with Arrays rn tried
         if(!userdat)
             return interaction.reply(errorMessage.quotesfromError.noMemberQuotes(speaker));
        
         
-        if(!userdat.hasOwnProperty('server_quotes')){Flutterbot.db.set(speaker.id, "server_quotes", []); return interaction.reply(errorMessage.quotesfromError.noMemberQuotes(speaker)); }
+        if(!userdat.hasOwnProperty('server_quotes')){Flutterbot.DB.set(speaker.id, "server_quotes", []); return interaction.reply(errorMessage.quotesfromError.noMemberQuotes(speaker)); }
 
         let fetched_quotes = userdat.server_quotes; 
         console.log(fetched_quotes);
@@ -42,7 +42,7 @@ module.exports = {
         if(!filtered_quotes)
         {
             embed.setDescription(errorMessage.quotesfromError.noGuildQuotes(interaction.guild)); 
-            Flutterbot.db.set(speaker.id, "server_quotes", []);
+            Flutterbot.DB.set(speaker.id, "server_quotes", []);
             return interaction.reply(errorMessage.quotesfromError.noMemberQuotes(speaker));
         }
         

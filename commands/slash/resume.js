@@ -12,7 +12,7 @@ module.exports = {
 
         if(!queue.paused) return interaction.reply("the queue isn't paused!"); 
        
-        embed.setAuthor({name:'Flutterbot.music',iconURL: Flutterbot.client.user.displayAvatarURL()})
+        embed.setAuthor({name:'Flutterbot.music',iconURL: Flutterbot.user.displayAvatarURL()})
         embed.setDescription(commandResponses.Distube.resume(queue).content) 
         queue.resume();
         return interaction.reply({embeds:[embed]});

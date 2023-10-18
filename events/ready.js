@@ -1,16 +1,16 @@
 const { Events } = require('discord.js');
-const {format} = require('../utils/utilities.js');
+const {format, Log} = require('../utils/utilities.js');
 const {commandResponses, errorMessage} = require('../lang/en.js');
 const { de } = require('chrono-node');
 module.exports = {
 	name: Events.ClientReady,
 	once: true,
 	async execute(Flutterbot) {
-        Flutterbot.log('green',`Fluttershy is awake! \n`);
+        Log('green',`Fluttershy is awake! \n`,true, true, false);
 
    
     Flutterbot.DisTube.on("playSong", (queue, song) => {
-        console.log(song.name);
+        
         queue.textChannel.send(commandResponses.Distube.onPlaying(queue, Flutterbot));
     });
 

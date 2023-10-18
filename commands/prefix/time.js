@@ -20,7 +20,7 @@ module.exports = {
                 timestamp.getUTCMinutes(),
                 timestamp.getUTCSeconds()
               );
-              const embed = new EmbedBuilder().setAuthor({'iconURL': Flutterbot.client.user.displayAvatarURL(), 'name':`Flutterbot`})
+              const embed = new EmbedBuilder().setAuthor({'iconURL': Flutterbot.user.displayAvatarURL(), 'name':`Flutterbot`})
             
               .setDescription(`Current local times:`) 
               .addFields({'name': 'Detroit', 'value': `${convertToTimezone(utcDate, 'America/Detroit')}`},
@@ -69,7 +69,7 @@ module.exports = {
             timestamp = Math.floor(parsedDate / 1000); 
             timestampUTC = Math.floor(utcDate / 1000); 
             console.log(timestamp);
-            const embed = new EmbedBuilder().setAuthor({'iconURL': Flutterbot.client.user.displayAvatarURL(), 'name':`Flutterbot`})
+            const embed = new EmbedBuilder().setAuthor({'iconURL': Flutterbot.user.displayAvatarURL(), 'name':`Flutterbot`})
             
             .setDescription(`Local times corresponding to ${datequery}:`) 
             .addFields({'name': 'Detroit', 'value': `${convertToTimezone(utcDate, 'America/Detroit')}`},

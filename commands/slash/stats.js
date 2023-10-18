@@ -23,15 +23,19 @@ module.exports = {
         const embed = new EmbedBuilder().setAuthor({name:`Stats for ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL()})
         .addFields({name: 'messages', value: `${stats.msg}`})
         .setDescription(`you are currently level **${stats.level}**, with ** \ ${stats.experience}/${stats.required} \ ** exp to reach the next level \n All-Time Stats:`)
-        .addFields({name: 'd7oomyCoin', value: `${stats.d7oomypoints}`})
+        //.addFields({name: 'd7oomyCoin', value: `${stats.d7oomypoints}`})
         if(stats.hasOwnProperty('reacts'))
         {
-            embed.addFields({name:'*reactions*', value:`Given: ${stats.reacts.given} Received: ${stats.reacts.received}`});
+            embed.addFields({name:'*reactions*', value:`Given: ${stats.reacts.sent} Received: ${stats.reacts.recieved}`});
         }
         
         if(stats.hasOwnProperty('cmds'))
         {
             embed.addFields({name: `*commands*`, value:`${stats.cmds}`})
+        }
+        if(stats.hasOwnProperty('total_exp'))
+        {
+            embed.addFields({name: `*Total Exp*`, value:`${stats.total_exp}`})
         }
         embed.addFields({name: 'note from Flutterbot:', value: `Your score, or level will never affect your access to basic features of discord.
         Remember that your worth is incalculable (obviously) because you are a beautiful living human being. Regardless of how many, or how few digital fun points a robot says you have. (numbers are updated every thirty seconds, to save computing power)`});

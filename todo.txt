@@ -1,0 +1,1 @@
+create an abstraction for user objects in the database so that when someone new tries to use a command that needs to access userdata that doesnt exist yet, it'll be easy to templatize and create a new blank object with all of the correct properties.

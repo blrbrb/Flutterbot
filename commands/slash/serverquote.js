@@ -32,7 +32,12 @@ module.exports = {
         const year = currentDate.getFullYear();
         const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
         const day = String(currentDate.getDate()).padStart(2, '0');
-        const userdat = Flutterbot.DB.get(`${speaker.id}`);
+        let userdat = Flutterbot.DB.get(`${speaker.id}`);
+        if(!userdat)
+        {
+            Flutterbot.DB.set(speaker.id,{"server_quotes":[]});
+            userdat = Flutterbot.DB.get(`${speaker.id}`);
+        }
     
         let data = new fsMemberQuote(interaction.user.username,`${year}\ ${month}\ ${day}`,interaction.user.id, interaction.guild.id,quoted_text);
 

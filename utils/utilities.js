@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getExtension = exports.findFiles = exports.printCurrentFrame = exports.convertToTimezone = exports.MusicMediaUrl = exports.isSoundCloudUrl = exports.isSpotifyUrl = exports.isYoutubeUrl = exports.mergeArrays = exports.getArrayType = exports.sharedKeys = exports.resolveID = exports.resolveUserID = exports.resolveGuildID = exports.IsSnowflake = exports.formatTime = exports.removeEveryoneMentions = exports.langRand = exports.nsfwChannel = exports.hasVoiceChannelPermissions = exports.format = exports.Log = exports.Logcolors = void 0;
+exports.getExtension = exports.formatYtLink = exports.findFiles = exports.printCurrentFrame = exports.convertToTimezone = exports.MusicMediaUrl = exports.isSoundCloudUrl = exports.isSpotifyUrl = exports.isYoutubeUrl = exports.mergeArrays = exports.getArrayType = exports.sharedKeys = exports.resolveID = exports.resolveUserID = exports.resolveGuildID = exports.IsSnowflake = exports.formatTime = exports.removeEveryoneMentions = exports.langRand = exports.nsfwChannel = exports.hasVoiceChannelPermissions = exports.format = exports.Log = exports.Logcolors = void 0;
 const discord_js_1 = require("discord.js");
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
@@ -591,6 +591,44 @@ function findFiles(dirname, relativePath, endsWith = '') {
     return fs.readdirSync(path.join(dirname, relativePath)).filter(folder => !folder.startsWith('_') && !folder.startsWith('.DS_STORE') && folder.endsWith(endsWith));
 }
 exports.findFiles = findFiles;
+/**
+ * Format links to content on Youtube into their proper parseable formats.
+ * Leaves original string unmodified if no formatting is needed.
+ * @summary links in the domain youtu.be music.youtube, or youtube.com/watch?v=shorts
+ * will all need to be formatted.
+ * @param {string} url url to check / format
+ * @returns {string}
+ */
+function formatYtLink(url) {
+    const youtubeShortRegex = /youtu.be\/([^?&]+)/;
+    const youtubeRegularRegex = /youtube\.com\/(?:watch\?v=|shorts\/)([^?&]+)/;
+    const youtubeMusicRegex = /music\.youtube\.com\/watch\?v=([^?&]+)/;
+    // Check if the url matches any of the regex patterns
+    if (youtubeShortRegex.test(url)) {
+        const match = url.match(youtubeShortRegex);
+        if (match && match[1]) {
+            const videoId = match[1];
+            return `https://youtube.com/watch?v=${videoId}`;
+        }
+    }
+    else if (youtubeRegularRegex.test(url)) {
+        const match = url.match(youtubeRegularRegex);
+        if (match && match[1]) {
+            const videoId = match[1];
+            return `https://youtube.com/watch?v=${videoId}`;
+        }
+    }
+    else if (youtubeMusicRegex.test(url)) {
+        const match = url.match(youtubeMusicRegex);
+        if (match && match[1]) {
+            const videoId = match[1];
+            return `https://youtube.com/watch?v=${videoId}`;
+        }
+    }
+    // If no match is found, return the url as is
+    return url;
+}
+exports.formatYtLink = formatYtLink;
 function getExtension(url) {
     return url.split(/[#?]/)[0].split('.').pop().trim();
 }

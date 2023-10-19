@@ -618,7 +618,44 @@ export function printCurrentFrame() {
 export function findFiles(dirname:string, relativePath:string, endsWith: string = ''): string[] {
     return fs.readdirSync(path.join(dirname, relativePath)).filter(folder => !folder.startsWith('_') && !folder.startsWith('.DS_STORE') && folder.endsWith(endsWith));
 }
+/**
+ * Format links to content on Youtube into their proper parseable formats. 
+ * Leaves original string unmodified if no formatting is needed. 
+ * @summary links in the domain youtu.be music.youtube, or youtube.com/watch?v=shorts
+ * will all need to be formatted.  
+ * @param {string} url url to check / format
+ * @returns {string} 
+ */
+export function formatYtLink(url:string):string {
 
+    const youtubeShortRegex = /youtu.be\/([^?&]+)/;
+    const youtubeRegularRegex = /youtube\.com\/(?:watch\?v=|shorts\/)([^?&]+)/;
+    const youtubeMusicRegex = /music\.youtube\.com\/watch\?v=([^?&]+)/;
+
+    // Check if the url matches any of the regex patterns
+    if (youtubeShortRegex.test(url)) {
+        const match = url.match(youtubeShortRegex);
+        if (match && match[1]) {
+            const videoId = match[1];
+            return `https://youtube.com/watch?v=${videoId}`;
+        }
+    } else if (youtubeRegularRegex.test(url)) {
+        const match = url.match(youtubeRegularRegex);
+        if (match && match[1]) {
+            const videoId = match[1];
+            return `https://youtube.com/watch?v=${videoId}`;
+        }
+    } else if (youtubeMusicRegex.test(url)) {
+        const match = url.match(youtubeMusicRegex);
+        if (match && match[1]) {
+            const videoId = match[1];
+            return `https://youtube.com/watch?v=${videoId}`;
+        }
+    }
+
+    // If no match is found, return the url as is
+    return url;
+}
 
 export function getExtension(url:any): string {
     return url.split(/[#?]/)[0].split('.').pop().trim();

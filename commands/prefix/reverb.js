@@ -4,7 +4,7 @@ module.exports = {
 	name: 'reverb',
 	description: 'Send A Nice Reverb Fart',
 	cooldown: 2,
-	execute(client, message, args) {
+	execute(shy, message, args) {
 		// configure the fart sound effect embed
 		const newEmbed = new EmbedBuilder()
 			.setColor('#304281')

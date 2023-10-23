@@ -2,6 +2,7 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 require('dotenv').config();
 const {commandResponses} = require('../../lang/en.js');
+const { fsError } = require('../../utils/types.js');
 let conversation = { past_user_inputs: [], generated_responses: [] };
 let response_temp = ' ';
 const command_prefix = 'fs';
@@ -17,7 +18,7 @@ module.exports = {
         console.log(message.content);
       
         
-         const data = fs.readFileSync("assets/conversation.json");
+        const data = fs.readFileSync("assets/conversation.json");
        
         past = JSON.parse(data); 
         
@@ -30,7 +31,7 @@ module.exports = {
             input.question = true;
 
         conversation.past_user_inputs.push(input.message);
-
+        
         query({
             "inputs": {
                 "past_user_inputs": past.past_user_input,
@@ -38,6 +39,7 @@ module.exports = {
                 "text": input.message
             }
         }).then((response) => {
+            try{
             console.log(response);
 
             if (response.hasOwnProperty('estimated_time')) {
@@ -47,15 +49,16 @@ module.exports = {
                 console.log(`We're starting up it should take ${response.estimated_time} seconds...`);
                 message.reply(`We're starting up it should take ${response.estimated_time} seconds...`);
             }
-
+  
             if (response.hasOwnProperty("error")) {
-
-                //message.channel.send(response.error);
-                console.log(response.error);
 
                 if (response.error.hasOwnProperty('estimated_time'))
                 { 
                     message.channel.send(commandResponses.Fluttershy.loadingModel(response.error.estimated_time));
+                }
+                else if (String(response.error))
+                {
+                    throw new fsError(`I'm having trouble connecting to my model right now, I can't generate text`,new Error(response.error));
                 }
 
             } else if (response.hasOwnProperty("generated_text")) {
@@ -63,9 +66,16 @@ module.exports = {
                 response_temp = response.generated_text;
 
                 console.log(conversation);
-                message.reply(response.generated_text);
+                message.reply(response.generated_text);0
                 conversation.generated_responses.push(response_temp);
             }
+        }
+        catch(fsError)
+        {
+          
+            message.reply(`\`${fsError.message}: ${fsError.stack.split('\n')[1]}\``);
+            Flutterbot.Log('yellow', `${fsError.stack}`);
+        }
         });
 
         const json = JSON.stringify(conversation);
@@ -74,6 +84,8 @@ module.exports = {
             if (err) console.log('JSON file writing error in FlutterShy.js caught', err);
         });
     }
+    
+    
 }
 
 async function query(data) {

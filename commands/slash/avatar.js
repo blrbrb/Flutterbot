@@ -12,7 +12,7 @@ module.exports = {
             required: true
         }
     ],
-    async execute(interaction,Flutterbot)  {
+    async execute(interaction,Shy)  {
         interaction.reply(`this command doesnt work currently sorry :(`);
         return;
         let taggedUser = message.mentions.members.first();

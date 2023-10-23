@@ -14,17 +14,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Evaluator = void 0;
 const discord_js_1 = require("discord.js");
-const utilities_1 = require("../utils/utilities");
 const axios_1 = __importDefault(require("axios"));
 const cheerio_1 = __importDefault(require("cheerio"));
 const fs_1 = __importDefault(require("fs"));
+const types_1 = require("../utils/types");
 const { youShouldLitterallyNeverSeeThis } = require('../lang/en.js');
 class Evaluator {
-    constructor(Database, client) {
+    constructor(Database, shy) {
         this.urlRegex = /https?:\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|]/g;
         this.intel = this.loadIntel();
         this.db = Database;
-        this.client = client;
+        this.shy = shy;
     }
     validateAge(member) {
         let MinAge = 0;
@@ -43,9 +43,9 @@ class Evaluator {
     }
     quaratine(member) {
         return __awaiter(this, void 0, void 0, function* () {
-            const guild = this.client.guilds.cache.get(member.guild.id);
+            const guild = this.shy.guilds.cache.get(member.guild.id);
             if (!guild)
-                throw new Error('unable to determine guild. Cannot quaratine this user');
+                throw new types_1.Errors.fsClientError(`Unable to fetch the guild from my clients GuildManager. Cannot quaratine this user`);
             let qRoleID = this.db.getGuildConfig(member.guild, 'quaratine_role');
             let quarantinedUsers = this.db.getGuildConfig(member.guild, 'quaratined');
             if (!quarantinedUsers) {
@@ -72,7 +72,7 @@ class Evaluator {
     }
     createQuaratineRole(member) {
         return __awaiter(this, void 0, void 0, function* () {
-            const guild = this.client.guilds.cache.get(member.guild.id);
+            const guild = this.shy.guilds.cache.get(member.guild.id);
             // Define the role's properties
             const roleData = {};
             if (guild) {
@@ -85,11 +85,11 @@ class Evaluator {
                     "reason": 'Flutterbot.js default quaratined role did not exist. Initalizing from scratch to tag potentially malicious users in the future', // Optional reason for audit logs
                 })
                     .then((role) => {
-                    console.log(`Created role: ${role.name}`);
+                    this.shy.Log(`Created role: ${role.name}`);
                     this.db.setGuildConfig(guild, 'quaratine_role', role.id);
                 })
                     .catch((error) => {
-                    (0, utilities_1.Log)(`Error creating new quarantine role for (${guild.name})[${guild.id}] :`, error);
+                    this.shy.Log(`Red Bold`, `Error creating new quarantine role for (${guild.name})[${guild.id}] :`, error);
                 });
             }
             return;
@@ -98,7 +98,7 @@ class Evaluator {
     onMessage(message) {
         return __awaiter(this, void 0, void 0, function* () {
             if ((yield this.positiveURL(message)).match) {
-                (0, utilities_1.Log)(`This shit is for realsies bro. ${message.content}`);
+                this.shy.Log('Pink Underscore', `This shit is for realsies bro. ${message.content}`);
             }
         });
     }
@@ -108,7 +108,7 @@ class Evaluator {
                 // Make an HTTP GET request to the webpage
                 const response = yield axios_1.default.get('https://urlhaus.abuse.ch/downloads/text/');
                 if (!response.data) {
-                    (0, utilities_1.Log)('WARN: unable to fetch phishing data from urlhaus');
+                    this.shy.Log('WARN: unable to fetch phishing data from urlhaus');
                     return;
                 }
                 // Load the HTML content of the webpage using cheerio
@@ -131,16 +131,18 @@ class Evaluator {
                 const jsonData = JSON.stringify(links, null, 2);
                 //save it as a class variable for convenience
                 fs_1.default.writeFileSync('assets/intelligence.json', jsonData);
-                console.log('Links have been saved to links.json');
             }
             catch (error) {
-                console.error('Error:', error);
+                this.shy.Log('Red', error);
+                return;
             }
         });
     }
     loadIntel() {
         const raw = fs_1.default.readFileSync('assets/intelligence.json');
         const data = JSON.parse(raw.toString());
+        if (!data)
+            throw new types_1.fsError('unable to load malicious url database.');
         return data;
     }
     positiveURL(message) {
@@ -150,11 +152,11 @@ class Evaluator {
                 if (this.intel.includes(contentUrls[0])) {
                     //ruh-roh raggey, we gotta racker 
                     let origin = message.guild ? message.guild.name : message.author.username; //if guild is null and message is a dm, send the author's name 
-                    (0, utilities_1.Log)(`Red, Bold`, `Likely malicious link detected origin: ${origin} content:${message.content}`);
+                    this.shy.Log(`Red, Bold`, `Likely malicious link detected origin: ${origin} content:${message.content}`);
                     //Delete the msg, better safe than sorry with these odds
                     yield message.delete()
                         .then(() => {
-                        message.channel.send({ embeds: [youShouldLitterallyNeverSeeThis.dearGodItsReal(this.client)] });
+                        message.channel.send({ embeds: [youShouldLitterallyNeverSeeThis.dearGodItsReal(this.shy)] });
                     });
                     return { match: true, urls: contentUrls };
                 }

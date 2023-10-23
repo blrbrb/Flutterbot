@@ -8,7 +8,7 @@ module.exports = {
 	name: 'paint',
 	description: 'Fluttershy Will Paint An Image',
 	cooldown: 3, 
-	async execute(client, message, args) { // eslint-disable-line no-unused-vars
+	async execute(shy, message, args) { // eslint-disable-line no-unused-vars
 		imageUrl = await findImage.imageFinder(message);
 		if (imageUrl !== undefined) {
 			message.channel.sendTyping();

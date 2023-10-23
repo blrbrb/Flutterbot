@@ -24,7 +24,7 @@ module.exports = {
 			description: "scale factor of the mosaic"
 		}
 	],
-	async execute(interaction,Flutterbot)  {
+	async execute(interaction,Shy)  {
 
 		var scale = 5;
 

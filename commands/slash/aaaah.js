@@ -11,7 +11,6 @@ module.exports = {
     description: 'aaaaah',
     cooldown: 1,
     options: [
-        
         {
             name: "image",
             description: "image for aaaaahing",
@@ -19,7 +18,7 @@ module.exports = {
             required: true
         }
     ],
-    async execute(interaction,Flutterbot)  { // eslint-disable-line no-unused-vars
+    async execute(interaction,Shy)  { // eslint-disable-line no-unused-vars
         imageUrl = await findImage(message);
         console.log(imageUrl);
         if (imageUrl !== undefined) {

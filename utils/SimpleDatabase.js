@@ -8,16 +8,20 @@ const fs_1 = __importDefault(require("fs"));
 const types_1 = require("./types");
 const utilities_1 = require("./utilities");
 /**
- * SimpleDatabase
- * @author Ellypony
+ * simplistic, probably good enough crackhead database
+ * author: [EllyPony]({@link EllyPonyUrl})
+ * @class
  */
 class SimpleDatabase {
-    constructor(filePath = '', debug_print = true) {
-        this.log = utilities_1.Log;
+    constructor(filePath = '', log, debug_print = false) {
+        this.debug_print = false;
         /**
-        * @param filePath @type {string} @param logger @type {Log} @param debug_print @type {boolean}  - Brief description of the parameter here. Note: For other notations of data types, please refer to JSDocs: DataTypes command.
+        * @param filePath @type {string} @param debug_print @type {boolean}  - Brief description of the parameter here. Note: For other notations of data types, please refer to JSDocs: DataTypes command.
         * @return {SimpleDatabase}
         */
+        if (!log || !(typeof (log) === 'function'))
+            throw Error('cannot instantize SimpleDatabase without a Log function!');
+        this.log = log; //important for this to go first. log errors
         this.filePath = filePath;
         this.data = this._loadData();
         this.debug_print = debug_print;
@@ -38,11 +42,13 @@ class SimpleDatabase {
     _loadData() {
         try {
             const data = fs_1.default.readFileSync(this.filePath, 'utf-8');
-            return JSON.parse(data);
+            if (data)
+                return JSON.parse(data);
+            else
+                throw new types_1.Errors.fsDatabaseError(`SimpleDatabase_loadData() unable to load file`);
         }
         catch (error) {
-            console.error('Error loading data:', error);
-            return { "": 0 };
+            throw new types_1.Errors.fsDatabaseError(`SimpleDatabase_loadData() ${error}`);
         }
     }
     /**
@@ -51,11 +57,12 @@ class SimpleDatabase {
      * @returns {void}
      */
     _saveData() {
-        fs_1.default.writeFile(this.filePath, JSON.stringify(this.data, null, 2), 'utf-8', (error) => {
-            if (error) {
-                console.error('Error saving data:', error);
-            }
-        });
+        try {
+            fs_1.default.writeFileSync(this.filePath, JSON.stringify(this.data, null, 2), 'utf-8');
+        }
+        catch (error) {
+            throw new types_1.Errors.fsDatabaseError(`SimpleDatabase_saveData() ${error}`);
+        }
     }
     /**
      * Modify a value in the database
@@ -67,22 +74,25 @@ class SimpleDatabase {
      */
     set(IDResolvable, Key, value) {
         let ID, current, exists;
+        if (!this.data)
+            throw new types_1.Errors.fsDatabaseError('data is undefined. Check to make sure you are loading the database file properly');
         if (Key && IDResolvable === undefined) {
             if (!(typeof (Key) === 'string'))
                 throw new TypeError(`Excpected string for "Key", got ${typeof (Key)} instead`);
             ID = Key;
         }
         else
-            ID = (0, utilities_1.resolveID)(IDResolvable);
-        exists = this.hasGuild(ID);
-        this.log('green', 'Acessing database...', true, true, false);
+            ID = utilities_1.resolveID(IDResolvable);
+        exists = this.has(ID);
+        if (this.debug_print)
+            this.log('green', 'Acessing database...', true, true, false);
         current = this.data[ID];
         if (Key === ID) {
-            this.log(`green`, `notice: this object will be appended to the root of the json structure`, true, true, false);
+            this.log(`yellow`, `Warn: this object will be appended to the root of the json structure`, true, true, false);
             current = this.data;
         }
         if (!current) {
-            this.log('yellow', `${Key} is not a property on ${ID}. Creating a new property`, true, true, false);
+            this.log('yellow', `Warn: ${Key} is not a property on ${ID}. Creating a new property`, true, true, false);
             this.data[ID] = {};
             current = this.data[ID];
             if (typeof (value) === 'object') {
@@ -95,21 +105,19 @@ class SimpleDatabase {
             this._printAcessInfo(Key, value, ID);
         if (Array.isArray(current[Key])) // the existing property is an array. 
          {
-            this.log(`and it's an array`);
             if (Array.isArray(value)) //the new value is also an array. Merge.
              {
-                this.log("", 'the new value is also an array...', true, true, false);
                 try {
-                    const appended = (0, utilities_1.mergeArrays)(current[`${Key}`], value);
+                    const appended = utilities_1.mergeArrays(current[`${Key}`], value);
                     current[Key] = appended;
                 }
                 catch (error) {
-                    console.log(error);
+                    throw new types_1.Errors.fsDatabaseError(error);
                 }
             }
             else //the existing property is an array, but the new value is not.
              {
-                const arrayType = (0, utilities_1.getArrayType)(current[`${Key}`]).type;
+                const arrayType = utilities_1.getArrayType(current[`${Key}`]).type;
                 switch (arrayType) //make sure it's the correct datatype before pushing.
                  {
                     case types_1.DataTypes.Boolean:
@@ -160,9 +168,10 @@ class SimpleDatabase {
                             throw new TypeError(`the value is undefined, cannot append`);
                         }
                         else
-                            return console.log(`something is very wrong lol`);
+                            this.log('yellow', `Warn: pushing data to an array of undefined. This will permanetely change the array's datatype`);
                     default:
-                        console.log(`This array is empty, and safe to append any datatype to`);
+                        if (this.debug_print)
+                            this.log('green', `Info: This array is empty, and safe to append any datatype to`);
                         current[Key].push(value);
                         return;
                 }
@@ -184,7 +193,8 @@ class SimpleDatabase {
         }
         this.data[ID] = current;
         this._saveData();
-        this.log('green', 'done', true, true, false);
+        if (this.debug_print)
+            this.log('green', 'done');
         return;
     }
     /**
@@ -196,6 +206,8 @@ class SimpleDatabase {
      * @returns {void}
      */
     setAtRoot(key, value) {
+        if (!this.data)
+            throw new types_1.Errors.fsDatabaseError('data is undefined. Check to make sure you are loading the database file properly');
         this.data[key] = value;
         this._saveData();
     }
@@ -212,7 +224,7 @@ class SimpleDatabase {
         // Iterate through props. in the new object
         for (const prop in New) {
             if (New.hasOwnProperty(prop)) {
-                // Assign the prop. from the new object to the combined object, if that prop hasGuild 
+                // Assign the prop. from the new object to the combined object, if that prop has 
                 combined[prop] = New[prop];
             }
         }
@@ -226,6 +238,8 @@ class SimpleDatabase {
      * @returns {void}
      */
     deleteEntry(key) {
+        if (!this.data)
+            throw new types_1.Errors.fsDatabaseError('data is undefined. Check to make sure you are loading the database file properly');
         let current = this.data;
         //We're accessing a nested value. Split at '.'
         if (key.includes('.')) {
@@ -253,34 +267,31 @@ class SimpleDatabase {
      * @returns {void}
      */
     setGuildCoolDown(GuildResolvable, cooldowntime) {
-        try {
-            let guildID = (0, utilities_1.resolveGuildID)(GuildResolvable);
-            if (guildID && this.hasGuild(guildID)) {
-                let current = this.data[guildID];
-                if (current.hasOwnProperty('config')) {
-                    current.config.default_cooldown = cooldowntime;
-                    this.data[guildID] = current;
-                    this._saveData();
-                    // this.data[guildID]['config']['default_cooldown'] = cooldowntime;
-                }
-                else {
-                    current.config = {};
-                    current.config.default_cooldown = cooldowntime;
-                    this.data[guildID] = current;
-                    this._saveData();
-                }
+        if (!this.data)
+            throw new types_1.Errors.fsDatabaseError('data is undefined. Check to make sure you are loading the database file properly');
+        let guildID = utilities_1.resolveGuildID(GuildResolvable);
+        if (guildID && this.has(guildID)) {
+            let current = this.data[guildID];
+            if (current.hasOwnProperty('config')) {
+                current.config.default_cooldown = cooldowntime;
+                this.data[guildID] = current;
+                this._saveData();
+                // this.data[guildID]['config']['default_cooldown'] = cooldowntime;
             }
             else {
-                //initalize a new object for the guild that does not exist 
-                this.data[guildID] = {};
-                this.data[guildID]['config'] = {};
-                this.data[guildID]['config']['default_cooldown'] = cooldowntime;
+                current.config = {};
+                current.config.default_cooldown = cooldowntime;
+                this.data[guildID] = current;
+                this._saveData();
             }
         }
-        catch (error) {
-            console.log(error);
-            return;
+        else {
+            //initalize a new object for the guild that does not exist 
+            this.data[guildID] = {};
+            this.data[guildID]['config'] = {};
+            this.data[guildID]['config']['default_cooldown'] = cooldowntime;
         }
+        return;
     }
     /**
      * updates, or creates a new value for a guild's configuration in the database file
@@ -291,93 +302,91 @@ class SimpleDatabase {
      * @returns {void}
      */
     setGuildConfig(GuildResolvable, configKey, value) {
-        try {
-            let guildID = (0, utilities_1.resolveGuildID)(GuildResolvable);
-            if (guildID && this.hasGuild(guildID)) {
-                var current = this.data[guildID]['config'][configKey];
-                if (Array.isArray(current)) {
-                    if (Array.isArray(value)) //the new value is also an array. Merge.
+        if (!this.data)
+            throw new types_1.Errors.fsDatabaseError('data is undefined. Check to make sure you are loading the database file properly');
+        let guildID = utilities_1.resolveGuildID(GuildResolvable);
+        if (guildID && this.has(guildID)) {
+            var current = this.data[guildID]['config'][configKey];
+            if (Array.isArray(current)) {
+                if (Array.isArray(value)) //the new value is also an array. Merge.
+                 {
+                    if (this.debug_print)
+                        try {
+                            const appended = utilities_1.mergeArrays(current, value);
+                            current = appended;
+                        }
+                        catch (error) {
+                            throw new types_1.Errors.fsDatabaseError(error);
+                        }
+                }
+                else {
+                    const arrayType = utilities_1.getArrayType(current).type;
+                    switch (arrayType) //make sure it's the correct datatype before pushing.
                      {
-                        if (this.debug_print)
-                            try {
-                                const appended = (0, utilities_1.mergeArrays)(current, value);
-                                current = appended;
-                            }
-                            catch (error) {
-                                this.log('red', error);
-                            }
-                    }
-                    else {
-                        const arrayType = (0, utilities_1.getArrayType)(current).type;
-                        switch (arrayType) //make sure it's the correct datatype before pushing.
-                         {
-                            case types_1.DataTypes.Boolean:
-                                if (typeof value === 'boolean') {
-                                    current.push(value);
-                                    break;
-                                }
-                                else
-                                    throw new TypeError(`This array accepts boolean values, but got ${typeof value} instead`);
-                            case types_1.DataTypes.String:
-                                if (typeof value === 'string') {
-                                    current.push(value);
-                                    break;
-                                }
-                                else
-                                    throw new TypeError(`this array accepts string values, but got ${typeof value} instead`);
-                            case types_1.DataTypes.Number:
-                                if (typeof value === 'number') {
-                                    current.push(value);
-                                    break;
-                                }
-                                else
-                                    throw new TypeError(`this array accepts number values, but got ${typeof value} instead`);
-                            case types_1.DataTypes.Object:
-                                if (typeof value === 'object') {
-                                    current.push(value);
-                                    break;
-                                }
-                                else
-                                    throw new TypeError(`This array accepts object values, but got ${typeof value} instead`);
-                            case types_1.DataTypes.Function:
-                                if (typeof value === 'function') {
-                                    current.push(value);
-                                    break;
-                                }
-                                else
-                                    this.log("red", `This array accepts function() values, but got ${typeof value} instead`);
-                            case types_1.DataTypes.Undefined:
-                                //if the array has an undefined datatype, it's safe to push anything.
-                                //undefined = brand new array, no datatype yet. datatype will be automatically handled after creation
+                        case types_1.DataTypes.Boolean:
+                            if (typeof value === 'boolean') {
                                 current.push(value);
                                 break;
-                            default:
-                                throw new Error('something is very fucked lmao');
-                        }
-                    }
-                }
-                else if (typeof current === 'object') {
-                    if (typeof value === 'object') {
-                        let updateValue = this._updateObject(current, value);
-                        current = updateValue;
+                            }
+                            else
+                                throw new TypeError(`This array accepts boolean values, but got ${typeof value} instead`);
+                        case types_1.DataTypes.String:
+                            if (typeof value === 'string') {
+                                current.push(value);
+                                break;
+                            }
+                            else
+                                throw new TypeError(`this array accepts string values, but got ${typeof value} instead`);
+                        case types_1.DataTypes.Number:
+                            if (typeof value === 'number') {
+                                current.push(value);
+                                break;
+                            }
+                            else
+                                throw new TypeError(`this array accepts number values, but got ${typeof value} instead`);
+                        case types_1.DataTypes.Object:
+                            if (typeof value === 'object') {
+                                current.push(value);
+                                break;
+                            }
+                            else
+                                throw new TypeError(`This array accepts object values, but got ${typeof value} instead`);
+                        case types_1.DataTypes.Function:
+                            if (typeof value === 'function') {
+                                current.push(value);
+                                break;
+                            }
+                            else
+                                this.log("red", `This array accepts function() values, but got ${typeof value} instead`);
+                        case types_1.DataTypes.Undefined:
+                            //if the array has an undefined datatype, it's safe to push anything.
+                            //undefined = brand new array, no datatype yet. datatype will be automatically handled after creation
+                            current.push(value);
+                            break;
+                        default:
+                            throw new types_1.Errors.fsDatabaseError('something is very fucked lmao');
                     }
                 }
             }
-            else {
-                this.data[guildID] = {};
-                this.data[guildID]['config'] = {};
-                this.data[guildID]['config'][`${configKey}`] = value;
-                this._saveData();
-                return;
+            else if (typeof current === 'object') {
+                if (typeof value === 'object') {
+                    let updateValue = this._updateObject(current, value);
+                    current = updateValue;
+                }
             }
-            this.data[guildID]['config'][configKey] = value;
-            this._saveData();
-            this.log('green', 'done', true, true, false);
         }
-        catch (error) {
-            this.log('red', error);
+        else {
+            this.data[guildID] = {};
+            this.data[guildID]['config'] = {};
+            this.data[guildID]['config'][`${configKey}`] = value;
+            this._saveData();
             return;
         }
+        this.data[guildID]['config'][configKey] = value;
+        this._saveData();
+        if (this.debug_print)
+            this.log('green', 'done', true, true, false);
+        return;
     }
     /**
      * fetch the all of the configuration values from a guild's configuration in the database file.
@@ -387,28 +396,24 @@ class SimpleDatabase {
      * @returns {void | any}
      */
     getGuildConfig(GuildResolvable, configKey) {
-        try {
-            let guildID = (0, utilities_1.resolveGuildID)(GuildResolvable);
-            if (guildID && this.hasGuild(guildID)) {
-                let current = this.data[guildID];
-                if (current.hasOwnProperty('config')) {
-                    if (current.config.hasOwnProperty(configKey)) {
-                        return current.config[configKey];
-                    }
-                    else {
-                        return;
-                    }
+        if (!this.data)
+            throw new types_1.Errors.fsDatabaseError('data is undefined. Check to make sure you are loading the database file properly');
+        let guildID = utilities_1.resolveGuildID(GuildResolvable);
+        if (guildID && this.has(guildID)) {
+            let current = this.data[guildID];
+            if (current.hasOwnProperty('config')) {
+                if (current.config.hasOwnProperty(configKey)) {
+                    return current.config[configKey];
                 }
-                else
+                else {
                     return;
+                }
             }
             else
                 return;
         }
-        catch (error) {
-            this.log("red", error);
+        else
             return;
-        }
     }
     /**
      * Sets the embed color value for a guild's configuration in the database file.
@@ -418,24 +423,20 @@ class SimpleDatabase {
      * @returns {void}
      */
     setGuildEmbedColor(GuildResolvable, color) {
-        try {
-            let guildID = (0, utilities_1.resolveGuildID)(GuildResolvable);
-            if (guildID && this.hasGuild(guildID)) {
-                let current = this.data[guildID];
-                if (current.hasOwnProperty('config')) {
-                }
-                //this.data[guildID]['config']['default_cooldown'] = cooldowntime; 
+        if (!this.data)
+            throw new types_1.Errors.fsDatabaseError('data is undefined. Check to make sure you are loading the database file properly');
+        let guildID = utilities_1.resolveGuildID(GuildResolvable);
+        if (guildID && this.has(guildID)) {
+            let current = this.data[guildID];
+            if (current.hasOwnProperty('config')) {
             }
-            else {
-                //initalize a new object for the guild that does not exist 
-                this.data[guildID] = {};
-                this.data[guildID]['config'] = {};
-                this.data[guildID]['config']['default_cooldown'] = color;
-            }
+            //this.data[guildID]['config']['default_cooldown'] = cooldowntime; 
         }
-        catch (error) {
-            this.log("red", error);
-            return;
+        else {
+            //initalize a new object for the guild that does not exist 
+            this.data[guildID] = {};
+            this.data[guildID]['config'] = {};
+            this.data[guildID]['config']['default_cooldown'] = color;
         }
     }
     /**
@@ -445,8 +446,32 @@ class SimpleDatabase {
      * @returns {any} value, or {@link false} upon failure to find an associated value.
      */
     get(key) {
+        if (!this.data)
+            throw new types_1.Errors.fsDatabaseError('data is undefined. Check to make sure you are loading the database file properly');
         let current = this.data;
-        if (key.includes('.')) {
+
+        if((typeof(key) === 'string') && utilities_1.IsSnowflake(key) && this.has(key))
+        { 
+           
+            let id = utilities_1.resolveID(key);
+            if(id && this.has(id))
+            {
+                current = this.data[id];
+                if(key && current.hasOwnProperty(key))
+                {
+                    return this.data[id][key];
+                }
+                else
+                {
+                    this.data[id];
+                }
+            }
+            else
+            {
+                throw new fsDatabaseError(`There is no data for ${types_1.fsSnowflakeType[utilities_1.getSnowflakeType(id)]}, with Snowflake ID ${id}`);
+            }
+        }
+        else if (key.includes('.')) {
             let keys = key.split('.');
             for (let i = 0; i < keys.length; i++) {
                 const k = keys[i];
@@ -464,7 +489,7 @@ class SimpleDatabase {
         }
     }
     /**
-     * @name hasGuild
+     * @name has
      * Check to see if a guild already has data in the db file.
      * @summary important to make sure the app doesn't crash accessing data
      * that doesn't yet exist. IMPORTANT. Different from hasKey in the sense that
@@ -475,12 +500,14 @@ class SimpleDatabase {
      * see {@link GuildResolvable} and
      * @returns {true} if the object has been stored in the database before, false if not.
      */
-    hasGuild(GuildResolvable) {
-        let ID = (0, utilities_1.resolveGuildID)(GuildResolvable);
-        if ((0, utilities_1.IsSnowflake)(ID) && ID in this.data)
+    has(fsIDResolvable) {
+        if (!this.data)
+            throw new types_1.Errors.fsDatabaseError('data is undefined. Check to make sure you are loading the database file properly');
+        let ID = utilities_1.resolveID(fsIDResolvable);
+        if (utilities_1.IsSnowflake(ID) && ID in this.data)
             return true;
-        else if (typeof (GuildResolvable) === 'string') {
-            let keys = GuildResolvable.includes('.') ? GuildResolvable.split('.') : GuildResolvable;
+        else if (typeof (fsIDResolvable) === 'string') {
+            let keys = fsIDResolvable.includes('.') ? fsIDResolvable.split('.') : fsIDResolvable;
             let current = this.data;
             for (const key of keys) {
                 if (current.hasOwnProperty(key)) {
@@ -495,7 +522,7 @@ class SimpleDatabase {
         return false;
     }
     /**
-     * Check to see if a key hasGuild at any point on the json structure.
+     * Check to see if a key has at any point on the json structure.
      * @name SimpleDatabase#hasKey
      * @param {string} key
      * @returns {boolean} true if found, false otherwise
@@ -507,6 +534,8 @@ class SimpleDatabase {
      * //this will most likely return false. No promises.
      */
     hasKey(key) {
+        if (!this.data)
+            throw new types_1.Errors.fsDatabaseError('data is undefined. Check to make sure you are loading the database file properly');
         let keys = key.includes('.') ? key.split('.') : key;
         let current = this.data;
         for (const key of keys) {
@@ -531,7 +560,7 @@ class SimpleDatabase {
         if (this.data)
             return this.data;
         else
-            throw new Error('the data for this database has not been initalized yet!');
+            throw new types_1.Errors.fsDatabaseError('the data for this database has not been initalized yet!');
         /**
         *  The lazy low iq solution to a hosted database
         *  certified Eli™ crackhead ducktape

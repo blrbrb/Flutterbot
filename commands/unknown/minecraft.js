@@ -3,7 +3,7 @@ const request = require('request').defaults({ encoding: null });
 module.exports = {
 	name: 'minecraft',
 	description: 'Fluttershy Will Spoofy you a Minecraft Achivement',
-	async execute(client, message, args) { // eslint-disable-line no-unused-vars 
+	async execute(shy, message, args) { // eslint-disable-line no-unused-vars 
 		console.log('minecraft');
 		if (args.length > 0) {
 			message.channel.startTyping();

@@ -1,93 +1,19 @@
-Fluttershy is awake! 
-
-Acessing database...
-| Key:PonyExp Value: [object Object] ID: 252235505318625281
-| type - object
-| value - [object Object]
-| destination - 252235505318625281.PonyExp
-done
-Fluttershy is awake! 
-
-Fluttershy is awake! 
-
-Fluttershy is awake! 
-
-Acessing database...
-| type - ${typeof(value)}
-| value - [object Object]
-| destination - 252235505318625281.PonyExp
-done
-Acessing database...
-| type - ${typeof(value)}
-| value - [object Object]
-| destination - 252235505318625281.PonyExp
-done
-Acessing database...
-| type - ${typeof(value)}
-| value - [object Object]
-| destination - 252235505318625281.PonyExp
-done
-Fluttershy is awake! 
-
-Fluttershy is awake! 
-
-Acessing database...
-| type - ${typeof(value)}
-PonyExp is not a property on 252235505318625281. Creating a new property
-| destination - 252235505318625281.PonyExp
-| value - [object Object]
-done
-Acessing database...
-| type - ${typeof(value)}
-| value - [object Object]
-| destination - 252235505318625281.server_quotes
-done
-the new value is neither an array, nor is it a object
-Acessing database...
-| value - [object Object]
-| destination - 252235505318625281.PonyExp
-| type - ${typeof(value)}
-done
-Acessing database...
-| type - ${typeof(value)}
-| value - [object Object]
-| destination - 252235505318625281.PonyExp
-done
-Fluttershy is awake! 
-
-Acessing database...
-| type - ${typeof(value)}
-| destination - 252235505318625281.PonyExp
-| value - [object Object]
-done
-Acessing database...
-| value - [object Object]
-| type - ${typeof(value)}
-done
-| destination - 252235505318625281.PonyExp
-Acessing database...
-| type - ${typeof(value)}
-| value - [object Object]
-| destination - 252235505318625281.PonyExp
-done
-Acessing database...
-| type - ${typeof(value)}
-| value - [object Object]
-| destination - 252235505318625281.PonyExp
-done
-Acessing database...
-| value - [object Object]
-| type - ${typeof(value)}
-done
-| destination - 252235505318625281.PonyExp
-Fluttershy is awake! 
-
-Fluttershy is awake! 
-
-Fluttershy is awake! 
-
-Fluttershy is awake! 
-
-Fluttershy is awake! 
-
-and it's an array
+fsTypeError: unable to resolve ID
+fsTypeError: unable to resolve ID
+fsTypeError: unable to resolve ID
+fsTypeError: unable to resolve ID
+fsError: I'm having trouble connecting to my model right now, I can't generate text
+    at C:\Users\elire\OneDrive\Desktop\Flutterbot\commands\prefix\fluttershy.js:61:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+fsError: I'm having trouble connecting to my model right now, I can't generate text
+    at C:\Users\elire\OneDrive\Desktop\Flutterbot\commands\prefix\fluttershy.js:61:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+fsError: I'm having trouble connecting to my model right now, I can't generate text
+    at C:\Users\elire\OneDrive\Desktop\Flutterbot\commands\prefix\fluttershy.js:61:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+fsError: I'm having trouble connecting to my model right now, I can't generate text
+    at C:\Users\elire\OneDrive\Desktop\Flutterbot\commands\prefix\fluttershy.js:61:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+fsError: I'm having trouble connecting to my model right now, I can't generate text
+    at C:\Users\elire\OneDrive\Desktop\Flutterbot\commands\prefix\fluttershy.js:61:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)

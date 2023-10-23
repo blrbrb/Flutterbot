@@ -9,35 +9,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.expHandler = void 0;
+exports.ExpHandler = void 0;
 const exp_1 = require("./exp");
+const types_1 = require("./types");
 const utilities_1 = require("./utilities");
-class expHandler {
+
+
+//I rape women fuck fuck fuck please
+class ExpHandler {
     /**
-   * Creates an instance of expHandler.
-   *
-   * @constructor
-   * @param {SimpleDatabase} db
+   * Creates an instance of ExpHandler.
    */
     constructor(db) {
-        this.db = db || undefined;
-        /** @name all @type {ExperienceMap} */
+        this.db = db;
+        /** @name ExperienceMap @type {ExperienceMap} */
         this.all = new Map();
         this.load();
     }
     /**
-   * add a new user to the Experience Map
-   * @name addUser
-   * @param {SnowfKale} userId
-   */
+    * add a new user to the Experience Map
+    */
     addUser(userId) {
         this.all.set(userId, new exp_1.PonyExp());
         return;
     }
     /**
-   * write all of the data inside of the Expeirence Map to the database
-   * @returns {void}
-   * @name writeAll
+   * write all of the data inside of the {@link ExperienceMap}  to the {@link SimpleDatabase}
    */
     writeAll() {
         this.all.forEach((value, key, map) => {
@@ -56,20 +53,17 @@ class expHandler {
           for (const file of eventFiles) {
               const event = require(`../events/${file}`);
              
-           if (event.once) this.client.once(event.name, (...args) => event.execute(this, ...args), (...args) => expHandler.update(...args));
-           else this.client.on(event.name, (...args) => event.execute(this, ...args), (...args) => expHandler.update(...args));
+           if (event.once) this.client.once(event.name, (...args) => event.execute(this, ...args), (...args) => ExpHandler.update(...args));
+           else this.client.on(event.name, (...args) => event.execute(this, ...args), (...args) => ExpHandler.update(...args));
     @example
     //update the handler for the "onMessageCreate" event only as a callback function, passing on the "message" object.
           Flutterbot.on('messageCreate', async () =>
-          {//your onMessageCreate code }, async (message) => Flutterbot.expHandler.update(message));
+          {//your onMessageCreate code }, async (message) => Flutterbot.ExpHandler.update(message));
    *
-   * @name update
-   * @returns {void}
-   * @param {...{}\} args
    */
     update(...args) {
         return __awaiter(this, void 0, void 0, function* () {
-            let accessorId = (0, utilities_1.resolveUserID)(args[0]);
+            let accessorId = utilities_1.resolveUserID(args[0]);
             if (accessorId === '493606647126818837')
                 return;
             let current = this.all.get(accessorId);
@@ -78,14 +72,12 @@ class expHandler {
                 return;
             }
             const ids = current.update(...args);
-            //loop through all of the PonyExpobjects in the handler,save, new obj if undefined
             ids.forEach(id => {
                 const test = this.all.has(id);
                 if (!test) {
                     this.all.set(id, new exp_1.PonyExp());
                 }
                 else {
-                    console.log('id found');
                     if (!current) {
                         this.addUser(id);
                         return;
@@ -98,19 +90,16 @@ class expHandler {
         });
     }
     /**
-   * pipe all data in the Expeirence Map into a serialized JSON object
-   * @name toJSON
-   * @returns {object}
+   * pipe all data in the {@link ExperienceMap} into a serialized JSON object
    */
     toJSON() {
         const database_object = Object.fromEntries(this.all);
-        //console.log(); 
+        if (!database_object)
+            throw new types_1.Errors.fsClientError('error converting ExpeirenceMap data to object');
         return database_object;
     }
     /**
-   * load previously exported Expierence Map data from a database file
-   * @name load
-   * @returns {void}
+   * load previously exported {@link ExperienceMap} data from a database file
    */
     load() {
         for (const id in this.db.data) {
@@ -121,6 +110,6 @@ class expHandler {
         }
     }
 }
-exports.expHandler = expHandler;
-;
-exports.default = expHandler;
+exports.ExpHandler = ExpHandler;
+
+exports.default = ExpHandler;

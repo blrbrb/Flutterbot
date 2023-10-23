@@ -1,8 +1,7 @@
 
 
-const {format, formatTime, langRand} = require('../utils/utilities.js');
+const {Utilities} = require('../utils/utilities.js');
 const {discord, EmbedBuilder, Embed, } = require('discord.js');
-
 
 module.exports = {
   meta: {
@@ -50,7 +49,7 @@ module.exports = {
        */
       QueueEmpty()
       {
-        return {content: langRand(this.noQueue), ephemeral:true} 
+        return {content: Utilities.langRand(this.noQueue), ephemeral:true} 
       },
       /**
        * 
@@ -118,7 +117,7 @@ module.exports = {
       noGuildQuotes(guild)
       {
         const guildname = guild.name; 
-        return {content: format(langRand(this.noQuotesForGuild), {guildname}), ephemeral:  true};
+        return {content: Utilities.format(Utilities.langRand(this.noQuotesForGuild), {guildname}), ephemeral:  true};
       },
       /**
        * 
@@ -133,10 +132,10 @@ module.exports = {
       noMemberQuotes(member)
       {
         const name = member.username; 
-        return {content: format(langRand(this.noQuotesForMember), {name}), ephemeral:true};
+        return {content: Utilities.format(Utilities.langRand(this.noQuotesForMember), {name}), ephemeral:true};
       }, 
       noQuotesForMember: ["${name} hasn't said anything quotable in this server yet", "no quotes for ${name} here :(", "*chirp chirp* ${name} hasn't been quoted in this server before"],
-      //format parameters = none 
+      //Utilities.format parameters = none 
       noQuotesForGuild: ["there have not been any quotes saved to ${guildname} yet! Use /serverquote to save something special", 
       "Ponyville town hall doesn't seem to have any records for quotes in ${guildname}... use /serverquote to make some", 
       "It doesn't look like there's anything saved here. Use /serverquote to register new quotes for ${guildname}"],
@@ -159,7 +158,7 @@ module.exports = {
 
       OnRoleSelfAssign(role)
       {
-       return {content: format(langRand(this.noPermissionsMessage.onRoleSelfAssign), {role}), ephemeral:true};
+       return {content: Utilities.format(Utilities.langRand(this.noPermissionsMessage.onRoleSelfAssign), {role}), ephemeral:true};
       },
        /**
        * 
@@ -174,11 +173,11 @@ module.exports = {
        */
       OnRoleSelfRemove(role)
       {
-        return {content: format(langRand(this.noPermissionsMessage.onRoleSelfRemove), {role}), ephemeral:true};
+        return {content: Utilities.format(Utilities.langRand(this.noPermissionsMessage.onRoleSelfRemove), {role}), ephemeral:true};
       },
       OnClientVoiceConnectFail(channel)
       {
-        return {content: format(langRand(this.noPermissionsClientMessage.onClientVoiceConnect), {channel}), ephemeral:true};
+        return {content: Utilities.format(Utilities.langRand(this.noPermissionsClientMessage.onClientVoiceConnect), {channel}), ephemeral:true};
       },
        /**
        * 
@@ -193,7 +192,7 @@ module.exports = {
        */
       missing()
       {
-        return {content: format(langRand(this.noPermissionsMessage.generic)), ephemeral:true};
+        return {content: Utilities.format(Utilities.langRand(this.noPermissionsMessage.generic)), ephemeral:true};
       },
       noPermissionsMessage:
       {
@@ -232,7 +231,7 @@ module.exports = {
        */
       alreadyHas: function(role)
       {
-        return {content: format(langRand(this.RoleMessage.alreadyHas), {role}), ephemeral: true};
+        return {content: Utilities.format(Utilities.langRand(this.RoleMessage.alreadyHas), {role}), ephemeral: true};
       },
       /**
        * 
@@ -248,7 +247,7 @@ module.exports = {
        */
       private: function(role)
       {
-        return {content: format(langRand(this.RoleMessage.private) + langRand(this.RoleMessage.guidanceMessage), {role}), ephemeral: true};
+        return {content: Utilities.format(Utilities.langRand(this.RoleMessage.private) + Utilities.langRand(this.RoleMessage.guidanceMessage), {role}), ephemeral: true};
       },
       /**
        * 
@@ -264,7 +263,7 @@ module.exports = {
        */
       managed: function(role)
       {
-        return {content: format(langRand(this.RoleMessage.managed) + langRand(this.RoleMessage.guidanceMessage), {role}), ephemeral: true};
+        return {content: Utilities.format(Utilities.langRand(this.RoleMessage.managed) + Utilities.langRand(this.RoleMessage.guidanceMessage), {role}), ephemeral: true};
       },
        /**
        * 
@@ -280,7 +279,7 @@ module.exports = {
        */
       admin: function(role)
       {
-        return {content: format(langRand(this.RoleMessage.admin) + langRand(this.RoleMessage.guidanceMessage), {role}), ephemeral: true};
+        return {content: Utilities.format(Utilities.langRand(this.RoleMessage.admin) + Utilities.langRand(this.RoleMessage.guidanceMessage), {role}), ephemeral: true};
       },
       RoleMessage:
       {
@@ -306,7 +305,7 @@ module.exports = {
        *  
        * @returns a new {@link discord.InteractionResponse}
        */
-     onPlaying(queue,Flutterbot)
+     onPlaying(queue,Shy)
      { 
        const song = queue.songs[0];
        
@@ -316,7 +315,7 @@ module.exports = {
        const name = song.name; 
        playing.setAuthor({name:'Flutterbot.music',iconURL: Flutterbot.user.displayAvatarURL()})
        //.setThumbnail(song.turl) 
-       .setDescription(format(langRand(this.nowPlayingMessage), {song_name:song.name, song_url: song.url, duration:song.formattedDuration}))
+       .setDescription(Utilities.format(Utilities.langRand(this.nowPlayingMessage), {song_name:song.name, song_url: song.url, duration:song.formattedDuration}))
        return {embeds:[playing]};
      },
       /**
@@ -334,7 +333,7 @@ module.exports = {
        let color = Flutterbot.DB.getGuildConfig(queue.textChannel, 'embed_color'); 
        if(color) songAdded.setColor(color);
        songAdded.setAuthor({name: 'Flutterbot.music',iconURL: Flutterbot.user.displayAvatarURL()})
-       .setDescription(format(langRand(this.addSongMessage), {song_name: first.name, song_duration: `${first.formattedDuration}`, song_url: first.url}))
+       .setDescription(Utilities.format(Utilities.langRand(this.addSongMessage), {song_name: first.name, song_duration: `${first.formattedDuration}`, song_url: first.url}))
        let x = 0; 
 
        queue.songs.forEach(song => {
@@ -358,7 +357,7 @@ module.exports = {
      onQueueFinish()
      {
        
-       return {content: langRand(this.queueFinishMessage)};
+       return {content: Utilities.langRand(this.queueFinishMessage)};
      },
       /**
         * 
@@ -370,7 +369,7 @@ module.exports = {
      onQuery()
      {
        
-       return {content: langRand(this.queryMessage)};
+       return {content: Utilities.langRand(this.queryMessage)};
      },
      resume(queue)
      {
@@ -379,7 +378,7 @@ module.exports = {
        const duration = song.formattedDuration; 
        const songname = song.name;
        const randomIndex = Math.floor(Math.random() * this.resumeMessage.length);
-       return {content: format(this.resumeMessage[randomIndex], {song: songname, time:current_time, duration:duration}), ephemeral:false};
+       return {content: Utilities.format(this.resumeMessage[randomIndex], {song: songname, time:current_time, duration:duration}), ephemeral:false};
      }, 
       /**
         * 
@@ -395,7 +394,7 @@ module.exports = {
        const duration = song.formattedDuration; 
        const songname = song.name;
        const randomIndex = Math.floor(Math.random() * this.pauseMessage.length);
-       return {content:format(this.pauseMessage[randomIndex], {song: songname, time: current_time, duration: duration}), ephemeral:false};
+       return {content:Utilities.format(this.pauseMessage[randomIndex], {song: songname, time: current_time, duration: duration}), ephemeral:false};
      },
       /**
         * 
@@ -407,9 +406,9 @@ module.exports = {
      filter(filter)
      {
        const randomIndex = Math.floor(Math.random() * this.filterMessage.length);
-       return  {content: format(this.filterMessage[randomIndex], {filter: filter}), ephemeral:false};
+       return  {content: Utilities.format(this.filterMessage[randomIndex], {filter: filter}), ephemeral:false};
      },
-     //format parameters = s{song_name, song_duraion, song_user}
+     //Utilities.format parameters = s{song_name, song_duraion, song_user}
      nowPlayingMessage: ["🎶 Now playing **[${song_name}](${song_url})** / ${duration}", "Playing 🎵 **[${song_name}](${song_url})** / ${duration} 🎤", "We're listening to **[${song_name}](${song_url})** / ${duration}🎤","*metalic pegasus noises* Now playing **[${song_name}](${song_url})** / ${duration}", "Here's **[${song_name}](${song_url})**, it'll be playing for around ${duration}", "Now Playing **[${song_name}](${song_url})** for the next ${duration}", "*shy robotic pegasus noises* Now Playing **[${song_name}](${song_url})** / ${duration}", "*electronic stuttering* Please don't look inside the shed. Now Playing **[${song_name}](${song_url})** /${duration}",
                        "Remember that time I sung for the PonyTones? It was tramuatic!! Now Playing **[${song_name}](${song_url})** / ${duration}", "*in robotic Flutterguy voice* And now, a top track from [INSERT ARTIST]. [INSERT DJ COMMENTARY] **[${song_name}](${song_url})** / ${duration} ", "*shy robot voice* N-Now Playing **[${song_name}](${song_url})** / ${duration}", "*shy electronic squeaks* E-eep! I- I'm going to sing **[${song_name}](${song_url})** / ${duration} now...", "I cannot associate emotions with music in this robotic husk. Now Playing **[${song_name}](${song_url})** / ${song_duration}", "I can't beleive they actually convinced me to sing on stage all those years ago. Now Playing **[${song_name}](${song_url})** / ${duration}"],
      addSongMessage: ["Alright! I'll add **[${song_name}](${song_url})** to the queue", "No problem. Let me add **[${song_name}](${song_url})** to the playlist!", "Adding **[${song_name}](${song_url})** to our queue", "sure thing, we'll add **[${song_name}](${song_url})** to the queue", "I'll ask Vinyl to add **[${song_name}](${song_url})** to the tracklist for us", 
@@ -438,7 +437,7 @@ module.exports = {
        */
       loadingModel(time)
       {
-        return  {content: format(langRand(this.loadingModelMessage), {time}), ephemeral:true} 
+        return  {content: Utilities.format(Utilities.langRand(this.loadingModelMessage), {time}), ephemeral:true} 
       },
       loadingModelMessage:["I need a moment to start up!, use the same command again in around ${time} seconds!", "Just a moment, I need to start back up. Give me ${time} seconds!", "*the pegasus is eeping. give her ${time} seconds to wake up*", "Give me about ${time} seconds to wake back up", "I'll be right there, just ${time} seconds"]
     },
@@ -452,7 +451,7 @@ module.exports = {
        */
     scp()
     {
-      return langRand(this.scpMessage);
+      return Utilities.langRand(this.scpMessage);
     },
      /**
        * 
@@ -464,7 +463,7 @@ module.exports = {
     getrole(role)
     {
      
-      return {content: format(langRand(this.getroleMessage), {role}), ephemeral:false};
+      return {content: Utilities.format(Utilities.langRand(this.getroleMessage), {role}), ephemeral:false};
     }, 
     /**
        * 
@@ -476,7 +475,7 @@ module.exports = {
    
    
     
-    //format parameters = role. 
+    //Utilities.format parameters = role. 
     getroleMessage: ["Alright! You've just been given ${role}", "Sure thing! Now you should have ${role}", "Got it, now you have ${role}", "There you go! ${role}", 
     "welcome to ${role}!"],
   
@@ -492,7 +491,7 @@ module.exports = {
         embed.addFields(field); 
       });
 
-      return {content: langRand(this.BotResponses.onStart), embeds: [embed]} 
+      return {content: Utilities.langRand(this.BotResponses.onStart), embeds: [embed]} 
     }, 
     handleUserInput(collector)
     {
@@ -525,11 +524,11 @@ module.exports = {
             {
                 //the user has requested an ice breaker
                 case 1: 
-                  collector.channel.send(langRand(this.BotResponses.onCreateIceBreaker)); 
+                  collector.channel.send(Utilities.langRand(this.BotResponses.onCreateIceBreaker)); 
                   this.globalConfig.str ++; 
                   break; 
                 case 2: 
-                  collector.channel.send(langRand(this.BotResponses.onGames));
+                  collector.channel.send(Utilities.langRand(this.BotResponses.onGames));
                   this.globalConfig.usr_str ++; 
                   break;
                 case 3:
@@ -537,7 +536,7 @@ module.exports = {
                   break;
                 case 5:
                  //the user has said "stop"
-                 collector.channel.send(langRand(this.BotResponses.onStop));
+                 collector.channel.send(Utilities.langRand(this.BotResponses.onStop));
                  //reset position in conversation case
                  this.globalConfig.case = '', this.globalConfig.str = 0, this.command = '';
                  collector.stop();
@@ -545,12 +544,12 @@ module.exports = {
                  default:
                   if(this.globalConfig.case === 3 && this.user_str >= 1)
                   {
-                    collector.channel.send(langRand(format(this.BotResponses.confirmInput), {game: userContent}));
+                    collector.channel.send(Utilities.langRand(Utilities.format(this.BotResponses.confirmInput), {game: userContent}));
       
                   } 
                   if (userContent === 'stop') {
                     collector.stop();
-                    collector.channel.send(langRand(this.BotResponses.onStop));
+                    collector.channel.send(Utilities.langRand(this.BotResponses.onStop));
                     return;
                   }
                   this.globalConfig.usr_str ++; 
@@ -626,10 +625,10 @@ module.exports = {
 
   youShouldLitterallyNeverSeeThis:{
 
-    dearGodItsReal(client)
+    dearGodItsReal(shy)
     {
       const embed = new EmbedBuilder()
-      .setAuthor({name:'Flutterbot.guardian', iconURL: client.user.displayAvatarURL()})
+      .setAuthor({name:'Flutterbot.guardian', iconURL: shy.user.displayAvatarURL()})
       .setTitle('DANGER')
       .setDescription(this.message)
       .setColor('Red')

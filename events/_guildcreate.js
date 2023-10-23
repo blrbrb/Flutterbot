@@ -9,7 +9,7 @@ module.exports = {
 		
 		createGuild(Flutterbot, guild, true);
 
-		//guild.commands.set(Flutterbotslashcommands);
+	
 
 		return; 
 	}

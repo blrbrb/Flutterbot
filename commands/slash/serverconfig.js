@@ -74,7 +74,7 @@ module.exports = {
             ]
       },
     ], 
-    async execute(interaction,Flutterbot)
+    async execute(interaction,Shy)
     {
         const subcommand = interaction.options.getSubcommand();
         Flutterbot.DB.hasGuild(interaction.guild.id);

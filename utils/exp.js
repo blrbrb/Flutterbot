@@ -4,13 +4,17 @@ exports.PonyExp = void 0;
 const discord_js_1 = require("discord.js");
 const types_1 = require("./types");
 /**
- * Object attached to each user in a guild that automatically calculates, and scribes
- * expeirence points from server interactions. All PonyExp objects are updated at once by the
- * @see {expHandler} within the events loop.
+ * expeirence points for an individual user
+ * @classdesc Object attached to each user in a guild that automatically calculates, and scribes
+ * expeirence points from server interactions. All PonyExp objects are updated at once by the {@link expHandler}
+ * within Flutterbot's main event loop
+ *
+ * @see {expHandler}{PonyExpData}
  *
  * @export
- * @class PonyExp
+ *
  * @implements {PonyExpData}
+ * @class
  */
 class PonyExp {
     constructor(Data) {
@@ -81,7 +85,7 @@ class PonyExp {
     }
     _calculateRequired() {
         const baseExperience = 100;
-        const experienceMultiplier = 1.2;
+        const experienceMultiplier = 1.4;
         const experienceRequired = Math.round(baseExperience * Math.pow(experienceMultiplier, this.level - 1));
         return experienceRequired;
     }

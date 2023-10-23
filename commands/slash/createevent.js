@@ -81,7 +81,7 @@ module.exports = {
       }
 
 
-      const guild = await interaction.client.guilds.cache.find(guild => guild.id === interaction.guild.id);
+      const guild = await interaction.shy.guilds.cache.find(guild => guild.id === interaction.guild.id);
       
       if (!guild)
         return console.log('Guild not found');
@@ -101,7 +101,7 @@ module.exports = {
       {
         console.log(response);
         //save the event to the db, so we can display the event info later in an embed announcement
-        client.db.set(guild.id, "events", response); 
+        shy.db.set(guild.id, "events", response); 
         return interaction.reply(`okay!, I'll tell everypony to meetup <t:${parseInt(date.getTime() / 1000)}:R> in ${channel}!`); 
       })
      

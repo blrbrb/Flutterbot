@@ -4,7 +4,7 @@ module.exports = {
 	name: "terminal",
 	description: "bring up a unix commandline interface",
 	cooldown: 0,
-	async execute(client, message, args) {
+	async execute(shy, message, args) {
 		console.log('terminal command was called'); 
 		if (message.author.id !== '252235505318625281') return;
 

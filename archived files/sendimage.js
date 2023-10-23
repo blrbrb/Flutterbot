@@ -17,7 +17,7 @@ module.exports = async function sendImage(msg, cmdName, startTime, img, extensio
         timestamp: new Date(),
         author: {
             name: "FlutterBot",
-            icon_url: msg.client.user.displayAvatarURL(),
+            icon_url: msg.shy.user.displayAvatarURL(),
         },
         image: {
             url: "attachment://image." + extension,

@@ -1,6 +1,6 @@
-const { ActionRowBuilder, ButtonBuilder, EmbedBuilder, ComponentType, PermissionFlagsBits, Embed} = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, EmbedBuilder, ComponentType} = require('discord.js');
 const ytdl = require('ytdl-core');
-const {MusicMediaUrl, hasVoiceChannelPermissions, nsfwChannel, formatYtLink} = require('../../utils/utilities.js');
+const {Utilities}= require('../../utils/utilities.js');
 const {errorMessage} = require('../../lang/en.js');
 
 
@@ -29,11 +29,11 @@ module.exports = {
 		//if (!hasVoiceChannelPermissions(interaction, Flutterbot)) return interaction.reply(errorMessage.PermissionError.OnClientVoiceConnectFail(interaction.member.voice.channel));
 
 		//determine if the query is a raw link, or a search term 
-		switch(MusicMediaUrl(query))
+		switch(Utilities.MusicMediaUrl(query))
 		{
 			case 'yt':
 			
-				Flutterbot.DisTube.play(interaction.member.voice.channel, formatYtLink(query), {
+				Flutterbot.DisTube.play(interaction.member.voice.channel, Utilities.formatYtLink(query), {
 					member: interaction.member,
 					textChannel: interaction.channel,
 				}).then(interaction.reply({content:`Fetching this url from youtube.com...`, ephemeral:true}));
@@ -56,7 +56,7 @@ module.exports = {
 		
 
 	},
-	async queue_video(interaction, client, query, queue, nsfw) 
+	async queue_video(interaction, shy, query, queue, nsfw) 
 	{
 		Flutterbot.DisTube.play(interaction.member.voice.channel, firstResult.url, {
 		member: interaction.member,

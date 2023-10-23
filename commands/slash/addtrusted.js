@@ -14,7 +14,7 @@ module.exports = {
             required: true,
         }
     ],
-    async execute(interaction,Flutterbot)  {
+    async execute(interaction,Shy)  {
         console.log('working');
         let user = interaction.options.getUser('trusted');
         let data;

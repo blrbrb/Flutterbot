@@ -6,7 +6,8 @@ module.exports = {
 	name: Events.ClientReady,
 	once: true,
 	async execute(Flutterbot) {
-        Log('green',`Fluttershy is awake! \n`,true, true, false);
+        try{
+        Flutterbot.Log('green',`Fluttershy is awake! \n`,true, true, false);
 
    
     Flutterbot.DisTube.on("playSong", (queue, song) => {
@@ -28,7 +29,12 @@ module.exports = {
         
         queue.textChannel.send({embeds:[commandResponses.Distube.onAddSong(queue, Flutterbot)]});
     });
-    
+}
+catch(error)
+{
+    Flutterbot.Log('Red', error);
+    return;
+}
 }
 
     

@@ -13,7 +13,7 @@ module.exports = {
             required: true
         }
     ],
-    async execute(interaction,Flutterbot)  {
+    async execute(interaction,Shy)  {
         console.log('working');
         let channel = interaction.options.getChannel('channel');
         let data;

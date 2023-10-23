@@ -4,7 +4,7 @@ module.exports = {
 	name: 'rate',
 	description: 'rate anything on a scale of one to ten',
 	category: 'Chat Input',
-	execute(message, args, client) {
+	execute(message, args, shy) {
 		var rating = new Array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 		var nopro;
 

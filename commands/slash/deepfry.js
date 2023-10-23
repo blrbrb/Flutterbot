@@ -3,8 +3,6 @@ const gm = require('gm').subClass({
     imageMagick: true
 });
 
-const {findImage} = require('../../utils/utilities.js');
-
 module.exports = {
     name: 'deepfry',
     description: 'Fluttershy Will Dip your images into the deepfrier',
@@ -17,11 +15,11 @@ module.exports = {
             required: true
         }
     ],
-    async execute(interaction, Flutterbot) {
+    async execute(interaction, shy) {
 
         imageUrl = await interaction.options.getAttachment('image').url;
 
-        const extension = findImage.extensionFinder(imageUrl);
+        const extension = Flutterbot.getextension(imageUrl);
 
         if (imageUrl !== undefined) {
             interaction.channel.sendTyping();

@@ -4,7 +4,7 @@ module.exports = {
     name: 'playing',
     description: 'get the currently playing song',
     helpText: `View the currently playing track  \n Use: **/resume**`,
-    async execute(interaction,Flutterbot)  {
+    async execute(interaction,Shy)  {
         const queue = await Flutterbot.DisTube.getQueue(interaction);
 
         let track = queue.songs[0];

@@ -5,9 +5,9 @@ module.exports = {
     options: [
         {
             type: 3,
-            name: "commands",
-            description: "Choose the name of the command ",
-            choices: [],
+            name: "command",
+            description: "what can i help you with?",
+            choices: ["play","fmrecent","deepfry","queue","skip"],
             required: true
           
         }
@@ -20,7 +20,7 @@ module.exports = {
           
         }
     },
-    execute(Discord, client, interaction) {
+    execute(Discord, shy, interaction) {
         let command = this.slashCommands.get(interaction.options.getString('command'));
         let text = "E"; 
         

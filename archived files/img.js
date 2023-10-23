@@ -6,7 +6,7 @@ require('dotenv').config();
 module.exports = {
     name: 'img',
     description: 'sends a random image corresponding to a google image search',
-    execute(client, message, args) {
+    execute(shy, message, args) {
         //console.log('correct module'); 
 
         let splitWord = message.toString().split(" ");

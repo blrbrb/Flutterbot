@@ -187,52 +187,49 @@ var fsSnowflakeType;
     fsSnowflakeType[fsSnowflakeType["Message"] = 6] = "Message";
     fsSnowflakeType[fsSnowflakeType["Guild"] = 7] = "Guild";
 })(fsSnowflakeType || (exports.fsSnowflakeType = fsSnowflakeType = {}));
-var Errors;
-(function (Errors) {
-    let type;
-    (function (type) {
-        type[type["Permissions"] = 0] = "Permissions";
-    })(type = Errors.type || (Errors.type = {}));
-    class fsDatabaseError extends fsError {
-        constructor(message, error) {
-            super(message, error);
-            this.name = 'fsDatabaseError';
-        }
+
+class fsDatabaseError extends fsError {
+    constructor(message, error) {
+        super(message, error);
+        this.name = 'fsDatabaseError';
     }
-    Errors.fsDatabaseError = fsDatabaseError;
+}
+exports.fsDatabaseError = fsDatabaseError;
     class fsPermissionsError extends fsError {
         constructor(message, error) {
             super(message, error);
             this.name = 'fsPermisionsEror';
         }
     }
-    Errors.fsPermissionsError = fsPermissionsError;
+    exports.fsPermissionsError = fsPermissionsError;
     class fsClientError extends fsError {
         constructor(message, error) {
             super(message, error);
             this.name = 'fsClientError';
         }
     }
-    Errors.fsClientError = fsClientError;
+    exports.fsClientError = fsClientError;
     class fsAPIError extends fsError {
         constructor(message, error) {
             super(message, error);
             this.name = 'fsAPIError';
         }
     }
-    Errors.fsAPIError = fsAPIError;
+    exports.fsAPIError = fsAPIError;
     class fsTypeError extends fsError {
         constructor(message, error) {
             super(message, error);
             this.name = 'fsTypeError';
         }
     }
-    Errors.fsTypeError = fsTypeError;
+    exports.fsTypeError = fsTypeError;
     class fsLockBoxError extends fsError {
         constructor(message, error) {
             super(message, error);
             this.name = 'fsLockBoxError';
         }
     }
-    Errors.fsLockBoxError = fsLockBoxError;
-})(Errors || (exports.Errors = Errors = {}));
+    let fsErrorTypes;
+    (function (fsErrorTypes) {
+        fsErrorTypes[fsErrorTypes["Permissions"] = 0] = "Permissions";
+    })(fsErrorTypes = exports.fsErrorTypes || (exports.fsErrorTypes = {}));

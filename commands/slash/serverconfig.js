@@ -2,7 +2,16 @@ const {ApplicationCommandOptionType, EmbedBuilder, PermissionFlagsBits, Embed} =
 const fs = require('fs');
 const config = require('../../config/config.json');
 const {errorMessage } = require('../../lang/en.js');
-const {isValidHexColor} = require('../../utils/utilities.js');
+const { Flutterbot } = require('../../client/Flutterbot');
+const {Errors, fsError, fsDatabaseError} = require('../../utils/types');
+
+
+function isValidHexColor(color) {
+   
+  const hexColorPattern = /^#?([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/;
+  return hexColorPattern.test(color);
+ 
+}
 
 module.exports = {
     name: "config",
@@ -72,12 +81,15 @@ module.exports = {
             required: true
           }
             ]
-      },
-    ], 
-    async execute(interaction,Shy)
+      },],
+    /**
+     * @param {import('discord.js').Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
+    async execute(interaction,Flutterbot)
     {
         const subcommand = interaction.options.getSubcommand();
-        Flutterbot.DB.hasGuild(interaction.guild.id);
+        Flutterbot.DB.has(interaction.guild.id);
 
         if(!interaction.member.permissions.has(PermissionFlagsBits.Administrator) && !config.always_trusted.includes(interaction.user.id)) return interaction.reply(errorMessage.Permissions.adminCommand());
 
@@ -97,22 +109,27 @@ module.exports = {
               //if the guild already has a list of private roles
               if(Flutterbot.DB.get(`${interaction.guild.id}.config.private_roles`))
               {
-                temp = Flutterbot.DB.get(`${interaction.guild.id}.config.private_roles`)
+                let temp = []; 
+                dat = Flutterbot.DB.get(`${interaction.guild.id}.config.private_roles`);
+                if(!Array.isArray(dat)){
+                  temp.push(dat);
+                }
+                temp = dat; 
                 //if the guild already has the role registered as private 
                  if(temp.includes(role.id))
                  {
                   return await interaction.reply(`${role} is already a private member role in this server. ${role} cannot be indexed with /roles, /getRole, and /removerole.`);
                  }
-                 else
+                else
                 temp.push(role.id)
-                Flutterbot.DB.setGuildConfig(interaction.guild.id,"private_roles", temp);
+                Flutterbot.DB.setGuildConfig(interaction.guild,"private_roles", temp);
                 await interaction.reply(`Okay! I've added: ${role} to the list of private guild roles!`);
                 break; 
               }
               else 
               //if the guild has no list of private roles, create a new one and initalize it with 
               //the role provided
-              Flutterbot.DB.setGuildConfig(interaction.guild.id,"private_roles", role.id);
+              Flutterbot.DB.setGuildConfig(interaction,"private_roles", role.id);
               await interaction.reply(`key not found`);
               break; 
           

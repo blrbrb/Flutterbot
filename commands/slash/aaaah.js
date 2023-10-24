@@ -1,4 +1,5 @@
-const { ApplicationCommandOptionType } = require('discord.js');
+const { ApplicationCommandOptionType, Interaction } = require('discord.js');
+const {Flutterbot} = require('../../client/Flutterbot');
 const request = require('request');
 const gm = require('gm').subClass({
     imageMagick: true
@@ -18,9 +19,12 @@ module.exports = {
             required: true
         }
     ],
-    async execute(interaction,Shy)  { // eslint-disable-line no-unused-vars
-        imageUrl = await findImage(message);
-        console.log(imageUrl);
+    /**
+     * @param {Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
+    async execute(interaction,Flutterbot)  { // eslint-disable-line no-unused-vars
+        let imageUrl = await interaction.options.getAttachment("image").url;
         if (imageUrl !== undefined) {
             gm(request(imageUrl))
                 .out("-radial-blur", 10)

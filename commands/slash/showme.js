@@ -12,6 +12,10 @@ module.exports = {
             required: true
         }
     ],
+    /**
+     * @param {import('discord.js').Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
     async execute(interaction, Flutterbot) {
         var options = {
             url: "https://artsandculture.google.com/color?col=" + interaction.options.getString('colour').toUpperCase(),

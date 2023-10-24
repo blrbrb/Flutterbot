@@ -1,7 +1,8 @@
-const { GuildScheduledEventManager,ApplicationCommandOptionType, PermissionFlagsBits, SlashCommandBuilder, GuildScheduledEventPrivacyLevel, GuildScheduledEventEntityType, ChannelType } = require("discord.js");
-const { description } = require("./maintenance");
+const { GuildScheduledEventManager,Interaction,ApplicationCommandOptionType, PermissionFlagsBits, GuildScheduledEventPrivacyLevel, GuildScheduledEventEntityType, ChannelType } = require("discord.js");
+
 const {stringToDate} = require("../../utils/utilities.js")
-const {errorMessage, commandResponses} = require('../../lang/en.js');
+const {errorMessage} = require('../../lang/en.js');
+const {Flutterbot} = require('../../client/Flutterbot');
 module.exports = {
     name: "event",
     description: "create a new event",
@@ -45,6 +46,10 @@ module.exports = {
     },
    
     ],
+    /**
+    * @param {Interaction} interaction
+    * @param {Flutterbot} Flutterbot
+    */
     async execute(interaction, Flutterbot) {
 
       const guild_id = interaction.guild.id;

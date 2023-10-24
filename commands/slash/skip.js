@@ -8,6 +8,10 @@ module.exports = {
             description: "Queued song to skip e.g '2' will skip the second song in queue"
         }
     ],
+    /**
+     * @param {import('discord.js').Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
     async execute(interaction, Flutterbot) {
         const queue = await Flutterbot.DisTube.getQueue(interaction);
         if(!queue) return interaction.reply(`But there is no queue! Use /play to search for songs`);

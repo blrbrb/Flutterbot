@@ -4,11 +4,17 @@ const gm = require('gm').subClass({
 });
 
 const {findImage} = require('../../utils/utilities.js');
+const { Message } = require('discord.js');
 //const fs = require('fs');
 module.exports = {
 	name: 'circle',
 	description: 'Fluttershy Will Circularize an image',
 	cooldown: 3, 
+	/**
+     * @param {Message} message
+     * @param {Flutterbot} Flutterbot
+	 * @param {string[]} [args]
+     */
 	async execute(Flutterbot, message, args) { // eslint-disable-line no-unused-vars
 
 		var IOR = 10;

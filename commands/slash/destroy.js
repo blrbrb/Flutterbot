@@ -1,4 +1,7 @@
 const request = require('request');
+const {Flutterbot} = require('../../client/Flutterbot');
+const {interaction} = require('discord.js');
+const Utilities = require('../../utils/utilities.js');
 const gm = require('gm').subClass({
     imageMagick: true
 });
@@ -17,29 +20,26 @@ module.exports = {
             required: true
         }
     ],
+    /**
+     * @param {import('discord.js').Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
     async execute(interaction, Flutterbot) {
         imageUrl = await interaction.options.getAttachment('image').url;
-        gm(request(imageUrl)).size(async (error, size) => {
-            if(error){
-                console.log(error)
-               // return interaction.reply(error);
-            }
-            if (size.height > 1200 || size.width > 1200) {
-                return interaction.reply(`t-that's way too big of an image for me!🖌️🐇`);
-            }
-             gm(request(imageUrl)).implode([frange(-50, 0)]).strip().stream((error, stdout) => {
+    
+             await gm(request(imageUrl)).implode(Math.random(1)% 0.5).strip().stream((error, stdout) => {
                 if (error) throw new Error(error);
-                interaction.reply({
+               return interaction.reply({
                     files: [{
                         attachment: stdout,
                         name: "destroy.png"
                     }]
                 });
             });
-        });
-        const extension = findImage.extensionFinder(imageUrl);
+     
+       
         
-            interaction.channel.sendTyping();
+    
             
         
     }

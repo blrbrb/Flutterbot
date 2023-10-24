@@ -1,4 +1,7 @@
 const request = require('request');
+const utilities = require('../../utils/utilities')
+const {Flutterbot} = require('../../client/Flutterbot');
+const {Interaction} = require('discord.js');
 const gm = require('gm').subClass({
     imageMagick: true
 });
@@ -23,12 +26,16 @@ module.exports = {
             description: "increase or decrese the quality of the JPEG from 1 to 10"
         }
     ],
+    /**
+     * @param {Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
     async execute(interaction, Flutterbot) {
 
         var quality = 1;
 
         imageUrl = await interaction.options.getAttachment('image').url;
-        const extension = findImage.extensionFinder(imageUrl);
+        const extension = utilities.getExtension(imageUrl);
 
         if (interaction.options.getNumber('quality'))
             quality = interaction.options.getNumber('quality');

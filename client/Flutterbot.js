@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Flutterbot = void 0;
+exports.Flutterbot = exports.shy = void 0;
 require('dotenv').config();
 const SimpleDatabase_1 = require("../utils/SimpleDatabase");
 const ExpHandler_1 = require("../utils/ExpHandler");
@@ -87,8 +87,8 @@ const options = {
         * @memberof Shy
         */
         this.GuildCooldowns = new Map();
-        /**
-        * message / url content saftey scanner module
+         /**
+        * Flutterbot's slash (interaction) commands
         * @memberof Shy
         */
         this.SlashCommands = commands.SlashCommands;
@@ -116,12 +116,12 @@ const options = {
         */
         this.LockBox = new LockBox_1.default();
         /**
-         * Flutterbot's DisTube instance
+        * message / url content saftey scanner module
         * @memberof Shy
         */
         this.Evaluator = new evaluator_1.default(this.DB, this);
         /**
-        * Flutterbot's slash (interaction) commands
+         * Flutterbot's DisTube instance
         * @memberof Shy
         */
         this.DisTube = new distube_1.default(this, {
@@ -178,7 +178,7 @@ const options = {
         });
     }
 }
-
+exports.shy = Shy;
 class Flutterbot extends Shy{
    
     constructor()
@@ -202,8 +202,9 @@ class Flutterbot extends Shy{
     this.formatytlink = utilities_1.formatYtLink;
     this.lockbox = new LockBox_1.default();
     this.lastfm = this.LastFm;
+    this.imageFinder = utilities_1.imageFinder;
     }
     
 }
 exports.Flutterbot = new Flutterbot();
-exports.default = exports.Flutterbot;
+

@@ -1,7 +1,7 @@
 const {commandResponses, errorMessage} = require('../../lang/en.js'); 
-const {EmbedBuilder} = require('discord.js'); 
+const {EmbedBuilder, Interaction} = require('discord.js'); 
 
-
+const {Flutterbot} = require('../../client/Flutterbot');
 
 module.exports = {
     name: 'filter',
@@ -111,6 +111,10 @@ module.exports = {
             description: 'Manually specify a FFMPEG filter to apply directly to the stream'
         }
     ],
+    /**
+     * @param {Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
     async execute(interaction, Flutterbot) {
 
         const selection = ((interaction.options.getString('filter')) ? interaction.options.getString('filter') : interaction.options.getString('ffmpeg'))

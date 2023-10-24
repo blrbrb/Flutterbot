@@ -1,7 +1,7 @@
 const Color = "RANDOM";
 const Discord = require('discord.js');
 const { EmbedBuilder } = require('discord.js');
-
+const {Flutterbot} = require('../../client/Flutterbot');
 module.exports = {
     name: "rip",
     description: "RIP",
@@ -13,6 +13,10 @@ module.exports = {
             required: true
         }
     ],
+    /**
+     * @param {import('discord.js').Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
     async execute(interaction, Flutterbot) {
         const Member = interaction.options.getUser('user');
 

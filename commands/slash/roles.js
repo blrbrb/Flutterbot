@@ -1,10 +1,14 @@
 
-const {ActionRow, Embed, EmbedBuilder, ActionRowBuilder, ComponentType, ButtonStyle, ButtonBuilder,PermissionFlagsBits} = require('discord.js');
-
+const { Interaction, EmbedBuilder,PermissionFlagsBits} = require('discord.js');
+const {Flutterbot} = require('../../client/Flutterbot');
 
 module.exports = {
   name: 'roles',
   description: 'list all available roles',
+  /**
+     * @param {Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
   async execute(interaction, Flutterbot) { 
    
     let private_roles = Flutterbot.DB.get(`${interaction.guild.id}.config.private_roles`); 

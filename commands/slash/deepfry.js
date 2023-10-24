@@ -1,4 +1,7 @@
 const request = require('request');
+const {Flutterbot} = require('../../client/Flutterbot')
+const {Interaction} = require('discord.js');
+const utilities = require('../../utils/utilities')
 const gm = require('gm').subClass({
     imageMagick: true
 });
@@ -15,30 +18,19 @@ module.exports = {
             required: true
         }
     ],
-    async execute(interaction, shy) {
+    /**
+     * @param {Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
+    async execute(interaction, Flutterbot) {
 
         imageUrl = await interaction.options.getAttachment('image').url;
 
-        const extension = Flutterbot.getextension(imageUrl);
-
+        const extension = utilities.getExtension(imageUrl);
         if (imageUrl !== undefined) {
             interaction.channel.sendTyping();
-            await gm(request(imageUrl)).size((error, size) => {
-                if (size.height > 1200 || size.width > 1200) {
-                    return interaction.reply(`t-that's way too big of an image for me!🖌️🐇`);
-                }
-                if (extension == 'gif') {
-                    gm(request(imageUrl)).colorspace("RGB").out("-brightness-contrast", "30x50").setFormat("jpg").quality(1).stream((error, stdout) => {
-                        if (error) throw new Error(error);
-                        interaction.reply({
-                            files: [{
-                                attachment: stdout,
-                                name: "deepfry.gif"
-                            }]
-                        });
-                    });
-                } else {
-                    gm(request(imageUrl)).colorspace("RGB").out("-brightness-contrast", "30x50").setFormat("jpg").quality(1).stream((error, stdout) => {
+
+                    await gm(request(imageUrl)).colorspace("RGB").out("-brightness-contrast", "30x50").setFormat("jpg").quality(1).stream((error, stdout) => {
                         if (error) throw new Error(error);
 
                         interaction.reply({
@@ -49,7 +41,5 @@ module.exports = {
                         });
                     });
                 }
-            });
         }
     }
-}

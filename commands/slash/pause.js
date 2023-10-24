@@ -1,11 +1,15 @@
 const {commandResponses, errorMessage} = require('../../lang/en.js'); 
-const { formatTime } = require('../../utils/utilities.js');
-const {EmbedBuilder} = require('discord.js');
 
+const {EmbedBuilder, Interaction} = require('discord.js');
+const {Flutterbot} = require('../../client/Flutterbot');
 module.exports = {
     name: 'pause',
     description: 'pause the currently playing song',
     helpText: `Pause the currently playing music or video \n Use: **/pause**`,
+    /**
+     * @param {Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
     async execute(interaction, Flutterbot) {
         const queue = await Flutterbot.DisTube.getQueue(interaction);
         const embed = new EmbedBuilder(); 

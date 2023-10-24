@@ -4,6 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SimpleDatabase = void 0;
+
+const Discord = require('discord.js');
 const fs_1 = __importDefault(require("fs"));
 const types_1 = require("./types");
 const utilities_1 = require("./utilities");
@@ -53,7 +55,8 @@ class SimpleDatabase {
     }
     /**
      * Private Class Method. Called by the database each time a property is changed, added, or deleted
-     * @name SimpleDatabase#_saveData
+     * @name _saveData
+     * @memberof SimpleDatabase
      * @returns {void}
      */
     _saveData() {
@@ -65,11 +68,15 @@ class SimpleDatabase {
         }
     }
     /**
-     * Modify a value in the database
-     * @name SimpleDatabase#set
-     * @param {string} key
-     * @param {any} value
-     * @returns {void}
+     * #### Add a value to the database
+     * --- 
+     * Accepts formatted property string e.g "12312131123.config.embed_color" (returns the embed color of the guild)
+     * Or a discord API object that can be resolved down into a unique [Snowflake]({.Snowflake}) ID 
+     * 
+     * @param {import("./types").fsIDResolvable} [property] [fsIDResolvable]({@link types_1.fsIDResolvable}) 
+     * @param {Key} [string] string 
+     * @param {any} value The new property to set.
+     * @return {void}
      *
      */
     set(IDResolvable, Key, value) {
@@ -84,6 +91,7 @@ class SimpleDatabase {
         else
             ID = utilities_1.resolveID(IDResolvable);
         exists = this.has(ID);
+        console.log()
         if (this.debug_print)
             this.log('green', 'Acessing database...', true, true, false);
         current = this.data[ID];
@@ -198,11 +206,13 @@ class SimpleDatabase {
         return;
     }
     /**
-     * @summary Set a key-value at the root of the database instead of attaching it to a discord API object.
+     * #### Add a value to the root of the database manually 
+     * ---
+     * Sets a key-value pair at the root of the database instead of attaching it to a discord API object's Snowflake ID.
      * Useful for things that aren't easily indexed by snowflakes.
-     * @name SimpleDatabase#setAtRoot
-     * @param {string} key
-     * @param {any} value
+     * 
+     * @param {string} [key]
+     * @param {any} [value]
      * @returns {void}
      */
     setAtRoot(key, value) {
@@ -212,11 +222,11 @@ class SimpleDatabase {
         this._saveData();
     }
     /**
-     * merge two class objects together, keeping and updating the contents of the old
-     * @name SimpleDatabase#_updateObject
-     * @param {fsObject} New
-     * @param {fsObject} Old
-     * @returns {object}
+     * #### Merge two objects together, keeping and updating the contents of the old
+     * ---
+     * @param {import('../types').fsObject} New
+     * @param {import('../types').fsObject} Old
+     * @returns {import('../types').fsObject}
      */
     _updateObject(New, Old) {
         // Create a new object with props. of old obj to update
@@ -232,8 +242,8 @@ class SimpleDatabase {
         return combined;
     }
     /**
-     * Deletes a value from the database file.
-     * @name SimpleDatabase#deleteEntry
+     * #### Delete a value from the database file.
+     * ---
      * @param {string} key
      * @returns {void}
      */
@@ -260,9 +270,9 @@ class SimpleDatabase {
         this._saveData();
     }
     /**
-     * sets the default cooldown time for a guild's configuration in the database file.
-     * @name SimpleDatabase#setGuildCoolDown
-     * @param {Discord.Snowflake} GuildResolvable
+     * #### Sets the default cooldown time for a guild's configuration in the database file.
+     * ---
+     * @param {fsGuildIDResolvable} GuildResolvable
      * @param {number} cooldowntime
      * @returns {void}
      */
@@ -296,7 +306,7 @@ class SimpleDatabase {
     /**
      * updates, or creates a new value for a guild's configuration in the database file
      * @name SimpleDatabase#setGuildConfig
-     * @param {Discord.GuildResolvable} GuildResolvable
+     * @param {fsIDResolvable} GuildResolvable
      * @param {string} configKey
      * @param {any} value
      * @returns {void}
@@ -496,29 +506,52 @@ class SimpleDatabase {
      * hasKey() will search the ENTIRE db tree for matches, not just the root of the json tree.
      * They aren't intercompatible because guild id's may appear elsewhere in the db file farther down
      * and conflate the results.
-     * @param {GuildResolvable} GuildResolvable object that can be resolved into an {@link Discord.Snowflake}
+     * @param {import("./types").fsIDResolvable} GuildResolvable object that can be resolved into an {@link Discord.Snowflake}
      * see {@link GuildResolvable} and
      * @returns {true} if the object has been stored in the database before, false if not.
      */
-    has(fsIDResolvable) {
+    has(fsIDResolvable, searchStr) {
         if (!this.data)
             throw new types_1.Errors.fsDatabaseError('data is undefined. Check to make sure you are loading the database file properly');
-        let ID = utilities_1.resolveID(fsIDResolvable);
-        if (utilities_1.IsSnowflake(ID) && ID in this.data)
-            return true;
-        else if (typeof (fsIDResolvable) === 'string') {
-            let keys = fsIDResolvable.includes('.') ? fsIDResolvable.split('.') : fsIDResolvable;
+            let ref;
+        if(fsIDResolvable && !searchStr){
+        if (typeof (fsIDResolvable) === 'string'){
+        if(utilities_1.IsSnowflake(fsIDResolvable) && fsIDResolvable in this.data){return true}
+             ref = utilities_1.resolveID(fsIDResolvable);
+            }}
+        else if(!fsIDResolvable && searchStr){
+            ref = searchStr; 
+            let keys = ref.includes('.') ? ref.split('.') : ref;
             let current = this.data;
             for (const key of keys) {
                 if (current.hasOwnProperty(key)) {
-                    current = current[key];
+                    if((typeof(current[key]) === 'object'))
+                     current = current[key];
+                    else return true;
                 }
                 else {
                     return false; // Key doesn't exist in the data
                 }
             }
-            return true;
         }
+        else if(fsIDResolvable && searchStr){
+            ref ={'id': utilities_1.resolveID(fsIDResolvable),"search": searchStr};
+            let keys = ref.search.includes('.') ? ref.search.split('.') : ref.search;
+            let current = this.data[ref.id];
+
+            for (const key of keys) {
+                if (current.hasOwnProperty(key)) {
+                    if((typeof(current) === 'object'))
+                     current = current[key];
+                    else return true;
+                }
+                else {
+                    return false; // Key doesn't exist in the data
+                }
+            }}
+        else
+            throw new types_1.Errors.fsDatabaseError('no search parameters provided');
+        
         return false;
     }
     /**

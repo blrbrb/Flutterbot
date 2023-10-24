@@ -1,6 +1,6 @@
 
 
-const {Utilities} = require('../utils/utilities.js');
+const Utilities = require('../utils/utilities.js');
 const {discord, EmbedBuilder, Embed, } = require('discord.js');
 
 module.exports = {
@@ -85,7 +85,7 @@ module.exports = {
        * 
        * @description returns an error message in the 
        * scenario that someone is attempting to pause an already paused queue
-       * @returns a new {@link discord.InteractionResponse} ephermeral
+       * @returns a new {@link discord.InteractionResponse} @param {Flutterbot} Flutterboteral
        * (so people don't get embarrased or smth when a command doesn't work) 
        * 
        */
@@ -305,7 +305,7 @@ module.exports = {
        *  
        * @returns a new {@link discord.InteractionResponse}
        */
-     onPlaying(queue,Shy)
+     onPlaying(queue,Flutterbot)
      { 
        const song = queue.songs[0];
        

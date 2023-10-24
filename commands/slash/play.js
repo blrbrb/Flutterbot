@@ -1,8 +1,8 @@
-const { ActionRowBuilder, ButtonBuilder, EmbedBuilder, ComponentType} = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, EmbedBuilder,Interaction, ComponentType} = require('discord.js');
 const ytdl = require('ytdl-core');
-const {Utilities}= require('../../utils/utilities.js');
+const Utilities= require('../../utils/utilities.js');
 const {errorMessage} = require('../../lang/en.js');
-
+const {Flutterbot} = require('../../client/Flutterbot');
 
 
 module.exports = {
@@ -17,6 +17,10 @@ module.exports = {
 			required: true
 		}
 	],
+	/**
+     * @param {Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
 	async execute(interaction, Flutterbot) {
 		
 		const query = interaction.options.getString('query');

@@ -22,13 +22,17 @@ module.exports = {
 			description: "increase or decrease the IOR of the UV sphere 1 to 10"
 		}
 	],
+	/**
+     * @param {import('discord.js').Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
 	async execute(interaction, Flutterbot) { // eslint-disable-line no-unused-vars
 
 		var IOR = 10;
 
 		var url = await interaction.options.getAttachment("image").url;
 		console.log(url);
-		const extension = findImage.extensionFinder(url);
+	    
 
 		if (interaction.options.getNumber('ior')) {
 			IOR = interaction.options.getNumber('ior');

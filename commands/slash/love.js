@@ -1,5 +1,5 @@
-const { EmbedBuilder, ApplicationCommandOptionType } = require('discord.js');
-
+const { EmbedBuilder, ApplicationCommandOptionType, Interaction } = require('discord.js');
+const {Flutterbot} = require('../../client/Flutterbot');
 module.exports = {
     name: 'love',
     description: 'love meter thingy',
@@ -18,6 +18,10 @@ module.exports = {
             required: false
         }
     ],
+    /**
+     * @param {Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
     execute(interaction, Flutterbot) {
         let lover1 = interaction.options.get('somepony').user;
         let lover2 = interaction.options.get('somepony2')?.user;

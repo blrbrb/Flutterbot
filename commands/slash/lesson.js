@@ -1,10 +1,14 @@
 const fs = require('fs');
-const { EmbedBuilder } = require('discord.js');
-
+const { EmbedBuilder, Interaction } = require('discord.js');
+const {Flutterbot} = require('../../client/Flutterbot');
 module.exports = {
     name: 'lesson',
     description: 'get a randomly fetched quote from the FIM TV series!',
     helpText: `I'll pull up a random snippet of dialouge from any of the nine seasons of FIM \n Use: **/lesson**`,
+    /**
+     * @param {Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
     async execute(interaction, shy) {
         //TO DO: Find a way to fetch corresponding images for each pony speaking. 
 

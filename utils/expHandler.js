@@ -15,7 +15,6 @@ const types_1 = require("./types");
 const utilities_1 = require("./utilities");
 
 
-//I rape women fuck fuck fuck please
 class ExpHandler {
     /**
    * Creates an instance of ExpHandler.

@@ -20,6 +20,10 @@ module.exports = {
             required: true
         }
     ],
+    /**
+     * @param {import('discord.js').Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
     async execute(interaction, Flutterbot)
     { 
         

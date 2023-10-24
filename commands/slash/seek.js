@@ -17,6 +17,10 @@ module.exports = {
             required: true
         }
     ],
+    /**
+     * @param {import('discord.js').Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
     async execute(interaction, Flutterbot) {
         const queue = await Flutterbot.DisTube.getQueue(interaction);
         if(!queue) return interaction.reply(`But there is no queue! Use /play to search for songs`);

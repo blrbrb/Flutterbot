@@ -1,6 +1,6 @@
 const fs = require('fs');
-const { PermissionFlagsBits } = require('discord.js');
-
+const { PermissionFlagsBits, Interaction } = require('discord.js');
+const {Flutterbot} = require('../../client/Flutterbot');
 module.exports = {
   name: 'roleprivate',
   description: 'Creates a new role with the given name and adds its ID to a JSON file',
@@ -12,6 +12,10 @@ module.exports = {
       required: true,
     },
   ],
+  /**
+     * @param {Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
   async execute(interaction, Flutterbot) {
 
 

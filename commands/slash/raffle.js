@@ -4,6 +4,10 @@ module.exports = {
  
     name: 'raffle',
     description: 'Selects a random user in the guild.',
+    /**
+     * @param {import('discord.js').Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
     async execute(interaction, Flutterbot) {
 
     // Check if user has admin role

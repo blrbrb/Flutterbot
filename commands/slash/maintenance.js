@@ -1,6 +1,6 @@
 const {developers} = require('../../config/config.json');
-const { ApplicationCommandOptionType } = require('discord.js');
-
+const { ApplicationCommandOptionType, Interaction } = require('discord.js');
+const {Flutterbot} = require('../../client/Flutterbot');
 module.exports = { 
     name: 'announce_maintenance',
     description: 'announce to ALL GUILDS a period of time maintenance will be done on Flutterbot',
@@ -18,6 +18,10 @@ module.exports = {
             required: false
         }
     ],
+    /**
+     * @param {Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
 async execute(interaction, Flutterbot){
 const start = interaction.options.getString('start');
 const end = interaction.options.getString('end');

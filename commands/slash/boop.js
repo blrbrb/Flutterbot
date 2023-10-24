@@ -10,6 +10,10 @@ module.exports = {
             type: 6
         }
     ],
+    /**
+    * @param {import('discord.js').Interaction} interaction
+    * @param {Flutterbot} Flutterbot
+    */
     async execute(interaction, Flutterbot) {
         //if (args[0]==null || args[0]=="") return message.channel.send('uhhhhm. please sepecify an argument for booping'); 
 

@@ -1,6 +1,6 @@
-const { ApplicationCommandOptionType } = require('discord.js');
+const { ApplicationCommandOptionType,Interaction } = require('discord.js');
 const fs = require('fs');
-
+const {Flutterbot} = require('../../client/Flutterbot');
 module.exports = {
     name: "angelconfig",
     description: "set up global variables for fluttershy's anti-abuse backend",
@@ -13,7 +13,11 @@ module.exports = {
             required: true
         }
     ],
-    async execute(interaction,Shy)  {
+    /**
+     * @param {Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
+    async execute(interaction,Flutterbot)  {
         console.log('working');
         let channel = interaction.options.getChannel('channel');
         let data;

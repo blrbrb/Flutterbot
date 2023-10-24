@@ -1,7 +1,7 @@
 
-const {format} = require('../../utils/utilities.js');
-const { PermissionFlagsBits } = require('discord.js');
+const { PermissionFlagsBits, Interaction } = require('discord.js');
 const {commandResponses, errorMessage} = require('../../lang/en.js');
+const {Flutterbot} = require('../../client/Flutterbot');
 module.exports = {
     name: "getrole",
     description: "assign yourself one of the availble roles in a server",
@@ -13,6 +13,10 @@ module.exports = {
             required: true,
         },
     ],
+    /**
+     * @param {Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
     async execute(interaction, Flutterbot) {
         const role = interaction.options.getRole('role');
         const guildMember = interaction.member;

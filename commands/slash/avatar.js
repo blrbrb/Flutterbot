@@ -1,4 +1,5 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder,Interaction } = require('discord.js');
+const {Flutterbot} = require('../../client/Flutterbot');
 
 module.exports = {
     name: 'avatar',
@@ -12,10 +13,13 @@ module.exports = {
             required: true
         }
     ],
-    async execute(interaction,Shy)  {
-        interaction.reply(`this command doesnt work currently sorry :(`);
-        return;
-        let taggedUser = message.mentions.members.first();
+    /**
+     * @param {Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
+    async execute(interaction,Flutterbot)  {
+       
+        let taggedUser = interaction.options.getUser('somepony');
 
         console.log(taggedUser);
 

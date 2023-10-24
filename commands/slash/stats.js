@@ -8,6 +8,10 @@ const { error } = require('console');
 module.exports = {
     name: 'stats',
     description: 'this is just for fun.',
+    /**
+     * @param {import('discord.js').Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
     async execute(interaction, Flutterbot)
     {
         let stats = Flutterbot.DB.get(`${interaction.user.id}.PonyExp`); 
@@ -17,9 +21,6 @@ module.exports = {
         {
             return interaction.reply({content:"it looks like you haven't earned any exp in this server yet, check back later.",ephemeral:true})
         }
-
-        console.log(stats); 
-
         const embed = new EmbedBuilder().setAuthor({name:`Stats for ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL()})
         .addFields({name: 'messages', value: `${stats.msg}`})
         .setDescription(`you are currently level **${stats.level}**, with ** \ ${stats.experience}/${stats.required} \ ** exp to reach the next level \n All-Time Stats:`)

@@ -329,6 +329,60 @@ const path = __importStar(require("path"));
     }
     exports.resolveID = resolveID;
     /**
+     * find image attachments on discord Objects without a built in option 
+     * to fetch attachments
+     * @param {Message}
+     * @return {str | undefined} 
+     */
+    function imageFinder(message){ 
+    return new Promise(async (resolve, reject) => {
+        try {
+            // if (message.attachments.size > 0) {
+            //   // If message has image attachment
+            //   let imgUrl = await message.attachments.first();
+            //   resolve(imgUrl.proxyURL); // Resolve image URL
+            // } else if (message.embeds[0] && msg.embeds[0].type == "image") {
+            //   // If message has image embed
+            //   let imgUrl = message.embeds[0].url;
+            //   resolve(imgUrl); // Resolve image URL
+            // } else {
+          
+            let messages = await message.channel.messages.fetch({ limit: 2 });
+            let attachmentMessages = messages
+                .map((message) => {
+                    let attachmentURL = undefined;
+                    if (message.attachments.first()) {
+                        attachmentURL = message.attachments.first().proxyURL;
+                       console.log(attachmentURL); // If message has image attachment set as URL
+                    } else {
+                        if (message.embeds[0] && message.embeds[0].type == "image") {
+                            attachmentURL = message.embeds[0].url;
+                            console.log("jpg/png image found"); // If message has image embed set as URL
+                        }
+                        if (message.embeds[0] && message.embeds[0].type == "gifv") {
+                            attachmentURL = message.embeds[0].url + (message.embeds[0].url.match(/(\.gif)/gi) ? "" : ".gif");
+                                console.log("gif image found"); // If message has gifv embed set as URL (Ensuring it ends with .gif)
+                        }
+                        if (message.embeds[0] && message.embeds[0].image != null) {
+                            attachmentURL = message.embeds[0].image.url; 
+                            console.log(message.embeds[0].image.url);// If message is an embed with an image
+                        }
+                    }
+                    if (attachmentURL) console.log("image found"); return attachmentURL; // Return image URL for each message
+                })
+                .filter((a) => a != undefined); // Filter out messages with no image
+            if (attachmentMessages[0]) {
+                resolve(attachmentMessages[0]); // Resolve image URL
+            } else {
+                reject("No Image found");
+            }
+            // }
+        } catch (e) {
+            reject(e);
+        }
+    });}
+    exports.imageFinder = imageFinder; 
+    /**
      * Determine wether or not an object has shared keys with another object.
      *
      * @param {object} [obj1]
@@ -615,6 +669,7 @@ const path = __importStar(require("path"));
         //init text input commands
         for (let file of prefixFiles) {
             let command = require(`../commands/prefix/${file}`);
+          
             // let total = commandFiles.length;
             // process.stdout.clearLine();
             // process.stdout.cursorTo(0);
@@ -634,8 +689,8 @@ const path = __importStar(require("path"));
         }
         // console.log(' ');
         //setup help command helpText's
-        let helpJS = require('./help.js');
-        helpJS.helpSetup(SlashCommands);
+        //let helpJS = require('./help.js');
+        //helpJS.helpSetup(SlashCommands);
         //just for now until we can get a fix going, sorry emily :(
         // we'll see
         // SlashCommands.set(helpJS.name, helpJS);

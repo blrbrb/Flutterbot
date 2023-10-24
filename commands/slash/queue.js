@@ -1,11 +1,16 @@
 ﻿const { formatTime } = require('../../utils/utilities.js')
-const {EmbedBuilder} = require('discord.js');  
+const {EmbedBuilder, Interaction} = require('discord.js');  
 const {errorMessage, commandResponses} = require('../../lang/en.js');
 const { error } = require('console');
+const {Flutterbot} = require('../../client/Flutterbot');
 module.exports = {
     name: 'queue',
     description: 'display the queue of currently playing songs',
     helpText: `View all of the currently queued songs and videos \n Use: **/queue**`,
+    /**
+     * @param {Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
     async execute(interaction, Flutterbot) {
         const embed = new EmbedBuilder(); 
 

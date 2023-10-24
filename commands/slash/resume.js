@@ -4,6 +4,10 @@ module.exports = {
     name: 'resume',
     description: 'resume a paused song',
     helpText: `Resume the paused music or video \n Use: **/resume**`,
+    /**
+     * @param {import('discord.js').Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
     async execute(interaction, Flutterbot) {
         const queue = await Flutterbot.DisTube.getQueue(interaction);
         const embed = new EmbedBuilder(); 

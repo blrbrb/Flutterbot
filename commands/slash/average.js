@@ -1,4 +1,6 @@
-﻿const {findImage} = require('../../utils/utilities.js');
+﻿const utilities = require('../../utils/utilities')
+const {Flutterbot} = require('../../client/Flutterbot');
+const {Interaction} = require('discord.js');
 const request = require('request');
 const gm = require('gm').subClass({
     imageMagick: true
@@ -16,11 +18,15 @@ module.exports = {
             required: true
         }
     ],
+    /**
+    * @param {Interaction} interaction
+    * @param {Flutterbot} Flutterbot
+    */
     async execute(interaction, Flutterbot) {
         let quality = 1;
 
         imageUrl = await interaction.options.getAttachment('image').url;
-        const extension = findImage.extensionFinder(imageUrl);
+        const extension = utilities.getExtension(imageUrl);
 
         if (interaction.options.getNumber('quality'))
             quality = interaction.options.getNumber('quality');

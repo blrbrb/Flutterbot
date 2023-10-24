@@ -1,6 +1,6 @@
-const { ApplicationCommandOptionType } = require('discord.js');
+const { ApplicationCommandOptionType, Interaction } = require('discord.js');
 const fs = require('fs');
-
+const {Flutterbot} = require('../../client/Flutterbot');
 module.exports = {
     name: "addtrusted",
     description: "add someone to angel's list of trusted ponies",
@@ -14,7 +14,11 @@ module.exports = {
             required: true,
         }
     ],
-    async execute(interaction,Shy)  {
+    /**
+     * @param {Interaction} interaction
+     * @param {Flutterbot} Flutterbot
+     */
+    async execute(interaction,Flutterbot)  {
         console.log('working');
         let user = interaction.options.getUser('trusted');
         let data;
@@ -42,7 +46,7 @@ module.exports = {
 
                 // Write the updated list to the JSON file
                 fs.writeFileSync('guardianAngel/config.json', JSON.stringify(data, null, 2));
-
+                
                 // Reply with a confirmation message
                 return interaction.reply(`Added "${user.username}" with ID "${user.id}" to the list of trusted users!`);
             }

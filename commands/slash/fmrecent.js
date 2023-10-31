@@ -141,7 +141,7 @@ module.exports = {
     
          });
     
-          interaction.editReply(
+          interaction.reply(
             {embeds:[embed]}
           );
           break;

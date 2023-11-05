@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+      "baseUrl": ".",
+      "paths": {
+        "*": ["types/*"]
+      },
+      "typeRoots": ["types"],
+      "allowSyntheticDefaultImports": true
+    }
+  }

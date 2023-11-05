@@ -1,6 +1,6 @@
 const { Events, Collection, ChannelType} = require('discord.js');
 const {handledistubeSelection} = require('../commands/slash/play.js');
-
+const {handleSyncRequest} = require('../commands/slash/fmrecent.js')
 const fs = require('fs');
 const { Shy } = require('../client/Flutterbot.js');
 
@@ -8,30 +8,53 @@ module.exports = {
     name: Events.InteractionCreate,
     once: false,
     async execute(Flutterbot, interaction){ 
+      
+        let command; 
+       
         try{
         if(interaction.channel.type === ChannelType.DM)
             return; 
         if(interaction.isMessageComponent())
-        {
+        {   
+          
+          // console.log(Flutterbot.collectors)
             //if this interaction "${interaction.user.id}" is for selecting distube search results
             if(Flutterbot.collectors.has(`distube_results${interaction.user.id}`))
-            { 
+            {   
                 response = Flutterbot.collectors.get(`distube_results${interaction.user.id}`); 
                 handledistubeSelection(response, Flutterbot, interaction);
             }
+            if(Flutterbot.collectors.has(`fmIntegration${interaction.user.id}`))
+            {  
+                response = Flutterbot.collectors.get(`fmIntegration${interaction.user.id}`); 
+                handleSyncRequest(response, Flutterbot, interaction);
+            }
             return; 
         }
-        let command; 
+       
         //if the command is an application command 
         if (interaction.isChatInputCommand()) {
-           
+            
 			command = Flutterbot.SlashCommands.get(interaction.commandName);
         }
-        //if the command is a prefix command 
-        //this must be else/if, or the command will default equal undefined. That not good
-        else{
-            command = Flutterbot.commands.get(interaction.commandName);}
-
+        //handler user context menu commands 
+        if (interaction.isUserContextMenuCommand())
+        {   
+            const { username, id } = interaction.targetUser;
+           
+            command = Flutterbot.ContextCommands.get(interaction.commandName);
+            console.log(`context command name is ${command.name}`);
+        }   
+           //handler message context menu commands 
+        if (interaction.isMessageContextMenuCommand())
+        {   
+               //const { username, id } = interaction.targetUser;
+               //console.log(interaction);
+               command = Flutterbot.ContextCommands.get(interaction.commandName);
+               
+        }   
+         
+      
         let cooldowns = Flutterbot.GuildCooldowns.get(interaction.guild.id);
         
         if (!cooldowns) {
@@ -59,20 +82,13 @@ module.exports = {
 	    setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
 
         // we should check if a command isnt found but was registered in discord
-        Flutterbot.SlashCommands.get(interaction.commandName)?.execute(interaction, Flutterbot); 
-        Flutterbot.ExpHandler.update(interaction);
-    
-       
+        command.execute(interaction, Flutterbot); 
     }
     catch(fsError)
     {
-      
-    Flutterbot.Log('Red',`${fsError.name}: ${fsError.message}`);
-    Flutterbot.Log(`${fsError.origin()}`);
-      interaction.reply({
-        content: `Something went wrong while executing this command... I'll send this to elly: \n **${fsError.name}** **${fsError.stack.split('\n')[1]}`,
-        ephemeral: true,
-    });
+    console.log(fsError);
+    Flutterbot.Log('Red',`${fsError}`);
+    Flutterbot.Log(`${fsError}`);
 	  return;
     }
  }

@@ -1,5 +1,5 @@
 const {developers} = require('../../config/config.json');
-const { ApplicationCommandOptionType, Interaction } = require('discord.js');
+const { ApplicationCommandOptionType, Interaction, CommandInteractionOptionResolver } = require('discord.js');
 const {Flutterbot} = require('../../client/Flutterbot');
 module.exports = { 
     name: 'announce_maintenance',

@@ -1,7 +1,10 @@
 
-const { PermissionFlagsBits, Interaction } = require('discord.js');
+const { PermissionFlagsBits, Interaction} = require('discord.js');
 const {commandResponses, errorMessage} = require('../../lang/en.js');
 const {Flutterbot} = require('../../client/Flutterbot');
+ 
+
+
 module.exports = {
     name: "getrole",
     description: "assign yourself one of the availble roles in a server",
@@ -20,35 +23,38 @@ module.exports = {
     async execute(interaction, Flutterbot) {
         const role = interaction.options.getRole('role');
         const guildMember = interaction.member;
-        const private_roles = Flutterbot.DB.get(`${interaction.guild.id}.config.private_roles`);
-       
-        //ensure the target role is not privated or admin
-        if (private_roles.includes(role.id) || role.permissions.has(PermissionFlagsBits.Administrator) || role.managed) {
-            
-            let exitReason; 
-            if(role.managed)
-              exitReason = errorMessage.RoleError.managed(role);
-            else if(role.permissions.has(PermissionFlagsBits.Administrator))
-              exitReason = errorMessage.RoleError.admin(role);
-            else(private_roles.includes(role.id))
-              exitReason = errorMessage.RoleError.private(role)
-            
-            return interaction.reply(exitReason);
-        }
+        const guild = Flutterbot.DB.guilds.get(interaction.guild.id);
 
-        else if (guildMember.roles.cache.has(role.id)) {
-                return interaction.reply(errorMessage.RoleError.alreadyHas(role));
-           
-        }
+        const private_roles = guild.config.privateRoles; 
+        
+        //ensure the target role is not privated or admin
+        let exitReason; 
+        if(role.managed)
+         return interaction.reply(errorMessage.RoleError.managed(role));
+        else if(role.permissions.has(PermissionFlagsBits.Administrator))
+          return interaction.reply(errorMessage.RoleError.admin(role));
+        else if(private_roles.includes(role.id))
+          return interaction.reply(errorMessage.RoleError.private(role));
+        else if (guildMember.roles.cache.has(role.id)) 
+            return interaction.reply(errorMessage.RoleError.alreadyHas(role));
+        else 
+        //continue normal execution of the command 
+        
         try {
             await guildMember.roles.add(role);
             interaction.reply(commandResponses.getrole(role));
         } catch (error) {
             console.error(error);
+
+            if(error.code === 50013)
+            {
+                interaction.reply(`\ ${error} \  If you are seeing this a guild has not given me permission to manage roles. `);
+            }
+            else{
             interaction.reply({
                 content: 'Failed to add role',
                 ephemeral: true,
-            });
+            });}
         }
     },
 };

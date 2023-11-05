@@ -1,5 +1,6 @@
-const { EmbedBuilder, ApplicationCommandOptionType } = require('discord.js');
+const { EmbedBuilder,Interaction, ApplicationCommandOptionType } = require('discord.js');
 const {errorMessage} = require('../../lang/en.js');
+const {Flutterbot} = require('../../client/Flutterbot');
 module.exports = {
     name: 'quotesfrom',
     description: "get a list of someones greatest hits",
@@ -12,18 +13,18 @@ module.exports = {
         }
     ],
     /**
-     * @param {import('discord.js').Interaction} interaction
+     * @param {Interaction} interaction
      * @param {Flutterbot} Flutterbot
      */
     async execute(interaction, Flutterbot)
     {
     
-       
-          
-        
+
         const speaker = interaction.options.get('from').user;
-        let username = speaker.username; 
-        const userdat = Flutterbot.DB.get(`${speaker.id}`);
+       
+        const userdat = Flutterbot.DB.users.get(speaker.id);
+        console.log(userdat);
+
         let embed = new EmbedBuilder()
         .setTitle(`${speaker.username}`)
         .setThumbnail(speaker.displayAvatarURL({ dynamic: true, size: 256 }))
@@ -31,6 +32,7 @@ module.exports = {
         //let fetched_quotes = Flutterbot.DB.get(`${interaction.guild.id}.server_quotes`)
         
         //get wont work with Arrays rn tried
+       
         if(!userdat)
             return interaction.reply(errorMessage.quotesfromError.noMemberQuotes(speaker));
        
@@ -38,9 +40,8 @@ module.exports = {
         if(!userdat.hasOwnProperty('server_quotes')){Flutterbot.DB.set(speaker.id, "server_quotes", []); return interaction.reply(errorMessage.quotesfromError.noMemberQuotes(speaker)); }
 
         let fetched_quotes = userdat.server_quotes; 
-        console.log(fetched_quotes);
-        console.log(userdat);
-        let filtered_quotes = fetched_quotes.filter(fetched_quotes => fetched_quotes.id === speaker.id && fetched_quotes.guild === interaction.guild.id);
+        console.log(userdat.server_quotes);
+        let filtered_quotes = fetched_quotes.filter(fetched_quotes => fetched_quotes.UserId === speaker.id && fetched_quotes.GuildId === interaction.guild.id);
        
         
         if(!filtered_quotes)

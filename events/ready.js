@@ -5,12 +5,13 @@ const { de } = require('chrono-node');
 module.exports = {
 	name: Events.ClientReady,
 	once: true,
-	async execute(Flutterbot) {
+	async execute(Flutterbot) { 
+        
         try{
         Flutterbot.Log('green',`Fluttershy is awake! \n`,true, true, false);
-
-   
-    Flutterbot.DisTube.on("playSong", (queue, song) => {
+        Flutterbot.Log('',`initalizing client details for command responses... \n`,true, true, false);    
+        Flutterbot.__addClientDetails(Flutterbot.user);
+        Flutterbot.DisTube.on("playSong", (queue, song) => {
     
         queue.textChannel.send(commandResponses.Distube.onPlaying(queue, Flutterbot));
     });
@@ -35,6 +36,10 @@ catch(error)
     Flutterbot.Log('Red', error);
     return;
 }
+},
+then: (callback) =>
+{
+    
 }
 
     

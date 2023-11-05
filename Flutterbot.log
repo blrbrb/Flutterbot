@@ -17,3 +17,140 @@ fsError: I'm having trouble connecting to my model right now, I can't generate t
 fsError: I'm having trouble connecting to my model right now, I can't generate text
     at C:\Users\elire\OneDrive\Desktop\Flutterbot\commands\prefix\fluttershy.js:61:27
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+TypeError: fsError.origin is not a function
+TypeError: fsError.origin is not a function
+TypeError: fsError.origin is not a function
+ReferenceError: client is not defined
+ReferenceError: client is not defined
+TypeError: interaction.isMessageComponent is not a function
+TypeError: interaction.isMessageComponent is not a function
+TypeError: interaction.isMessageComponent is not a function
+ReferenceError: messageCommandInverter is not defined
+ReferenceError: messageCommandInverter is not defined
+ReferenceError: discor is not defined
+ReferenceError: discor is not defined
+TypeError: cmd.options is not a constructor
+TypeError: cmd.options is not a constructor
+TypeError: interaction.isMessageComponent is not a function
+TypeError: interaction.isMessageComponent is not a function
+TypeError: Cannot read properties of undefined (reading '0')
+TypeError: Cannot read properties of undefined (reading '0')
+TypeError: Cannot read properties of undefined (reading '0')
+TypeError: Cannot read properties of undefined (reading '0')
+TypeError: Cannot read properties of undefined (reading '0')
+TypeError: Cannot read properties of undefined (reading '0')
+TypeError: Cannot read properties of undefined (reading '0')
+TypeError: Cannot read properties of undefined (reading '0')
+TypeError: Cannot read properties of undefined (reading '0')
+TypeError: Cannot read properties of undefined (reading '0')
+TypeError: Cannot read properties of undefined (reading '0')
+TypeError: Cannot read properties of undefined (reading '0')
+TypeError: Cannot read properties of undefined (reading '0') 
+TypeError: Cannot read properties of undefined (reading '0')
+TypeError: Cannot read properties of undefined (reading '0') 
+TypeError: Cannot read properties of undefined (reading '0') 
+TypeError: Cannot read properties of undefined (reading '0') 
+TypeError: Cannot read properties of undefined (reading '0') 
+TypeError: Cannot read properties of undefined (reading '0') 
+TypeError: interaction.isMessageComponent is not a function
+TypeError: interaction.isMessageComponent is not a function
+ReferenceError: channel is not defined 
+TypeError: message.channel.permissionsIn is not a function 
+TypeError: Cannot read properties of undefined (reading 'permissionsIn') 
+TypeError: Cannot read properties of undefined (reading 'permissionsIn') 
+TypeError: chan.permissionsIn is not a function 
+TypeError: Cannot read properties of undefined (reading 'permissionsIn') 
+TypeError: Cannot read properties of undefined (reading 'permissionsIn') 
+TypeError: Cannot read properties of undefined (reading 'permissionsIn') 
+TypeError: Cannot read properties of undefined (reading 'cache') 
+TypeError: Cannot read properties of undefined (reading 'permissionsIn') 
+TypeError: Cannot read properties of undefined (reading 'id') 
+TypeError: interaction.reply is not a function 
+TypeError: Cannot read properties of undefined (reading 'options') 
+TypeError: Cannot read properties of undefined (reading 'options') 
+TypeError: GuildIDResolvable.editReply is not a function 
+TypeError: GuildIDResolvable.editReply is not a function 
+TypeError: Right-hand side of 'instanceof' is not an object 
+TypeError: Cannot read properties of undefined (reading 'send') 
+TypeError: Cannot read properties of undefined (reading 'getString') 
+TypeError: Cannot read properties of undefined (reading 'send') 
+TypeError: Cannot read properties of undefined (reading 'send') 
+TypeError: Cannot read properties of undefined (reading 'send') 
+TypeError: Cannot read properties of undefined (reading 'send') 
+TypeError: Cannot read properties of undefined (reading 'send') 
+TypeError: Cannot read properties of undefined (reading 'send') 
+TypeError: Cannot read properties of undefined (reading 'send') 
+TypeError: Cannot read properties of undefined (reading 'send') 
+TypeError: Cannot read properties of undefined (reading 'send') 
+TypeError: Cannot read properties of undefined (reading 'id') 
+ReferenceError: interaction is not defined 
+TypeError: Cannot read properties of undefined (reading 'reply') 
+TypeError: Cannot read properties of undefined (reading 'message') 
+TypeError: Cannot read properties of undefined (reading 'reply') 
+TypeError: Cannot read properties of undefined (reading 'reply') 
+TypeError: "sorry, the play command isn't supported as a hyrbdid command yet! Type " is not a function 
+TypeError: Cannot read properties of undefined (reading 'reply') 
+TypeError: Cannot read properties of undefined (reading 'name')
+TypeError: Cannot read properties of undefined (reading 'name')
+TypeError: Cannot read properties of undefined (reading 'name')
+TypeError: Cannot read properties of undefined (reading 'name')
+TypeError: Cannot read properties of undefined (reading 'name')
+TypeError: Cannot read properties of undefined (reading 'name')
+TypeError: Cannot read properties of undefined (reading 'execute')
+TypeError: Cannot read properties of undefined (reading 'execute')
+TypeError: Cannot read properties of undefined (reading 'execute')
+TypeError: Cannot read properties of undefined (reading 'execute')
+TypeError: Cannot read properties of undefined (reading 'name')
+TypeError: Cannot read properties of undefined (reading 'name')
+TypeError: Cannot read properties of undefined (reading 'name')
+TypeError: Cannot read properties of undefined (reading 'name')
+TypeError: Cannot read properties of undefined (reading 'name')
+TypeError: Cannot read properties of undefined (reading 'name')
+TypeError: Cannot destructure property 'username' of 'interaction.targetUser' as it is undefined.
+TypeError: Cannot destructure property 'username' of 'interaction.targetUser' as it is undefined.
+TypeError: Cannot destructure property 'username' of 'interaction.targetUser' as it is undefined.
+TypeError: Cannot destructure property 'username' of 'interaction.targetUser' as it is undefined.
+Created role: Quaratine
+Created role: Quaratine
+TypeError: handleSyncRequest is not a function
+TypeError: handleSyncRequest is not a function
+TypeError: handleSyncRequest is not a function
+TypeError: handleSyncRequest is not a function
+TypeError: collector.on(...).then is not a function
+TypeError: collector.on(...).then is not a function
+Created role: Quaratine
+Created role: Quaratine
+TypeError: Cannot read properties of undefined (reading 'id') 
+TypeError: Cannot read properties of undefined (reading 'onMessage')
+TypeError: Cannot read properties of undefined (reading 'onMessage')
+TypeError: Cannot read properties of undefined (reading 'onMessage')
+messagecreate.js lin 54: TypeError: Cannot read properties of undefined (reading 'execute') 
+TypeError: Flutterbot.lang.addClientDetails is not a function
+TypeError: shy.displayAvatarURL is not a function
+TypeError: Cannot read properties of undefined (reading 'displayAvatarURL')
+ReferenceError: obj is not defined
+ReferenceError: obj is not defined
+TypeError: Cannot read properties of undefined (reading 'config')
+TypeError: Cannot read properties of undefined (reading 'config')
+TypeError: Cannot read properties of undefined (reading 'config')
+TypeError: Cannot read properties of undefined (reading 'config')
+TypeError: Cannot read properties of undefined (reading 'config')
+TypeError: Cannot read properties of undefined (reading 'config')
+TypeError: Cannot read properties of undefined (reading 'config')
+TypeError: Cannot read properties of undefined (reading 'config')
+TypeError: key.reduce is not a function
+TypeError: key.reduce is not a function
+TypeError: Cannot read properties of undefined (reading 'config')
+TypeError: Cannot read properties of undefined (reading 'config')
+TypeError: Cannot read properties of undefined (reading 'config')
+TypeError: Cannot read properties of undefined (reading 'config')
+ReferenceError: acc is not defined
+ReferenceError: acc is not defined
+TypeError: Cannot read properties of undefined (reading '368957683187056672')
+TypeError: Cannot read properties of undefined (reading '368957683187056672')
+TypeError: Cannot read properties of undefined (reading 'config')
+TypeError: Cannot read properties of undefined (reading 'config')
+TypeError: Cannot read properties of undefined (reading 'config')
+TypeError: Cannot read properties of undefined (reading 'config')
+TypeError: Cannot read properties of undefined (reading 'config')
+TypeError: Cannot read properties of undefined (reading 'config')

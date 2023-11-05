@@ -3,7 +3,7 @@ const fs = require('fs');
 const config = require('../../config/config.json');
 const {errorMessage } = require('../../lang/en.js');
 const { Flutterbot } = require('../../client/Flutterbot');
-const {Errors, fsError, fsDatabaseError} = require('../../utils/types');
+const {Errors, fsError, fsDatabaseError} = require('../../structures/types');
 
 
 function isValidHexColor(color) {
@@ -107,30 +107,11 @@ module.exports = {
               const role = interaction.options.getRole('role');
 
               //if the guild already has a list of private roles
-              if(Flutterbot.DB.get(`${interaction.guild.id}.config.private_roles`))
-              {
-                let temp = []; 
-                dat = Flutterbot.DB.get(`${interaction.guild.id}.config.private_roles`);
-                if(!Array.isArray(dat)){
-                  temp.push(dat);
-                }
-                temp = dat; 
-                //if the guild already has the role registered as private 
-                 if(temp.includes(role.id))
-                 {
-                  return await interaction.reply(`${role} is already a private member role in this server. ${role} cannot be indexed with /roles, /getRole, and /removerole.`);
-                 }
-                else
-                temp.push(role.id)
-                Flutterbot.DB.setGuildConfig(interaction.guild,"private_roles", temp);
-                await interaction.reply(`Okay! I've added: ${role} to the list of private guild roles!`);
-                break; 
-              }
-              else 
-              //if the guild has no list of private roles, create a new one and initalize it with 
-              //the role provided
-              Flutterbot.DB.setGuildConfig(interaction,"private_roles", role.id);
-              await interaction.reply(`key not found`);
+           
+              Flutterbot.DB.guilds.get(interaction.guild.id).addPrivateRole(role.id);
+              Flutterbot.DB._saveData();
+              await interaction.reply({content:`role registered`, ephemeral:true}); 
+              console.log(Flutterbot.DB.guilds.get(interaction.guild.id));
               break; 
           
             case 'set_cooldown': 

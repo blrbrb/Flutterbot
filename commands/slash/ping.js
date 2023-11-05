@@ -1,6 +1,6 @@
 //use interaction.channel.send to send a message to a text channel without replying to an interaction. 
 const {Flutterbot} = require('../../client/Flutterbot');
-const {Interaction} = require('discord.js');
+const {Interaction, CommandInteraction} = require('discord.js');
 module.exports = {
     name: 'ping',
     description: "testbed",
@@ -11,6 +11,9 @@ module.exports = {
      */
     async execute(interaction, Flutterbot) {
         const greeting = 'Hi! Im Fluttershy :sparkling_heart: ';
-        return interaction.reply({ content: greeting });
+        if(interaction instanceof CommandInteraction)
+            return interaction.reply({ content: greeting });
+        else 
+            return interaction.message.reply({ content: greeting });
     }
 }

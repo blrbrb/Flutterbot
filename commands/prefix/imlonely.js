@@ -5,7 +5,7 @@ module.exports = {
 	name: "imlonely",
 	description: "",
     cooldown: 2, 
-	async execute(Flutterbot, message, args)
+	async execute(message, Flutterbot, args)
     {
         //for now
         return; 

@@ -1,21 +1,183 @@
 import utilities from '../utils/utilities';
 import { User, Guild, GuildMember, Channel, Message, Interaction, APIApplicationCommand, Role, 
-GuildEmoji, Collection, NonThreadGuildBasedChannel, Invite,Snowflake,GuildEmoji, MessageReaction, GuildMemberEditOptions, Emoji,  } from 'discord.js';
+GuildEmoji, Collection, NonThreadGuildBasedChannel, Invite,Snowflake,GuildEmoji, MessageReaction, GuildMemberEditOptions, Emoji, CommandInteraction, BaseGuildTextChannel, BaseInteraction, GuildResolvable, UserResolvable, ContextMenuCommandInteraction,  } from 'discord.js';
 
 import DisTube from 'distube';
 import { APIApplicationCommand, Collection, Utils, GuildEmoji, Channel, Snowflake } from 'discord.js';
 import { ExpHandler } from '../utils/ExpHandler';
 import { SimpleDatabase } from '../utils/SimpleDatabase'; 
-import  Evaluator  from '../guardianAngel/evaluator';
+import  AngelBunny  from '../guardianAngel/AngelBunny';
 import { LockBox } from '../utils/LockBox';
 import { PonyExp } from '../utils/exp';
-import { fsError, fsSnowflakeType, Errors, fsMemberQuote} from '../utils/types';
-import { shy } from '../client/Flutterbot';
+import { fsError, fsSnowflakeType, Errors, fsMemberQuote} from '../structures/types';
+import { shy,Flutterbot} from '../client/Flutterbot';
 
-/**
- * property map/json representing a core database object. can contain any datatype, indexed by string
- */
-interface fsObject{[key: string]: any;}
+
+export type fsUserIDResolvable = UserResolvable;
+export type fsGuildIDResolvable = GuildResolvable;
+export type fsIDResolvable = fsUserIDResolvable | fsGuildIDResolvable | CommandInteraction | ContextMenuCommandInteraction
+export class Shy extends Client {
+
+       
+      
+    Log: Function;
+   
+    collectors: Map<any, any>;
+  
+    GuildCooldowns: Map<Snowflake, fsCoolDowns>;
+    
+    SlashCommands: fsCommands;
+   
+    PrefixCommands:fsCommands;
+
+    LastFm: any;
+  
+    DB: SimpleDatabase;
+    
+    LockBox: LockBox;
+    
+    AngelBunny: AngelBunny;
+    
+    DisTube: DisTube;
+    
+    ExpHandler: ExpHandler;
+    
+    constructor();
+    getDefaultCoolDown(serverId: fsGuildIDResolvable): number;
+    /**
+     * The bot client's main loop
+     * @return {Promise<void>}
+     * @memberof Shy
+     */
+    updateEvents(): Promise<void>;
+    /**
+     * You know she's not a tree right?
+     * @memberof Shy
+     */
+    start(): Promise<void>;
+}
+export type ReactionData =
+{
+sent:number; 
+recieved:number;
+}
+export class Flutterbot extends Shy{
+    DisTube: DisTube; 
+    Log:Function; 
+    imageFinder: Function;
+    resolveId:Function;
+    getsnowflakeType:Function;
+    getextension:Function;
+    isSnowflake: Function; 
+    getArrayType: Function; 
+    format:Function;
+    formatSeconds:Function; 
+    toTimezone:Function; 
+    hasVoicePerms:Function; 
+    isNsfwChannel:Function;
+    langRand:Function; 
+    removeEveryoneMentions:Function; 
+    mediaSource:Function 
+    formatytlink:Function 
+    lockbox:Function 
+    expHandler:class = ExpHandler;
+    lastfm:Function
+    AngelBunny:class = AngelBunny;
+    log: Function 
+    distube:class=DisTube;
+    db:class=SimpleDatabase;
+    slashcommands: fsCommands;
+    prefixcommands: fsCommands;
+   constructor(): Shy
+    
+   
+}
+export class fsError extends Error {
+    original: Error;
+    constructor(message:string,error?:Error) 
+    /**
+     * summary of what caused the error
+     * @return {string} 
+     * @memberof fsError
+     */
+    what(): string
+    
+    /**
+     * string containing the method name, filename, and line an error originated from
+     * @return {(number | null)}
+     * @memberof fsError
+     */
+    where():string | null 
+    /**
+     * Fetch the original Error class / instance that this 
+     * error originated from 
+     * 
+     * @return  {Error}
+     * @memberof fsError
+     */
+    origin(): Error
+
+
+    
+    
+} 
+
+export type fsGuildConfig = 
+{
+  
+ newMemberMinumumAge: number; 
+ embedColor: number; 
+ defaultCoolDown: number; 
+ privateRoles: Array<Snowflake>;
+
+}
+export type fsServerQuote =s
+{
+    quote:string; 
+    date:string; 
+    UserId: Snowflake;
+    GuildId: Snowflake;
+}
+export type fsGuild =
+{
+    Id: Snowflake; 
+    config: fsGuildConfig;
+
+}
+export type fsUser=
+{
+    Id:Snowflake; 
+    quotes: fsServerQuote[];
+    exp:PonyExp;
+}
+
+export type PonyExp =
+{
+    exp: number //current expeirence points 
+    totalExp: number  //lifetime expeirence points
+    required: number //expeirence points needed to reach next level
+    level:number  //current level
+    reactiondata: reacts //number of reactions given, received
+    cmds:number //number of commands used (ChatInput and prefix)
+    msg:number //number of messages sent.
+    amongus:number //number of times the word "amongus" has been said 
+}
+
+
+declare class fsDatabaseError extends fsError
+{
+    
+constructor(message:string,error?:Error)
+   
+}
+
+interface fsUserArray implements fsSnowFlakeArray{
+
+}
+
+interface fsSnowflakeArray{[user:Snowflake]:User}
+
+
 /**
  * container representing an array of Fluttershy's responses
  */
@@ -158,7 +320,7 @@ interface fsMemberQuote
     name:string;
     quote:string;
 }
-const enum DataTypes {
+const enum fsDataTypes {
     Undefined=0,
     Number=1,
     String=2,
@@ -237,15 +399,15 @@ declare module "utils/SimpleDatabase" {
         debug_print: boolean;
          log: any;
          filePath: string;
-         data: fsObject;
+         data: object;
         _printAcessInfo(Key: string | undefined, value: any, ID: any): void;
         /**
          * Private Class Method. Called by the database when modifying adding or removing propereties
          * in order to keep the database up to date and clean.
          * @name SimpleDatabase#_loadData
-         * @returns {fsObject} the loaded database
+         * @returns {object} the loaded database
          */
-        _loadData(): fsObject | undefined 
+        _loadData(): object | undefined 
         /**
          * Private Class Method. Called by the database each time a property is changed, added, or deleted
          * @name SimpleDatabase#_saveData
@@ -273,11 +435,11 @@ declare module "utils/SimpleDatabase" {
         /**
          * merge two class objects together, keeping and updating the contents of the old
          * @name SimpleDatabase#_updateObject
-         * @param {fsObject} New
-         * @param {fsObject} Old
+         * @param {object} New
+         * @param {object} Old
          * @returns {object}
          */
-        _updateObject(New:fsObject, Old:fsObject): fsObject
+        _updateObject(New:object, Old:object): object
         /**
          * Deletes a value from the database file.
          * @name SimpleDatabase#deleteEntry
@@ -357,7 +519,7 @@ declare module "utils/SimpleDatabase" {
          * @returns {object}
          *  @throws {Error} If data does not exist
          */
-        getAllData(): fsObject 
+        getAllData(): object 
     }
 }
 
@@ -638,15 +800,15 @@ declare module "utils/utilities" {
     
     
 }
-declare module "utils/types"{
-type server_quotes = Array<fsMemberQuote>;
-type fsSnowflakeArray = Array<Snowflake>;
-type fsCommands = Collection<string,APIApplicationCommand>;
+declare module "./utils/types"{
+export type server_quotes = Array<fsMemberQuote>;
+export type fsSnowflakeArray = Array<Snowflake>;
+export type fsCommands = Collection<string,APIApplicationCommand>;
 /**
  *  contains all of the data created by Flutterbot 
  *  associated with a {@link Guild} 
  */
-class fsGuild implements fsObject
+export class fsGuild implements object
 {
     /**
      * The minimum required age in days that new users must have existed for in a guild 
@@ -691,9 +853,9 @@ class fsGuild implements fsObject
  * contains all of the data created by Flutterbot associated with a {@link User}
  *  @export
  * @class fsUser
- * @implements {fsObject}
+ * @implements {object}
  */
-class fsUser implements fsObject 
+export class fsUser implements object 
 {
     /**
      * The user's unique discord {@link Snowflake} ID
@@ -731,7 +893,7 @@ class fsUser implements fsObject
 
 }
 
-type fsUser = 
+export type fsUser = 
 {
    id:Snowflake; 
    /**
@@ -845,42 +1007,8 @@ type fsSnowFlakes=
 
 
 
-class fsError extends Error {
-    original: Error;
-    constructor(message:string,error?:Error) 
-    /**
-     * summary of what caused the error
-     * @return {string} 
-     * @memberof fsError
-     */
-    what(): string
-    
-    /**
-     * string containing the method name, filename, and line an error originated from
-     * @return {(number | null)}
-     * @memberof fsError
-     */
-    where():string | null 
-    /**
-     * Fetch the original Error class / instance that this 
-     * error originated from 
-     * 
-     * @return  {Error}
-     * @memberof fsError
-     */
-    origin(): Error
 
 
-    
-    
-} 
-
-class fsDatabaseError extends fsError
-{
-    
-constructor(message:string,error?:Error)
-   
-}
  class fsPermissionsError extends fsError
 {
     constructor(message:string,error?:Error)
@@ -972,9 +1100,9 @@ toJSON(): object
   
  }
 }
-declare module "guardianAngel/Evaluator"
+declare module "guardianAngel/AngelBunny"
 {
-     class Evaluator {
+     class AngelBunny {
         urlRegex: RegExp;
         intel: string[];
         db: SimpleDatabase;
@@ -993,7 +1121,7 @@ declare module "guardianAngel/Evaluator"
     }
 }
 
-declare module "client/Flutterbot"{
+
     /**
 * #### Shy
 *
@@ -1002,86 +1130,35 @@ declare module "client/Flutterbot"{
 * @class {Shy}
 * @extends {Client}
 */
-class Shy extends Client {
 
-       
-      
-    Log: Function;
-   
-    collectors: Map<any, any>;
-  
-    GuildCooldowns: Map<Snowflake, fsCoolDowns>;
-    
-    SlashCommands: fsCommands;
-   
-    PrefixCommands:fsCommands;
+declare const flutterbot = new Flutterbot; 
+export const Flutterbot = Flutterbot; 
 
-    LastFm: any;
-  
-    DB: SimpleDatabase;
-    
-    LockBox: LockBox;
-    
-    Evaluator: Evaluator;
-    
-    DisTube: DisTube;
-    
-    ExpHandler: ExpHandler;
-    
-    constructor();
-    getDefaultCoolDown(serverId: fsGuildIDResolvable): number;
-    /**
-     * The bot client's main loop
-     * @return {Promise<void>}
-     * @memberof Shy
-     */
-    updateEvents(): Promise<void>;
-    /**
-     * You know she's not a tree right?
-     * @memberof Shy
-     */
-    start(): Promise<void>;
-}
- class Flutterbot extends Shy{
- DisTube: DisTube; 
- Log:Function; 
- imageFinder: Function;
- resolveId:Function;
- getsnowflakeType:Function;
- getextension:Function;
- isSnowflake: Function; 
- getArrayType: Function; 
- format:Function;
- formatSeconds:Function; 
- toTimezone:Function; 
- hasVoicePerms:Function; 
- isNsfwChannel:Function;
- langRand:Function; 
- removeEveryoneMentions:Function; 
- mediaSource:Function 
- formatytlink:Function 
- lockbox:Function 
- expHandler:class = ExpHandler;
- lastfm:Function
- evaluator:class = Evaluator;
- log: Function 
- distube:class=DisTube;
- db:class=SimpleDatabase;
- slashcommands: fsCommands;
- prefixcommands: fsCommands;
-constructor(): Shy
- 
 
+
+
+declare module "commands/slash/"
+{  
+    export async function execute(interaction:CommandInteraction, Flutterbot:shy)
 }
 
-   
-  
+module "events/messagecreate"
+{
+    export async function execute(Flutterbot:Flutterbot, message:Message);
 }
 
-
-declare module "commands/slash/serverconfig/"
-{   const exports = {}; 
-    export async function execute(interaction:Interaction, Flutterbot:shy)
+declare module "events/ready"
+{
+ export async function execute(Flutterbot:Flutterbot);
 }
+declare module "events/roleupdate"
+{
+ export async function execute(Flutterbot:Flutterbot, role:Role);
+}
+declare module "events/guildmemberadd"
+{
+ export async function execute(Flutterbot:Flutterbot, Guildmember:GuildMember);
+}
+
 
 

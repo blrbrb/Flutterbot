@@ -9,29 +9,21 @@ module.exports = {
 		let quaratineRole = Flutterbot.DB.getGuildConfig(GuildMember, 'quaratine_role');  
 		let quarantinedMembers = Flutterbot.DB.getGuildConfig(GuildMember, 'quarantined');
 		
+		
+		
+		if(!Flutterbot.AngelBunny.validateAge(GuildMember))
+		{
+			Flutterbot.AngelBunny.quaratine(GuildMember); 	
+		}
 		//re-assign the quaratine role to users who have been assigned the quaratine role before, 
 		//but have left the server
-		
-		if(!Flutterbot.Evaluator.validateAge(GuildMember))
-		{
-			
-			Flutterbot.Evaluator.quaratine(GuildMember); 
-			
-		}
-		
-	
 		if(!quarantinedMembers && quarantinedMembers.includes(GuildMember.id))
 		{
 			if(!quaratineRole)
 			{  
-				
 					await GuildMember.roles.add(quaratineRole);
-				
-				
-				
 					Flutterbot.Log('Red', error);
 					return;
-				
 			} 
 			return;
 			

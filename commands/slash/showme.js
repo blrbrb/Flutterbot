@@ -1,6 +1,6 @@
 var request = require('request');
 var cheerio = require('cheerio');
-
+const {Flutterbot} = require('../../client/Flutterbot')
 module.exports = {
     name: 'showme',
     description: 'show me some art in a particular color',
@@ -25,7 +25,7 @@ module.exports = {
                 "User-Agent": "Chrome"
             }
         };
-
+      
      
 
         request(options, async function (error, response, responseBody) {

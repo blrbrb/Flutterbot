@@ -11,7 +11,7 @@ module.exports = {
     name: 'goofy',
     description: 'Goofy Aaah',
     cooldown: 3, 
-    async execute(Flutterbot, message, args) {
+    async execute(message, Flutterbot, args) {
         imageUrl = await findImage(message);
         message.channel.sendTyping();
         const goofy = fs.readFileSync('assets/images/goofynerd.png');

@@ -1,8 +1,8 @@
-const { EmbedBuilder, ApplicationCommandOptionType, Interaction} = require('discord.js');
+const { EmbedBuilder,ComponentType, ActionRowBuilder,ButtonBuilder, ApplicationCommandOptionType, Interaction} = require('discord.js');
 const {Flutterbot} = require('../../client/Flutterbot');
 const axios = require('axios');
 const {createCanvas, loadImage} = require('canvas');
-const { fsClientError } = require("../../utils/types");
+const { fsClientError } = require("../../structures/types");
 
 async function fetchRecentAlbums(username) {
   
@@ -20,9 +20,51 @@ async function fetchRecentAlbums(username) {
   }
 }
 
+async function validateLastFMAccount(username) {
+  try {
+    const response = await axios.get(`http://ws.audioscrobbler.com/2.0/?method=user.getInfo&user=${username}&api_key=${process.env.FM_KEY}&format=json`);
+
+    if (response.data.error) {
+      return [false, 'Invalid username or Last.fm API error.'];
+    } else {
+      return [true, response.data];
+    }
+  } catch (error) {
+    return [false, `Error: ${error.message}`];
+  }
+}
+
+async function handleSyncRequest(collector, Flutterbot, interaction)
+{
+
+  collector.on('collect', async i => {
+
+		args = i.customId.split('_');
+    
+		if(args[0]=== 'yes')
+    {
+      const name = args[1].split('/')[4];
+      const info = await validateLastFMAccount(name); 
+      const dat = info[1].user;
+      Flutterbot.DB.set(i.user, "lastfm", Flutterbot.lockbox.encrypt(JSON.stringify(dat)));
+      i.reply({content:`Okay, I'll associate you with this [last.fm account!](${dat.url})`, ephemeral:true});
+    }	
+    else if(args[0] === 'no')
+    {
+      i.reply({content:`got it! Make sure to spell your username 100% the same as it appears on your last.fm profile so I can find you easier!`, ephemeral:true});
+    }
+    
+  });
+  Flutterbot.collectors.delete(collector);
+  return;
+  
+}
+//interaction.reply({content:`Okay, I won't associate you with this account. Make sure you spell your username *EXACTLY* as it appears on your profile!`, ephemeral:true});
+
+
 module.exports = {
     name: "fm",
-    description: "get your last played track",
+    description: "get info from last.fm!",
     options: [
       {
         type:ApplicationCommandOptionType.Subcommand, 
@@ -50,6 +92,20 @@ module.exports = {
             required: true
         },
         ]
+      },
+      {
+        type:ApplicationCommandOptionType.Subcommand, 
+        name:"syncme",
+        description: "let me associate your discord username with your last.fm",
+        required: false,
+        options:[
+          {
+            type: ApplicationCommandOptionType.String,
+            name: "username",
+            description: "your last.fm username",
+            required: true
+        },
+        ]
       }
   ],
   /**
@@ -57,7 +113,7 @@ module.exports = {
      * @param {Flutterbot} Flutterbot
      */
     async execute(interaction, Flutterbot) {
-     
+      
       const subcommand = interaction.options.getSubcommand();
   
      
@@ -149,11 +205,35 @@ module.exports = {
           return interaction.editReply(error.response.data.message);
           
         }
+
+        case "syncme":
+          const username = interaction.options.getString('username');
+          const info = await validateLastFMAccount(username);
+
+          const row = new ActionRowBuilder();
+          
+            row.addComponents(new ButtonBuilder()
+              .setCustomId(`yes_${info[1].user.url}`)
+              .setLabel('this is me')
+              .setStyle('Primary')
+            );
+            row.addComponents(new ButtonBuilder()
+            .setCustomId(`no_${info[1].user.url}`)
+            .setLabel('this is NOT me')
+            .setStyle('Danger'));
+
+        
+          const replyEmbed = new EmbedBuilder().setTitle(info[1].user.name).setThumbnail(info[1].user.image[3]['#text']).setURL(info[1].user.url).setDescription('*This feature is a testing preview, no scrobbling is supported yet!!* this account correct?')
+         
+          const reply = await interaction.reply({embeds:[replyEmbed], components:[row],ephemeral: true});
+          Flutterbot.collectors.set(`fmIntegration${interaction.user.id}`, reply.createMessageComponentCollector({componentType: ComponentType.Button, time: 3_600_000  }));
+          return; 
+        
         default: 
           return interaction.reply('there was an issue');
          
       }
-      }
-
+      },
+      handleSyncRequest: handleSyncRequest
     }
    

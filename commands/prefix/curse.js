@@ -9,7 +9,7 @@ module.exports = {
     name: 'curse',
     description: 'curse an image',
     cooldown: 3, 
-    async execute(Flutterbot, message, args) {
+    async execute(message, Flutterbot, args) {
         imageUrl = await findImage(message);
         message.channel.startTyping();
         const tartarus = fs.readFileSync('assets/images/cursed.png');

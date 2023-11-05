@@ -1,4 +1,6 @@
 const request = require('request');
+const {Flutterbot} = require('../../client/Flutterbot');
+const {Interaction} = require('discord.js');
 const gm = require('gm').subClass({
 	imageMagick: true
 });
@@ -23,7 +25,7 @@ module.exports = {
 		}
 	],
 	/**
-     * @param {import('discord.js').Interaction} interaction
+     * @param {Interaction} interaction
      * @param {Flutterbot} Flutterbot
      */
 	async execute(interaction, Flutterbot) { // eslint-disable-line no-unused-vars
@@ -31,7 +33,7 @@ module.exports = {
 		var IOR = 10;
 
 		var url = await interaction.options.getAttachment("image").url;
-		console.log(url);
+		
 	    
 
 		if (interaction.options.getNumber('ior')) {

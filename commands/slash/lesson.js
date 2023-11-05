@@ -11,7 +11,7 @@ module.exports = {
      */
     async execute(interaction, shy) {
         //TO DO: Find a way to fetch corresponding images for each pony speaking. 
-
+        
         let rawdata = fs.readFileSync('assets/season1.json');
 
         var speaker_images = new Map();
@@ -47,7 +47,6 @@ module.exports = {
 }
 
 function initimages(map1) {
-    console.log('function called');
     map1.set("AppleJack", "http://fc01.deviantart.net/fs70/i/2011/260/d/9/applejack_vector_by_hombre0-d4a3lwt.png");
     map1.set("Twilight Sparkle", "https://derpicdn.net/img/2022/6/12/2885727/large.png");
     map1.set("Starlight Glimmer", "https://derpicdn.net/img/2018/2/17/1657915/small.png");

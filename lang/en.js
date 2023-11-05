@@ -2,6 +2,104 @@
 
 const Utilities = require('../utils/utilities.js');
 const {discord, EmbedBuilder, Embed, } = require('discord.js');
+const fs = require('fs');
+
+class responses 
+{
+  constructor(JsonData)
+  {
+    this.data = JsonData | {};
+  }
+}
+/**
+ * balls 
+ */
+class fsLang
+{
+  constructor(language, data)
+  {
+   
+    this.language = language | 'en';
+    this.responses = data | new responses();
+    this.userAvatar = '';
+    this.global_name = undefined;
+  }
+  addResponse(responseModule, response)
+  {
+    if(this.responses[responseModule])
+    {
+      this.responses[responseModule] = [];
+      this.responses[responseModule].push(response); 
+    }
+    else 
+    this.responses[responseModule].push(response); 
+  }
+  rand(responseModule)
+  {
+    const randomIndex = Math.floor(Math.random() * this.responses[responseModule].length);
+    const randomElement = this.responses[responseModule][randomIndex];
+    const rendered_message = Utilities.removeEveryoneMentions(randomElement);
+    return rendered_message;
+  }
+  load(responseModule, file)
+  {
+   
+    responseModule = responseModule || undefined; 
+    const path = file || 'assets/lang.json';
+    try{
+    const dat = fs.readFileSync(path);
+    const response = JSON.parse(dat);
+
+    if(dat && response)
+    {
+      if(responseModule)
+        this.responses[responseModule] = response[responseModule];
+      else 
+        this.responses = response;
+      return //console.log(response); 
+    }
+    else
+    {
+      return console.log('en.js lin 54: no json lang data to load...');
+    }
+    
+  }
+  catch(error)
+  {
+    console.log(error);
+    return;
+  }
+  }
+  format(string, template) {
+    return string.replace(/\${(.*?)}/g, (match, key) => {
+        // Check if the key exists in replacements, otherwise, return the original match
+        return template.hasOwnProperty(key) ? template[key] : match;
+    });
+}
+
+ addClientDetails(user)
+ {
+  //save these values for creating response embeds later
+    this.userAvatar = user.displayAvatarURL();
+    this.username = user.username; 
+    this.global_name = user.global_name? user.global_name : undefined;
+ }
+}
+
+class fsCommandResponder extends fsLang 
+{
+  constructor(responseModule)
+  { 
+    //if(this.responses)
+  }
+  onPlaying()
+  {
+
+  }
+}
+
+
+
 
 module.exports = {
   meta: {
@@ -13,7 +111,7 @@ module.exports = {
   channel: 'Channel',
   prefixcommands: 'Prefix Commands:',
   slashcommands: 'Slash commands:',
-  
+   
   // DO NOT TRANSLATE COMMAND NAMES
   errorMessage:
   {
@@ -204,16 +302,25 @@ module.exports = {
       "I can't remove ${role} from you. I can't see it! It looks like I don't have permission to modify it", "I'm sorry, I can't help you remove ${role}"], 
      
       },
-      noPermissionsClientMessage:
-      {
-        onClientVoiceConnect: ["I'm sorry, I don't think I have permission to join ${channel}", "I don't have permission to join ${channel}!", "I'm sorry. I can't do that. I don't have the permissions needed to join ${channel}"
-                              ]
-      },
+     
       
       roleHiddenMessage: "${role} has been set to hidden",
      
     
       
+    },
+    ClientPermissionError:
+    {
+      OnRoleSelfAssign(role)
+      {
+       return {content: Utilities.format(Utilities.langRand(this.noPermissionsClientMessage.onRoleSelfAssign), {role}), ephemeral:true};
+      },
+      noPermissionsClientMessage:
+      {
+        onClientVoiceConnect: ["I'm sorry, I don't think I have permission to join ${channel}", "I don't have permission to join ${channel}!", "I'm sorry. I can't do that. I don't have the permissions needed to join ${channel}"
+                              ]
+      
+      }
     },
     RoleError:
     {
@@ -261,6 +368,11 @@ module.exports = {
        * (so people don't get embarrased or smth when a command doesn't work) 
        * 
        */
+
+      clientNoRolePerms(role)
+      {
+        return {content: Utilities.format(Utilities.langRand(this.RoleMessage.managed) + Utilities.langRand(this.RoleMessage), {role}), ephemeral: true};
+      },
       managed: function(role)
       {
         return {content: Utilities.format(Utilities.langRand(this.RoleMessage.managed) + Utilities.langRand(this.RoleMessage.guidanceMessage), {role}), ephemeral: true};
@@ -515,7 +627,7 @@ module.exports = {
               
             }
 
-            console.log(command.case);
+            //console.log(command.case);
             this.globalConfig.name = command.name;
             //console.log(command.name);
             this.globalConfig.case = command.case;  
@@ -640,3 +752,4 @@ module.exports = {
   }
   
 }
+module.exports.fsLang = fsLang;

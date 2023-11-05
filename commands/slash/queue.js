@@ -1,5 +1,5 @@
-﻿const { formatTime } = require('../../utils/utilities.js')
-const {EmbedBuilder, Interaction} = require('discord.js');  
+const { formatTime } = require('../../utils/utilities.js')
+const {EmbedBuilder, Interaction, InteractionCollector} = require('discord.js');  
 const {errorMessage, commandResponses} = require('../../lang/en.js');
 const { error } = require('console');
 const {Flutterbot} = require('../../client/Flutterbot');
@@ -12,8 +12,7 @@ module.exports = {
      * @param {Flutterbot} Flutterbot
      */
     async execute(interaction, Flutterbot) {
-        const embed = new EmbedBuilder(); 
-
+        
         let color = Flutterbot.DB.getGuildConfig(interaction, 'embed_color'); 
 
         let queue = await Flutterbot.DisTube.getQueue(interaction);

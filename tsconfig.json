@@ -26,14 +26,14 @@
 
     /* Modules */
      "module": "CommonJS",                                /* Specify what module code is generated. */
-     "rootDir": "../Flutterbot",                                  /* Specify the root folder within your source files. */
+     "rootDir": ".",                                  /* Specify the root folder within your source files. */
      "moduleResolution": "Node10",   
                        /* Specify how TypeScript looks up a file from a given module specifier. */
     // "baseUrl": "./",                                  /* Specify the base directory to resolve non-relative module names. */
     // "paths": {},                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
-     "typeRoots": ["types"],                                  /* Specify multiple folders that act like './node_modules/@types'. */
-     //"types": ["client/Flutterbot", "guardianAngel/evaluator",
+     //"typeRoots": ["types"],                                  /* Specify multiple folders that act like './node_modules/@types'. */
+     //"types": ["client/Flutterbot", "guardianAngel/AngelBunny",
     //           "utils/exp", "utils/ExpHandler","utils/LockBox",
    //            "utils/SimpleDatabase","utils/types","utils/utilities",
     //           "utils/help"],                                     /* Specify type package names to be included without being referenced in a source file. */
@@ -76,7 +76,7 @@
     // "noEmitHelpers": true,                            /* Disable generating custom helper functions like '__extends' in compiled output. */
     // "noEmitOnError": true,                            /* Disable emitting files if any type checking errors are reported. */
     // "preserveConstEnums": true,                       /* Disable erasing 'const enum' declarations in generated code. */
-     "declarationDir": "./tsc_out",                           /* Specify the output directory for generated declaration files. */
+     //"declarationDir": "./tsc_out",                           /* Specify the output directory for generated declaration files. */
     // "preserveValueImports": true,                     /* Preserve unused imported values in the JavaScript output that would otherwise be removed. */
 
     /* Interop Constraints */
@@ -112,6 +112,6 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
-  //"include":["registerSlashCommands.js"]
+  "include":["types/index.d.ts"]
 
 }

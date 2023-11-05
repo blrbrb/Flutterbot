@@ -52,6 +52,7 @@
         "ytsr": "^3.8.4"
     },
     "devDependencies": {
+        "madge": "^6.1.0",
         "typescript": "^5.1.6"
     },
     "types": "types/index.d.ts",

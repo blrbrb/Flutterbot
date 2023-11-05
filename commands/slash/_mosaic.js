@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType } = require('discord.js')
+const { ApplicationCommandOptionType,ApplicationCommandType } = require('discord.js')
 const request = require('request');
 const gm = require('gm').subClass({
 	imageMagick: true
@@ -8,6 +8,7 @@ const {findImage} = require('../../utils/utilities.js');
 
 module.exports = {
 	name: 'mosaic',
+	type:ApplicationCommandType.ChatInput,
 	description: 'Fluttershy Will Turn an image into a mosaic',
 	helpText: `turn an image into a sequence of tiles \n Use: **/mosaic** <jpeg, png, gif, webm embed>`,
 	cooldown: 1,

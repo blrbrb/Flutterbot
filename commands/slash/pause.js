@@ -1,6 +1,6 @@
 const {commandResponses, errorMessage} = require('../../lang/en.js'); 
 
-const {EmbedBuilder, Interaction} = require('discord.js');
+const {EmbedBuilder, Interaction, CommandInteraction} = require('discord.js');
 const {Flutterbot} = require('../../client/Flutterbot');
 module.exports = {
     name: 'pause',
@@ -11,20 +11,26 @@ module.exports = {
      * @param {Flutterbot} Flutterbot
      */
     async execute(interaction, Flutterbot) {
-        const queue = await Flutterbot.DisTube.getQueue(interaction);
+        let GuildIDResolvable;
+        if(interaction instanceof CommandInteraction)
+           GuildIDResolvable = interaction; 
+        else 
+            GuildIDResolvable = interaction.message; 
+
+        const queue = await Flutterbot.DisTube.getQueue(GuildIDResolvable);
         const embed = new EmbedBuilder(); 
         embed.setAuthor({name:'Flutterbot.music',iconURL: Flutterbot.user.displayAvatarURL()})
 
-        if(!queue) return interaction.reply(errorMessage.Distube.QueueEmpty());
+        if(!queue) return GuildIDResolvable.reply(errorMessage.Distube.QueueEmpty());
         
         if(queue.paused)
         {
-            return interaction.reply(errorMessage.Distube.AlreadyPaused())
+            return GuildIDResolvable.reply(errorMessage.Distube.AlreadyPaused())
         } 
       
-        queue.pause(interaction); 
+        queue.pause(GuildIDResolvable); 
         embed.setDescription(commandResponses.pause(queue).content)
         
-        return interaction.reply({embeds:[embed], ephemeral:true});
+        return GuildIDResolvable.reply({embeds:[embed], ephemeral:true});
     }
 }

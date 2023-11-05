@@ -7,7 +7,7 @@ module.exports = {
 	name: 'time',
 	description: 'sends a timestamp',
     cooldown: 2, 
-	async execute(Flutterbot, message, args) 
+	async execute(message, Flutterbot, args) 
     {
         if(args.length <= 0){
             const timestamp = new Date(Date.now());

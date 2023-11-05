@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType, Interaction } = require('discord.js');
+const { ApplicationCommandOptionType, Interaction, ApplicationCommandType } = require('discord.js');
 const fs = require('fs');
 const {Flutterbot} = require('../../client/Flutterbot');
 module.exports = {
@@ -6,6 +6,7 @@ module.exports = {
     description: "add someone to angel's list of trusted ponies",
     default_member_permissions: "0",
     cooldown: 1,
+    type:ApplicationCommandType.ChatInput,
     options: [
         {
             name: "trusted",

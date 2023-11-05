@@ -23,7 +23,7 @@ module.exports = {
      * @param {Flutterbot} Flutterbot
      */
     async execute(interaction, Flutterbot) {
-
+       
         imageUrl = await interaction.options.getAttachment('image').url;
 
         const extension = utilities.getExtension(imageUrl);

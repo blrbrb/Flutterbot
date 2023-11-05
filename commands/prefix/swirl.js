@@ -9,7 +9,7 @@ module.exports = {
 	name: 'swirl',
 	description: 'Fluttershy Will Swirl an image',
 	cooldown: 3, 
-	async execute(Flutterbot, message, args) { // eslint-disable-line no-unused-vars
+	async execute(message, Flutterbot, args) { // eslint-disable-line no-unused-vars
 		imageUrl = await findImage.imageFinder(message);
 		const extension = findImage.extensionFinder(imageUrl);
 

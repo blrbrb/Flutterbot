@@ -1,8 +1,9 @@
 
 const { EmbedBuilder, ApplicationCommandOptionType } = require('discord.js');
 const {errorMessage, commandResponses}  = require('../../lang/en.js'); 
-const {fsMemberQuote } = require('../../utils/types.js');
-
+const {fsServerQuote, fsUser } = require('../../structures/fsUser');
+const {Flutterbot} = require('../../client/Flutterbot');
+const { PonyExp } = require('../../utils/exp.js');
 module.exports = {
     name: 'serverquote',
     description: "forever enshrine someponys words in the hall of fame",
@@ -32,26 +33,27 @@ module.exports = {
         // "-" to appear like a "quote"
         let speaker = interaction.options.get('from').user;
 
+        
         const currentDate = new Date();
         const year = currentDate.getFullYear();
         const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
         const day = String(currentDate.getDate()).padStart(2, '0');
-        let userdat = Flutterbot.DB.get(`${speaker.id}.server_quotes`);
-        if(!Array.isArray(userdat))
+        let user = Flutterbot.DB.users.get(speaker.id);
+
+        let data = new fsServerQuote(quoted_text,`${year}\ ${month}\ ${day}`,interaction.user.id,interaction.guild.id);
+      
+        if(!user)
         {
-            Flutterbot.DB.set(speaker.id,{"server_quotes":[]});
-            userdat = Flutterbot.DB.get(`${speaker.id}.server_quotes`);
+            Flutterbot.DB.users.set(speaker.id, new fsUser(speaker.id, new PonyExp(), data));
+            user = Flutterbot.DB.users.get(speaker.id);
         }
     
-        let data = new fsMemberQuote(interaction.user.username,`${year}\ ${month}\ ${day}`,interaction.user.id, interaction.guild.id,quoted_text);
-
+    
         //make sure to send interaction.guild, and not anything else so that the db resolves to guild.id.
-        if(!userdat.hasOwnProperty('server_quotes')){
-         Flutterbot.DB.set(speaker.id, "server_quotes", [data]);}
-        else {
-        Flutterbot.DB.set(speaker.id, "server_quotes", data);}
-       
-        let embed = new EmbedBuilder()
+        user.addQuote(data);
+        Flutterbot.DB.users.set(speaker.id,user);
+        
+        const embed = new EmbedBuilder()
             .setTitle(`${speaker.username} on ${month}\\${day}\\${year} `)
             .setThumbnail(speaker.displayAvatarURL({ dynamic: true, size: 256 }))
             .setDescription(`*${quoted_text}*`);

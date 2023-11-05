@@ -15,7 +15,7 @@ module.exports = {
      * @param {Flutterbot} Flutterbot
 	 * @param {string[]} [args]
      */
-	async execute(Flutterbot, message, args) { // eslint-disable-line no-unused-vars
+	async execute(message, Flutterbot, args) { // eslint-disable-line no-unused-vars
 
 		var IOR = 10;
 		

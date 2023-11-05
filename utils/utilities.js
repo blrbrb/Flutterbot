@@ -4,9 +4,11 @@ exports.Log = exports.format = exports.Logcolors=exports.IsSnowflake= exports.me
 exports.findAllCommands = exports.formatSeconds= exports.formatYtLink = exports.getArrayType = exports.getExtension = exports.getSnowflakeType=
 exports.findFiles=exports.langRand = exports.nsfwChannel = exports.printCurrentFrame = exports.removeEveryoneMentions = exports.resolveGuildID=
 exports.resolveID = exports.resolveUserID = exports.sharedKeys= void 0;
-const discord_js_1 = require("discord.js");
+const {APIApplicationCommand, Collection,
+    Message,MessageReaction, Guild,GuildMember, User, BaseGuildVoiceChannel,CommandInteraction, BaseGuildTextChannel, GuildChannel, GuildEmoji, Role, ForumChannel, SnowflakeUtil} = require('discord.js');
 const fs = __importStar(require("fs"));
-const types_1 = require("./types");
+const {fsClientError, fsTypeError,fsError,fsAPIError,  fsDataTypes, fsSnowflakeType, fsUser} = require('../structures/types');
+const { fsGuild } = require('../structures/fsGuild');
 const path = __importStar(require("path"));
 
     const Logcolors = {
@@ -125,14 +127,14 @@ const path = __importStar(require("path"));
      */
     function hasVoiceChannelPermissions(interaction, Flutterbot) {
         if (!Flutterbot.user)
-            throw new types_1.Errors.fsClientError('unable to find a refrence to myself!');
+            throw new fsClientError('unable to find a refrence to myself!');
         if (!interaction.guild)
-            throw new types_1.Errors.fsAPIError('this interaction has not been sent in a valid guild');
+            throw new fsAPIError('this interaction has not been sent in a valid guild');
         const self = interaction.guild.members.cache.get(Flutterbot.user.id);
         if (!self)
-            throw new types_1.Errors.fsClientError('unable to determine my own ID!');
+            throw new fsClientError('unable to determine my own ID!');
         else {
-            if (!self.permissions.has(discord_js_1.PermissionFlagsBits.Connect) || !self.permissions.has(discord_js_1.PermissionFlagsBits.Speak)) {
+            if (!self.permissions.has(PermissionFlagsBits.Connect) || !self.permissions.has(PermissionFlagsBits.Speak)) {
                 return false;
             }
             else {
@@ -149,15 +151,15 @@ const path = __importStar(require("path"));
      * @throws {Error} if the object used to check does not have a member with a valid voice state.
      */
     function nsfwChannel(interaction) {
-        if (!interaction.member || !(interaction.member instanceof discord_js_1.GuildMember)) {
-            throw new types_1.Errors.fsClientError('this interaction has no member property');
+        if (!interaction.member || !(interaction.member instanceof GuildMember)) {
+            throw new fsClientError('this interaction has no member property');
         }
         if (!interaction.member.voice) {
-            throw new types_1.Errors.fsClientError('member is not conncected to voice state!');
+            throw new fsClientError('member is not conncected to voice state!');
         }
         if (interaction.hasOwnProperty('member')) {
             if (interaction.member.hasOwnProperty('voice')) {
-                if (interaction.member.voice.channel && interaction.member.voice.channel instanceof discord_js_1.VoiceChannel
+                if (interaction.member.voice.channel && interaction.member.voice.channel instanceof VoiceChannel
                     && interaction.member.voice.channel.nsfw) {
                     return true;
                 }
@@ -227,7 +229,8 @@ const path = __importStar(require("path"));
      */
     function IsSnowflake(integer_id) {
         try {
-            return discord_js_1.SnowflakeUtil.deconstruct(integer_id).timestamp > discord_js_1.SnowflakeUtil.epoch;
+           
+            return SnowflakeUtil.deconstruct(integer_id).timestamp > SnowflakeUtil.epoch;
         }
         catch (_a) {
             return false;
@@ -241,24 +244,26 @@ const path = __importStar(require("path"));
      * @return {Snowflake} the resolved snowflake ID as string.
      */
     function resolveGuildID(fsGuildIDResolvable) {
+        
         if (typeof (fsGuildIDResolvable) === 'string') {
             if (IsSnowflake(fsGuildIDResolvable)) {
-                if (getSnowflakeType(fsGuildIDResolvable) === types_1.fsSnowflakeType.Guild) {
+                //console.log('Utilities.js 250: resolveGuildID',getSnowflakeType(fsGuildIDResolvable),  fsSnowflakeType.Guild)
+                if (getSnowflakeType(fsGuildIDResolvable) == fsSnowflakeType.Guild) {
                     return fsGuildIDResolvable;
                 }
                 else
-                    throw new types_1.Errors.fsTypeError(`unable to resolve Guild ID. This string is a valid snowflake, but not for a guild`);
+                    throw new fsTypeError(`unable to resolve Guild ID. This string is a valid snowflake, but not for a guild`);
             }
             else
-                throw new types_1.Errors.fsTypeError(`unable to resolve Guild ID. This string is not a valid snowflake`);
+                throw new fsTypeError(`unable to resolve Guild ID. This string is not a valid snowflake`);
         }
         else {
-            if (fsGuildIDResolvable instanceof discord_js_1.Guild)
+            if (fsGuildIDResolvable instanceof Guild)
                 return fsGuildIDResolvable.id;
-            else if (fsGuildIDResolvable.guild && fsGuildIDResolvable.guild instanceof discord_js_1.Guild)
+            else if (fsGuildIDResolvable.guild && fsGuildIDResolvable.guild instanceof Guild)
                 return fsGuildIDResolvable.guild.id;
             else
-                throw new types_1.Errors.fsTypeError(`unable to resolve Guild ID`);
+                throw new fsTypeError(`unable to resolve Guild ID`);
         }
     }
     exports.resolveGuildID = resolveGuildID;
@@ -272,29 +277,31 @@ const path = __importStar(require("path"));
     function resolveUserID(fsUserIDResolvable) {
         if (typeof (fsUserIDResolvable) === 'string') {
             if (IsSnowflake(fsUserIDResolvable)) {
-                if (getSnowflakeType(fsUserIDResolvable) === types_1.fsSnowflakeType.User) {
+                if (getSnowflakeType(fsUserIDResolvable) === fsSnowflakeType.User) {
                     return fsUserIDResolvable;
                 }
                 else
-                    throw new types_1.Errors.fsTypeError(`unable to resolve User ID. This string is a valid snowflake, but not for a user`);
+                    throw new fsTypeError(`unable to resolve User ID. This string is a valid snowflake, but not for a user`);
             }
             else
-                throw new types_1.Errors.fsTypeError(`unable to resolve User ID. This string is not a valid snowflake`);
+                throw new fsTypeError(`unable to resolve User ID. This string is not a valid snowflake`);
         }
-        else {
-            if (fsUserIDResolvable instanceof discord_js_1.Message)
+        else if((typeof(fsUserIDResolvable) === 'object')) {
+            if(fsUserIDResolvable instanceof CommandInteraction)
+                return fsUserIDResolvable.user.id;
+            if (fsUserIDResolvable instanceof Message)
                 return fsUserIDResolvable.author.id;
-            if (fsUserIDResolvable instanceof discord_js_1.User)
+            if (fsUserIDResolvable instanceof User)
                 return fsUserIDResolvable.id;
-            if (fsUserIDResolvable instanceof discord_js_1.MessageReaction)
+            if (fsUserIDResolvable instanceof MessageReaction)
                 if (fsUserIDResolvable.message.author)
                     return fsUserIDResolvable.message.author.id;
                 else
-                    throw new types_1.Errors.fsTypeError(`unable to resolve User ID, MessageReaction.message.author is undefined`);
-            else if (fsUserIDResolvable.user && fsUserIDResolvable.user instanceof discord_js_1.User)
+                    throw new fsTypeError(`unable to resolve User ID, MessageReaction.message.author is undefined`);
+            else if (fsUserIDResolvable.user && fsUserIDResolvable.user instanceof User)
                 return fsUserIDResolvable.user.id;
             else
-                throw new types_1.Errors.fsTypeError(`unable to resolve User ID for this object`);
+                throw new fsTypeError(`unable to resolve User ID for this object`);
         }
     }
     exports.resolveUserID = resolveUserID;
@@ -310,22 +317,40 @@ const path = __importStar(require("path"));
      * @returns {Snowflake} the resolved snowflake ID as string.
      */
     function resolveID(IDResolvable) {
-        if (IDResolvable instanceof discord_js_1.Guild || IDResolvable instanceof discord_js_1.User)
-            return IDResolvable.id;
-        ///FUCKIN LOL 
-        else if (IDResolvable instanceof discord_js_1.BaseGuildVoiceChannel || IDResolvable instanceof discord_js_1.BaseGuildTextChannel ||
-            IDResolvable instanceof discord_js_1.Role || IDResolvable instanceof discord_js_1.GuildEmoji ||
-            IDResolvable instanceof discord_js_1.ForumChannel || IDResolvable instanceof discord_js_1.GuildChannel) {
-            return IDResolvable.guild.id;
-        }
-        else if (typeof (IDResolvable) === 'string' && IsSnowflake(IDResolvable)) {
-            return IDResolvable;
-        }
-        else if (IDResolvable instanceof discord_js_1.GuildMember) {
-            throw new types_1.Errors.fsTypeError('cannot resolve ID on GuildMember object due to conflicting ID values for both Guild and User');
+       
+        if ((typeof (IDResolvable) === 'string') ) {
+            if(IsSnowflake(IDResolvable))
+                return IDResolvable;
+            else 
+                throw new fsTypeError('utilities.js 85: string is not a valid snowflake ID');
         }
         else
-            throw new types_1.Errors.fsTypeError('unable to resolve ID');
+        if (IDResolvable instanceof Guild || IDResolvable instanceof User)
+            return IDResolvable.id;
+        ///FUCKIN LOL 
+        if (IDResolvable instanceof BaseGuildVoiceChannel || IDResolvable instanceof BaseGuildTextChannel ||
+            IDResolvable instanceof Role || IDResolvable instanceof GuildEmoji ||
+            IDResolvable instanceof ForumChannel || IDResolvable instanceof GuildChannel) {
+            return IDResolvable.guild.id;
+        }
+        
+        if (IDResolvable instanceof GuildMember) {
+            throw new fsTypeError('cannot resolve ID on GuildMember object due to conflicting ID values for both Guild and User');
+        }
+        //can't use instanceof fsGuild 
+        if (IDResolvable.hasOwnProperty('GuildId'))
+        {
+            return IDResolvable.GuildId;
+        }
+        if(IDResolvable.hasOwnProperty("guild"))
+        {
+            if(IDResolvable.guild.hasOwnProperty('id'))
+                return IDResolvable.guild.id;
+            else 
+             throw new fsTypeError(`unable to resolve ID on ${fsGuildIDResolvable}`);
+        }
+
+            throw new fsTypeError(`unable to resolve ID on ${fsGuildIDResolvable}`);
     }
     exports.resolveID = resolveID;
     /**
@@ -416,48 +441,48 @@ const path = __importStar(require("path"));
             switch (firstElementType) {
                 case "number":
                     return {
-                        type: types_1.DataTypes.Number, typeName: "Number"
+                        type: fsDataTypes.Number, typeName: "Number"
                     };
                 case "string":
                     return {
-                        type: types_1.DataTypes.String, typeName: "String"
+                        type: fsDataTypes.String, typeName: "String"
                     };
                 case "boolean":
                     return {
-                        type: types_1.DataTypes.Boolean, typeName: "Boolean"
+                        type: fsDataTypes.Boolean, typeName: "Boolean"
                     };
                 case "object":
                     if (Array.isArray(arr[0])) {
                         return {
-                            type: types_1.DataTypes.Array,
+                            type: fsDataTypes.Array,
                             typeName: "Array"
                         };
                     }
                     else if (arr[0] === null) {
                         return {
-                            type: types_1.DataTypes.Object,
+                            type: fsDataTypes.Object,
                             typeName: "Object"
                         };
                     }
                     else {
                         return {
-                            type: types_1.DataTypes.Object,
+                            type: fsDataTypes.Object,
                             typeName: "Object"
                         };
                     }
                 case "function":
                     return {
-                        type: types_1.DataTypes.Function, typeName: "Function"
+                        type: fsDataTypes.Function, typeName: "Function"
                     };
                 default:
                     return {
-                        type: types_1.DataTypes.Unknown, typeName: "Unknown"
+                        type: fsDataTypes.Unknown, typeName: "Unknown"
                     };
             }
         }
         else {
             return {
-                type: types_1.DataTypes.Unknown,
+                type: fsDataTypes.Unknown,
                 typeName: "Unknown"
             };
         }
@@ -478,7 +503,7 @@ const path = __importStar(require("path"));
         }
         else {
             // Arrays are of different data types, handle the error or return an empty array
-            throw new types_1.Errors.fsTypeError(`Incompatible array types received ${typeof arr1[0]} and ${typeof arr2[0]}`);
+            throw new fsTypeError(`Incompatible array types received ${typeof arr1[0]} and ${typeof arr2[0]}`);
         }
     }
     exports.mergeArrays = mergeArrays;
@@ -574,7 +599,7 @@ const path = __importStar(require("path"));
             return callerLine;
         }
         else {
-            throw new types_1.fsError('unable to initalize callerLine from stack');
+            throw new fsError('unable to initalize callerLine from stack');
         }
     }
     exports.printCurrentFrame = printCurrentFrame;
@@ -592,7 +617,7 @@ const path = __importStar(require("path"));
             return fs.readdirSync(path.join(dirname, relativePath)).filter(folder => !folder.startsWith('_') && !folder.startsWith('.DS_STORE') && folder.endsWith(endsWith));
         }
         catch (error) {
-            throw new types_1.fsError(error);
+            throw new fsError(error);
         }
     }
     exports.findFiles = findFiles;
@@ -643,29 +668,74 @@ const path = __importStar(require("path"));
         return url.split(/[#?]/)[0].split('.').pop().trim();
     }
     exports.getExtension = getExtension;
+    
+   
     /**
-     * Determines what type of API object a {@link Snowflake} originated from
-     *
+     * Determines what kind of API object a {@link Snowflake} originated from
+     * 
+     * ---
+     * 
+        see enum {@link fsSnowflakeType} for a list of snowflake types, and their values. 
+
+     * ---
      * @param {string} [snowflake]
-     * @return {fsSnowflakeType}
+     * @return {fsSnowflakeType} 
      */
     function getSnowflakeType(snowflake) {
-        const binarySnowflake = BigInt(snowflake).toString(2).padStart(64, '0');
-        const objectTypeBits = binarySnowflake.slice(22, 30);
-        return parseInt(objectTypeBits, 2);
-    }
+
+        const data = SnowflakeUtil.deconstruct(snowflake);
+        Object.keys(data).forEach((key, index)=>
+        {
+            //console.log(key, data[key])
+        });
+        if (data.timestamp > data.epoch) {
+          if (data.increment === 0n) {
+            return "Discord API object: Discord epoch";
+          } else if (data.increment < 1n && data.processId >= 2n) {
+            return fsSnowflakeType.Message;
+          } else if (data.increment <= 20n && data.processId <= 1n) {
+            return fsSnowflakeType.User;
+          }else if (data.increment >= 32n && data.processId < 1n) {
+                return fsSnowflakeType.Guild;
+          } else if (data.increment >= 1048576n && data.increment < 2097152n) {
+            return fsSnowflakeType.Channel;
+          }  else if (data.increment >= 4194304n && data.increment < 4294967296n) {
+                return fsSnowflakeType.Interaction; 
+          } else if (data.increment >= 4398046511104n && data.increment < 4503599627370496n) {
+            return fsSnowflakeType.Role;   
+        }
+              
+          
+         }
+         else {
+          return "increment is greater than 0";
+        }
+        
+
+      }
     exports.getSnowflakeType = getSnowflakeType;
     /**
      * Fetch all of Flutterbot's commands neatly into a collection
      * #### author [NekoNoka]({@link NekoNokaUrl})
-     * @export
-     * @return {{SlashCommands: fsCommands, PrefixCommands:fsCommands}}
+     * 
+     * @module utilities
+     * @see fsCommands
+     * @return {{SlashCommands: fsCommands, PrefixCommands:fsCommands, ContextCommands: fsCommands}}
      */
     function findAllCommands() {
+        /**
+        * A {@link Collection} of APIApplicationCommands indexed by string 
+        * @typedef {Collection<string, APIApplicationCommand>} fsCommands
+        */
+        
         let prefixFiles = findFiles(__dirname, '../commands/prefix', '.js');
         let slashFiles = findFiles(__dirname, '../commands/slash', '.js');
-        let PrefixCommands = new discord_js_1.Collection();
-        let SlashCommands = new discord_js_1.Collection();
+        let contextFiles = findFiles(__dirname, '../commands/context', '.js');
+       
+        let PrefixCommands = new Collection();
+        let SlashCommands = new Collection();
+        let ContextCommands = new Collection();
+
         //init text input commands
         for (let file of prefixFiles) {
             let command = require(`../commands/prefix/${file}`);
@@ -687,6 +757,16 @@ const path = __importStar(require("path"));
             // process.stdout.write("loading Slash Commands: " + Math.round((1 + slashFiles.indexOf(file)) / total * 100) + "%");
             SlashCommands.set(command.name, command);
         }
+          // console.log(' ');
+        //init the context menu commands 
+        for (let file of contextFiles) {
+            let ccommand = require(`../commands/context/${file}`);
+            // let total = slashFiles.length;
+            // process.stdout.clearLine();
+            // process.stdout.cursorTo(0);
+            // process.stdout.write("loading Slash Commands: " + Math.round((1 + slashFiles.indexOf(file)) / total * 100) + "%");
+            ContextCommands.set(ccommand.name, ccommand);
+        }
         // console.log(' ');
         //setup help command helpText's
         //let helpJS = require('./help.js');
@@ -694,8 +774,63 @@ const path = __importStar(require("path"));
         //just for now until we can get a fix going, sorry emily :(
         // we'll see
         // SlashCommands.set(helpJS.name, helpJS);
-        return { PrefixCommands, SlashCommands };
+
+         /**
+         *  @typedef {PrefixCommands:fsCommands, SlashCommands:fsCommands, ContextCommands:fsCommands} findAllCommands
+         */
+        return { PrefixCommands, SlashCommands, ContextCommands};
     }
     exports.findAllCommands = findAllCommands;
+    function displayList(array) {
+        if (!array.length) return log("bright green", "\nEmpty\n");
+        let headers = Object.keys(array[0]);
+        let table = new Array(array.length + 2).fill().map(() => new Array(headers.length));
+        for (let i = 0; i < headers.length; i++) {
+            let h_fixed = headers[i].split("_").filter(x => x).map(x => x[0].toUpperCase() + x.slice(1).toLowerCase()).join(' ');
+            table[0][i] = h_fixed;
+            for (let j = 0; j < array.length; j++) {
+                let d = array[j][headers[i]];
+                table[2 + j][i] = String(d);
+            }
+            let mCount = 0;
+            for (let j = 0; j < table.length; j++) {
+                if (j == 1) continue;
+                mCount = Math.max(mCount, table[j][i].length);
+            }
+            table[1][i] = ("").padEnd(mCount, "-");
+            for (let j = 0; j < table.length; j++) {
+                if (j == 1) continue;
+                table[j][i] = table[j][i].padEnd(mCount, " ");
+            }
+        }
+        table.map(pirate => pirate.join("  "));
+        log("");
+        for (let i = 0; i < table.length; i++) {
+            if (i == 0) log("bright blue", table[i]);
+            else if (i == 1) log("bright white", table[i]);
+            else log("bright green", table[i]);
+        }
+        log("");
+        return;
+    }
+    exports.displayList = displayList;
+    function ValidateHexColor(value) {
+        if (typeof value === 'string' || typeof value === 'number') {
+          // Convert the value to a string and remove leading/trailing spaces
+          const stringValue = String(value).trim();
+      
+          // Regular expression to check for a valid hexadecimal color (either 3 or 6 characters)
+          const hexRegex = /^#?([0-9A-Fa-f]{3}){1,2}$/;
+      
+          if (hexRegex.test(stringValue)) {
+            return stringValue;
+          }
+        }
+        // If not a valid hexadecimal color, generate a random one
+        return '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+      }
+    exports.ValidateHexColor = ValidateHexColor;
+
+   
 
 exports = exports; 

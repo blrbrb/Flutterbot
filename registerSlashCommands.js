@@ -1,24 +1,26 @@
 require("dotenv").config();
 const { REST, Routes } = require("discord.js");
-const { displayList } = require('./utils/utilities.js');
+
 const utilities = require('./utils/utilities.js');
 
 const commands = utilities.findAllCommands("./findAllCommands"); 
-console.log(commands);
+
 const clientId = process.env.CLIENT_ID;
 const guildId = process.env.GUILD_ID;
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+console.log(commands.ContextCommands);
+module.exports =
 (async () => {
-    try {
+    
+    
         console.log("running request");
-        await rest.put(Routes.applicationCommands(clientId, guildId), {
+        await rest.put(Routes.applicationCommands(clientId), {
             body: commands.SlashCommands
-        })
-        //await rest.get(Routes.userGuilds()) 
-        //.then(displayList)
-        .catch('this is an error lin 19',console.error)  
+        }).then()
+        
+      
 
-    } catch (error) {   
-        console.log('this is an error lin 19',error);
-    }    
+        await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
+            body: commands.ContextCommands
+        }).catch('this is an error lin 26',console.error).then()
 })();

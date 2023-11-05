@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType, Interaction } = require('discord.js');
+const { ApplicationCommandOptionType, Interaction, SlashCommandBuilder, ContextMenuCommandBuilder } = require('discord.js');
 const {Flutterbot} = require('../../client/Flutterbot');
 const request = require('request');
 const gm = require('gm').subClass({
@@ -10,6 +10,7 @@ const {findImage} = require('../../utils/utilities.js');
 module.exports = {
     name: 'aaaaah',
     description: 'aaaaah',
+    type:ApplicationCommandOptionType.ChatInput,
     cooldown: 1,
     options: [
         {

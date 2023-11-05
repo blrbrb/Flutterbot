@@ -1,5 +1,6 @@
 const {commandResponses, errorMessage} = require('../../lang/en.js'); 
 const {EmbedBuilder} = require('discord.js'); 
+const {Flutterbot} = require('../../client/Flutterbot');
 module.exports = {
     name: 'resume',
     description: 'resume a paused song',

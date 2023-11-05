@@ -1,5 +1,5 @@
 const { EmbedBuilder,  ApplicationCommandOptionType } = require('discord.js');
-
+const {Flutterbot} = require('../../client/Flutterbot')
 module.exports = {
     name: 'seek',
     description: 'jump to a specific time',

@@ -1,6 +1,7 @@
 
-const { Interaction, EmbedBuilder,PermissionFlagsBits} = require('discord.js');
+const { Interaction,CommandInteraction, EmbedBuilder,PermissionFlagsBits, ContextMenuCommandBuilder} = require('discord.js');
 const {Flutterbot} = require('../../client/Flutterbot');
+const cmd = new ContextMenuCommandBuilder().setName('roles')
 
 module.exports = {
   name: 'roles',
@@ -38,6 +39,10 @@ module.exports = {
     const filter = (response) => !response.author.bot;
     await dmChannel.send({content: `Here's a list of all of the roles that avalible in ${interaction.guild.name}`, embeds:[embed]});
     Flutterbot.collectors.set(`${interaction.user.id}roleassign`, dmChannel.createMessageCollector({filter})); 
-   return interaction.reply({content:'check your dms!', ephemeral: true}); 
+     if(interaction instanceof CommandInteraction)
+      return interaction.reply({content:'check your dms!', ephemeral: true});
+     else 
+     return interaction.message.reply({content:'check your dms!', ephemeral: true});
+        
   },
 };

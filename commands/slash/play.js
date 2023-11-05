@@ -1,4 +1,4 @@
-const { ActionRowBuilder, ButtonBuilder, EmbedBuilder,Interaction, ComponentType} = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, EmbedBuilder,Interaction, ComponentType, CommandInteraction, Guild, MessageFlags, Message} = require('discord.js');
 const ytdl = require('ytdl-core');
 const Utilities= require('../../utils/utilities.js');
 const {errorMessage} = require('../../lang/en.js');
@@ -21,9 +21,23 @@ module.exports = {
      * @param {Interaction} interaction
      * @param {Flutterbot} Flutterbot
      */
-	async execute(interaction, Flutterbot) {
+	async execute(interaction, Flutterbot) { 
 		
-		const query = interaction.options.getString('query');
+		let query = '';
+		 
+		if(interaction instanceof CommandInteraction){
+			console.log('this is an interaction');
+			query = interaction.options.getString('query');}
+		else if (interaction instanceof Message){
+			console.log('this is a message')
+			interaction = interaction; 
+			query = interaction.content.slice(("-").length + ("-").length).trim();
+			 //original message author id will be overwritten on edit, store it here
+			 const author = interaction.author; }
+			
+			
+			//interaction.member = interaction.member; 
+		
 		const self = interaction.guild.members.cache.get(Flutterbot.user.id);
 		//we need to make sure the member is actually connected to a voice channel, otherwise she'll crash
 		if(interaction.member.voice.channel == null) return interaction.reply({content:'You need to be in a voice channel first!',ephermeal:true });
@@ -51,32 +65,23 @@ module.exports = {
 			}).then(interaction.reply({content:`Fetching this url from SoundCloud.com...`, ephemeral:true}));
 			return; 
 			default: 
-
+			if(interaction instanceof CommandInteraction)
 			interaction.deferReply({content:`Searching for relevant results...`, ephemeral:true}); 
-			await this.results_selection(interaction, Flutterbot, query);
+			else{
+			   const inter= await interaction.reply({content:`Searching for relevant results...`, ephemeral:true})
+			   this.results_selection(inter, Flutterbot, query);}
 			return;
 
 		}
 		
 
 	},
-	async queue_video(interaction, shy, query, queue, nsfw) 
-	{
-		Flutterbot.DisTube.play(interaction.member.voice.channel, firstResult.url, {
-		member: interaction.member,
-		textChannel: interaction.channel,
-		interaction
-
-		});
-		
-		
-	},
 	async results_selection(interaction, Flutterbot, query) {
 		try {
 			const result = await Flutterbot.DisTube.search(query);
 
 			let select_embed = new EmbedBuilder(); 
-		
+			
 			let color = Flutterbot.DB.getGuildConfig(interaction,'embed_color'); 
 			select_embed.setColor('fdf6af').setTitle(`Results From Youtube.com`).
 			setAuthor({name:'Flutterbot.music', iconURL: Flutterbot.user.displayAvatarURL()})
@@ -99,14 +104,24 @@ module.exports = {
 				select_embed.addFields({ name: `${result[x].uploader.name}`, value: `[${result[x].name}](${result[x].url}) / \`${result[x].formattedDuration}\``});
 
 			
-
-			reply = await interaction.editReply({ embeds: [select_embed], components: [row], ephemeral: true });
-			Flutterbot.collectors.set(`distube_results${interaction.user.id}`, reply.createMessageComponentCollector({componentType: ComponentType.Button, time: 3_600_000  }));
-			
+			if(interaction instanceof CommandInteraction){
+				
+			 const reply = await interaction.editReply({ embeds: [select_embed], components: [row], ephemeral: true });
+			 Flutterbot.collectors.set(`distube_results${interaction.user.id}`, reply.createMessageComponentCollector({componentType: ComponentType.Button, time: 3_600_000  }));}
+			else{
+				
+			 const reply = await interaction.edit({ embeds: [select_embed], components: [row], ephemeral: true });
+			 Flutterbot.collectors.set(`distube_results${interaction.author.id}`, reply.createMessageComponentCollector({componentType: ComponentType.Button, time: 3_600_000  }));}
 		} }
 		catch (DisTubeError) {
 			console.log(DisTubeError);
-			interaction.editReply({ content: ` Tell @Eli there was an error :(  + ${DisTubeError}`, ephemeral: true });
+			if(interaction instanceof CommandInteraction)
+			await interaction.editReply({ content: ` Tell @Eli there was an error :(  + ${DisTubeError}`, ephemeral: true });
+			else {
+				console.log(interaction);
+			await interaction.channel.send({ content: ` Tell @Eli there was an error :(  + ${DisTubeError}`, ephemeral: true });
+		    Flutterbot.collectors.delete(`distube_results${interaction.author.id}`);}
+			return;
 		}
 		return;
 	},
@@ -151,14 +166,14 @@ module.exports = {
   * the distube selection response is stored as a MessageComponentCollector() inside of the global Flutterbot.collectors() 
   * Map
   * 
-  * @param {Discord.disord.MessageComponentCollector} collector The message {@link Discord.disord.MessageComponentCollector} for the current user (Flutterbot.collectors.get(interaction.user.id))
+  * @param {MessageComponentCollector} collector The message {@link Discord.disord.MessageComponentCollector} for the current user (Flutterbot.collectors.get(interaction.user.id))
   * @param {Flutterbot} Flutterbot The instance {@link Flutterbot}
-  * @param {Discord.discord.interaction} outer_interaction The inst ance of the outer interaction, needed to get the interaction.member.voice.channels property
+  * @param {Interaction} outer_interaction The inst ance of the outer interaction, needed to get the interaction.member.voice.channels property
   * @returns {undefined} responds to the button interaction with a messsage, and queues the selection into Distube
   */
 	async handledistubeSelection(collector, Flutterbot, outer_interaction)
 	{
-		
+		console.log(collector);
 	 if(outer_interaction.member.voice.channel == null) return i.reply({content:'You need to be in a voice channel first!',ephermeal:true });
 	 
 	 //init reply embed
@@ -171,7 +186,7 @@ module.exports = {
 
 	  collector.on('collect', async i => {
 		
-		
+		console.log(outer_interaction);
 		selection = i.customId;
 		replyembed.setDescription(`Okay! I'll hand [this track](${selection}) over to Vinyl and Octavia!`)
 		

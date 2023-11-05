@@ -1,3 +1,7 @@
+const {Flutterbot} = require('../../client/Flutterbot');
+const {Interaction, SlashCommandBuilder} = require('discord.js');
+
+
 module.exports = {
     name: "boop",
     description: "boop somepony!",
@@ -11,7 +15,7 @@ module.exports = {
         }
     ],
     /**
-    * @param {import('discord.js').Interaction} interaction
+    * @param {Interaction} interaction
     * @param {Flutterbot} Flutterbot
     */
     async execute(interaction, Flutterbot) {
@@ -21,7 +25,7 @@ module.exports = {
 
         var onSelf = false;
         var onFluttershy = false;
-        console.log(interaction.options.pony);
+       
         var target_user = interaction.options.getUser('pony');
 
         const reply_string = `${interaction.user} booped ${target_user}`;

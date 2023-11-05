@@ -1,7 +1,7 @@
 
 const { PermissionFlagsBits } = require('discord.js');
 const { errorMessage } = require('../../lang/en');
-
+const {Flutterbot} = require('../../client/Flutterbot');
 module.exports = {
     name: "removerole",
     description: "remove a role from yourself",

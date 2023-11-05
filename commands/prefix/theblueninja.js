@@ -7,7 +7,7 @@ module.exports = {
 	name: 'theblueninja',
 	description: 'info about the blueninja',
     cooldown: 2, 
-	async execute(Flutterbot, message, args) 
+	async execute(message, Flutterbot, args) 
     {
         const embed = new EmbedBuilder().setAuthor({'name': 'TBN'}).setTitle("Support The Blue Ninja")
         .setDescription('**The Blue Ninja** is a story-based 3D platformer currently in development, from indie dev Smg065 (Kenneth). \n Play as a group of villains led by the notorious Dr. Gear, as set they out on an adventure that might just lead somewhere none of them could have anticipated... To questions about their own morality, the true nature of good, evil, and all of the things inbetween.')

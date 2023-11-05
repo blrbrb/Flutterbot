@@ -2,7 +2,7 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 require('dotenv').config();
 const {commandResponses} = require('../../lang/en.js');
-const { fsError } = require('../../utils/types.js');
+const { fsError } = require('../../structures/types.js');
 let conversation = { past_user_inputs: [], generated_responses: [] };
 let response_temp = ' ';
 const command_prefix = 'fs';
@@ -13,7 +13,7 @@ module.exports = {
     name: "fs",
     description: "talk with FlutterShy",
     cooldown: 0, 
-    async execute(Flutterbot, message, args) {
+    async execute(message, Flutterbot, args) {
         message.channel.sendTyping();
         console.log(message.content);
       

@@ -1,5 +1,6 @@
 ﻿const { within } = require('../../utils/utilities.js');
 const {errorMessage, commandResponses} = require('../../lang/en.js');
+
 module.exports = {
     name: 'volume',
     description: 'increase or decrease the volume of the queue',
@@ -11,10 +12,7 @@ module.exports = {
             required: true
         }
     ],
-    /**
-     * @param {import('discord.js').Interaction} interaction
-     * @param {Flutterbot} Flutterbot
-     */
+   
     async execute(interaction, Flutterbot) {
         const queue = await Flutterbot.DisTube.getQueue(interaction);
         if(!queue) return interaction.reply(errorMessage.Distube.QueueEmpty());

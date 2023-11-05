@@ -12,18 +12,38 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Evaluator = void 0;
+exports.AngelBunny = void 0;
 const discord_js_1 = require("discord.js");
+const {Utils, Guild, Message, CommandInteraction} = require('discord.js');
 const axios_1 = __importDefault(require("axios"));
 const cheerio_1 = __importDefault(require("cheerio"));
 const fs_1 = __importDefault(require("fs"));
-const types_1 = require("../utils/types");
+const types_1 = require("../structures/types");
 const { youShouldLitterallyNeverSeeThis } = require('../lang/en.js');
-class Evaluator {
+const { SimpleDatabase } = require("../utils/SimpleDatabase");
+
+
+
+
+
+
+
+
+
+class AngelBunny {
+    /**
+     *  Create an instance of Fluttershy's saftey AngelBunny 
+     * @param {SimpleDatabase} Database 
+     * @param {Flutterbot} shy Flutterbot's client instance  
+     */
     constructor(Database, shy) {
+        /**@type {RegExp} */
         this.urlRegex = /https?:\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|]/g;
+        
         this.intel = this.loadIntel();
+       /**@type {SimpleDatabase}  */
         this.db = Database;
+        /**@type {Flutterbot} */
         this.shy = shy;
     }
     validateAge(member) {
@@ -47,7 +67,7 @@ class Evaluator {
             if (!guild)
                 throw new types_1.Errors.fsClientError(`Unable to fetch the guild from my clients GuildManager. Cannot quaratine this user`);
             let qRoleID = this.db.getGuildConfig(member.guild, 'quaratine_role');
-            let quarantinedUsers = this.db.getGuildConfig(member.guild, 'quaratined');
+            let quarantinedUsers = this.db.getGuildConfig(member.guild, 'quarantined');
             if (!quarantinedUsers) {
                 this.db.setGuildConfig(member.guild, 'quarantined', [member.id]);
             }
@@ -96,11 +116,12 @@ class Evaluator {
         });
     }
     onMessage(message) {
-        return __awaiter(this, void 0, void 0, function* () {
+         __awaiter(this, void 0, void 0, function* () {
             if ((yield this.positiveURL(message)).match) {
                 this.shy.Log('Pink Underscore', `This shit is for realsies bro. ${message.content}`);
             }
         });
+       
     }
     updateIntelligence() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -138,14 +159,31 @@ class Evaluator {
             }
         });
     }
-    loadIntel() {
+    /**
+     * Loads an array of phising / malware links from the urlhaus database into memory, 
+     * updated once every five minutes in {@link update}
+     * @returns 
+     */
+    loadIntel() { 
         const raw = fs_1.default.readFileSync('assets/intelligence.json');
         const data = JSON.parse(raw.toString());
         if (!data)
             throw new types_1.fsError('unable to load malicious url database.');
         return data;
     }
+    /**
+     * Does a message, or any of it's contents / embeds contain a link to malware for REALSIES
+     * @param {Message} message 
+     * @returns 
+     */
     positiveURL(message) {
+        let content = ''; 
+        if(message instanceof Message)
+            content = message.content; 
+        else if(message instanceof CommandInteraction)
+            content = message.message?.content; 
+        if(!content)
+            return {match:false, urls:undefined};
         return __awaiter(this, void 0, void 0, function* () {
             const contentUrls = message.content.match(this.urlRegex);
             if (contentUrls) {
@@ -166,7 +204,48 @@ class Evaluator {
             else
                 return { match: false, urls: undefined };
         });
+    } 
+    
+    /**
+     * Determine whether or not a guild already has a quarantine role registered 
+     * @param {Guild} Guild 
+     * @return {boolean}
+     */
+    hasQuarantineRole(Guild)
+    {
+        try
+        {
+            const quarantine_role = Utils.get(Guild.roles, name="fsQuarantine"); 
+            let registered_quaratine_role = this.db.getGuildConfig(Guild, `quaratine_role`);
+            
+            //we want to be sure that a guild can only have a role associated with "quarantine"
+            //if the guild owner or admins have specifially created said role for the quarantine
+            //this way if a guild so happens to have a role named "fsQuarantine", that won't automatically be treated as the default quarantine role 
+            if(quarantine_role && registered_quaratine_role)
+                return true; 
+
+            else if(!registered_quaratine_role && quarantine_role)
+                return true; 
+            else if(!quarantine_role && !registered_quaratine_role)
+                return false; 
+            else 
+                return false; 
+
+        }
+        catch(error)
+        {
+            this.shy.log(error);
+            return false; 
+        }
+    }
+    /**
+     * updates AngelBunny, and all of his components. To be called in the main event loop
+     */
+    update()
+    {
+       setInterval(this.loadIntel(), 1000 * 60 * 60 * 5); 
+
     }
 }
-exports.Evaluator = Evaluator;
-exports.default = Evaluator;
+exports.AngelBunny = AngelBunny;
+exports.default = AngelBunny;

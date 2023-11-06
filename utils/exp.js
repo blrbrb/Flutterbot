@@ -13,6 +13,7 @@ exports.PonyExp = exports.ExpHandler = exports.ReactionData = exports.ExpHandler
 const discord_js_1 = require("discord.js");
 const utilities_1 = require("./utilities")
 const types_1 = require("../structures/types");
+const { access } = require("fs");
 
 
 
@@ -87,15 +88,15 @@ class ExpHandler {
             //via the User argument. bc it's not a property on MessageReaction
             
             if(args[0] instanceof discord_js_1.MessageReaction){
-               
+                console.log(`this is a message reaction`);
                 accessorId = utilities_1.resolveUserID(args[1]); 
                 
             }
-            else
-            {
-                accessorId = utilities_1.resolveUserID(args[0]); 
-            }
             
+            else{
+                accessorId = utilities_1.resolveUserID(args[0]); }
+            
+                console.log(accessorId);
             let current = this.all.get(accessorId); 
             if (!current) {
                 console.log(`adding user ${accessorId} to exp map`);

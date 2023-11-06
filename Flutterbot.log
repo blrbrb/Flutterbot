@@ -85,3 +85,4 @@ fsError: generated_responses cannot be passed without past_user_inputs!
 fsError: generated_responses cannot be passed without past_user_inputs!
     at /Users/Eli/Desktop/Flutterbot/commands/prefix/fluttershy.js:62:27
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+warn serverquote.js 47: User Flutterbot_Testing does not exist in databse

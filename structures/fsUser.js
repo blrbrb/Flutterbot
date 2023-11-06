@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 
 exports.default = exports.ReactionData = exports.fsServerQuote = void 0;
 const utilities_1 = require("../utils/utilities");
+const {PonyExp} = require('../utils/exp')
 const {SimpleDatabase} = require('../utils/SimpleDatabase');
 const {Snowflake} = require('discord.js');
 //import { PonyExp } from "../types/index";

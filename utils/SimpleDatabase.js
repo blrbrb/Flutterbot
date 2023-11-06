@@ -96,7 +96,7 @@ get users()
    
     for(const ID in this.data)
     { 
-        if(this.data[ID].hasOwnProperty('UserId'))
+        if(this.data[ID] && this.data[ID].hasOwnProperty('UserId'))
         {   
             this._users.set(new fsUser(ID, this.data[ID].exp, this.data[ID].server_quotes));
         }   

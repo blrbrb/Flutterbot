@@ -32,3 +32,56 @@ fsError: I'm having trouble connecting to my model right now, I can't generate t
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
 Warn: skip.js() 25
 DisTubeError [NO_UP_NEXT]: There is no up next song
+warn getRole.js 32: Guild does not exist in databse
+warn getRole.js 32: Guild does not exist in databse
+warn getRole.js 32: Guild does not exist in databse
+warn getRole.js 32: Guild does not exist in databse
+warn getRole.js 32: Guild does not exist in databse
+fsError: I'm having trouble connecting to my model right now, I can't generate text
+    at /Users/Eli/Desktop/Flutterbot/commands/prefix/fluttershy.js:61:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+fsError: I'm having trouble connecting to my model right now, I can't generate text
+    at /Users/Eli/Desktop/Flutterbot/commands/prefix/fluttershy.js:61:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+fsError: I'm having trouble connecting to my model right now, I can't generate text
+    at /Users/Eli/Desktop/Flutterbot/commands/prefix/fluttershy.js:61:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+fsError: I'm having trouble connecting to my model right now, I can't generate text
+    at /Users/Eli/Desktop/Flutterbot/commands/prefix/fluttershy.js:61:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+fsError: generated_responses cannot be passed without past_user_inputs!
+    at /Users/Eli/Desktop/Flutterbot/commands/prefix/fluttershy.js:61:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+fsError: generated_responses cannot be passed without past_user_inputs!
+    at /Users/Eli/Desktop/Flutterbot/commands/prefix/fluttershy.js:61:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+fsError: generated_responses cannot be passed without past_user_inputs!
+    at /Users/Eli/Desktop/Flutterbot/commands/prefix/fluttershy.js:61:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+fsError: generated_responses cannot be passed without past_user_inputs!
+    at /Users/Eli/Desktop/Flutterbot/commands/prefix/fluttershy.js:61:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+fsError: generated_responses cannot be passed without past_user_inputs!
+    at /Users/Eli/Desktop/Flutterbot/commands/prefix/fluttershy.js:61:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+fsError: generated_responses cannot be passed without past_user_inputs!
+    at /Users/Eli/Desktop/Flutterbot/commands/prefix/fluttershy.js:61:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+fsError: generated_responses cannot be passed without past_user_inputs!
+    at /Users/Eli/Desktop/Flutterbot/commands/prefix/fluttershy.js:61:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+fsError: generated_responses cannot be passed without past_user_inputs!
+    at /Users/Eli/Desktop/Flutterbot/commands/prefix/fluttershy.js:61:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+fsError: generated_responses cannot be passed without past_user_inputs!
+    at /Users/Eli/Desktop/Flutterbot/commands/prefix/fluttershy.js:61:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+fsError: generated_responses cannot be passed without past_user_inputs!
+    at /Users/Eli/Desktop/Flutterbot/commands/prefix/fluttershy.js:61:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+fsError: generated_responses cannot be passed without past_user_inputs!
+    at /Users/Eli/Desktop/Flutterbot/commands/prefix/fluttershy.js:62:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+fsError: generated_responses cannot be passed without past_user_inputs!
+    at /Users/Eli/Desktop/Flutterbot/commands/prefix/fluttershy.js:62:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)

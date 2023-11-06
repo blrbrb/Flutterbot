@@ -39,11 +39,13 @@ module.exports = {
         const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
         const day = String(currentDate.getDate()).padStart(2, '0');
         let user = Flutterbot.DB.users.get(speaker.id);
+        console.log(user);
 
         let data = new fsServerQuote(quoted_text,`${year}\ ${month}\ ${day}`,interaction.user.id,interaction.guild.id);
       
         if(!user)
         {
+            Flutterbot.Log(`yellow`, `warn serverquote.js 47: User ${speaker.username} does not exist in databse`);
             Flutterbot.DB.users.set(speaker.id, new fsUser(speaker.id, new PonyExp(), data));
             user = Flutterbot.DB.users.get(speaker.id);
         }

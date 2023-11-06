@@ -81,7 +81,21 @@ class ExpHandler {
    */
     update(...args) {
         return __awaiter(this, void 0, void 0, function* () {
-            let accessorId = utilities_1.resolveUserID(args[0]);
+            let accessorId;
+
+            //if the event is a message reaction, fetch the ID of the original author of the reaction 
+            //via the User argument. bc it's not a property on MessageReaction
+            
+            if(args[0] instanceof discord_js_1.MessageReaction){
+               
+                accessorId = utilities_1.resolveUserID(args[1]); 
+                
+            }
+            else
+            {
+                accessorId = utilities_1.resolveUserID(args[0]); 
+            }
+            
             let current = this.all.get(accessorId); 
             if (!current) {
                 console.log(`adding user ${accessorId} to exp map`);

@@ -78,10 +78,13 @@ class fsUser {
      * @memberof fsUser
      */
     constructor(UserId, exp=new PonyExp(), quotes=[]) {
-        this.server_quotes = quotes;
+        if(quotes && Array.isArray(quotes))
+         this.server_quotes = quotes;
+        else { console.log(quotes);
+          this.server_quotes = []; }
         this.PonyExp = exp
         if (!UserId)
-            throw new Error('cannot instantize fsGuild with a valid Guild id!');
+            throw new Error('cannot instantize fsUser with a valid User id!');
         else
             this.UserId = utilities_1.resolveUserID(UserId);
     }

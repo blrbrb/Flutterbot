@@ -63,7 +63,7 @@ _loadData() {
         {   const dat = JSON.parse(data); 
             Object.keys(dat).forEach((key, index)=>
             { 
-               
+            
                 if(dat[key].hasOwnProperty('GuildId'))
                 { 
                     this._guilds.set(key, new fsGuild(dat[key], new fsGuildConfig()));
@@ -98,7 +98,7 @@ get users()
     { 
         if(this.data[ID].hasOwnProperty('UserId'))
         {   
-            this._users.set(ID, this.data[ID]);
+            this._users.set(new fsUser(ID, this.data[ID].exp, this.data[ID].server_quotes));
         }   
     }
     this._saveData();
@@ -115,19 +115,18 @@ get guilds()
     if(!this.data)
     throw new types_1.fsDatabaseError('SimpleDatabase.js 68: Cannot load Users, data is undefined!');
     
-const muhBuildsbruh_Guilds = new Map();
-Object.keys(this.data).forEach((key, index)=>
+
+for(const ID in this.data)
 {
-   
-    if(this.data[key].hasOwnProperty('GuildId'))
-    { 
-        muhBuildsbruh_Guilds.set(key, new fsGuild(this.data[key], new fsGuildConfig()));
-    }   
-})
+    if(this.data[ID] && this.data[ID].hasOwnProperty('GuildId'))
+        {   
+            this._guilds.set(new fsGuild(ID, this.data[ID].config));
+        }   
+}
     //console.log(ID);
     // console.log(this.data[ID], this.data[ID] instanceof fsGuild);
  this._saveData();
-return muhBuildsbruh_Guilds; 
+return this._guilds; 
 }
 /**
  * Private Class Method. Called by the database each time a property is changed, added, or deleted
@@ -147,7 +146,7 @@ _saveData() {
     if(this._users.size >0)
         this._users.forEach((user, id) =>
         {
-        this.data[id] = user; 
+         this.data[id] = user; 
         });
 
     try {

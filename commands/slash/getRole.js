@@ -2,6 +2,7 @@
 const { PermissionFlagsBits, Interaction} = require('discord.js');
 const {commandResponses, errorMessage} = require('../../lang/en.js');
 const {Flutterbot} = require('../../client/Flutterbot');
+const { fsGuild, fsGuildConfig } = require('../../structures/fsGuild.js');
  
 
 
@@ -23,12 +24,17 @@ module.exports = {
     async execute(interaction, Flutterbot) {
         const role = interaction.options.getRole('role');
         const guildMember = interaction.member;
-        const guild = Flutterbot.DB.guilds.get(interaction.guild.id);
-
-        const private_roles = guild.config.privateRoles; 
-        
-        //ensure the target role is not privated or admin
-        let exitReason; 
+        let guild = Flutterbot.DB.guilds.get(interaction.guild.id);
+       
+        //const private_roles = guild.config.privateRoles; 
+        if(!guild)
+        {
+            Flutterbot.Log(`yellow`, `warn getRole.js 32: Guild does not exist in databse`);
+            Flutterbot.DB.guilds.set(interaction.guild.id, new fsGuild(interaction.guild.id, new fsGuildConfig()));
+            guild = Flutterbot.DB.guilds.get(interaction.guild.id);
+        }
+        console.log(guild);
+        //ensure the target role is not privated or admin 
         if(role.managed)
          return interaction.reply(errorMessage.RoleError.managed(role));
         else if(role.permissions.has(PermissionFlagsBits.Administrator))

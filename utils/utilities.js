@@ -831,6 +831,5 @@ const path = __importStar(require("path"));
       }
     exports.ValidateHexColor = ValidateHexColor;
 
-   
 
 exports = exports; 

@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 require('dotenv').config();
 const {commandResponses} = require('../../lang/en.js');
 const { fsError } = require('../../structures/types.js');
-let conversation = { past_user_inputs: [], generated_responses: [] };
+let conversation = { past_user_inputs: [""], generated_responses: [""] };
 let response_temp = ' ';
 const command_prefix = 'fs';
 
@@ -16,12 +16,13 @@ module.exports = {
     async execute(message, Flutterbot, args) {
         message.channel.sendTyping();
         console.log(message.content);
-      
+        
         
         const data = fs.readFileSync("assets/conversation.json");
        
         past = JSON.parse(data); 
-        
+        console.log(past); 
+
         let input = {
             message: message.content.slice(("-").length + command_prefix.length).trim(),
             question: false
@@ -56,9 +57,9 @@ module.exports = {
                 { 
                     message.channel.send(commandResponses.Fluttershy.loadingModel(response.error.estimated_time));
                 }
-                else if (String(response.error))
+                else if(response.error)
                 {
-                    throw new fsError(`I'm having trouble connecting to my model right now, I can't generate text`,new Error(response.error));
+                    throw new fsError(response.error);
                 }
 
             } else if (response.hasOwnProperty("generated_text")) {
@@ -71,9 +72,9 @@ module.exports = {
             }
         }
         catch(fsError)
-        {
+        {//<t:1699229520:F>
           
-            message.reply(`\`${fsError.message}: ${fsError.stack.split('\n')[1]}\``);
+            message.reply(`I'm having some trouble right now, I'll send this to Elly \n \`${fsError.message}: ${fsError.stack.split('\n')[1]}\` stack trace generated at <t:${parseInt(Date.now() / 1000)}:F>`);
             Flutterbot.Log('yellow', `${fsError.stack}`);
         }
         });

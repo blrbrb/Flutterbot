@@ -1,8 +1,0 @@
-{
-    "prefix":"-",
-    "debugging_channel": "1032402464940511343",
-    "always_trusted":["204255221017214977","252235505318625281", "340948459983077379"],
-    "developers":["252235505318625281", "340948459983077379"],
-    "current_maintenance": false, 
-    "default_cooldown": 2
-  }

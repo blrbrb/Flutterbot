@@ -121,14 +121,17 @@ class Flutterbot {
 
     //update the database on an hourly basis to ensure the perseverance of data between leaving / joining
     //and client restarts 
-    getDefaultCoolDown(serverId) {
-        
-       let default_cooldown = this.db.query(`SELECT cooldown_seconds FROM GUILDS WHERE guild_id=${serverId}`);
+    getDefaultCoolDown(serverId) {     
+       
+        this.db.query(`INSERT INTO GUILDS (guild_id, cooldown_seconds) VALUES (${serverId}, 2) ON DUPLICATE KEY UPDATE guild_id=guild_id, cooldown_seconds=cooldown_seconds`);
+        let default_cooldown = this.db.query(`SELECT cooldown_seconds FROM GUILDS WHERE guild_id=${serverId}`);
        console.log(`fetched default cooldown is ${default_cooldown} getDefaultCoolDown() FLutterbot.js`);
+    
        if(!default_cooldown)
         return 2; 
        else 
        return default_cooldown;
+    
     }
    async updateEvents()
     {

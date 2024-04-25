@@ -15,11 +15,11 @@ module.exports = {
         
         if(queue.paused)
         {
-            return interaction.reply(errorMessage.Distube.AlreadyPaused())
+            return interaction.reply(errorMessage.Distube.AlreadyPaused().content)
         } 
       
         queue.pause(interaction); 
-        embed.setDescription(commandResponses.pause(queue).content)
+        embed.setDescription(commandResponses.Distube.pause(queue).content)
         
         return interaction.reply({embeds:[embed], ephemeral:true});
     }

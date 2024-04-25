@@ -1,28 +1,43 @@
 
 var mysql = require('mysql');
+// Create a MySQL connection pool
 
+ 
 class SimpleDatabase {
 
     constructor() {
-        this.connection = mysql.createConnection({
-            host     : 'localhost',
-            user     : 'Flutterbot',
-            password : process.env.SQL,
-            database : 'Flutterbot'
+      this.pool = mysql.createPool({
+        connectionLimit: 10, // Adjust according to your database needs
+        host: 'localhost',
+        user: 'Flutterbot',
+        password: process.env.SQL,
+        database: 'Flutterbot'
+      });
+    
+    }      
+    async query(sqlQuery) {
+        return new Promise((resolve, reject) => {
+          this.pool.getConnection((err, connection) => {
+            if (err) {
+              console.error('Error connecting to database:', err);
+              reject(err);
+              return;
+            }
+    
+            connection.query(sqlQuery, (queryErr, results) => {
+              connection.release();
+    
+              if (queryErr) {
+                console.error('Error executing query:', queryErr);
+                reject(queryErr);
+                return;
+              }
+    
+              resolve(results);
+            });
           });
-
-        this.connection.connect();
-    }
-    query(query)
-    {
-        this.connection.query(query, function (error, results, fields) {
-            if (error) throw error;
-                return results; 
-          });
-    } 
-}
-
-
-module.exports = {
-    SimpleDatabase
-};
+        });
+      }
+  }
+  
+  module.exports = {SimpleDatabase};

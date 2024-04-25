@@ -1,6 +1,18 @@
 #! /bin/sh
 
-FILE=error_log.txt 
+FILE=Flutterbot.log
+
+
+bold=$(tput bold)
+light_pink=$(tput setaf 5)
+reset=$(tput sgr0)
+CLIENT_PRREFIX="(${bold}${light_pink}Fluttershy Shell${reset}): "
+
+
+print()
+{
+	echo $CLIENT_PRREFIX $1 
+}
 
  check_os() 
 {
@@ -27,7 +39,7 @@ fi
 
 }
 
-function clear_macOSFiles() 
+ clear_macOSFiles() 
 {
 
 if [ -f ".DS_Store" ]; then
@@ -54,7 +66,7 @@ fi
 
 }
 
-function logmanager()   
+ logmanager()   
 {
 
 #Force-Trunicate the error log if the error log is larger than 90mb 
@@ -63,15 +75,15 @@ minimumsize=90000000
 warningsize=80000000
 actualsize=$(wc -c <$1)
 if [ $actualsize -ge $minimumsize ]; then
-	echo log file size is over $minimumsize bytes 
-	echo Clearing Log File… 
+	print log file size is over $minimumsize bytes 
+	print Clearing Log File… 
 	
-	> error_log.txt
+	> $FILE
 
 elif [ $actualsize -ge $warningsize ]; then
-	echo -e "\033[33mWARN: \033[0m" log file size is over $warningsize bytes 80mb, and will be trunicated at $minimumsize 90mb
+	print -e "\033[33mWARN: \033[0m" log file size is over $warningsize bytes 80mb, and will be trunicated at $minimumsize 90mb
 else
-	echo log file size is under $minimumsize bytes
+	print log file size is under $minimumsize bytes
 fi
 
 
@@ -80,17 +92,17 @@ fi
 
 #check to see if the error log file exists, and wether or not it has passed the size limit to be cleared and reset 
 if [ -f "$FILE" ]; then
-	echo "$FILE exists."
+	print "$FILE exists."
 	logmanager "$FILE"
 
    else 
-	echo "$FILE does not exist. Initalizing javascript error log..." 
-	touch error_log.txt 
+	print "$FILE does not exist. Initalizing javascript error log..." 
+	touch $FILE 
 fi    
 
 check_os 
 
-echo preparing fluttershy to run on enviornment:  $os_type
+print preparing fluttershy to run on enviornment:  $os_type
 
 
 
@@ -102,44 +114,30 @@ do
 
 
 
-tput setf 4
-echo Starting Fluttershy 
+
+print "Starting Fluttershy"
 {
-
-tput bold 
- node .
  
-}  2>> error_log.txt
+ node . $CLIENT_PRREFIX
  
-tput sgr0
+}  2>> $FILE
+ 
 
-echo ----------------------------------------------------------------------------------------------------- >> error_log.txt
-date +"Error Generated at: %A %d %B %r" >> error_log.txt 
 
-echo There Was An Error… 
+echo ----------------------------------------------------------------------------------------------------- >> $FILE
+date +"Error Generated at: %A %d %B %r" >> $FILE 
+
+print There Was An Error… exec "${?}\n"
+
 cat assets/image.txt 
 
- echo Fluttershy has exited with a code of "${?}\n" 1>&2 
-
-
-
-echo details written to "$FILE" 
-
  
+print details written to "$FILE" 
 
-echo Restarting Fluttershy in 1 Seconds... 
+
+print Restarting Fluttershy in 1 Seconds... 
 
 
-sleep 1
-
-echo  'Clearing Cache: 0%)\r'  
- 
-	clear_macOSFiles 
-echo  'Clearing Cache: 12%\r' 
-
-echo  'Clearing Cache: 67%\r'
-
-echo  "Cache Cleared! Restarting Fluttershy..."
 
 done 
 

@@ -184,7 +184,7 @@ class expHandler
   }
   addUser(userId)
   {
-    this.db.query(`INSERT IGNORE INTO PONY_EXP(id, experience, required, msg, level, cmds, reacts_received,reacts_given) VALUES(${userId}, 0, 0, 0, 0, 0, 0, 0);`)
+    this.db.query(`INSERT IGNORE INTO PONY_EXP(id, experience, required, msg, level, cmds, reacts_received,reacts_given) VALUES(${userId}, 0, 0, 0, 0, 0, 0, 0);`, (err, results)=>{if(err){console.log(err)}});
     return; 
   }
   update(...args)
@@ -197,7 +197,7 @@ class expHandler
      return
     console.log(accessorId);
    
-    let current = this.db.query(`SELECT * FROM PONY_EXP WHERE ID=${accessorId}`);  
+    let current = this.db.query(`SELECT * FROM PONY_EXP WHERE ID=${accessorId}`,(err, results)=>{if(err){console.log(err)}});  
     console.log(current);
    
     if(!current){

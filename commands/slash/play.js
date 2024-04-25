@@ -72,13 +72,13 @@ module.exports = {
 			const result = await Flutterbot.DisTube.search(query);
 
 			let select_embed = new EmbedBuilder(); 
-			let color = Flutterbot.db.getGuildConfig('embed_color'); 
-			select_embed.setColor('fdf6af').setTitle(`Results From Youtube.com`).
+			let color = await Flutterbot.db.query(`SELECT embed_color FROM GUILDS WHERE guild_id=${interaction.guild.id}`);
+			select_embed.setColor(color='fdf6af').setTitle(`Results From Youtube.com`).
 			setAuthor({name:'Flutterbot.music', iconURL: Flutterbot.client.user.displayAvatarURL()})
 
 			if(color)
 			{
-				select_embed.setColor(color);
+				select_embed.setColor(color='fdf6af');
 			}
 
 			const row = new ActionRowBuilder();
@@ -157,11 +157,11 @@ module.exports = {
 	 if(outer_interaction.member.voice.channel == null) return i.reply({content:'You need to be in a voice channel first!',ephermeal:true });
 	 
 	 //init reply embed
-	 let color = Flutterbot.db.getGuildConfig(outer_interaction, 'embed_color'); 
+	 let color = await Flutterbot.db.query(`SELECT embed_color FROM GUILDS WHERE guild_id=${outer_interaction.guild.id}`);
 	 const replyembed = new EmbedBuilder(); 
 	 replyembed.setAuthor({iconURL: Flutterbot.client.user.displayAvatarURL(), name:'Flutterbot.music'})
 
-	 if(color) replyembed.setColor(color)	
+	 if(color) replyembed.setColor(color='fdf6af')	
 	
 
 	  collector.on('collect', async i => {

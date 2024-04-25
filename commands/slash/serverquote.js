@@ -33,7 +33,7 @@ module.exports = {
         
      
         //make sure to send interaction.guild, and not anything else so that the db resolves to guild.id.
-        Flutterbot.db.query(`INSERT INTO QUOTES(id,guild_id, quote, time) VALUES (${speaker.id}, ${interaction.guild.id}, "${quoted_text}", "${currentDate.toISOString().split("T")[0]}"`);
+        Flutterbot.db.query(`INSERT INTO QUOTES(id,guild_id, quote, time) VALUES (${speaker.id}, ${interaction.guild.id}, "${quoted_text}", '${currentDate.toISOString().slice(0, 19).replace('T', ' ')}')`);
         let embed = new EmbedBuilder()
             .setTitle(`${speaker.username} on ${month}\\${day}\\${year} `)
             .setThumbnail(speaker.displayAvatarURL({ dynamic: true, size: 256 }))

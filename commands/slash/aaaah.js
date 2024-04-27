@@ -20,15 +20,16 @@ module.exports = {
         }
     ],
     async execute(interaction,Flutterbot)  { // eslint-disable-line no-unused-vars
-        imageUrl = await findImage(message);
-        console.log(imageUrl);
-        if (imageUrl !== undefined) {
-            gm(request(imageUrl))
+        const image = interaction.options.getAttachment('image'); 
+        
+      
+        if (image !== undefined) {
+            gm(request(image))
                 .out("-radial-blur", 10)
                 .strip()
                 .stream((error, stdout) => {
                     if (error) throw new Error(error);
-                    message.channel.send({
+                    interaction.reply({
                         files: [{
                             attachment: stdout,
                             name: "aaaah.png"

@@ -9,7 +9,7 @@ module.exports = {
     async execute(interaction, Flutterbot) {
         const embed = new EmbedBuilder(); 
 
-        let color = Flutterbot.db.getGuildConfig(interaction, 'embed_color'); 
+  
 
         let queue = await Flutterbot.DisTube.getQueue(interaction);
 

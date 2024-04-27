@@ -27,19 +27,18 @@ module.exports = {
 
         var quality = 1;
 
-        imageUrl = await interaction.options.getAttachment('image').url;
-        const extension = findImage.extensionFinder(imageUrl);
+       	const image = interaction.options.getAttachment('image'); 
 
         if (interaction.options.getNumber('quality'))
             quality = interaction.options.getNumber('quality');
 
-        if (imageUrl !== undefined) {
+        if (image !== undefined) {
             interaction.channel.sendTyping();
-            await gm(request(imageUrl)).size((error, size) => {
+            await gm(request(image)).size((error, size) => {
                 if (size.height > 1200 || size.width > 1200) {
                     return interaction.reply(`t-that's way too big of an image for me!🖌️🐇`);
                 }
-                gm(request(imageUrl)).setFormat("jpg").quality(quality).stream((error, stdout) => {
+                gm(request(image)).setFormat("jpg").quality(quality).stream((error, stdout) => {
                     if (error) throw new Error(error); //console.log(error);
                     interaction.reply({
                         files: [{

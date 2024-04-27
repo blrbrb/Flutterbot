@@ -22,7 +22,8 @@ module.exports = {
             return;
           }
       
-          const privateroles = Flutterbot.db.get(`${interaction.guild.id}.config.private_roles`);
+          const privateroles = Flutterbot.db.query(`SELECT * FROM PRIVATE_ROLES WHERE guild_id=${interaction.guild.id}`);
+          
          
         
           // Check if the role has ADMINISTRATOR permission (You can adjust this check as needed)

@@ -1,5 +1,5 @@
 const { Events } = require('discord.js');
-
+const fs = require('fs'); 
 
 module.exports = {
     name: Events.Error,
@@ -16,6 +16,6 @@ module.exports = {
         //}
 
        // let errorMessage = "temp holder error message";
-        //fs.appendFile("error_log.txt", errorMessage, console.log);
+        fs.appendFile("error_log.txt", errorMessage, console.log);
     },
 };

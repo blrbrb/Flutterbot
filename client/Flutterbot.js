@@ -7,6 +7,7 @@ const { DisTube } = require('distube');
 const { SoundCloudPlugin } = require("@distube/soundcloud");
 const {expHandler} = require('../utils/exp');
 const filters = require('../assets/filters.json');
+const Evaluator = require('../guardianAngel/evaluate');
 const { prefixcommands, slashcommands, current_maintenance } = require('../findAllCommands.js');
 const LastfmApi = require('lastfmapi'); 
 
@@ -15,6 +16,7 @@ class Flutterbot {
        this.initClient(); //organized by call heirachy. Shit on top is needed for shit on the bottom. 
        this.initDistube();
        this.initLogger(); 
+       this.initEvaluator();
        this.initdb('assets/db.json');
        this.initLastFMAPI(); 
        this.initCooldowns(); 
@@ -37,6 +39,10 @@ class Flutterbot {
     {
         this.slashcommands = slashcommands; 
         this.prefixcommands = prefixcommands; 
+    }
+    initEvaluator()
+    {
+    	this.evaluator = new Evaluator(this.db);
     }
     initLastFMAPI()
     {
@@ -150,8 +156,8 @@ class Flutterbot {
     async start() {
       await this.client.login(process.env.DISCORD_TOKEN);
       await this.updateEvents(); 
-      
-     // await this.Evaluator.updateIntelligence(); 
+      this.evaluator.loadfromFile('./assets/suspicious-list.json', this.db);
+     // await this.evaluator.updateIntelligence(this.db); 
     }
   }
 

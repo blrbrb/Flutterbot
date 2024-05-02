@@ -1,21 +1,23 @@
-const {} = require('../utils/utilities.js');
+
 const axios = require('axios');
 const cheerio = require('cheerio');
 const fs = require('fs');
-
 const {youShouldLitterallyNeverSeeThis} = require('../lang/en.js');
 
 class Evaluator
 {
-   constructor(Database,client) {
+   constructor(Flutterbot) {
+    this.db = Flutterbot; 
     this.urlRegex = /https?:\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|]/g;
-    this.intel = this.loadIntel()
+   // this.intel = this.loadIntel()
+    
    }
    
-   validateAge(member)
+   async validateAge(member)
    {
-      let MinAge = this.db.getGuildConfig(member.guild, "newMemberMinimumAge");
-    
+      let MinAge = await this.db.query(`SELECT joinage_days FROM GUILDS WHERE guild_id=${member.guild.id}`); 
+      console.log(`evaluate.js 19: The Minumum required age for new accounts on this server is ${MinAge}`);
+      
       if(!MinAge)
       {
          console.log('evaluage.js validateAge() no default new member age set in server config, using default of one month');
@@ -110,7 +112,7 @@ class Evaluator
          client.log(`This shit is for realsies bro. ${message.content}`)
       }
    }
-   async updateIntelligence() {
+   async updateIntelligence(db) {
       try {
         // Make an HTTP GET request to the webpage
         const response = await axios.get('https://urlhaus.abuse.ch/downloads/text/');
@@ -135,6 +137,11 @@ class Evaluator
         links.push(trimmedLine);
       }
     });
+
+    links.forEach(async(link)=>
+    {
+      await db.query(`INSERT INTO THREATS(url) VALUES("${link}")`);
+    });
         // Save the links to a JSON file
         const jsonData = JSON.stringify(links, null, 2); 
         //save it as a class variable for convenience
@@ -146,10 +153,16 @@ class Evaluator
         console.error('Error:', error.message);
       }
     }
-    loadIntel()
+    loadfromFile(file, db)
     {
-      const raw = fs.readFileSync('assets/intelligence.json');
-      const data =  JSON.parse(raw);
+      //load custom phishing link / malware definitions from a local json file 
+      const raw = fs.readFileSync(file);
+      const data =  JSON.parse(raw);   
+      let links = data['domains'];    
+      links.forEach((link)=>{
+         db.query(`INSERT INTO THREATS(url) VALUES("${link}")`);
+      });
+      
       return data; 
     }
     

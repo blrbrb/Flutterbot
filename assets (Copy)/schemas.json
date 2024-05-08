@@ -1,0 +1,20 @@
+
+{
+    "fetch":
+    {
+    	"privateRoles": "SELECT * FROM PRIVATE_ROLES WHERE guild_id={GUILD_ID};", 
+      	"userQuotesInGuild": "SELECT * FROM QUOTES WHERE user_id={GUILD_ID} AND guild_id={USER_ID};", 
+	"guildColor": "SELECT embed_color FROM GUILDS WHERE guild_id={GUILD_ID};", 
+	"guildAnnouncementChannel": "SELECT announcement_channel FROM GUILDS WHERE guild_id={GUILD_ID};",  
+	"userExp" : "SELECT * FROM USER_EXP WHERE user_id={USER_ID};", 
+	"userQuotes":"SELECT * FROM QUOTES WHERE user_id={USER_ID}" 	
+    }
+
+    "set":
+    {
+    	"privateRoles": "INSERT IGNORE INTO PRIVATE_ROLES(role_id, guild_id) VALUES ({ROLE_ID}, {GUILD_ID});", 
+	"guildColor": "INSERT INTO GUILDS(guild_id, embed_color) VALUES ({GUILD_ID},{EMBED_COLOR})",  
+	"userQuote": "INSERT INTO QUOTES(user_id, guild_id, quote, time) VALUES ()"
+    
+    }
+}

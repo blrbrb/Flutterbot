@@ -12,7 +12,8 @@ module.exports = {
 
         else 
         {
-            client.evaluator.validateAge(message.member); 
+            console.log(client);
+            client.evaluator.validateAge(client,message.member); 
             client.evaluator.onGuildMemberJoin(client, message.guild, message.member);
         }
 	}

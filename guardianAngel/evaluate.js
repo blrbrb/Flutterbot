@@ -6,16 +6,17 @@ const {youShouldLitterallyNeverSeeThis} = require('../lang/en.js');
 
 class Evaluator
 {
-   constructor(Flutterbot) {
-    this.db = Flutterbot; 
+   constructor(db) {
+    this.db = db; 
     this.urlRegex = /https?:\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|]/g;
    // this.intel = this.loadIntel()
     
    }
    
-   async validateAge(member)
-   {
-      let MinAge = await this.db.query(`SELECT joinage_days FROM GUILDS WHERE guild_id=${member.guild.id}`); 
+   async validateAge(db, member)
+   { 
+      //console.log(client);
+      let MinAge = await db.query(`SELECT joinage_days FROM GUILDS WHERE guild_id=${member.guild.id}`); 
       console.log(`evaluate.js 19: The Minumum required age for new accounts on this server is ${MinAge}`);
       
       if(!MinAge)
@@ -37,74 +38,17 @@ class Evaluator
    async quaratine(client, member)
    {
     
-      const guild = client.guilds.cache.get(member.guild.id);
+      const list = this.db.query('SELECT id FROM QUARANTINED'); 
+      console.log(list); 
 
-      let qRoleID = this.db.getGuildConfig(member.guild, 'quaratine_role'); 
-      let quarantinedUsers =this.db.getGuildConfig(member.guild, 'quaratined');
-
-      if(!quarantinedUsers)
+      if(list.includes(member.id))
       {
-         this.db.setGuildConfig(member.guild, 'quarantined', [member.id]); 
-      }
-      else
-      {
-         quarantinedUsers.push(member.user.id); 
-         this.db.setGuildConfig(member.guild, 'quarantined', quarantinedUsers);
-      }
-      
-      if(!qRoleID)
-      {
-         console.log('evaluate.js quaratine(). Guild quaratine role is not set in config')
-         this.createQuaratineRole(member);
-         return; 
-      }
-      else{
-      const qRole = await guild.roles.cache.get(qRoleID);
 
-      if(qRole)
-      {
-       
-         await member.roles.add(qRole);
-         return
       }
-      
-      return;
-      }
-      
-   }
-
-   async createQuaratineRole(client, member)
-   {
-    
-      const guild = client.guilds.cache.get(member.guild.id);
-
-       // Define the role's properties
-         const roleData = {
-            name: 'Quaratine', // Replace with the desired role name
-             color: 'RED', // Replace with the desired color (e.g., 'BLUE', 'RED', 'RANDOM', etc.)
-             permissions: ['SEND_MESSAGES', 'READ_MESSAGES'], // Replace with the desired permissions
-             hoist: true, // Display role members separately in the member list (optional)
-             mentionable: true, // Allow the role to be mentioned (optional)
-            };
-
-            guild.roles.create({
-               data: roleData,
-               reason: 'Flutterbot.js default quaratine role did not exist. Initalizing from scratch', // Optional reason for audit logs
-             })
-               .then((role) => {
-                 console.log(`Created role: ${role.name}`);
-                 this.db.setGuildConfig(guild, 'quaratine_role',role.id);
-               })
-               .catch((error) => {
-                 console.error('Error creating role:', error);
-               });
-
-            
-            return;
- 
 
    }
 
+   
    async onMessage(client, message)
    {
       if(this.positiveURL(client, message).match)
@@ -196,6 +140,18 @@ class Evaluator
        else 
          return {match:false, urls: undefined};
 
+    }
+
+    async onGuildMemberJoin(db, guild, member)
+    {
+       if(await this.validateAge(member))
+         {
+            console.log('they good'); 
+         }
+         else 
+         {
+            await db.query(`INSERT INTO QUARANTINED(id, guild_id) VALUES (${member.id}, ${guild.id})`); 
+         }
     }
    
 }

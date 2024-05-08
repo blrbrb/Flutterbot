@@ -1,5 +1,0 @@
-Found out what the node-chrono package was for lol 
-its a language processing thing. I'm using it for the event creator. 
-It makes it so you can just type "Tomorrow at five pm" and the damn thing'll 
-just spit out the right date for discord's api and everything. It's like magic.
-

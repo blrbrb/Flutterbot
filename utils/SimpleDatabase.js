@@ -1,14 +1,14 @@
 
 var mysql = require('mysql');
 // Create a MySQL connection pool
-
  
 class SimpleDatabase {
 
     constructor() {
       this.pool = mysql.createPool({
         connectionLimit: 10, // Adjust according to your database needs
-        host: 'localhost',
+        host: process.env.SQL_HOST,
+        port:3306,
         user: 'Flutterbot',
         password: process.env.SQL,
         database: 'Flutterbot'

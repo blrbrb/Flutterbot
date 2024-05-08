@@ -17,53 +17,63 @@ module.exports = {
         console.log(message.content);
       
         
-         const data = fs.readFileSync("assets/conversation.json");
+        const data = fs.readFileSync("assets/conversation.json");
        
         past = JSON.parse(data); 
+        console.log('loading past conversation data from memory..'); 
+       
+
+        console.log(past.past_user_inputs);
         
-        let input = {
-            message: message.content.slice(("-").length + command_prefix.length).trim(),
-            question: false
+     
+        let input = { 
+            question: false,
+            past_user_inputs: past.past_user_inputs,
+            generated_responses: conversation.generated_responses,
+            text: message.content.slice(("-").length + command_prefix.length).trim(),
         }
 
-        if (input.message.includes('?'))
+    
+
+        if (input.text.includes('?'))
             input.question = true;
 
-        conversation.past_user_inputs.push(input.message);
+        conversation.past_user_inputs.push(input.text);
 
-        query({
-            "inputs": {
-                "past_user_inputs": past.past_user_input,
-                "generated_responses": conversation.generated_responses,
-                "text": input.message
+        console.log('querying the hugging face model with..' + input.text + 'isQuestion:')
+
+        query(
+               {"inputs": message.content.slice(("-").length + command_prefix.length).trim()
+                   
+               }
+        ).then((response) => {
+            response_data = response[0];
+            console.log();
+
+            if (response_data.hasOwnProperty('estimated_time')) {
+                
+               
+          
+                console.log(`We're starting up it should take ${response_data.estimated_time} seconds...`);
+                message.reply(`We're starting up it should take ${response_data.estimated_time} seconds...`);
             }
-        }).then((response) => {
-            console.log(response);
 
-            if (response.hasOwnProperty('estimated_time')) {
-                // console.log(response.estimated_time);
-                // message.reply(`instantizing from ellypony/flutterbot on huggingface.io...  \ Il y a: \ ${response.estimated_time}`);
-                console.log(`instantizing from ellypony/flutterbot on huggingface.io...  \ Il y a: \ ${response.estimated_time}`);
-                console.log(`We're starting up it should take ${response.estimated_time} seconds...`);
-                message.reply(`We're starting up it should take ${response.estimated_time} seconds...`);
-            }
-
-            if (response.hasOwnProperty("error")) {
+            if (response_data.hasOwnProperty("error")) {
 
                 //message.channel.send(response.error);
-                console.log(response.error);
+                console.log(response_data.error);
 
-                if (response.error.hasOwnProperty('estimated_time'))
+                if (response_data.error.hasOwnProperty('estimated_time'))
                 { 
-                    message.channel.send(commandResponses.Fluttershy.loadingModel(response.error.estimated_time));
+                    message.channel.send(commandResponses.Fluttershy.loadingModel(response_data.error.estimated_time));
                 }
 
-            } else if (response.hasOwnProperty("generated_text")) {
+            } else if (response_data.hasOwnProperty("generated_text")) {
 
-                response_temp = response.generated_text;
+                response_temp = response_data.generated_text;
 
                 console.log(conversation);
-                message.reply(response.generated_text);
+                message.reply(response_data.generated_text);
                 conversation.generated_responses.push(response_temp);
             }
         });
@@ -80,7 +90,7 @@ async function query(data) {
     const response = await fetch(
         "https://api-inference.huggingface.co/models/EllyPony/flutterbot",
         {
-            headers: { Authorization: `Bearer ${process.env.HUGGING_TOKEN}` },
+            headers: { Authorization: `Bearer ${process.env.HUGGING_TOKEN}`, "options":{"min_length": 50,"max_length": 500,"max_new_tokens":1000}},
             method: "POST",
             body: JSON.stringify(data),
         }

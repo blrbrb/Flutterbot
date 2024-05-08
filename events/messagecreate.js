@@ -8,12 +8,15 @@ module.exports = {
     once: false,
     async execute(Flutterbot, message) { 
     
+      //yes, sometimes offically registered bot clients can do scams :sob: 
+       Flutterbot.evaluator.onMessage(Flutterbot, message);
        if(message.author.bot) return; 
        
        else if (message.content.startsWith(prefix))
        {
         let args = message.content.slice(prefix.length).trim().split(/ +/g);
         const command = args.shift(); 
+
         
          return Flutterbot.prefixcommands.get(command)?.execute(Flutterbot, message, args);
         

@@ -47,33 +47,33 @@ module.exports = {
                    
                }
         ).then((response) => {
-            response_data = response[0];
+            //response_data = response[0];
             console.log();
 
-            if (response_data.hasOwnProperty('estimated_time')) {
+            if (response.hasOwnProperty('estimated_time')) {
                 
                
           
-                console.log(`We're starting up it should take ${response_data.estimated_time} seconds...`);
-                message.reply(`We're starting up it should take ${response_data.estimated_time} seconds...`);
+                console.log(`We're starting up it should take ${response.estimated_time} seconds...`);
+                message.reply(`We're starting up it should take ${response.estimated_time} seconds...`);
             }
 
-            if (response_data.hasOwnProperty("error")) {
+            if (response.hasOwnProperty("error")) {
 
                 //message.channel.send(response.error);
-                console.log(response_data.error);
+                console.log(response.error);
 
-                if (response_data.error.hasOwnProperty('estimated_time'))
+                if (response.error.hasOwnProperty('estimated_time'))
                 { 
-                    message.channel.send(commandResponses.Fluttershy.loadingModel(response_data.error.estimated_time));
+                    message.channel.send(commandResponses.Fluttershy.loadingModel(response.error.estimated_time));
                 }
 
-            } else if (response_data.hasOwnProperty("generated_text")) {
+            } else if (response.hasOwnProperty("generated_text")) {
 
-                response_temp = response_data.generated_text;
+                response_temp = response.generated_text;
 
                 console.log(conversation);
-                message.reply(response_data.generated_text);
+                message.reply(response.generated_text);
                 conversation.generated_responses.push(response_temp);
             }
         });

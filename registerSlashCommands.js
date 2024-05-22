@@ -12,8 +12,8 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
         await rest.put(Routes.applicationCommands(clientId, guildId), {
             body: commands
         })
-        //await rest.get(Routes.userGuilds()) 
-        //.then(displayList)
+        await rest.get(Routes.userGuilds()) 
+        
         .catch(console.error)  
 
     } catch (error) {   

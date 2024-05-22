@@ -193,7 +193,7 @@ class Evaluator
             });
    
          
-         console.log('Message contains URLs in content this is astronomically likely to be normal:', contentUrls);
+         
          
          if(bad_stuff.includes(contentUrls[0]))
          {

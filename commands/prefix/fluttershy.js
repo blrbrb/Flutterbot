@@ -47,33 +47,36 @@ module.exports = {
                    
                }
         ).then((response) => {
-            //response_data = response[0];
-            console.log();
-
-            if (response.hasOwnProperty('estimated_time')) {
+            
+            if(!response)
+            {
+                return message.reply('malformed header data from hugging face.io.'); 
+            }
+            
+            if (response[0].hasOwnProperty('estimated_time')) {
                 
                
           
-                console.log(`We're starting up it should take ${response.estimated_time} seconds...`);
-                message.reply(`We're starting up it should take ${response.estimated_time} seconds...`);
+                console.log(`We're starting up it should take ${response[0].estimated_time} seconds...`);
+                message.reply(`We're starting up it should take ${response[0].estimated_time} seconds...`);
             }
 
-            if (response.hasOwnProperty("error")) {
+            if (response[0].hasOwnProperty("error")) {
 
                 //message.channel.send(response.error);
-                console.log(response.error);
+                console.log(response[0].error);
 
-                if (response.error.hasOwnProperty('estimated_time'))
+                if (response[0].error.hasOwnProperty('estimated_time'))
                 { 
-                    message.channel.send(commandResponses.Fluttershy.loadingModel(response.error.estimated_time));
+                    message.channel.send(commandResponses.Fluttershy.loadingModel(response[0].error.estimated_time));
                 }
 
-            } else if (response.hasOwnProperty("generated_text")) {
+            } else if (response[0].hasOwnProperty("generated_text")) {
 
                 response_temp = response.generated_text;
 
                 console.log(conversation);
-                message.reply(response.generated_text);
+                message.reply(response[0].generated_text);
                 conversation.generated_responses.push(response_temp);
             }
         });

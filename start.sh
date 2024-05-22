@@ -8,6 +8,8 @@ light_pink=$(tput setaf 5)
 reset=$(tput sgr0)
 CLIENT_PRREFIX="(${bold}${light_pink}Fluttershy Shell${reset}): "
 
+#Create a dedicated stderr pipe in the temporary directory in order to write errors to the log file, even if the integrity of the original node process is compromised  
+mkfifo /tmp/Flutterbot 
 
 print()
 {
@@ -118,9 +120,9 @@ do
 print "Starting Fluttershy"
 {
  
- node . $CLIENT_PRREFIX
+ node . $CLIENT_PRREFIX  2> /tmp/Flutterbot & tee $FILE < /tmp/Flutterbot >&2 #catch the stderr output from the running node process if there are any, and pipe it into the log
  
-}  2>> $FILE
+} 
  
 
 
@@ -137,7 +139,7 @@ print details written to "$FILE"
 
 print Restarting Fluttershy in 1 Seconds... 
 
-
+rm /tmp/Flutterbot
 
 done 
 

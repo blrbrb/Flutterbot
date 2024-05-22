@@ -19,7 +19,7 @@ module.exports = {
                 },
                 {
                     name: 'Flanger',
-                    value: 'flanger'
+                    value: 'pulsator'
                 },
                 {
                     name: 'Reverse',
@@ -63,7 +63,7 @@ module.exports = {
                 },
                 {
                     name: 'Mcompand',
-                    value: 'mcompand'
+                    value: 'reverb'
                 },
                 {
                     name: 'Echo',
@@ -94,8 +94,8 @@ module.exports = {
                     value: '1bit'
                 },
                 {
-                    name: 'EightBits',
-                    value: '8bits'
+                    name: 'Robot',
+                    value: 'robot'
                 },
                 {
                     name: 'NormalizeLoudness',

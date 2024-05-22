@@ -1,0 +1,13 @@
+
+
+module.exports = { 
+    name:"countdown", 
+    cooldown: 10, 
+    async execute(Flutterbot, message, args): 
+    {
+
+    }
+
+
+
+}

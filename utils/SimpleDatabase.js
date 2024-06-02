@@ -1,6 +1,6 @@
 
 var mysql = require('mysql');
-
+const schemas = require('../assets/schemas.json');
  
 class SimpleDatabase {
 
@@ -37,7 +37,11 @@ class SimpleDatabase {
             });
           });
         });
-      }
+      } 
+
+    async fetchQuote(user_id)
+    {
+    }
   }
   
   module.exports = {SimpleDatabase};

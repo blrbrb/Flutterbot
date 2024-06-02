@@ -9,6 +9,7 @@ module.exports = {
 		if (message.author.id !== '252235505318625281') return;
 
 		const command = args.join(" ");
+		
 		if (!command)
 			return message.reply("Please specify a bash command to execute on mane_server");
 

@@ -1,5 +1,5 @@
 const fs = require('fs');
-const fetch = require('node-fetch');
+
 require('dotenv').config();
 const {commandResponses} = require('../../lang/en.js');
 let conversation = { past_user_inputs: [], generated_responses: [] };
@@ -42,18 +42,20 @@ module.exports = {
 
         console.log('querying the hugging face model with..' + input.text + 'isQuestion:')
 
-        query(
+        await query(
                {"inputs": message.content.slice(("-").length + command_prefix.length).trim()
                    
                }
         ).then((response) => {
-            
+
+            console.log(response);
+
             if(!response)
             {
                 return message.reply('malformed header data from hugging face.io.'); 
             }
             
-            if (response[0].hasOwnProperty('estimated_time')) {
+            if (response.hasOwnProperty('estimated_time')) {
                 
                
           
@@ -93,7 +95,7 @@ async function query(data) {
     const response = await fetch(
         "https://api-inference.huggingface.co/models/EllyPony/flutterbot",
         {
-            headers: { Authorization: `Bearer ${process.env.HUGGING_TOKEN}`, "options":{"min_length": 50,"max_length": 500,"max_new_tokens":1000}},
+            headers: { Authorization: `Bearer ${process.env.HUGGING_TOKEN}`, "options":{"min_length": 50,"max_length": 500,"max_new_tokens":1000},"Content-Type": "application/json"},
             method: "POST",
             body: JSON.stringify(data),
         }

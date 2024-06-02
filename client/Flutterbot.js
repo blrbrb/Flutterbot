@@ -10,6 +10,7 @@ const filters = require('../assets/filters.json');
 const Evaluator = require('../guardianAngel/evaluate');
 const { prefixcommands, slashcommands, current_maintenance } = require('../findAllCommands.js');
 const LastfmApi = require('lastfmapi'); 
+const chron = require('node-cron');
 
 class Flutterbot {
     constructor() {
@@ -27,7 +28,6 @@ class Flutterbot {
        //this.sessions = []; 
     }
      
-
     //initalizers 
     initCooldowns()
     {
@@ -148,7 +148,28 @@ class Flutterbot {
          if (event.once) this.client.once(event.name, (...args) => event.execute(this, ...args), (...args) => this.exp.update(...args));
          else this.client.on(event.name, (...args) => event.execute(this, ...args), (...args) => this.exp.update(...args));
 
+    }  
     }
+    async updateTasks()
+    {
+        const registeredTasks = await this.db.query(`SELECT * FROM TASKS`);
+        console.log(registeredTasks);
+
+        registeredTasks.forEach(task=>{
+            chron.schedule('* * * * *',async ()=>
+                {
+                    const guild = await this.client.guilds.fetch(task.guid);
+                    const channel = await guild.channels.fetch(task.channel_id); 
+                    const date = new Date(task.until);
+                    const now = new Date(); 
+                    let difference= date - now; 
+                    console.log('executing task, and sending message');
+                    if(channel.isTextBased())
+                        {
+                            channel.send(difference);
+                        }
+                })
+        });
     }
 
     
@@ -156,6 +177,7 @@ class Flutterbot {
     async start() {
       await this.client.login(process.env.DISCORD_TOKEN);
       await this.updateEvents(); 
+      await this.updateTasks();
       this.evaluator.loadfromFile('./assets/suspicious-list.json', this.db);
      // await this.evaluator.updateIntelligence(this.db); 
     }

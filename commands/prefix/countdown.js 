@@ -3,11 +3,48 @@
 module.exports = { 
     name:"countdown", 
     cooldown: 10, 
-    async execute(Flutterbot, message, args): 
+    async execute(Flutterbot, message, args)
     {
+        const date = 7/14/2024;
+        const channelId = interaction.channelId;
 
+        try {
+            const eventDate = new Date(date);
+            if (isNaN(eventDate)) {
+                await interaction.reply({ content: 'Invalid date format. Please use mm/dd/yyyy.', ephemeral: true });
+                return;
+            }
+
+            const today = new Date();
+            if (eventDate <= today) {
+                await interaction.reply({ content: 'The date must be in the future.', ephemeral: true });
+                return;
+            }
+
+            const daysLeft = Math.ceil((eventDate - today) / (1000 * 60 * 60 * 24));
+            await interaction.reply(`There are ${daysLeft} days left until ${date}.`);
+
+            if (countdownTasks.has(channelId)) {
+                countdownTasks.get(channelId).stop();
+            }
+
+            const task = cron.schedule('0 0 * * *', async () => {
+                const now = new Date();
+                if (eventDate <= now) {
+                    await interaction.channel.send(`Today is the day! ${eventDate.toLocaleDateString()}`);
+                    task.stop();
+                    countdownTasks.delete(channelId);
+                } else {
+                    const remainingDays = Math.ceil((eventDate - now) / (1000 * 60 * 60 * 24));
+                    await interaction.channel.send(`${remainingDays} days left until ${eventDate.toLocaleDateString()}.`);
+                }
+            });
+
+            countdownTasks.set(channelId, task);
+        } catch (error) {
+            console.error(error);
+            await interaction.reply({ content: 'An error occurred while processing the date.', ephemeral: true });
+        }
+    
     }
-
-
-
 }

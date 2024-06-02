@@ -4,6 +4,7 @@ const {
 } = require('discord.js');
 const Discord = require('discord.js');
 const fs = require('fs');
+const chrono = require('chrono-node');
 
 const colors = {
   "": "\x1b[0m",
@@ -163,6 +164,7 @@ module.exports = {
   stringToDate(RawDateString) {
 
       const results = chrono.parse(RawDateString);
+      console.log(results);
       const cleaned = module.exports.consolidateTimeObjects(results[0].start.impliedValues, results[0].start.knownValues);
 
       if (results.length === 0) {

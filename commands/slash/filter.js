@@ -118,7 +118,7 @@ module.exports = {
 
         if(!queue) return interaction.reply(errorMessage.Distube.QueueEmpty());
 
-        
+       try{
         if (!queue.filters.has(selection)) {
             queue.filters.add(selection);
            return interaction.reply(commandResponses.Distube.filter(selection));
@@ -128,6 +128,12 @@ module.exports = {
             
            return interaction.reply(`removing the ${selection} filter!~`);
         }
+       }
+	catch(exec)
+	    {
+		console.log(exec.message);
+		return interaction.reply(exec);
+	    }
         return interaction.reply('fuck');
     }
 }

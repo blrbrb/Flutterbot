@@ -54,15 +54,7 @@ module.exports = {
             {
                 return message.reply('malformed header data from hugging face.io.'); 
             }
-            
-            if (response.hasOwnProperty('estimated_time')) {
-                
-               
-          
-                console.log(`We're starting up it should take ${response[0].estimated_time} seconds...`);
-                message.reply(`We're starting up it should take ${response[0].estimated_time} seconds...`);
-            }
-
+         
             if (response[0].hasOwnProperty("error")) {
 
                 //message.channel.send(response.error);

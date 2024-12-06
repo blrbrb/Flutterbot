@@ -25,7 +25,7 @@ module.exports = {
                 Flutterbot.log('yellow underscore', 'Warn: skip.js() 25')
                 Flutterbot.log(`${err}`);
                 interaction.reply(`skipping! ${queue.songs[0].name}`);//since it's the last song in the queue, not really important. Can just recreate a new queue when called. Illusion of good design.
-                return Flutterbot.DisTube.stop(interaction); 
+               return Flutterbot.DisTube.stop(interaction); 
                 //give the user the same message on the front, while behind the scenes the "There is no up next song" error emitted by distube is handled by simply destroying the stream
               
                 }

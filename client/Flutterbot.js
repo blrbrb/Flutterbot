@@ -5,6 +5,7 @@ const {Log} = require('../utils/utilities.js');
 const { Client, Partials, GatewayIntentBits, Collection, SnowflakeUtil} = require('discord.js');
 const { DisTube } = require('distube');
 const { SoundCloudPlugin } = require("@distube/soundcloud");
+const { YouTubePlugin } = require("@distube/youtube");
 const {expHandler} = require('../utils/exp');
 const filters = require('../assets/filters.json');
 const Evaluator = require('../guardianAngel/evaluate');
@@ -101,15 +102,11 @@ class Flutterbot {
     initDistube()
     {
         this.DisTube = new DisTube(this.client, {
-            leaveOnStop: true,
-            leaveOnFinish: true,
-            leaveOnEmpty: true,
-            emptyCooldown: 5,
             emitAddSongWhenCreatingQueue: false,
             emitAddListWhenCreatingQueue: false,
-            youtubeCookie: process.env.FART,
             customFilters: filters,
-            plugins:[new SoundCloudPlugin({clientId: process.env.SOUNDCLOUD_CLIENT,  oauthToken: process.env.SOUNDCLOUD_TOKEN})]
+            plugins:[new SoundCloudPlugin({clientId: process.env.SOUNDCLOUD_CLIENT,  oauthToken: process.env.SOUNDCLOUD_TOKEN}),
+                    new YouTubePlugin()]
         });   
 
        

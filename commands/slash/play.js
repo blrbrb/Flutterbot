@@ -18,9 +18,10 @@ module.exports = {
 		}
 	],
 	async execute(interaction, Flutterbot) {
-		
+		//console.log(interaction)
 		const query = interaction.options.getString('query');
 		const self = interaction.guild.members.cache.get(Flutterbot.client.user.id);
+		
 		//we need to make sure the member is actually connected to a voice channel, otherwise she'll crash
 		if(interaction.member.voice.channel == null) return interaction.reply({content:'You need to be in a voice channel first!',ephermeal:true });
 		
@@ -32,12 +33,22 @@ module.exports = {
 		switch(MusicMediaUrl(query))
 		{
 			case 'yt':
-			
-				Flutterbot.DisTube.play(interaction.member.voice.channel, formatYtLink(query), {
+			    console.log(query);
+			   
+			 
+			    try
+			    {
+				await Flutterbot.DisTube.play(interaction.member.voice.channel, formatYtLink(query), {
 					member: interaction.member,
 					textChannel: interaction.channel,
 				}).then(interaction.reply({content:`Fetching this url from youtube.com...`, ephemeral:true}));
-				return; 
+				console.log('nothing is going wrong at this current point'); 
+				}
+				catch(e)
+				{
+			           return interaction.editReply({content: `If you are seeing this message Google has changed how they obsfucate and remux video data in an attempt to censor prevent third parties from accessing their services without having to watch advertisements. Distube has returned the error ${e}. Which means that until the upstream maintainers update the API to combat this ( work they are doing for free by the way )** we are just out of luck. This is **NOT** the fault of ANY application maintainer, please do not pester upstream bros. Give them encouragement in these trying times. Fluttershy says Fuck corporate tyranny.`, ephermeal:true});
+				}
+				return;
 			case 'spotify':
 				return interaction.reply({content: "Sorry! I don't support Spotify playback yet! It would require my owner buy a very expensive lisence. Perhaps in the future", ephermeal: true});
 			case 'soundcloud': 
@@ -60,8 +71,7 @@ module.exports = {
 	{
 		Flutterbot.DisTube.play(interaction.member.voice.channel, firstResult.url, {
 		member: interaction.member,
-		textChannel: interaction.channel,
-		interaction
+		textChannel: interaction.channel
 
 		});
 		
@@ -169,12 +179,20 @@ module.exports = {
 		
 		selection = i.customId;
 		replyembed.setDescription(`Okay! I'll hand [this track](${selection}) over to Vinyl and Octavia!`)
+		console.log(outer_interaction.member.voice.channel);
+		//console.log(outer_interaction); 
+		console.log(i);
 		
-		Flutterbot.DisTube.play(outer_interaction.member.voice.channel, selection, {
+		try {
+		await Flutterbot.DisTube.play(i.member.voice.channel, selection, {
 			member: outer_interaction.member, 
 			textChannel: outer_interaction.channel
 		}).then(i.reply({embeds:[replyembed],ephemeral:true}))
-
+        }
+        catch(e)
+        {
+            interaction.reply({content: `If you are seeing this message Google has changed how they obsfucate and remux video data in an attempt to censor prevent third parties from accessing their services without having to watch advertisements. Distube has returned the error ${e}. Which means that until the upstream maintainers update the API to combat this **( work they are doing for free by the way )** we are just out of luck. This is **NOT** the fault of ANY application maintainer, please do not pester upstream bros. Give them encouragement in these trying times. Fluttershy says Fuck corporate tyranny.`, ephermeal:true});
+        }
 		Flutterbot.collectors.delete(collector);
 		
 		return; 

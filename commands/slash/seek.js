@@ -24,6 +24,7 @@ module.exports = {
         const song_time = queue.songs[0].formattedDuration;
         var minutes = interaction.options.getInteger('minute');
         var seconds = interaction.options.getInteger('second');
+        var total_seconds = minutes * 60 + seconds;
 
         let result = new Date(total_seconds * 1000).toISOString().slice(14, 19);
         const embed = new EmbedBuilder();
